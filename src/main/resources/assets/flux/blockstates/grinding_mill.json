@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,lit=false": { "model": "flux:block/grinding_mill" },
+    "facing=south,lit=false": { "model": "flux:block/grinding_mill", "y": 180 },
+    "facing=west,lit=false":  { "model": "flux:block/grinding_mill", "y": 270 },
+    "facing=east,lit=false":  { "model": "flux:block/grinding_mill", "y": 90 },
+    "facing=north,lit=true": { "model": "flux:block/grinding_mill_on" },
+    "facing=south,lit=true": { "model": "flux:block/grinding_mill_on", "y": 180 },
+    "facing=west,lit=true":  { "model": "flux:block/grinding_mill_on", "y": 270 },
+    "facing=east,lit=true":  { "model": "flux:block/grinding_mill_on", "y": 90 }
+  }
+}

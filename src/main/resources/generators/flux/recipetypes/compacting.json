@@ -1,0 +1,6 @@
+{
+  "minecraft:diamond": {
+    "ingredients": [{"tag": "forge:storage_blocks/coal"}],
+    "cost": 16
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "flux:block/machine",
+  "textures": {
+    "front": "flux:block/compactor_on"
+  }
+}

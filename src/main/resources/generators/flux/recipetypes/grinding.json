@@ -1,0 +1,8 @@
+{
+  "minecraft:gravel": {
+    "ingredients": [{"tag": "forge:cobblestone"}]
+  },
+  "minecraft:sand": {
+    "ingredients": [{"item": "minecraft:gravel"}]
+  }
+}

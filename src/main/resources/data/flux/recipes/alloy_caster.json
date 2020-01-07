@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IRI",
+    "I I",
+    "SBS"
+  ],
+  "key": {
+    "I": {"tag": "forge:ingots/iron"},
+    "R": {"item": "minecraft:redstone"},
+    "B": {"item": "minecraft:brick"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:alloy_caster",
+    "count": 1
+  }
+}

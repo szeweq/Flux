@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["TCT", "I I"],
+  "key": {
+    "T": {"tag": "forge:ingots/tin"},
+    "C": {"tag": "forge:ingots/copper"},
+    "I": {"tag": "forge:ingots/iron"}
+  },
+  "result": {
+    "item": "flux:machine_base",
+    "count": 6
+  }
+}

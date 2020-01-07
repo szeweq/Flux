@@ -1,0 +1,4 @@
+{
+	"parent": "flux:block/emachine_side",
+	"textures": {"0": "flux:blocks/emachine_out"}
+}

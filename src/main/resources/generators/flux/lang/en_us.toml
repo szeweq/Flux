@@ -1,0 +1,51 @@
+[flux]
+ energystat = "Energy: %s / %s F"
+ gen = "Generating %s F/t"
+
+[flux.gift]
+ invalid = "Invalid Gift!"
+
+[flux.gift.text]
+ newyear = "Happy New Year!"
+
+[item.flux]
+ mftool = "Flux Tool"
+ gift = "Flux Gift"
+ machine_base = "Machine Base"
+ iron_grit = "Iron Grit"
+ gold_grit = "Gold Grit"
+ copper_grit = "Copper Grit"
+ tin_grit = "Tin Grit"
+ iron_dust = "Iron Dust"
+ gold_dust = "Gold Dust"
+ copper_dust = "Copper Dust"
+ tin_dust = "Tin Dust"
+ copper_ingot = "Copper Ingot"
+ tin_ingot = "Tin Ingot"
+
+[itemGroup.flux]
+ items = "Flux Items"
+
+[block.flux]
+ fluxgen = "Flux Generator"
+ grinding_mill = "Grinding Mill"
+ alloy_caster = "Alloy Caster"
+ washer = "Washer"
+ compactor = "Compactor"
+ copper_ore = "Copper Ore"
+ tin_ore = "Tin Ore"
+ copper_block = "Block of Copper"
+ tin_block = "Block of Tin"
+
+[container.flux]
+ fluxgen = "Flux Generator"
+ grinding_mill = "Grinding Mill"
+ alloy_caster = "Alloy Caster"
+ washer = "Washer"
+ compactor = "Compactor"
+
+[gui.flux.recipebook.toggleRecipes]
+ grindable = "Showing grindable only"
+ alloyable = "Showing alloyable only"
+ washable = "Showing washable only"
+ compactable = "Showing compactable only"

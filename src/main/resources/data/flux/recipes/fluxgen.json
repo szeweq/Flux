@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["ABC"],
+  "key": {
+    "A": {"item": "minecraft:iron_block"},
+    "B": {"item": "minecraft:furnace"},
+    "C": {"item": "minecraft:redstone_block"}
+  },
+  "result": {
+    "item": "flux:fluxgen",
+    "count": 1
+  }
+}

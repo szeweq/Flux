@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {"layer0": "flux:item/ingot", "layer1": "flux:item/ingot_decal"}
+}

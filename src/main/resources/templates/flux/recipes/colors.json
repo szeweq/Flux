@@ -1,0 +1,6 @@
+{
+  "name": "colorRecipes",
+  "args": [
+    {"from": "concrete_powder", "into": "concrete", "type": "washing", "processtime": 20}
+  ]
+}

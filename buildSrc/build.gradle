@@ -1,0 +1,30 @@
+plugins {
+    id 'java-gradle-plugin'
+    id "org.jetbrains.kotlin.jvm" version "1.3.61"
+}
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.electronwill.night-config:toml:3.6.2'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
+    }
+}
+
+gradlePlugin {
+    plugins {
+        mcgenPlugin {
+            id = "szewek.mcgen.mcgen-plugin"
+            implementationClass = "szewek.mcgen.MCGenPlugin"
+        }
+    }
+}

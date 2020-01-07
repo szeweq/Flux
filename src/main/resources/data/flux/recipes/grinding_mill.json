@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IFI",
+    "SFS"
+  ],
+  "key": {
+    "I": {"tag": "forge:ingots/iron"},
+    "F": {"item": "minecraft:flint"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:grinding_mill",
+    "count": 1
+  }
+}

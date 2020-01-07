@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IBI",
+    "I I",
+    "SBS"
+  ],
+  "key": {
+    "B": {"tag": "forge:storage_blocks/iron"},
+    "I": {"tag": "forge:ingots/iron"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:compactor",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IWI",
+    "SSS"
+  ],
+  "key": {
+    "I": {"tag": "forge:ingots/iron"},
+    "W": {"item": "minecraft:water_bucket"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:washer",
+    "count": 1
+  }
+}

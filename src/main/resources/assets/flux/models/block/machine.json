@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "flux:block/machine_top",
+    "side": "flux:block/machine_side"
+  }
+}
