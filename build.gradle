@@ -20,6 +20,8 @@ apply plugin: szewek.mcgen.MCGenPlugin
 group = 'szewek.flux'
 archivesBaseName = 'flux'
 
+project.version = project.version + ((project.versionSub as int) > 0 ? "-${project.versionType}${project.versionSub}" : "")
+
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
@@ -162,7 +164,7 @@ curseforge {
     apiKey = project.hasProperty("cfKey") ? project.cfKey : ""
     project {
         id = "248942"
-        releaseType = "beta"
+        releaseType = project.versionType
         changelogType = "markdown"
         changelog = file("latest.md")
         addGameVersion "1.15.1"
