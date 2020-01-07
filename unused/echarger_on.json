@@ -1,4 +1,0 @@
-{
-  "parent": "flux:block/echarger",
-  "textures": {"1": "flux:blocks/echarger_on"}
-}

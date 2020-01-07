@@ -1,6 +1,7 @@
-# Flux Preview for 1.15.1 (Version 4.0.0 Beta 8)
+# Flux (Version 4.0.0)
 
 This is a complete rewrite of the mod. Many features available in older versions may not appear in this preview.
 
-- Copper and Tin ores are now generated in new worlds
-- Blocks (ores and machines) drop themselves on breaking
+Changes since last version:
+- Changed recipe for Machine Base
+- Machine recipes now use Machine Base instead of Smooth Stone Slabs
