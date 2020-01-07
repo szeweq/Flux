@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static szewek.flux.MCFlux.MODID;
+import static szewek.flux.FluxMod.MODID;
 
 public final class MFItems {
 	public static final ItemGroup MF_ITEMS = new ItemGroup("flux.items") {

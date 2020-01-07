@@ -11,14 +11,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import szewek.flux.MCFlux;
+import szewek.flux.FluxMod;
 import szewek.flux.container.FluxGenContainer;
 
 import java.util.Arrays;
 
 @OnlyIn(Dist.CLIENT)
 public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
-	private static final ResourceLocation BG_TEX = MCFlux.location("textures/gui/fluxgen.png");
+	private static final ResourceLocation BG_TEX = FluxMod.location("textures/gui/fluxgen.png");
 
 	public FluxGenScreen(FluxGenContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);

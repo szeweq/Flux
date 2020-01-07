@@ -10,7 +10,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import szewek.flux.container.*;
 import szewek.flux.gui.*;
 
-import static szewek.flux.MCFlux.MODID;
+import static szewek.flux.FluxMod.MODID;
 
 public final class MFContainers {
 	public static final ContainerType<FluxGenContainer> FLUXGEN = create(FluxGenContainer::new, FluxGenScreen::new);

@@ -12,7 +12,7 @@ import szewek.flux.util.Metal;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static szewek.flux.MCFlux.MODID;
+import static szewek.flux.FluxMod.MODID;
 
 public final class MFBlocks {
 	static final Map<Metal, FluxOreBlock> ORES = makeOres();

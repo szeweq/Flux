@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static szewek.flux.MCFlux.MODID;
+import static szewek.flux.FluxMod.MODID;
 
 public final class MFTiles {
 	public static final TileEntityType<FluxGenTile> FLUXGEN = create(FluxGenTile::new, "fluxgen", MFBlocks.FLUXGEN);

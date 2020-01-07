@@ -13,6 +13,7 @@ import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
@@ -26,26 +27,32 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.item.MetalItem;
+import szewek.flux.util.MappingFixer;
 import szewek.flux.util.Metal;
 import szewek.flux.util.gift.GiftData;
 import szewek.flux.util.gift.Gifts;
 
 import java.util.Calendar;
+import java.util.stream.StreamSupport;
 
-@Mod(MCFlux.MODID)
-public final class MCFlux {
+@Mod(FluxMod.MODID)
+public final class FluxMod {
 	static final String MODID = "flux";
 
-	public MCFlux() {
+	static IModInfo modInfo;
+
+	public FluxMod() {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::setup);
 	}
@@ -58,7 +65,6 @@ public final class MCFlux {
 		ForgeRegistries.BIOMES.getValues().forEach(biome -> {
 			final Biome.Category cat = biome.getCategory();
 			if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
-
 				biome.addFeature(
 						GenerationStage.Decoration.UNDERGROUND_ORES,
 						Feature.ORE.func_225566_b_(new OreFeatureConfig(
@@ -77,6 +83,8 @@ public final class MCFlux {
 				);
 			}
 		});
+
+		modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
 	}
 
 	@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
@@ -123,15 +131,13 @@ public final class MCFlux {
 		}
 
 		@SubscribeEvent
-		public static <T extends IForgeRegistryEntry<T>> void fixMissingMappings(final RegistryEvent.MissingMappings<T> mm) {
-			System.out.println("FIXING MAPPINGS...");
-			mm.getAllMappings().forEach(m -> {
-				ResourceLocation key = m.key;
-				if (key.getNamespace().equals("mcflux")) {
-					T o = m.registry.getValue(new ResourceLocation(MODID, key.getPath()));
-					if (o != null) m.remap(o);
-				}
-			});
+		public static void missingBlockMappings(final RegistryEvent.MissingMappings<Block> mm) {
+			mm.getAllMappings().forEach(MappingFixer::fixMapping);
+		}
+
+		@SubscribeEvent
+		public static void missingItemMappings(final RegistryEvent.MissingMappings<Item> mm) {
+			mm.getAllMappings().forEach(MappingFixer::fixMapping);
 		}
 	}
 
@@ -154,7 +160,20 @@ public final class MCFlux {
 		@SubscribeEvent
 		public static void onPlayerLogin(final PlayerEvent.PlayerLoggedInEvent pe) {
 			PlayerEntity player = pe.getPlayer();
+			System.out.println("PLAYER LOGIN EVENT HAPPENED -- " + player.world.isRemote);
 			if (!player.world.isRemote) {
+				VersionChecker.CheckResult ver = VersionChecker.getResult(modInfo);
+				switch (ver.status) {
+					case BETA:
+						player.sendMessage(new StringTextComponent("Flux is up-to-date: " + ver.target));
+						break;
+					case OUTDATED:
+					case BETA_OUTDATED:
+						player.sendMessage(new StringTextComponent("Flux has new update: " + ver.target));
+						break;
+					default:
+						System.out.println("CHECK RESULT: " + ver.status + " -- " + ver.target);
+				}
 				CompoundNBT data = player.getPersistentData();
 				int lastXDay = data.getInt("lastXDay");
 				int lastXYear = data.getInt("lastXYear");

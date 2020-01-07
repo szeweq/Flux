@@ -8,7 +8,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraftforge.registries.IForgeRegistry;
 import szewek.flux.recipe.*;
 
-import static szewek.flux.MCFlux.MODID;
+import static szewek.flux.FluxMod.MODID;
 
 public final class MFRecipes {
 	public static IRecipeType<GrindingRecipe> GRINDING = addType("grinding");
