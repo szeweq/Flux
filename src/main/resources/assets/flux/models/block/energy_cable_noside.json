@@ -1,0 +1,15 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "texture": "flux:block/energy_cable",
+    "particle": "flux:block/energy_cable"
+  },
+  "elements": [
+    {   "from": [ 4, 4, 4 ],
+      "to": [ 12, 12, 12 ],
+      "faces": {
+        "north": { "texture": "#texture" }
+      }
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
@@ -35,7 +36,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.item.MetalItem;
 import szewek.flux.util.MappingFixer;
@@ -44,7 +44,6 @@ import szewek.flux.util.gift.GiftData;
 import szewek.flux.util.gift.Gifts;
 
 import java.util.Calendar;
-import java.util.stream.StreamSupport;
 
 @Mod(FluxMod.MODID)
 public final class FluxMod {
@@ -69,7 +68,7 @@ public final class FluxMod {
 						GenerationStage.Decoration.UNDERGROUND_ORES,
 						Feature.ORE.func_225566_b_(new OreFeatureConfig(
 								OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-								MFBlocks.ORES.get(Metal.COPPER).getDefaultState(),
+								FBlocks.ORES.get(Metal.COPPER).getDefaultState(),
 								7
 						)).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 96)))
 				);
@@ -77,7 +76,7 @@ public final class FluxMod {
 						GenerationStage.Decoration.UNDERGROUND_ORES,
 						Feature.ORE.func_225566_b_(new OreFeatureConfig(
 								OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-								MFBlocks.ORES.get(Metal.TIN).getDefaultState(),
+								FBlocks.ORES.get(Metal.TIN).getDefaultState(),
 								7
 						)).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 72)))
 				);
@@ -93,12 +92,12 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void setupClient(final FMLClientSetupEvent event) {
 			Minecraft mc = event.getMinecraftSupplier().get();
-			mc.getItemColors().register(Gifts::colorByGift, MFItems.GIFT);
+			mc.getItemColors().register(Gifts::colorByGift, FItems.GIFT);
 
 			ItemColors ic = mc.getItemColors();
-			ic.register(Metal::gritColors, MFItems.GRITS.values().toArray(new MetalItem[0]));
-			ic.register(Metal::itemColors, MFItems.DUSTS.values().toArray(new MetalItem[0]));
-			ic.register(Metal::ingotColors, MFItems.INGOTS.values().toArray(new MetalItem[0]));
+			ic.register(Metal::gritColors, FItems.GRITS.values().toArray(new MetalItem[0]));
+			ic.register(Metal::itemColors, FItems.DUSTS.values().toArray(new MetalItem[0]));
+			ic.register(Metal::ingotColors, FItems.INGOTS.values().toArray(new MetalItem[0]));
 		}
 	}
 
@@ -107,27 +106,27 @@ public final class FluxMod {
 	public static final class RegistryEvents {
 		@SubscribeEvent
 		public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRE) {
-			MFBlocks.register(blockRE.getRegistry());
+			FBlocks.register(blockRE.getRegistry());
 		}
 
 		@SubscribeEvent
 		public static void onItemsRegistry(final RegistryEvent.Register<Item> itemRE) {
-			MFItems.register(itemRE.getRegistry());
+			FItems.register(itemRE.getRegistry());
 		}
 
 		@SubscribeEvent
 		public static void onTilesRegistry(final RegistryEvent.Register<TileEntityType<?>> tileRE) {
-			MFTiles.register(tileRE.getRegistry());
+			FTiles.register(tileRE.getRegistry());
 		}
 
 		@SubscribeEvent
 		public static void onContainersRegistry(final RegistryEvent.Register<ContainerType<?>> containerRE) {
-			MFContainers.register(containerRE.getRegistry());
+			FContainers.register(containerRE.getRegistry());
 		}
 
 		@SubscribeEvent
 		public static void onRecipesRegistry(final RegistryEvent.Register<IRecipeSerializer<?>> recipeRE) {
-			MFRecipes.register(recipeRE.getRegistry());
+			FRecipes.register(recipeRE.getRegistry());
 		}
 
 		@SubscribeEvent
@@ -160,19 +159,10 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void onPlayerLogin(final PlayerEvent.PlayerLoggedInEvent pe) {
 			PlayerEntity player = pe.getPlayer();
-			System.out.println("PLAYER LOGIN EVENT HAPPENED -- " + player.world.isRemote);
 			if (!player.world.isRemote) {
 				VersionChecker.CheckResult ver = VersionChecker.getResult(modInfo);
-				switch (ver.status) {
-					case BETA:
-						player.sendMessage(new StringTextComponent("Flux is up-to-date: " + ver.target));
-						break;
-					case OUTDATED:
-					case BETA_OUTDATED:
-						player.sendMessage(new StringTextComponent("Flux has new update: " + ver.target));
-						break;
-					default:
-						System.out.println("CHECK RESULT: " + ver.status + " -- " + ver.target);
+				if (ver.target != null && (ver.status == VersionChecker.Status.OUTDATED || ver.status == VersionChecker.Status.BETA_OUTDATED)) {
+					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()));
 				}
 				CompoundNBT data = player.getPersistentData();
 				int lastXDay = data.getInt("lastXDay");
@@ -189,7 +179,7 @@ public final class FluxMod {
 						data.putInt("lastXYear", xyear);
 						CompoundNBT itemTag = new CompoundNBT();
 						itemTag.putInt("xDay", xday);
-						ItemStack giftStack = new ItemStack(MFItems.GIFT, 1);
+						ItemStack giftStack = new ItemStack(FItems.GIFT, 1);
 						giftStack.setTag(itemTag);
 						ItemHandlerHelper.giveItemToPlayer(player, giftStack, -1);
 					}

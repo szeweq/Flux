@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import szewek.flux.MFTiles;
+import szewek.flux.FTiles;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.recipe.FluxGenRecipes;
 
@@ -73,7 +73,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 	private final LazyOptional<FluxGenTile> selfHandler = LazyOptional.of(() -> this);
 
 	public FluxGenTile() {
-		super(MFTiles.FLUXGEN);
+		super(FTiles.FLUXGEN);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 
 	@Override
 	public int getEnergyStored() {
-		return 0;
+		return energy;
 	}
 
 	@Override

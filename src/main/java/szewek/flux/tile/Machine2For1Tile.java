@@ -5,7 +5,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import szewek.flux.MFTiles;
+import szewek.flux.FTiles;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
 import java.util.function.Function;
@@ -15,7 +15,7 @@ public class Machine2For1Tile extends AbstractMachineTile {
 
 	private final String titleId;
 
-	public static Function<MFTiles.TileType<Machine2For1Tile>, Machine2For1Tile> make(IRecipeType<? extends AbstractMachineRecipe> recipeType, MenuFactory factory, String titleName) {
+	public static Function<FTiles.TileType<Machine2For1Tile>, Machine2For1Tile> make(IRecipeType<? extends AbstractMachineRecipe> recipeType, MenuFactory factory, String titleName) {
 		final String titleId = "container.flux." + titleName;
 		return (type) -> new Machine2For1Tile(type, recipeType, factory, titleId);
 	}

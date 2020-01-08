@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 
 import static szewek.flux.FluxMod.MODID;
 
-public final class MFItems {
+public final class FItems {
 	public static final ItemGroup MF_ITEMS = new ItemGroup("flux.items") {
 		@Override
 		public ItemStack createIcon() {
@@ -34,21 +34,22 @@ public final class MFItems {
 	public static final GiftItem GIFT = create(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 	public static final Item MACHINE_BASE = create(Item::new, "machine_base", new Item.Properties());
 	public static final BlockItem
-			FLUXGEN = fromBlock(MFBlocks.FLUXGEN, "fluxgen"),
-			GRINDING_MILL = fromBlock(MFBlocks.GRINDING_MILL, "grinding_mill"),
-			ALLOY_CASTER = fromBlock(MFBlocks.ALLOY_CASTER, "alloy_caster"),
-			WASHER = fromBlock(MFBlocks.WASHER, "washer"),
-			COMPACTOR = fromBlock(MFBlocks.COMPACTOR, "compactor");
+			FLUXGEN = fromBlock(FBlocks.FLUXGEN, "fluxgen"),
+			GRINDING_MILL = fromBlock(FBlocks.GRINDING_MILL, "grinding_mill"),
+			ALLOY_CASTER = fromBlock(FBlocks.ALLOY_CASTER, "alloy_caster"),
+			WASHER = fromBlock(FBlocks.WASHER, "washer"),
+			COMPACTOR = fromBlock(FBlocks.COMPACTOR, "compactor"),
+			ENERGY_CABLE = fromBlock(FBlocks.ENERGY_CABLE, "energy_cable");
 
 	static void register(final IForgeRegistry<Item> reg) {
 		GRITS.values().forEach(reg::register);
 		DUSTS.values().forEach(reg::register);
 		INGOTS.values().forEach(reg::register);
-		MFBlocks.ORES.forEach((name, b) -> reg.register(fromBlock(b, name.name+"_ore")));
-		MFBlocks.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.name+"_block")));
+		FBlocks.ORES.forEach((name, b) -> reg.register(fromBlock(b, name.name+"_ore")));
+		FBlocks.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.name+"_block")));
 		reg.registerAll(
 				MFTOOL, GIFT, MACHINE_BASE,
-				FLUXGEN, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR
+				FLUXGEN, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR, ENERGY_CABLE
 		);
 	}
 

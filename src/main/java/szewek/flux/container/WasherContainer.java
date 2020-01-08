@@ -5,16 +5,16 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IIntArray;
-import szewek.flux.MFContainers;
-import szewek.flux.MFRecipes;
+import szewek.flux.FContainers;
+import szewek.flux.FRecipes;
 
 public class WasherContainer extends AbstractMachineContainer {
 	public WasherContainer(int id, PlayerInventory playerInventoryIn, PacketBuffer data) {
-		super(MFContainers.WASHER, MFRecipes.WASHING, id, playerInventoryIn, 2, 1);
+		super(FContainers.WASHER, FRecipes.WASHING, id, playerInventoryIn, 2, 1);
 	}
 
 	public WasherContainer(int id, PlayerInventory playerInventoryIn, IInventory machineInventoryIn, IIntArray dataIn) {
-		super(MFContainers.WASHER, MFRecipes.WASHING, id, playerInventoryIn, 2, 1, machineInventoryIn, dataIn);
+		super(FContainers.WASHER, FRecipes.WASHING, id, playerInventoryIn, 2, 1, machineInventoryIn, dataIn);
 	}
 
 	@Override

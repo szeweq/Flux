@@ -12,7 +12,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraftforge.common.ForgeHooks;
-import szewek.flux.MFContainers;
+import szewek.flux.FContainers;
 import szewek.flux.recipe.FluxGenRecipes;
 import szewek.flux.tile.FluxGenTile;
 
@@ -25,7 +25,7 @@ public class FluxGenContainer extends Container {
 	}
 
 	public FluxGenContainer(int i, PlayerInventory pinv, IInventory iinv, IIntArray extra) {
-		super(MFContainers.FLUXGEN, i);
+		super(FContainers.FLUXGEN, i);
 		fluxGenInv = iinv;
 		extraData = extra;
 

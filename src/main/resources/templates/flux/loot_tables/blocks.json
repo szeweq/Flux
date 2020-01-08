@@ -1,4 +1,4 @@
 {
-  "name": "containerLootTables",
-  "args": ["fluxgen", "grinding_mill", "alloy_caster", "washer", "compactor"]
+  "name": "blockLootTables",
+  "args": ["energy_cable"]
 }

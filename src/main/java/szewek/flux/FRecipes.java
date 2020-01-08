@@ -10,7 +10,7 @@ import szewek.flux.recipe.*;
 
 import static szewek.flux.FluxMod.MODID;
 
-public final class MFRecipes {
+public final class FRecipes {
 	public static IRecipeType<GrindingRecipe> GRINDING = addType("grinding");
 	public static IRecipeType<AlloyingRecipe> ALLOYING = addType("alloying");
 	public static IRecipeType<WashingRecipe> WASHING = addType("washing");

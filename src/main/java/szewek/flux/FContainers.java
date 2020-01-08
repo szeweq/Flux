@@ -12,7 +12,7 @@ import szewek.flux.gui.*;
 
 import static szewek.flux.FluxMod.MODID;
 
-public final class MFContainers {
+public final class FContainers {
 	public static final ContainerType<FluxGenContainer> FLUXGEN = create(FluxGenContainer::new, FluxGenScreen::new);
 	public static final ContainerType<GrindingMillContainer> GRINDING_MILL = create(GrindingMillContainer::new, MachineScreen.make("grindable", "grinding_mill"));
 	public static final ContainerType<AlloyCasterContainer> ALLOY_CASTER = create(AlloyCasterContainer::new, MachineScreen.make("alloyable", "alloy_caster"));

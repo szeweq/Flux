@@ -21,6 +21,7 @@ object Templates {
         add("typeTags", ::typeTags)
         add("containerLootTables", ::containerLootTables)
         add("metalLootTables", ::metalLootTables)
+        add("blockLootTables", ::blockLootTables)
     }
 
     private fun unimplemented(o: JsonElement, out: JsonFileWriter) {
@@ -199,6 +200,27 @@ object Templates {
                         "entries" arr {
                             typed("minecraft:item") {
                                 "name" to "${out.namespace}:${item}_$typ"
+                            }
+                        }
+                        "conditions" arr {
+                            obj { "condition" to "minecraft:survives_explosion" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun blockLootTables(v: JsonElement, out: JsonFileWriter) {
+        val item = v.asString
+        out("blocks/$item") {
+            typed("minecraft:block") {
+                "pools" arr {
+                    obj {
+                        "rolls" to 1
+                        "entries" arr {
+                            typed("minecraft:item") {
+                                "name" to "${out.namespace}:$item"
                             }
                         }
                         "conditions" arr {

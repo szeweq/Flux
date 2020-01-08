@@ -1,7 +1,6 @@
-# Flux (Version 4.0.0)
-
-This is a complete rewrite of the mod. Many features available in older versions may not appear in this preview.
+# Flux (Version 4.0.1)
 
 Changes since last version:
-- Changed recipe for Machine Base
-- Machine recipes now use Machine Base instead of Smooth Stone Slabs
+- NEW BLOCK: Energy Cable - Finally! You can transport energy to machines much easier.
+- Added: Mod Update Check
+- Fixed: Flux Generator did not return energy amount

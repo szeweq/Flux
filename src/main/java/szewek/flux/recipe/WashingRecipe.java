@@ -2,24 +2,22 @@ package szewek.flux.recipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import szewek.flux.MFBlocks;
-import szewek.flux.MFRecipes;
+import szewek.flux.FBlocks;
+import szewek.flux.FRecipes;
 
 public class WashingRecipe extends AbstractMachineRecipe {
 	public WashingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(MFRecipes.WASHING, idIn, groupIn, builder);
+		super(FRecipes.WASHING, idIn, groupIn, builder);
 	}
 
 	@Override
 	public ItemStack getIcon() {
-		return new ItemStack(MFBlocks.WASHER);
+		return new ItemStack(FBlocks.WASHER);
 	}
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return MFRecipes.WASHING_SERIALIZER;
+		return FRecipes.WASHING_SERIALIZER;
 	}
 }

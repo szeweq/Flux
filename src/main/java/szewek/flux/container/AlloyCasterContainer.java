@@ -5,16 +5,16 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IIntArray;
-import szewek.flux.MFContainers;
-import szewek.flux.MFRecipes;
+import szewek.flux.FContainers;
+import szewek.flux.FRecipes;
 
 public class AlloyCasterContainer extends AbstractMachineContainer {
 	public AlloyCasterContainer(int id, PlayerInventory playerInventoryIn, PacketBuffer data) {
-		super(MFContainers.ALLOY_CASTER, MFRecipes.ALLOYING, id, playerInventoryIn, 2, 1);
+		super(FContainers.ALLOY_CASTER, FRecipes.ALLOYING, id, playerInventoryIn, 2, 1);
 	}
 
 	public AlloyCasterContainer(int id, PlayerInventory playerInventoryIn, IInventory machineInventoryIn, IIntArray dataIn) {
-		super(MFContainers.ALLOY_CASTER, MFRecipes.ALLOYING, id, playerInventoryIn, 2, 1, machineInventoryIn, dataIn);
+		super(FContainers.ALLOY_CASTER, FRecipes.ALLOYING, id, playerInventoryIn, 2, 1, machineInventoryIn, dataIn);
 	}
 
 	@Override

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["CT ", "TRT", " TC"],
+  "key": {
+    "T": {"tag": "forge:ingots/tin"},
+    "C": {"tag": "forge:ingots/copper"},
+    "R": {"item": "minecraft:redstone_block"}
+  },
+  "result": {
+    "item": "flux:energy_cable",
+    "count": 10
+  }
+}

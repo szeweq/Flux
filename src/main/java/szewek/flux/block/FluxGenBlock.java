@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import szewek.flux.MFTiles;
+import szewek.flux.FTiles;
 import szewek.flux.tile.FluxGenTile;
 
 import javax.annotation.Nullable;
@@ -35,13 +35,13 @@ public class FluxGenBlock extends ContainerBlock {
 	@Nullable
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
-		return MFTiles.FLUXGEN.create();
+		return FTiles.FLUXGEN.create();
 	}
 
 	@Nullable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return MFTiles.FLUXGEN.create();
+		return FTiles.FLUXGEN.create();
 	}
 
 	@Override

@@ -19,16 +19,17 @@ import java.util.function.Supplier;
 
 import static szewek.flux.FluxMod.MODID;
 
-public final class MFTiles {
-	public static final TileEntityType<FluxGenTile> FLUXGEN = create(FluxGenTile::new, "fluxgen", MFBlocks.FLUXGEN);
+public final class FTiles {
+	public static final TileEntityType<FluxGenTile> FLUXGEN = create(FluxGenTile::new, "fluxgen", FBlocks.FLUXGEN);
+	public static final TileEntityType<EnergyCableTile> ENERGY_CABLE = create(EnergyCableTile::new, "energy_cable", FBlocks.ENERGY_CABLE);
 	public static final TileType<Machine2For1Tile>
-			GRINDING_MILL = create(Machine2For1Tile.make(MFRecipes.GRINDING, GrindingMillContainer::new, "grinding_mill"), "grinding_mill", MFBlocks.GRINDING_MILL),
-			ALLOY_CASTER = create(Machine2For1Tile.make(MFRecipes.ALLOYING, AlloyCasterContainer::new, "alloy_caster"), "alloy_caster", MFBlocks.ALLOY_CASTER),
-			WASHER = create(Machine2For1Tile.make(MFRecipes.WASHING, WasherContainer::new, "washer"), "washer", MFBlocks.WASHER),
-			COMPACTOR = create(Machine2For1Tile.make(MFRecipes.COMPACTING, CompactorContainer::new, "compactor"), "compactor", MFBlocks.COMPACTOR);
+			GRINDING_MILL = create(Machine2For1Tile.make(FRecipes.GRINDING, GrindingMillContainer::new, "grinding_mill"), "grinding_mill", FBlocks.GRINDING_MILL),
+			ALLOY_CASTER = create(Machine2For1Tile.make(FRecipes.ALLOYING, AlloyCasterContainer::new, "alloy_caster"), "alloy_caster", FBlocks.ALLOY_CASTER),
+			WASHER = create(Machine2For1Tile.make(FRecipes.WASHING, WasherContainer::new, "washer"), "washer", FBlocks.WASHER),
+			COMPACTOR = create(Machine2For1Tile.make(FRecipes.COMPACTING, CompactorContainer::new, "compactor"), "compactor", FBlocks.COMPACTOR);
 
 	static void register(final IForgeRegistry<TileEntityType<?>> reg) {
-		reg.registerAll(FLUXGEN, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR);
+		reg.registerAll(FLUXGEN, ENERGY_CABLE, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR);
 	}
 
 	private static <T extends TileEntity> TileEntityType<T> create(Supplier<T> factory, String name, Block b) {

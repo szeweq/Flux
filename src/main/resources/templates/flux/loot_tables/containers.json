@@ -1,0 +1,4 @@
+{
+  "name": "containerLootTables",
+  "args": ["fluxgen", "grinding_mill", "alloy_caster", "washer", "compactor"]
+}

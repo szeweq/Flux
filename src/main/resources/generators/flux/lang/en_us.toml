@@ -1,6 +1,7 @@
 [flux]
  energystat = "Energy: %s / %s F"
  gen = "Generating %s F/t"
+ update = "Flux has a newer version: %s"
 
 [flux.gift]
  invalid = "Invalid Gift!"
@@ -36,6 +37,7 @@
  tin_ore = "Tin Ore"
  copper_block = "Block of Copper"
  tin_block = "Block of Tin"
+ energy_cable = "Energy Cable"
 
 [container.flux]
  fluxgen = "Flux Generator"
