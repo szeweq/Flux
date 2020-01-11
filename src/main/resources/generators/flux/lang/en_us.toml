@@ -38,6 +38,7 @@
  copper_block = "Block of Copper"
  tin_block = "Block of Tin"
  energy_cable = "Energy Cable"
+ digger = "Digger"
 
 [container.flux]
  fluxgen = "Flux Generator"

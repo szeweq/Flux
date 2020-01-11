@@ -1,6 +1,6 @@
-# Flux (Version 4.0.1)
+# Flux (Version 4.1.0)
 
 Changes since last version:
-- NEW BLOCK: Energy Cable - Finally! You can transport energy to machines much easier.
-- Added: Mod Update Check
-- Fixed: Flux Generator did not return energy amount
+- Rewritten some Java Code to Kotlin
+- Flux now includes a custom mod loader (internal use for now)
+- NEW BLOCK: Digger - mines blocks that are not dirt or stone

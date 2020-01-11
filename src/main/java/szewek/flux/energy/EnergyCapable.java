@@ -10,7 +10,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-abstract class EnergyCapable implements IEnergyReceiver, ICapabilityProvider {
+public abstract class EnergyCapable implements IEnergyReceiver, ICapabilityProvider {
 	private final LazyOptional<IEnergyStorage> handler = LazyOptional.of(() -> this);
 
 	@Nonnull

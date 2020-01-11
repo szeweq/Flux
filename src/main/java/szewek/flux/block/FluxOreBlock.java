@@ -6,9 +6,7 @@ import net.minecraftforge.common.ToolType;
 import szewek.flux.util.Metal;
 
 public class FluxOreBlock extends Block {
-	private final Metal metal;
 	public FluxOreBlock(Metal metal) {
-		super(Block.Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3, 3).harvestLevel(metal.harvestLevel));
-		this.metal = metal;
+		super(Block.Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3f, 3f).harvestLevel(metal.harvestLevel));
 	}
 }
