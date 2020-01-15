@@ -1,6 +1,4 @@
-# Flux (Version 4.1.0)
+# Flux (Version 4.2.1)
 
 Changes since last version:
-- Rewritten some Java Code to Kotlin
-- Flux now includes a custom mod loader (internal use for now)
-- NEW BLOCK: Digger - mines blocks that are not dirt or stone
+- Less Kotlin, more Java
