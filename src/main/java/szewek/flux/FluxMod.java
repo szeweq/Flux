@@ -34,6 +34,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryManager;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.util.MappingFixer;
 import szewek.flux.util.Metal;
@@ -59,7 +60,6 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
-
 			ForgeRegistries.BIOMES.getValues().forEach(biome -> {
 				Biome.Category cat = biome.getCategory();
 				if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {

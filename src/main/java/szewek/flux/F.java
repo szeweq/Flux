@@ -48,13 +48,13 @@ public final class F {
 		public static final EnergyCableBlock ENERGY_CABLE = new EnergyCableBlock(Block.Properties.create(Material.IRON)
 				.hardnessAndResistance(0.3f)
 		);
-		public static final DiggerBlock DIGGER = new DiggerBlock(Block.Properties.create(Material.IRON)
-				.hardnessAndResistance(1f).sound(SoundType.METAL)
-		);
-		public static final MachineBlock GRINDING_MILL = new MachineBlock();
-		public static final MachineBlock ALLOY_CASTER = new MachineBlock();
-		public static final MachineBlock WASHER = new MachineBlock();
-		public static final MachineBlock COMPACTOR = new MachineBlock();
+		public static final ActiveTileBlock
+				DIGGER = new ActiveTileBlock(), FARMER = new ActiveTileBlock();
+		public static final MachineBlock
+				GRINDING_MILL = new MachineBlock(),
+				ALLOY_CASTER = new MachineBlock(),
+				WASHER = new MachineBlock(),
+				COMPACTOR = new MachineBlock();
 
 		public static void register(IForgeRegistry<Block> reg) {
 			ORES.values().forEach(reg::register);
@@ -63,6 +63,7 @@ public final class F {
 					FLUXGEN.setRegistryName(MODID, "fluxgen"),
 					ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
 					DIGGER.setRegistryName(MODID, "digger"),
+					FARMER.setRegistryName(MODID, "farmer"),
 					GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
 					ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
 					WASHER.setRegistryName(MODID, "washer"),
@@ -120,7 +121,8 @@ public final class F {
 					fromBlock(Blocks.WASHER, "washer"),
 					fromBlock(Blocks.COMPACTOR, "compactor"),
 					fromBlock(Blocks.ENERGY_CABLE, "energy_cable"),
-					fromBlock(Blocks.DIGGER, "digger")
+					fromBlock(Blocks.DIGGER, "digger"),
+					fromBlock(Blocks.FARMER, "farmer")
 			);
 		}
 	}
@@ -152,19 +154,21 @@ public final class F {
 		public static final TileEntityType<FluxGenTile> FLUXGEN;
 		public static final TileEntityType<EnergyCableTile> ENERGY_CABLE;
 		public static final TileEntityType<DiggerTile> DIGGER;
+		public static final TileEntityType<FarmerTile> FARMER;
 		public static final FluxTileType<?> GRINDING_MILL;
 		public static final FluxTileType<?> ALLOY_CASTER;
 		public static final FluxTileType<?> WASHER;
 		public static final FluxTileType<?> COMPACTOR;
 
 		public static void register(IForgeRegistry<TileEntityType<?>> reg) {
-			reg.registerAll(FLUXGEN, ENERGY_CABLE, DIGGER, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR);
+			reg.registerAll(FLUXGEN, ENERGY_CABLE, DIGGER, FARMER, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR);
 		}
 
 		static {
 			FLUXGEN = create(FluxGenTile::new, "fluxgen", Blocks.FLUXGEN);
 			ENERGY_CABLE = create(EnergyCableTile::new, "energy_cable", Blocks.ENERGY_CABLE);
 			DIGGER = create(DiggerTile::new, "digger", Blocks.DIGGER);
+			FARMER = create(FarmerTile::new, "farmer", Blocks.FARMER);
 			GRINDING_MILL = create(Machine2For1Tile.make(Recipes.GRINDING, GrindingMillContainer::new, "grinding_mill"), "grinding_mill", Blocks.GRINDING_MILL);
 			ALLOY_CASTER = create(Machine2For1Tile.make(Recipes.ALLOYING, AlloyCasterContainer::new, "alloy_caster"), "alloy_caster", Blocks.ALLOY_CASTER);
 			WASHER = create(Machine2For1Tile.make(Recipes.WASHING, WasherContainer::new, "washer"), "washer", Blocks.WASHER);

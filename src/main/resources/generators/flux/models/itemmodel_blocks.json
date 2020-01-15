@@ -1,1 +1,14 @@
-["fluxgen", "grinding_mill", "alloy_caster", "washer", "compactor", "copper_ore", "copper_block", "tin_ore", "tin_block", "energy_cable", "digger"]
+[
+  "fluxgen",
+  "grinding_mill",
+  "alloy_caster",
+  "washer",
+  "compactor",
+  "copper_ore",
+  "copper_block",
+  "tin_ore",
+  "tin_block",
+  "energy_cable",
+  "digger",
+  "farmer"
+]

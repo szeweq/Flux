@@ -39,6 +39,7 @@
  tin_block = "Block of Tin"
  energy_cable = "Energy Cable"
  digger = "Digger"
+ farmer = "Farmer"
 
 [container.flux]
  fluxgen = "Flux Generator"

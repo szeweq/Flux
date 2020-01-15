@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IBI",
+    "I I",
+    "SPS"
+  ],
+  "key": {
+    "P": {"item": "minecraft:diamond_pickaxe"},
+    "I": {"tag": "forge:ingots/iron"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:digger",
+    "count": 1
+  }
+}

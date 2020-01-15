@@ -18,7 +18,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import szewek.flux.F;
-import szewek.flux.block.AbstractActiveTileBlock;
+import szewek.flux.block.ActiveTileBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,7 @@ public final class DiggerTile extends PoweredTile {
 				BlockPos bp = pos.add(offsetX, offsetY, offsetZ);
 				if (bp.getY() < 0) {
 					finished = true;
-					world.setBlockState(pos, world.getBlockState(this.pos).with(AbstractActiveTileBlock.LIT, false), 3);
+					world.setBlockState(pos, world.getBlockState(this.pos).with(ActiveTileBlock.LIT, false), 3);
 					return;
 				}
 
@@ -112,7 +112,7 @@ public final class DiggerTile extends PoweredTile {
 			}
 
 			if (flag != lastFlag) {
-				world.setBlockState(pos, world.getBlockState(pos).with(AbstractActiveTileBlock.LIT, flag), 3);
+				world.setBlockState(pos, world.getBlockState(pos).with(ActiveTileBlock.LIT, flag), 3);
 				lastFlag = flag;
 			}
 		}
