@@ -29,25 +29,27 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		compound.putInt("E", this.energy);
+		compound.putInt("E", energy);
+		if (energy < 0) energy = 0;
+		if (energy > maxEnergy) energy = maxEnergy;
 		return compound;
 	}
 
 	public int getMaxEnergyStored() {
-		return this.maxEnergy;
+		return maxEnergy;
 	}
 
 	public int getEnergyStored() {
-		return this.energy;
+		return energy;
 	}
 
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		int r = maxReceive;
-		if (maxReceive > this.maxEnergy - this.energy) {
-			r = this.maxEnergy - this.energy;
+		if (maxReceive > maxEnergy - energy) {
+			r = maxEnergy - energy;
 		}
 		if (!simulate) {
-			this.energy += r;
+			energy += r;
 		}
 		return r;
 	}
