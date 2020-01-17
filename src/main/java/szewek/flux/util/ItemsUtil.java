@@ -11,13 +11,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 public final class ItemsUtil {
-
 	public static void trySendingItems(List<ItemStack> items, World world, BlockPos pos) {
+		long ns = System.nanoTime();
 		List<IItemHandler> inv = new ArrayList<>();
 		for (Direction dir : Direction.values()) {
 			if (dir != Direction.DOWN) {

@@ -11,23 +11,23 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Set;
 
 public final class EnergyCableTile extends TileEntity implements ITickableTileEntity {
-	private int energy;
-	private boolean isDirty;
+	private int energy, cooldown = 0;
+	private boolean isDirty = false;
 	private final EnergyCableTile.Sided[] sides = new EnergyCableTile.Sided[6];
-	private static final int maxEnergy = 50000;
+	private final EnumSet<Direction> sideCache = EnumSet.noneOf(Direction.class);
+	private final EnumMap<Direction, LazyOptional<IEnergyStorage>> lazyEnergyCache = new EnumMap<>(Direction.class);
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
 		super(type);
-		int i = 0;
-
-		for(byte var2 = 5; i <= var2; ++i) {
-			sides[i] = new EnergyCableTile.Sided();
+		Direction[] dirs = Direction.values();
+		for(int i = 0; i < 6; i++) {
+			sides[i] = new EnergyCableTile.Sided(dirs[i]);
 		}
-
 	}
 
 	public void read(CompoundNBT compound) {
@@ -48,42 +48,47 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote()) {
-			Set<Direction> availableSides = EnumSet.allOf(Direction.class);
-			for (Direction dir : Direction.values()) {
-				Sided side = sides[dir.getIndex()];
-				if (side.extracted || side.received) {
-					availableSides.remove(dir);
-					side.received = side.extracted = false;
+			if (cooldown > 0) {
+				--cooldown;
+				if (isDirty) {
+					markDirty();
+					isDirty = false;
 				}
-			}
-
-			for (Direction side : availableSides) {
-				TileEntity te = world.getTileEntity(pos.offset(side));
-				if (te != null) {
-					te.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).ifPresent(ie -> {
-						if (ie.canReceive()) {
-							int r = 5000;
-							if (r >= energy) {
-								r = energy;
-							}
-
-							r = ie.receiveEnergy(r, true);
-							if (r > 0) {
-								energy = energy - r;
-								isDirty = true;
-								ie.receiveEnergy(r, false);
-							}
+			} else {
+				cooldown = 4;
+				Set<Direction> availableSides = EnumSet.complementOf(sideCache);
+				sideCache.clear();
+				for (Direction dir : availableSides) {
+					IEnergyStorage ie = getCachedEnergy(dir);
+					if (ie != null && ie.canReceive()) {
+						int r = 10000;
+						if (r >= energy) r = energy;
+						r = ie.receiveEnergy(r, true);
+						if (r > 0) {
+							energy = energy - r;
+							isDirty = true;
+							ie.receiveEnergy(r, false);
 						}
-					});
+					}
 				}
 			}
 		}
+	}
 
-		if (isDirty) {
-			markDirty();
-			isDirty = false;
+	@Nullable
+	private IEnergyStorage getCachedEnergy(Direction dir) {
+		LazyOptional<IEnergyStorage> lazy = lazyEnergyCache.get(dir);
+		if (lazy == null) {
+			assert world != null;
+			TileEntity te = world.getTileEntity(pos.offset(dir));
+			if (te == null) return null;
+			lazy = te.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite());
+			if (lazy.isPresent()) {
+				lazy.addListener(l -> lazyEnergyCache.remove(dir));
+				lazyEnergyCache.put(dir, lazy);
+			}
 		}
-
+		return lazy.orElse(null);
 	}
 
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
@@ -92,21 +97,22 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		} else return super.getCapability(cap, side);
 	}
 
-
-
 	public final class Sided implements IEnergyStorage {
-		private boolean extracted;
-		private boolean received;
+		private final Direction dir;
 		private LazyOptional<IEnergyStorage> lazy = LazyOptional.of(() -> this);
+
+		private Sided(Direction d) {
+			dir = d;
+		}
 
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int r = maxReceive;
-			if (maxReceive > maxEnergy - energy) {
-				r = maxEnergy - energy;
+			if (maxReceive > 50000 - energy) {
+				r = 50000 - energy;
 			}
 			if (!simulate) {
 				energy += r;
-				received = true;
+				sideCache.add(dir);
 			}
 			return r;
 		}
@@ -118,7 +124,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			}
 			if (!simulate) {
 				energy -= r;
-				extracted = true;
+				sideCache.add(dir);
 			}
 
 			return r;

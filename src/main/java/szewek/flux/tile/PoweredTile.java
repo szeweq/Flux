@@ -24,7 +24,7 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		this.energy = compound.getInt("E");
+		energy = compound.getInt("E");
 	}
 
 	public CompoundNBT write(CompoundNBT compound) {
@@ -55,7 +55,7 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 	}
 
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!this.removed && CapabilityEnergy.ENERGY == cap) {
+		if (!removed && CapabilityEnergy.ENERGY == cap) {
 			return handler.cast();
 		} else return super.getCapability(cap, side);
 	}

@@ -31,6 +31,7 @@ import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -82,23 +83,7 @@ public final class FluxMod {
 				}
 			});
 		}
-	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-	final static class ClientEvents {
-		@SubscribeEvent
-		public static void setupClient(final FMLClientSetupEvent e) {
-			Minecraft mc = e.getMinecraftSupplier().get();
-			ItemColors ic = mc.getItemColors();
-			ic.register(Gifts::colorByGift, F.Items.GIFT);
-			ic.register(Metal::gritColors, F.Items.GRITS.values().toArray(new Item[0]));
-			ic.register(Metal::itemColors, F.Items.DUSTS.values().toArray(new Item[0]));
-			ic.register(Metal::ingotColors, F.Items.INGOTS.values().toArray(new Item[0]));
-		}
-	}
-
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	final static class RegistryEvents {
 		@SubscribeEvent
 		public static void onBlocksRegistry(RegistryEvent.Register<Block> re) {
 			F.Blocks.register(re.getRegistry());
@@ -122,6 +107,19 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void onRecipesRegistry(RegistryEvent.Register<IRecipeSerializer<?>> re) {
 			F.Recipes.register(re.getRegistry());
+		}
+	}
+
+	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+	final static class ClientEvents {
+		@SubscribeEvent
+		public static void setupClient(final FMLClientSetupEvent e) {
+			Minecraft mc = e.getMinecraftSupplier().get();
+			ItemColors ic = mc.getItemColors();
+			ic.register(Gifts::colorByGift, F.Items.GIFT);
+			ic.register(Metal::gritColors, F.Items.GRITS.values().toArray(new Item[0]));
+			ic.register(Metal::itemColors, F.Items.DUSTS.values().toArray(new Item[0]));
+			ic.register(Metal::ingotColors, F.Items.INGOTS.values().toArray(new Item[0]));
 		}
 	}
 
@@ -168,13 +166,8 @@ public final class FluxMod {
 		}
 
 		@SubscribeEvent
-		public static void missingBlockMappings(RegistryEvent.MissingMappings<Block>mm) {
-			mm.getAllMappings().forEach(MappingFixer::fixMapping);
-		}
-
-		@SubscribeEvent
-		public static void missingItemMappings(RegistryEvent.MissingMappings<Item>mm) {
-			mm.getAllMappings().forEach(MappingFixer::fixMapping);
+		public static void missingBlockMappings(RegistryEvent.MissingMappings<?>mm) {
+			MappingFixer.fixMapping(mm.getAllMappings());
 		}
 	}
 

@@ -44,19 +44,17 @@ public final class MachineBlock extends ContainerBlock {
 	}
 
 	public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
-		if (world.isRemote()) {
-			return ActionResultType.SUCCESS;
-		} else {
+		if (!world.isRemote()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te != null) {
 				TileEntityType<?> type = ForgeRegistries.TILE_ENTITIES.getValue(this.getRegistryName());
 				if (type == te.getType()) {
-					player.openContainer((INamedContainerProvider)te);
+					player.openContainer((INamedContainerProvider) te);
 				}
 			}
 
-			return ActionResultType.SUCCESS;
 		}
+		return ActionResultType.SUCCESS;
 	}
 
 	public BlockState getStateForPlacement(BlockItemUseContext context) {

@@ -1,6 +1,5 @@
-# Flux (Version 4.2.2)
+# Flux (Version 4.2.3)
 
 Changes since last version:
-- NEW BLOCK: Farmer - automatic crop gathering and replanting
-- Fixed Digger recipe
-- Fixed Digger working when not supplied with energy
+- Energy Cable is more optimized
+- Other small optimizations were applied

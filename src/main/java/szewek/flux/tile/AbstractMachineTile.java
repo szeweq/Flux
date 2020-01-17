@@ -160,7 +160,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		return process > 0;
 	}
 
-	protected boolean canProcess(@Nullable AbstractMachineRecipe recipe) {
+	protected boolean canProcess(@Nullable IRecipe<?> recipe) {
 		if (recipe != null) {
 			ItemStack result = recipe.getRecipeOutput();
 			for (ItemStack outputStack : getOutputs()) {
@@ -189,9 +189,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				}
 			}
 			List<ItemStack> inputs = getInputs();
-			for (int i = 0; i < inputs.size(); i++) {
-				inputs.get(i).grow(-recipe.getCostAt(i));
-			}
+			recipe.consumeItems(inputs);
 			setRecipeUsed(recipe);
 		}
 	}

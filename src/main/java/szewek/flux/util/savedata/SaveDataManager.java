@@ -36,7 +36,6 @@ public class SaveDataManager {
 	}
 
 	public static void read(Object it, CompoundNBT compound) {
-		long ns = System.nanoTime();
 		FieldHolder[] holders = classCache.computeIfAbsent(it.getClass(), SaveDataManager::createCache);
 		for (FieldHolder fh : holders)
 			try {
@@ -44,10 +43,8 @@ public class SaveDataManager {
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
-		LOGGER.info("Read took {} ns", System.nanoTime()-ns);
 	}
 	public static void write(Object it, CompoundNBT compound) {
-		long ns = System.nanoTime();
 		FieldHolder[] holders = classCache.computeIfAbsent(it.getClass(), SaveDataManager::createCache);
 		for (FieldHolder fh : holders)
 			try {
@@ -55,7 +52,6 @@ public class SaveDataManager {
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
-		LOGGER.info("Write took {} ns", System.nanoTime()-ns);
 	}
 
 	private static final DataFunction INT = new DataFunction() {

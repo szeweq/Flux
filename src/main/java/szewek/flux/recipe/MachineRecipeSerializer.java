@@ -118,10 +118,11 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		buffer.writeItemStack(recipe.result);
 		buffer.writeFloat(recipe.experience);
 		buffer.writeVarInt(recipe.processTime);
-		buffer.writeByte(recipe.itemCost.size());
+		int[] itemCost = recipe.getItemCost();
+		buffer.writeByte(itemCost.length);
 
-		for (int it : recipe.itemCost) {
-			buffer.writeVarInt(it);
+		for (int n : itemCost) {
+			buffer.writeVarInt(n);
 		}
 
 	}

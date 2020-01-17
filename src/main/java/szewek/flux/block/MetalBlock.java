@@ -7,6 +7,6 @@ import szewek.flux.util.Metal;
 
 public final class MetalBlock extends Block {
 	public MetalBlock(Metal metal) {
-		super(Block.Properties.create(Material.IRON).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3f, 3f).harvestLevel(metal.harvestLevel+1));
+		super(Block.Properties.create(Material.IRON).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3f, 3f).harvestLevel(metal.harvestLevel));
 	}
 }

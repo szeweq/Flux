@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package szewek.flux.tile;
+package szewek.flux.recipe;
 
 import mcp.MethodsReturnNonnullByDefault;
 
