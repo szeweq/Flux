@@ -1,8 +1,6 @@
 package szewek.flux.util.savedata;
 
 import net.minecraft.nbt.CompoundNBT;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SaveDataManager {
-	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<Class<?>, FieldHolder[]> classCache = new HashMap<>();
 
 	private static FieldHolder[] createCache(Class<?> cl) {

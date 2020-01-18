@@ -75,7 +75,7 @@ public final class F {
 			Map<Metal, FluxOreBlock> m = new EnumMap<>(Metal.class);
 			Metal[] var4 = Metal.values();
 			for (Metal metal : var4) {
-				if (metal.nonVanilla()) {
+				if (metal.notVanillaOrAlloy()) {
 					FluxOreBlock b = new FluxOreBlock(metal);
 					b.setRegistryName("flux", metal.metalName + "_ore");
 					m.put(metal, b);
@@ -100,7 +100,7 @@ public final class F {
 
 	public static final class Items {
 		public static final EnumMap<Metal, MetalItem>
-				GRITS = metalMap("grit", Metal::all),
+				GRITS = metalMap("grit", Metal::nonAlloy),
 				DUSTS = metalMap("dust", Metal::all),
 				INGOTS = metalMap("ingot", Metal::nonVanilla);
 		public static final FluxToolItem FLUXTOOL = create(FluxToolItem::new, "mftool", new Item.Properties().maxStackSize(1));

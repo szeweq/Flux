@@ -5,7 +5,11 @@ import net.minecraft.item.ItemStack;
 import szewek.flux.item.MetalItem;
 
 public enum Metal {
-	IRON(0xE2C0BA, "iron", 1), GOLD(0xFFD700, "gold", 2), COPPER(0xE99868, "copper", 1), TIN(0xD0D3D6, "tin", 2);
+	IRON(0xE2C0BA, "iron", 1),
+	GOLD(0xFFD700, "gold", 2),
+	COPPER(0xE99868, "copper", 1),
+	TIN(0xD0D3D6, "tin", 1);
+	//BRONZE(0x000, "bronze", 2);
 
 	public final int color;
 	public final String metalName;
@@ -19,6 +23,14 @@ public enum Metal {
 
 	public final boolean nonVanilla() {
 		return this != IRON && this != GOLD;
+	}
+
+	public final boolean nonAlloy() {
+		return true;//return this != BRONZE;
+	}
+
+	public final boolean notVanillaOrAlloy() {
+		return nonVanilla() || nonAlloy();
 	}
 
 	public final boolean all() {

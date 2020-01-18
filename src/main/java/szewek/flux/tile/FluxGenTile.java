@@ -29,12 +29,14 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import szewek.flux.F;
 import szewek.flux.container.FluxGenContainer;
+import szewek.flux.energy.EnergyCache;
 import szewek.flux.recipe.FluxGenRecipes;
 
 import javax.annotation.Nullable;
 
 public class FluxGenTile extends LockableTileEntity implements IInventory, IItemHandler, IFluidHandler, ITickableTileEntity, INamedContainerProvider, IEnergyStorage {
-	public static final int maxEnergy = 1000000, sendAmount = 40000, fluidCap = 4000;
+	public static final int maxEnergy = 1000000, fluidCap = 4000;
+	private final EnergyCache energyCache = new EnergyCache();
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 	private final FluidStack[] fluids = new FluidStack[] {FluidStack.EMPTY, FluidStack.EMPTY};
 	private int tickCount = 0, energy = 0, workTicks = 0, maxWork = 0, energyGen = 0, workSpeed = 0;
@@ -124,10 +126,15 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		if (tickCount > 3 && energy > 0) {
 			tickCount = 0;
 			for (Direction d : Direction.values()) {
-				BlockPos bp = pos.offset(d, 1);
-				TileEntity te = world.getTileEntity(bp);
-				if (te != null) {
-					te.getCapability(CapabilityEnergy.ENERGY, d.getOpposite()).ifPresent(this::sendEnergyTo);
+				IEnergyStorage ie = energyCache.getCached(d, world, pos);
+				if (ie != null && ie.canReceive()) {
+					int r = 40000;
+					if (r >= energy) r = energy;
+					r = ie.receiveEnergy(r, true);
+					if (r > 0) {
+						energy -= r;
+						ie.receiveEnergy(r, false);
+					}
 				}
 			}
 		}
@@ -209,22 +216,8 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		if (r > energy) r = energy;
 		if (!simulate) {
 			energy -= r;
-			isDirty = true;
 		}
 		return r;
-	}
-
-	private void sendEnergyTo(IEnergyStorage ie) {
-		if (ie.canReceive()) {
-			int r = sendAmount;
-			if (r >= energy) r = energy;
-			r = ie.receiveEnergy(r, true);
-			if (r > 0) {
-				energy -= r;
-				isDirty = true;
-				ie.receiveEnergy(r, false);
-			}
-		}
 	}
 
 	@Override

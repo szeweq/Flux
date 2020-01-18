@@ -7,20 +7,20 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import szewek.flux.energy.EnergyCache;
 
 import javax.annotation.Nullable;
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Set;
 
 public final class EnergyCableTile extends TileEntity implements ITickableTileEntity {
 	private int energy, cooldown = 0;
-	private boolean isDirty = false;
 	private final EnergyCableTile.Sided[] sides = new EnergyCableTile.Sided[6];
 	private final EnumSet<Direction> sideCache = EnumSet.noneOf(Direction.class);
-	private final EnumMap<Direction, LazyOptional<IEnergyStorage>> lazyEnergyCache = new EnumMap<>(Direction.class);
+	private final EnergyCache energyCache = new EnergyCache();
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
 		super(type);
@@ -50,24 +50,31 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		if (!world.isRemote()) {
 			if (cooldown > 0) {
 				--cooldown;
-				if (isDirty) {
-					markDirty();
-					isDirty = false;
-				}
 			} else {
 				cooldown = 4;
 				Set<Direction> availableSides = EnumSet.complementOf(sideCache);
 				sideCache.clear();
 				for (Direction dir : availableSides) {
-					IEnergyStorage ie = getCachedEnergy(dir);
-					if (ie != null && ie.canReceive()) {
-						int r = 10000;
-						if (r >= energy) r = energy;
-						r = ie.receiveEnergy(r, true);
-						if (r > 0) {
-							energy = energy - r;
-							isDirty = true;
-							ie.receiveEnergy(r, false);
+					IEnergyStorage ie = energyCache.getCached(dir, world, pos);
+					if (ie != null) {
+						int r;
+						if (ie instanceof Sided) {
+							r = ie.getEnergyStored();
+							if (r < energy) {
+								r = (r - energy) / 2;
+								if (r > 0) {
+									energy -= r;
+									ie.receiveEnergy(r, false);
+								}
+							}
+						} else if (ie.canReceive()) {
+							r = 10000;
+							if (r >= energy) r = energy;
+							r = ie.receiveEnergy(r, true);
+							if (r > 0) {
+								energy = energy - r;
+								ie.receiveEnergy(r, false);
+							}
 						}
 					}
 				}
@@ -75,20 +82,8 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		}
 	}
 
-	@Nullable
-	private IEnergyStorage getCachedEnergy(Direction dir) {
-		LazyOptional<IEnergyStorage> lazy = lazyEnergyCache.get(dir);
-		if (lazy == null) {
-			assert world != null;
-			TileEntity te = world.getTileEntity(pos.offset(dir));
-			if (te == null) return null;
-			lazy = te.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite());
-			if (lazy.isPresent()) {
-				lazy.addListener(l -> lazyEnergyCache.remove(dir));
-				lazyEnergyCache.put(dir, lazy);
-			}
-		}
-		return lazy.orElse(null);
+	public LazyOptional<IEnergyStorage> getLazySide(Direction dir) {
+		return sides[dir.getIndex()].lazy;
 	}
 
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
@@ -97,9 +92,17 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		} else return super.getCapability(cap, side);
 	}
 
-	public final class Sided implements IEnergyStorage {
+	@Override
+	public void remove() {
+		super.remove();
+		for (Sided s : sides) {
+			s.lazy.invalidate();
+		}
+	}
+
+	public final class Sided implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
 		private final Direction dir;
-		private LazyOptional<IEnergyStorage> lazy = LazyOptional.of(() -> this);
+		private LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
 
 		private Sided(Direction d) {
 			dir = d;
@@ -144,6 +147,11 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 
 		public boolean canReceive() {
 			return true;
+		}
+
+		@Override
+		public IEnergyStorage get() {
+			return this;
 		}
 	}
 }

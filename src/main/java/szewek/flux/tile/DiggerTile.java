@@ -30,19 +30,11 @@ public final class DiggerTile extends PoweredTile {
 
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		//offsetX = compound.getInt("OffX");
-		//offsetY = compound.getInt("OffY");
-		//offsetZ = compound.getInt("OffZ");
-		//finished = compound.getBoolean("Finished");
 		SaveDataManager.read(this, compound);
 	}
 
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		//compound.putInt("OffX", offsetX);
-		//compound.putInt("OffY", offsetY);
-		//compound.putInt("OffZ", offsetZ);
-		//compound.putBoolean("Finished", finished);
 		SaveDataManager.write(this, compound);
 		return compound;
 	}
@@ -64,7 +56,8 @@ public final class DiggerTile extends PoweredTile {
 				BlockPos bp = pos.add(offsetX, offsetY, offsetZ);
 				if (bp.getY() < 0) {
 					finished = true;
-					world.setBlockState(pos, world.getBlockState(this.pos).with(ActiveTileBlock.LIT, false), 3);
+					world.setBlockState(pos, world.getBlockState(pos).with(ActiveTileBlock.LIT, false), 3);
+					markDirty();
 					return;
 				}
 
