@@ -93,7 +93,7 @@ object Templates {
         out("${item}_ingot_smelting_dust") {
             typed("minecraft:smelting") {
                 "group" to "${item}_ingot"
-                key("ingredient").tag("forge:grits/${item}")
+                key("ingredient").tag("forge:dusts/${item}")
                 result((if (isVanilla(item)) "minecraft" else ns) + ":${item}_ingot")
             }
         }
