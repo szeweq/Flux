@@ -1,8 +1,5 @@
-# Flux (Version 4.2.5)
+# Flux (Version 4.2.6)
 
 Changes since last version:
-* NEW BLOCK: Butcher - butchering animals for meat
-* NEW BLOCK: Mob Pounder - killing enemy mobs nearby
-* Configurable Flux Generator energy per tick creation
-* Fixed wrong output for Farmer recipe
-* Fixed energy transfer
+* Fixed smelting ingots from dusts
+* Added configurable values for machine energy usage

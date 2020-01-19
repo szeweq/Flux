@@ -10,6 +10,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.common.Tags;
 import szewek.flux.F;
+import szewek.flux.FluxConfig;
 import szewek.flux.block.ActiveTileBlock;
 import szewek.flux.util.ItemsUtil;
 import szewek.flux.util.savedata.Data;
@@ -32,7 +33,8 @@ public final class DiggerTile extends PoweredTile {
 		assert world != null;
 		if (!world.isRemote) {
 			boolean flag = !finished;
-			if (flag && energy >= 200) {
+			final int usage = FluxConfig.COMMON.diggerEU.get();
+			if (flag && energy >= usage) {
 				if (offsetY == 0 || offsetX == 5 && offsetZ == 5) {
 					offsetX = -5;
 					offsetZ = -5;
@@ -59,7 +61,7 @@ public final class DiggerTile extends PoweredTile {
 						ItemsUtil.trySendingItems(drops, world, pos);
 					}
 				}
-				energy -= 200;
+				energy -= usage;
 			}
 
 			if (flag != lastFlag) {

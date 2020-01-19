@@ -6,6 +6,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import szewek.flux.F;
+import szewek.flux.FluxConfig;
 
 import java.util.List;
 
@@ -31,12 +32,13 @@ public class MobPounderTile extends PoweredTile {
 			if (cooldown > 0) --cooldown;
 			else {
 				cooldown = 20;
-				if (aabb != null && energy >= 1000) {
+				final int usage = FluxConfig.COMMON.mobPounderEU.get();
+				if (aabb != null && energy >= usage) {
 					List<MonsterEntity> monsters = world.getEntitiesWithinAABB(MonsterEntity.class, aabb);
 					for (MonsterEntity monster : monsters) {
 						monster.attackEntityFrom(DamageSource.GENERIC, 100);
-						energy -= 1000;
-						if (energy < 1000) break;
+						energy -= usage;
+						if (energy < usage) break;
 					}
 				}
 			}

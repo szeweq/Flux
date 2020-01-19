@@ -6,6 +6,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import szewek.flux.F;
+import szewek.flux.FluxConfig;
 
 import java.util.List;
 
@@ -31,12 +32,13 @@ public class ButcherTile extends PoweredTile {
 			if (cooldown > 0) --cooldown;
 			else {
 				cooldown = 20;
-				if (aabb != null && energy >= 700) {
+				final int usage = FluxConfig.COMMON.butcherEU.get();
+				if (aabb != null && energy >= usage) {
 					List<AnimalEntity> animals = world.getEntitiesWithinAABB(AnimalEntity.class, aabb, e -> !e.isChild());
 					for (AnimalEntity animal : animals) {
 						animal.attackEntityFrom(DamageSource.GENERIC, 100);
-						energy -= 700;
-						if (energy < 700) break;
+						energy -= usage;
+						if (energy < usage) break;
 					}
 				}
 			}

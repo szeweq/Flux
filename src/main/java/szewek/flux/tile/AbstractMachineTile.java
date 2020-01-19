@@ -28,6 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import szewek.flux.FluxConfig;
 import szewek.flux.block.MachineBlock;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.energy.IEnergyReceiver;
@@ -37,10 +38,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity {
+public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxConfig.IConfigChangeListener {
 	public static final int maxEnergy = 1000000;
 	private final int inputSize, outputSize;
-	protected int energy = 0, process = 0, processTotal = 0, energyUse = 40;
+	protected int energy = 0, process = 0, processTotal = 0, energyUse;
 	protected boolean isDirty = false;
 	protected NonNullList<ItemStack> items;
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
@@ -81,6 +82,13 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		items = NonNullList.withSize(inSize + outSize, ItemStack.EMPTY);
 		inputSize = inSize;
 		outputSize = outSize;
+		energyUse = FluxConfig.COMMON.basicMachineEU.get();
+		FluxConfig.addListener(this);
+	}
+
+	@Override
+	public void onConfigChanged() {
+		energyUse = FluxConfig.COMMON.basicMachineEU.get();
 	}
 
 	@Override
@@ -380,5 +388,6 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	public void remove() {
 		super.remove();
 		energyHandler.invalidate();
+		FluxConfig.removeListener(this);
 	}
 }

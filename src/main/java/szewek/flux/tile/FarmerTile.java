@@ -10,6 +10,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import szewek.flux.F;
+import szewek.flux.FluxConfig;
 import szewek.flux.util.ItemsUtil;
 import szewek.flux.util.savedata.Data;
 import szewek.flux.util.savedata.SaveDataManager;
@@ -28,7 +29,8 @@ public class FarmerTile extends PoweredTile {
 	@Override
 	public void tick() {
 		assert world != null;
-		if (!world.isRemote() && energy >= 100) {
+		final int usage = FluxConfig.COMMON.farmerEU.get();
+		if (!world.isRemote() && energy >= usage) {
 			if (offsetX == 5 && offsetZ == 5) {
 				offsetX = -5;
 				offsetZ = -5;
@@ -52,7 +54,7 @@ public class FarmerTile extends PoweredTile {
 					}
 				}
 			}
-			energy -= 100;
+			energy -= usage;
 		}
 	}
 }
