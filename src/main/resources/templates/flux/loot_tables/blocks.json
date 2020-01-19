@@ -1,4 +1,4 @@
 {
   "name": "blockLootTables",
-  "args": ["energy_cable", "digger"]
+  "args": ["energy_cable", "digger", "farmer", "butcher", "mob_pounder"]
 }

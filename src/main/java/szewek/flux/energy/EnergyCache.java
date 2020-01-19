@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 
 public class EnergyCache {
-	private static final EnumMap<Direction, LazyOptional<IEnergyStorage>> cache = new EnumMap<>(Direction.class);
+	private final EnumMap<Direction, LazyOptional<IEnergyStorage>> cache = new EnumMap<>(Direction.class);
 
 	@Nullable
 	public IEnergyStorage getCached(Direction dir, World world, BlockPos pos) {

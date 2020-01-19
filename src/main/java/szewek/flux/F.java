@@ -49,14 +49,17 @@ public final class F {
 				.hardnessAndResistance(0.3f)
 		);
 		public static final ActiveTileBlock
-				DIGGER = new ActiveTileBlock(), FARMER = new ActiveTileBlock();
+				DIGGER = new ActiveTileBlock(),
+				FARMER = new ActiveTileBlock(),
+				BUTCHER = new ActiveTileBlock(),
+				MOB_POUNDER = new ActiveTileBlock();
 		public static final MachineBlock
 				GRINDING_MILL = new MachineBlock(),
 				ALLOY_CASTER = new MachineBlock(),
 				WASHER = new MachineBlock(),
 				COMPACTOR = new MachineBlock();
 
-		public static void register(IForgeRegistry<Block> reg) {
+		public static void register(final IForgeRegistry<Block> reg) {
 			ORES.values().forEach(reg::register);
 			METAL_BLOCKS.values().forEach(reg::register);
 			reg.registerAll(
@@ -64,6 +67,8 @@ public final class F {
 					ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
 					DIGGER.setRegistryName(MODID, "digger"),
 					FARMER.setRegistryName(MODID, "farmer"),
+					BUTCHER.setRegistryName(MODID, "butcher"),
+					MOB_POUNDER.setRegistryName(MODID, "mob_pounder"),
 					GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
 					ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
 					WASHER.setRegistryName(MODID, "washer"),
@@ -107,7 +112,7 @@ public final class F {
 		public static final GiftItem GIFT = create(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 		public static final Item MACHINE_BASE = create(Item::new, "machine_base", new Item.Properties());
 
-		public static void register(IForgeRegistry<Item> reg) {
+		public static void register(final IForgeRegistry<Item> reg) {
 			GRITS.values().forEach(reg::register);
 			DUSTS.values().forEach(reg::register);
 			INGOTS.values().forEach(reg::register);
@@ -122,7 +127,9 @@ public final class F {
 					fromBlock(Blocks.COMPACTOR, "compactor"),
 					fromBlock(Blocks.ENERGY_CABLE, "energy_cable"),
 					fromBlock(Blocks.DIGGER, "digger"),
-					fromBlock(Blocks.FARMER, "farmer")
+					fromBlock(Blocks.FARMER, "farmer"),
+					fromBlock(Blocks.BUTCHER, "butcher"),
+					fromBlock(Blocks.MOB_POUNDER, "mob_pounder")
 			);
 		}
 	}
@@ -155,13 +162,15 @@ public final class F {
 		public static final TileEntityType<EnergyCableTile> ENERGY_CABLE;
 		public static final TileEntityType<DiggerTile> DIGGER;
 		public static final TileEntityType<FarmerTile> FARMER;
+		public static final TileEntityType<ButcherTile> BUTCHER;
+		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
 		public static final FluxTileType<?> GRINDING_MILL;
 		public static final FluxTileType<?> ALLOY_CASTER;
 		public static final FluxTileType<?> WASHER;
 		public static final FluxTileType<?> COMPACTOR;
 
-		public static void register(IForgeRegistry<TileEntityType<?>> reg) {
-			reg.registerAll(FLUXGEN, ENERGY_CABLE, DIGGER, FARMER, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR);
+		public static void register(final IForgeRegistry<TileEntityType<?>> reg) {
+			reg.registerAll(FLUXGEN, ENERGY_CABLE, DIGGER, FARMER, BUTCHER, MOB_POUNDER, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR);
 		}
 
 		static {
@@ -169,6 +178,8 @@ public final class F {
 			ENERGY_CABLE = create(EnergyCableTile::new, "energy_cable", Blocks.ENERGY_CABLE);
 			DIGGER = create(DiggerTile::new, "digger", Blocks.DIGGER);
 			FARMER = create(FarmerTile::new, "farmer", Blocks.FARMER);
+			BUTCHER = create(ButcherTile::new, "butcher", Blocks.BUTCHER);
+			MOB_POUNDER = create(MobPounderTile::new, "mob_pounder", Blocks.MOB_POUNDER);
 			GRINDING_MILL = create(Machine2For1Tile.make(Recipes.GRINDING, GrindingMillContainer::new, "grinding_mill"), "grinding_mill", Blocks.GRINDING_MILL);
 			ALLOY_CASTER = create(Machine2For1Tile.make(Recipes.ALLOYING, AlloyCasterContainer::new, "alloy_caster"), "alloy_caster", Blocks.ALLOY_CASTER);
 			WASHER = create(Machine2For1Tile.make(Recipes.WASHING, WasherContainer::new, "washer"), "washer", Blocks.WASHER);
@@ -177,7 +188,7 @@ public final class F {
 	}
 
 	private static <T extends TileEntity> TileEntityType<T> create(Supplier<T> f, String name, Block b) {
-		TileEntityType<T> type = new TileEntityType<T>(f, Collections.singleton(b), null);
+		TileEntityType<T> type = new TileEntityType<>(f, Collections.singleton(b), null);
 		type.setRegistryName(MODID, name);
 		return type;
 	}
@@ -195,7 +206,7 @@ public final class F {
 		public static final ContainerType<WasherContainer> WASHER;
 		public static final ContainerType<CompactorContainer> COMPACTOR;
 
-		public static void register(IForgeRegistry<ContainerType<?>> reg) {
+		public static void register(final IForgeRegistry<ContainerType<?>> reg) {
 			reg.registerAll(
 					FLUXGEN.setRegistryName(MODID, "fluxgen"),
 					GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
@@ -238,7 +249,7 @@ public final class F {
 		public static MachineRecipeSerializer<WashingRecipe> WASHING_SERIALIZER = serializer(WashingRecipe::new, "washing");
 		public static MachineRecipeSerializer<CompactingRecipe> COMPACTING_SERIALIZER = serializer(CompactingRecipe::new, "compacting");
 
-		public static void register(IForgeRegistry<IRecipeSerializer<?>> reg) {
+		public static void register(final IForgeRegistry<IRecipeSerializer<?>> reg) {
 			reg.registerAll(
 					GRINDING_SERIALIZER,
 					ALLOYING_SERIALIZER,

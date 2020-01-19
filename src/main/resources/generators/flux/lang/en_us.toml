@@ -9,6 +9,9 @@
 [flux.gift.text]
  newyear = "Happy New Year!"
 
+[flux.configgui]
+ fluxGenBaseEnergyValue = "Base energy generation for Flux Generator"
+
 [item.flux]
  mftool = "Flux Tool"
  gift = "Flux Gift"
@@ -40,6 +43,8 @@
  energy_cable = "Energy Cable"
  digger = "Digger"
  farmer = "Farmer"
+ butcher = "Butcher"
+ mob_pounder = "Mob Pounder"
 
 [container.flux]
  fluxgen = "Flux Generator"

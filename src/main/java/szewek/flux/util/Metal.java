@@ -30,7 +30,7 @@ public enum Metal {
 	}
 
 	public final boolean notVanillaOrAlloy() {
-		return nonVanilla() || nonAlloy();
+		return nonVanilla() && nonAlloy();
 	}
 
 	public final boolean all() {

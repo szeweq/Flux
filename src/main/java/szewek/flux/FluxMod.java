@@ -25,13 +25,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -48,13 +51,17 @@ import java.util.Calendar;
 public final class FluxMod {
 	public static final String MODID = "flux";
 	public static final ItemGroup FLUX_GROUP = new ItemGroup("flux.items") {
-
-		@Override
-		public ItemStack createIcon() {
+		@Override public ItemStack createIcon() {
 			return new ItemStack(F.Blocks.FLUXGEN);
 		}
 	};
 	static IModInfo modInfo = null;
+
+	public FluxMod() {
+		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FluxConfig.commonSpec);
+		modEventBus.register(FluxConfig.class);
+	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	final static class CommonEvents {

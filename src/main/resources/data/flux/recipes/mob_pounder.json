@@ -1,18 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IHI",
-    "IWI",
+    "WWW",
+    "III",
     "SSS"
   ],
   "key": {
     "I": {"tag": "forge:ingots/iron"},
-    "H": {"item": "minecraft:iron_hoe"},
-    "W": {"item": "minecraft:water_bucket"},
+    "W": {"item": "minecraft:iron_sword"},
     "S": {"item": "flux:machine_base"}
   },
   "result": {
-    "item": "flux:farmer",
+    "item": "flux:mob_pounder",
     "count": 1
   }
 }

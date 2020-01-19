@@ -10,5 +10,7 @@
   "tin_block",
   "energy_cable",
   "digger",
-  "farmer"
+  "farmer",
+  "butcher",
+  "mob_pounder"
 ]

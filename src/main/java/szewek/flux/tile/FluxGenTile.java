@@ -28,6 +28,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import szewek.flux.F;
+import szewek.flux.FluxConfig;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.energy.EnergyCache;
 import szewek.flux.recipe.FluxGenRecipes;
@@ -149,7 +150,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		FluxGenRecipes.Result genCat = FluxGenRecipes.getCatalyst(catalyst.getItem());
 		FluxGenRecipes.Result genHot = FluxGenRecipes.getHotFluid(fluids[0]);
 		FluxGenRecipes.Result genCold = FluxGenRecipes.getColdFluid(fluids[1]);
-		energyGen = 40;
+		energyGen = FluxConfig.COMMON.fluxGenBaseEnergyValue.get();
 		if (genCat.usage <= catalyst.getCount()) {
 			energyGen *= genCat.factor;
 			catalyst.grow(-genCat.usage);

@@ -28,20 +28,9 @@ public final class DiggerTile extends PoweredTile {
 		super(F.Tiles.DIGGER);
 	}
 
-	public void read(CompoundNBT compound) {
-		super.read(compound);
-		SaveDataManager.read(this, compound);
-	}
-
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
-		SaveDataManager.write(this, compound);
-		return compound;
-	}
-
 	public void tick() {
 		assert world != null;
-		if (!world.isRemote()) {
+		if (!world.isRemote) {
 			boolean flag = !finished;
 			if (flag && energy >= 200) {
 				if (offsetY == 0 || offsetX == 5 && offsetZ == 5) {

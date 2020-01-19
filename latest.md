@@ -1,5 +1,8 @@
-# Flux (Version 4.2.4)
+# Flux (Version 4.2.5)
 
 Changes since last version:
-- Smarter energy distribution through Cables
-- Flux Generator remembers neighboring energy storage
+* NEW BLOCK: Butcher - butchering animals for meat
+* NEW BLOCK: Mob Pounder - killing enemy mobs nearby
+* Configurable Flux Generator energy per tick creation
+* Fixed wrong output for Farmer recipe
+* Fixed energy transfer

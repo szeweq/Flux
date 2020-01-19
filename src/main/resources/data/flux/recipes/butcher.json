@@ -1,18 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IHI",
-    "IWI",
+    "IAI",
+    "I I",
     "SSS"
   ],
   "key": {
     "I": {"tag": "forge:ingots/iron"},
-    "H": {"item": "minecraft:iron_hoe"},
-    "W": {"item": "minecraft:water_bucket"},
+    "H": {"item": "minecraft:iron_axe"},
     "S": {"item": "flux:machine_base"}
   },
   "result": {
-    "item": "flux:farmer",
+    "item": "flux:butcher",
     "count": 1
   }
 }

@@ -26,19 +26,6 @@ public class FarmerTile extends PoweredTile {
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
-		SaveDataManager.read(this, compound);
-	}
-
-	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
-		SaveDataManager.write(this, compound);
-		return compound;
-	}
-
-	@Override
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote() && energy >= 100) {

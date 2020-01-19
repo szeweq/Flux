@@ -10,12 +10,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import szewek.flux.energy.IEnergyReceiver;
+import szewek.flux.util.savedata.Data;
+import szewek.flux.util.savedata.SaveDataManager;
 
 import javax.annotation.Nullable;
 
 public abstract class PoweredTile extends TileEntity implements IEnergyReceiver, ITickableTileEntity {
 	protected final int maxEnergy = 500000;
-	protected int energy;
+	@Data("E") protected int energy;
 	private final LazyOptional<IEnergyStorage> handler = LazyOptional.of(() -> this);
 
 	public PoweredTile(TileEntityType tileEntityTypeIn) {
@@ -24,12 +26,12 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		energy = compound.getInt("E");
+		SaveDataManager.read(this, compound);
 	}
 
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		compound.putInt("E", energy);
+		SaveDataManager.write(this, compound);
 		if (energy < 0) energy = 0;
 		if (energy > maxEnergy) energy = maxEnergy;
 		return compound;
