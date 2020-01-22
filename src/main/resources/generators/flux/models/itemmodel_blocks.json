@@ -12,5 +12,6 @@
   "digger",
   "farmer",
   "butcher",
-  "mob_pounder"
+  "mob_pounder",
+  "item_absorber"
 ]

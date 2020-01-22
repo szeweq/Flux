@@ -5,6 +5,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -13,30 +14,23 @@ import net.minecraftforge.energy.IEnergyStorage;
 import szewek.flux.energy.EnergyCache;
 
 import javax.annotation.Nullable;
-import java.util.EnumSet;
-import java.util.Set;
 
 public final class EnergyCableTile extends TileEntity implements ITickableTileEntity {
 	private int energy, cooldown = 0;
-	private final EnergyCableTile.Sided[] sides = new EnergyCableTile.Sided[6];
-	private final EnumSet<Direction> sideCache = EnumSet.noneOf(Direction.class);
+	private final Side[] sides = new Side[6];
+	private byte sideFlag = 0;
 	private final EnergyCache energyCache = new EnergyCache();
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
 		super(type);
-		Direction[] dirs = Direction.values();
 		for(int i = 0; i < 6; i++) {
-			sides[i] = new EnergyCableTile.Sided(dirs[i]);
+			sides[i] = new Side(i);
 		}
 	}
 
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		energy = compound.getInt("E");
-		if (energy >= 50000) {
-			energy = 50000;
-		}
-
+		energy = MathHelper.clamp(compound.getInt("E"), 0, 50000);
 	}
 
 	public CompoundNBT write(CompoundNBT compound) {
@@ -47,42 +41,54 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 
 	public void tick() {
 		assert world != null;
-		if (!world.isRemote()) {
+		if (!world.isRemote) {
 			if (cooldown > 0) {
 				--cooldown;
 			} else {
 				cooldown = 4;
-				Set<Direction> availableSides = EnumSet.complementOf(sideCache);
-				sideCache.clear();
-				for (Direction dir : availableSides) {
-					IEnergyStorage ie = energyCache.getCached(dir, world, pos);
-					if (ie != null) {
-						int r;
-						if (ie instanceof Sided) {
-							r = ie.getEnergyStored();
-							if (r < energy) {
-								r = (r - energy) / 2;
+				byte sf = sideFlag;
+				sideFlag = 0;
+				int i = 0;
+				final Direction[] dirs = Direction.values();
+				while (i < 6) {
+					if ((sf & 1) == 0) {
+						IEnergyStorage ie = energyCache.getCached(dirs[i], world, pos);
+						if (ie != null) {
+							int r;
+							if (ie instanceof Side) {
+								r = ie.getEnergyStored();
+								if (r < energy) {
+									r = (r - energy) / 2;
+									if (r > 0) {
+										energy -= r;
+										ie.receiveEnergy(r, false);
+									}
+								} else if (r > energy) {
+									r = (r - energy) / 2;
+									if (r > 0) {
+										energy += r;
+										ie.extractEnergy(r, false);
+									}
+								}
+							} else if (ie.canReceive()) {
+								r = 10000;
+								if (r >= energy) r = energy;
+								r = ie.receiveEnergy(r, true);
 								if (r > 0) {
-									energy -= r;
+									energy = energy - r;
 									ie.receiveEnergy(r, false);
 								}
 							}
-						} else if (ie.canReceive()) {
-							r = 10000;
-							if (r >= energy) r = energy;
-							r = ie.receiveEnergy(r, true);
-							if (r > 0) {
-								energy = energy - r;
-								ie.receiveEnergy(r, false);
-							}
 						}
 					}
+					sf >>= 1;
+					i++;
 				}
 			}
 		}
 	}
 
-	public LazyOptional<IEnergyStorage> getLazySide(Direction dir) {
+	public LazyOptional<IEnergyStorage> getSide(Direction dir) {
 		return sides[dir.getIndex()].lazy;
 	}
 
@@ -95,17 +101,17 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	@Override
 	public void remove() {
 		super.remove();
-		for (Sided s : sides) {
+		for (Side s : sides) {
 			s.lazy.invalidate();
 		}
 	}
 
-	public final class Sided implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
-		private final Direction dir;
+	public final class Side implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
+		private final int index;
 		private LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
 
-		private Sided(Direction d) {
-			dir = d;
+		private Side(int i) {
+			index = i;
 		}
 
 		public int receiveEnergy(int maxReceive, boolean simulate) {
@@ -115,7 +121,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			}
 			if (!simulate) {
 				energy += r;
-				sideCache.add(dir);
+				sideFlag |= 1 << index;
 			}
 			return r;
 		}
@@ -127,7 +133,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			}
 			if (!simulate) {
 				energy -= r;
-				sideCache.add(dir);
+				sideFlag |= 1 << index;
 			}
 
 			return r;

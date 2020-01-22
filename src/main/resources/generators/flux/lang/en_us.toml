@@ -11,6 +11,7 @@
 
 [flux.configgui]
  fluxGenBaseEnergyValue = "Base energy generation for Flux Generator"
+ basicMachineEU = "Energy usage for basic machines (Grinding Mill, Washer, etc.)"
 
 [item.flux]
  mftool = "Flux Tool"
@@ -45,6 +46,7 @@
  farmer = "Farmer"
  butcher = "Butcher"
  mob_pounder = "Mob Pounder"
+ item_absorber = "Item Absorber"
 
 [container.flux]
  fluxgen = "Flux Generator"

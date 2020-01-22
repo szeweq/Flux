@@ -3,7 +3,6 @@ package szewek.flux.tile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
@@ -13,16 +12,10 @@ import szewek.flux.F;
 import szewek.flux.FluxConfig;
 import szewek.flux.block.ActiveTileBlock;
 import szewek.flux.util.ItemsUtil;
-import szewek.flux.util.savedata.Data;
-import szewek.flux.util.savedata.SaveDataManager;
 
 import java.util.List;
 
-public final class DiggerTile extends PoweredTile {
-	@Data("OffX") private int offsetX;
-	@Data("OffY") private int offsetY;
-	@Data("OffZ") private int offsetZ;
-	@Data("Finished") private boolean finished;
+public final class DiggerTile extends BlockInteractingTile {
 	private boolean lastFlag;
 
 	public DiggerTile() {
@@ -32,7 +25,7 @@ public final class DiggerTile extends PoweredTile {
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote) {
-			boolean flag = !finished;
+			boolean flag = !disabled;
 			final int usage = FluxConfig.COMMON.diggerEU.get();
 			if (flag && energy >= usage) {
 				if (offsetY == 0 || offsetX == 5 && offsetZ == 5) {
@@ -46,7 +39,7 @@ public final class DiggerTile extends PoweredTile {
 
 				BlockPos bp = pos.add(offsetX, offsetY, offsetZ);
 				if (bp.getY() < 0) {
-					finished = true;
+					disabled = true;
 					world.setBlockState(pos, world.getBlockState(pos).with(ActiveTileBlock.LIT, false), 3);
 					markDirty();
 					return;

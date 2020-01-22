@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
@@ -12,14 +11,10 @@ import net.minecraft.world.storage.loot.LootParameters;
 import szewek.flux.F;
 import szewek.flux.FluxConfig;
 import szewek.flux.util.ItemsUtil;
-import szewek.flux.util.savedata.Data;
-import szewek.flux.util.savedata.SaveDataManager;
 
 import java.util.List;
 
-public class FarmerTile extends PoweredTile {
-	@Data("OffX") private int offsetX;
-	@Data("OffZ") private int offsetZ;
+public class FarmerTile extends BlockInteractingTile {
 
 	public FarmerTile() {
 		super(F.Tiles.FARMER);

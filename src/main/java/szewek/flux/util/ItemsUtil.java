@@ -11,32 +11,28 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 
 public final class ItemsUtil {
-	public static void trySendingItems(List<ItemStack> items, World world, BlockPos pos) {
-		long ns = System.nanoTime();
+	private static final Direction[] DIRS = Direction.values();
+
+	public static void trySendingItems(Iterable<ItemStack> items, World world, BlockPos pos) {
 		List<IItemHandler> inv = new ArrayList<>();
-		for (Direction dir : Direction.values()) {
-			if (dir != Direction.DOWN) {
-				TileEntity te = world.getTileEntity(pos.offset(dir));
-				if (te != null) {
-					IItemHandler iih;
-					LazyOptional<IItemHandler> il = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
-					if (il.isPresent()) {
-						iih = il.orElse(null);
-					} else {
-						if (!(te instanceof IInventory)) continue;
-						iih = new InvWrapper((IInventory)te);
-					}
-					inv.add(iih);
+		for (Direction dir : DIRS) {
+			TileEntity te = world.getTileEntity(pos.offset(dir));
+			if (te != null) {
+				IItemHandler iih;
+				LazyOptional<IItemHandler> il = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
+				if (il.isPresent()) {
+					//noinspection ConstantConditions
+					iih = il.orElse(null);
+				} else {
+					if (!(te instanceof IInventory)) continue;
+					iih = new InvWrapper((IInventory)te);
 				}
+				inv.add(iih);
 			}
 		}
 

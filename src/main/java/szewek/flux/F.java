@@ -52,7 +52,8 @@ public final class F {
 				DIGGER = new ActiveTileBlock(),
 				FARMER = new ActiveTileBlock(),
 				BUTCHER = new ActiveTileBlock(),
-				MOB_POUNDER = new ActiveTileBlock();
+				MOB_POUNDER = new ActiveTileBlock(),
+				ITEM_ABSORBER = new ActiveTileBlock();
 		public static final MachineBlock
 				GRINDING_MILL = new MachineBlock(),
 				ALLOY_CASTER = new MachineBlock(),
@@ -69,6 +70,7 @@ public final class F {
 					FARMER.setRegistryName(MODID, "farmer"),
 					BUTCHER.setRegistryName(MODID, "butcher"),
 					MOB_POUNDER.setRegistryName(MODID, "mob_pounder"),
+					ITEM_ABSORBER.setRegistryName(MODID, "item_absorber"),
 					GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
 					ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
 					WASHER.setRegistryName(MODID, "washer"),
@@ -129,7 +131,8 @@ public final class F {
 					fromBlock(Blocks.DIGGER, "digger"),
 					fromBlock(Blocks.FARMER, "farmer"),
 					fromBlock(Blocks.BUTCHER, "butcher"),
-					fromBlock(Blocks.MOB_POUNDER, "mob_pounder")
+					fromBlock(Blocks.MOB_POUNDER, "mob_pounder"),
+					fromBlock(Blocks.ITEM_ABSORBER, "item_absorber")
 			);
 		}
 	}
@@ -164,13 +167,17 @@ public final class F {
 		public static final TileEntityType<FarmerTile> FARMER;
 		public static final TileEntityType<ButcherTile> BUTCHER;
 		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
+		public static final TileEntityType<ItemAbsorberTile> ITEM_ABSORBER;
 		public static final FluxTileType<?> GRINDING_MILL;
 		public static final FluxTileType<?> ALLOY_CASTER;
 		public static final FluxTileType<?> WASHER;
 		public static final FluxTileType<?> COMPACTOR;
 
 		public static void register(final IForgeRegistry<TileEntityType<?>> reg) {
-			reg.registerAll(FLUXGEN, ENERGY_CABLE, DIGGER, FARMER, BUTCHER, MOB_POUNDER, GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR);
+			reg.registerAll(
+					FLUXGEN, ENERGY_CABLE, DIGGER, FARMER, BUTCHER, MOB_POUNDER, ITEM_ABSORBER,
+					GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR
+			);
 		}
 
 		static {
@@ -180,6 +187,7 @@ public final class F {
 			FARMER = create(FarmerTile::new, "farmer", Blocks.FARMER);
 			BUTCHER = create(ButcherTile::new, "butcher", Blocks.BUTCHER);
 			MOB_POUNDER = create(MobPounderTile::new, "mob_pounder", Blocks.MOB_POUNDER);
+			ITEM_ABSORBER = create(ItemAbsorberTile::new, "item_absorber", Blocks.ITEM_ABSORBER);
 			GRINDING_MILL = create(Machine2For1Tile.make(Recipes.GRINDING, GrindingMillContainer::new, "grinding_mill"), "grinding_mill", Blocks.GRINDING_MILL);
 			ALLOY_CASTER = create(Machine2For1Tile.make(Recipes.ALLOYING, AlloyCasterContainer::new, "alloy_caster"), "alloy_caster", Blocks.ALLOY_CASTER);
 			WASHER = create(Machine2For1Tile.make(Recipes.WASHING, WasherContainer::new, "washer"), "washer", Blocks.WASHER);

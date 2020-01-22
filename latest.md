@@ -1,5 +1,6 @@
-# Flux (Version 4.2.6)
+# Flux (Version 4.2.8)
 
 Changes since last version:
-* Fixed smelting ingots from dusts
-* Added configurable values for machine energy usage
+* Fixed tile entity data saving (energy won't be lost from now)
+* Optimized Energy distribution
+* Flux Tool can check energy amount for each side separately

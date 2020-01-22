@@ -5,19 +5,17 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import szewek.flux.energy.IEnergyReceiver;
-import szewek.flux.util.savedata.Data;
-import szewek.flux.util.savedata.SaveDataManager;
 
 import javax.annotation.Nullable;
 
 public abstract class PoweredTile extends TileEntity implements IEnergyReceiver, ITickableTileEntity {
-	protected final int maxEnergy = 500000;
-	@Data("E") protected int energy;
+	protected int energy;
 	private final LazyOptional<IEnergyStorage> handler = LazyOptional.of(() -> this);
 
 	public PoweredTile(TileEntityType tileEntityTypeIn) {
@@ -26,19 +24,17 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		SaveDataManager.read(this, compound);
+		energy = MathHelper.clamp(compound.getInt("E"), 0, 500000);
 	}
 
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		SaveDataManager.write(this, compound);
-		if (energy < 0) energy = 0;
-		if (energy > maxEnergy) energy = maxEnergy;
+		compound.putInt("E", energy);
 		return compound;
 	}
 
 	public int getMaxEnergyStored() {
-		return maxEnergy;
+		return 500000;
 	}
 
 	public int getEnergyStored() {
@@ -47,8 +43,8 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		int r = maxReceive;
-		if (maxReceive > maxEnergy - energy) {
-			r = maxEnergy - energy;
+		if (maxReceive > 500000 - energy) {
+			r = 500000 - energy;
 		}
 		if (!simulate) {
 			energy += r;

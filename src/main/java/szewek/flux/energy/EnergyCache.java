@@ -10,25 +10,26 @@ import net.minecraftforge.energy.IEnergyStorage;
 import szewek.flux.tile.EnergyCableTile;
 
 import javax.annotation.Nullable;
-import java.util.EnumMap;
 
 public class EnergyCache {
-	private final EnumMap<Direction, LazyOptional<IEnergyStorage>> cache = new EnumMap<>(Direction.class);
+	@SuppressWarnings("unchecked")
+	private final LazyOptional<IEnergyStorage>[] cacheArray = (LazyOptional<IEnergyStorage>[]) new LazyOptional[6];
 
 	@Nullable
 	public IEnergyStorage getCached(Direction dir, World world, BlockPos pos) {
-		LazyOptional<IEnergyStorage> lazy = cache.get(dir);
+		final int d = dir.ordinal();
+		LazyOptional<IEnergyStorage> lazy = cacheArray[d];
 		if (lazy == null) {
 			assert world != null;
 			TileEntity te = world.getTileEntity(pos.offset(dir));
 			if (te == null) return null;
 			if (te instanceof EnergyCableTile)
-				lazy = ((EnergyCableTile) te).getLazySide(dir.getOpposite());
+				lazy = ((EnergyCableTile) te).getSide(dir.getOpposite());
 			else
 				lazy = te.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite());
 			if (lazy.isPresent()) {
-				lazy.addListener(l -> cache.remove(dir));
-				cache.put(dir, lazy);
+				lazy.addListener(l -> cacheArray[d] = null);
+				cacheArray[d] = lazy;
 			}
 		}
 		return lazy.orElse(null);

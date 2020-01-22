@@ -39,7 +39,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxConfig.IConfigChangeListener {
-	public static final int maxEnergy = 1000000;
 	private final int inputSize, outputSize;
 	protected int energy = 0, process = 0, processTotal = 0, energyUse;
 	protected boolean isDirty = false;
@@ -96,8 +95,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		super.read(compound);
 		items = NonNullList.withSize(inputSize + outputSize, ItemStack.EMPTY);
 		ItemStackHelper.loadAllItems(compound, items);
-		energy = compound.getInt("E");
-		if (energy >= maxEnergy) energy = maxEnergy;
+		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		process = compound.getInt("Process");
 		processTotal = compound.getInt("Total");
 		int i = compound.getShort("RSize");
@@ -213,7 +211,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		int r = maxReceive;
-		if (r > maxEnergy - energy) r = maxEnergy - energy;
+		if (r > 1000000 - energy) r = 1000000 - energy;
 		if (!simulate) {
 			energy += r;
 			isDirty = true;
@@ -228,7 +226,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 
 	@Override
 	public int getMaxEnergyStored() {
-		return maxEnergy;
+		return 1000000;
 	}
 
 	@Override

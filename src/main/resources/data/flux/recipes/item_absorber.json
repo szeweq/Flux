@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IAI",
     "I I",
+    "IHI",
     "SSS"
   ],
   "key": {
     "I": {"tag": "forge:ingots/iron"},
-    "A": {"item": "minecraft:iron_axe"},
+    "H": {"item": "minecraft:hopper"},
     "S": {"item": "flux:machine_base"}
   },
   "result": {
-    "item": "flux:butcher",
+    "item": "flux:item_absorber",
     "count": 1
   }
 }

@@ -17,7 +17,7 @@ public class FluxConfig {
 		public final IntValue
 				fluxGenBaseEnergyValue,
 				basicMachineEU,
-				diggerEU, farmerEU, butcherEU, mobPounderEU;
+				diggerEU, farmerEU, butcherEU, mobPounderEU, itemAbsorberEU;
 
 		Common(ForgeConfigSpec.Builder bld) {
 			fluxGenBaseEnergyValue = bld
@@ -31,6 +31,7 @@ public class FluxConfig {
 			farmerEU = energyUsage(bld, "Farmer", "farmer", 100);
 			butcherEU = energyUsage(bld, "Butcher", "butcher", 700);
 			mobPounderEU = energyUsage(bld, "Mob Pounder", "mobPounder", 1000);
+			itemAbsorberEU = energyUsage(bld, "Item Absorber", "itemAbsorber", 100);
 		}
 
 		private static IntValue energyUsage(ForgeConfigSpec.Builder bld, String comment, String name, int def) {

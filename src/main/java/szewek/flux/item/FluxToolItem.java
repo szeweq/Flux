@@ -23,7 +23,7 @@ public final class FluxToolItem extends Item {
 		if (!w.isRemote() && p != null) {
 			TileEntity tile = w.getTileEntity(itemUse.getPos());
 			if (tile != null) {
-				LazyOptional<IEnergyStorage> lazy = tile.getCapability(CapabilityEnergy.ENERGY);
+				LazyOptional<IEnergyStorage> lazy = tile.getCapability(CapabilityEnergy.ENERGY, itemUse.getFace());
 				if (lazy.isPresent()) {
 					IEnergyStorage ie = lazy.orElse(null);
 					p.sendMessage(new TranslationTextComponent("flux.energystat", ie.getEnergyStored(), ie.getMaxEnergyStored()));
