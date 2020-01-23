@@ -3,6 +3,7 @@ package szewek.flux;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -15,6 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
@@ -33,12 +35,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryManager;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.util.MappingFixer;
 import szewek.flux.util.Metal;
@@ -114,6 +114,16 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void onRecipesRegistry(RegistryEvent.Register<IRecipeSerializer<?>> re) {
 			F.Recipes.register(re.getRegistry());
+		}
+
+		@SubscribeEvent
+		public static void onProfessionsRegistry(RegistryEvent.Register<VillagerProfession> re) {
+			F.Villagers.register(re.getRegistry());
+		}
+
+		@SubscribeEvent
+		public static void onPOIRegistry(RegistryEvent.Register<PointOfInterestType> re) {
+			F.Villagers.registerPOI(re.getRegistry());
 		}
 	}
 

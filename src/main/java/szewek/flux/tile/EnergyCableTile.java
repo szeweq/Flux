@@ -107,11 +107,11 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	}
 
 	public final class Side implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
-		private final int index;
+		private final int bit;
 		private LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
 
 		private Side(int i) {
-			index = i;
+			bit = 1 << i;
 		}
 
 		public int receiveEnergy(int maxReceive, boolean simulate) {
@@ -121,7 +121,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			}
 			if (!simulate) {
 				energy += r;
-				sideFlag |= 1 << index;
+				sideFlag |= bit;
 			}
 			return r;
 		}
@@ -133,7 +133,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			}
 			if (!simulate) {
 				energy -= r;
-				sideFlag |= 1 << index;
+				sideFlag |= bit;
 			}
 
 			return r;

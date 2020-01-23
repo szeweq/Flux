@@ -1,11 +1,16 @@
 package szewek.flux;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.merchant.villager.VillagerProfession;
+import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -16,13 +21,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
 import szewek.flux.block.*;
 import szewek.flux.container.*;
 import szewek.flux.gui.FluxGenScreen;
 import szewek.flux.gui.MachineScreen;
-import szewek.flux.item.*;
+import szewek.flux.item.FluxToolItem;
+import szewek.flux.item.GiftItem;
+import szewek.flux.item.MetalItem;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.Metal;
@@ -274,6 +282,31 @@ public final class F {
 			MachineRecipeSerializer<T> mrs = new MachineRecipeSerializer<>(factory, 200);
 			mrs.setRegistryName(MODID, key);
 			return mrs;
+		}
+	}
+
+	public static final class Villagers {
+		public static final PointOfInterestType FLUX_ENGINEER_POI = poi("flux:flux_engineer", Blocks.FLUXGEN);
+		public static final VillagerProfession FLUX_ENGINEER = new VillagerProfession("flux:flux_engineer", FLUX_ENGINEER_POI, ImmutableSet.of(), ImmutableSet.of(), null);
+
+		public static void register(final IForgeRegistry<VillagerProfession> reg) {
+			reg.register(FLUX_ENGINEER.setRegistryName(MODID, "flux_engineer"));
+			VillagerTrades.VILLAGER_DEFAULT_TRADES.put(FLUX_ENGINEER, new Int2ObjectOpenHashMap<>(ImmutableMap.of(
+					1, new VillagerTrades.ITrade[]{
+							new VillagerTrades.EmeraldForItemsTrade(Items.INGOTS.get(Metal.COPPER), 6, 10, 4)
+					},
+					2, new VillagerTrades.ITrade[]{
+							new VillagerTrades.EmeraldForItemsTrade(Items.INGOTS.get(Metal.TIN), 4, 8, 4)
+					}
+			)));
+		}
+
+		public static void registerPOI(final IForgeRegistry<PointOfInterestType> reg) {
+			reg.register(FLUX_ENGINEER_POI.setRegistryName(MODID, "flux_engineer"));
+		}
+
+		private static PointOfInterestType poi(String name, Block b) {
+			return PointOfInterestType.func_221052_a(new PointOfInterestType(name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1));
 		}
 	}
 }

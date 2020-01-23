@@ -60,3 +60,6 @@
  alloyable = "Showing alloyable only"
  washable = "Showing washable only"
  compactable = "Showing compactable only"
+
+[entity.minecraft.villager.flux]
+ flux_engineer = "Flux Engineer"
