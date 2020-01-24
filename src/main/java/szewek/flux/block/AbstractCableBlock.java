@@ -12,11 +12,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 import java.util.Map;
 
-public class AbstractCableBlock extends SixWayBlock {
+public abstract class AbstractCableBlock extends SixWayBlock {
 	protected AbstractCableBlock(Properties properties) {
 		super(0.25F, properties);
 		this.setDefaultState(stateContainer.getBaseState()
@@ -28,6 +27,8 @@ public class AbstractCableBlock extends SixWayBlock {
 				.with(SixWayBlock.DOWN, false)
 		);
 	}
+
+	protected abstract boolean checkTile(TileEntity te, Direction dir);
 
 	public boolean hasTileEntity(BlockState state) {
 		return true;
@@ -47,7 +48,7 @@ public class AbstractCableBlock extends SixWayBlock {
 			Block b = w.getBlockState(pos).getBlock();
 			if (b != this) {
 				TileEntity te = w.getTileEntity(bp);
-				if (te == null || !te.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite()).isPresent())
+				if (te == null || !checkTile(te, dir.getOpposite()))
 					x = false;
 			}
 			bs = bs.with(e.getValue(), x);
@@ -60,7 +61,7 @@ public class AbstractCableBlock extends SixWayBlock {
 		boolean x = true;
 		if (b != this) {
 			TileEntity te = worldIn.getTileEntity(facingPos);
-			if (te == null || !te.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite()).isPresent()) {
+			if (te == null || !checkTile(te, facing.getOpposite())) {
 				x = false;
 			}
 		}

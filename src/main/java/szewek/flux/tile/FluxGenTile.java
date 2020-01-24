@@ -10,11 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
@@ -37,7 +36,7 @@ import javax.annotation.Nullable;
 
 public class FluxGenTile extends LockableTileEntity implements IInventory, IItemHandler, IFluidHandler, ITickableTileEntity, INamedContainerProvider, IEnergyStorage {
 	public static final int maxEnergy = 1000000, fluidCap = 4000;
-	private final EnergyCache energyCache = new EnergyCache();
+	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 	private final FluidStack[] fluids = new FluidStack[] {FluidStack.EMPTY, FluidStack.EMPTY};
 	private int tickCount = 0, energy = 0, workTicks = 0, maxWork = 0, energyGen = 0, workSpeed = 0;
@@ -81,8 +80,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		energy = compound.getInt("E");
-		if (energy >= maxEnergy) energy = maxEnergy;
+		energy = MathHelper.clamp(compound.getInt("E"), 0, maxEnergy);
 		workTicks = compound.getInt("WorkTicks");
 		maxWork = compound.getInt("MaxWork");
 		energyGen = compound.getInt("Gen");
@@ -127,7 +125,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		if (tickCount > 3 && energy > 0) {
 			tickCount = 0;
 			for (Direction d : Direction.values()) {
-				IEnergyStorage ie = energyCache.getCached(d, world, pos);
+				IEnergyStorage ie = energyCache.getCached(d);
 				if (ie != null && ie.canReceive()) {
 					int r = 40000;
 					if (r >= energy) r = energy;

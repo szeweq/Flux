@@ -14,14 +14,20 @@ import javax.annotation.Nullable;
 public class EnergyCache {
 	@SuppressWarnings("unchecked")
 	private final LazyOptional<IEnergyStorage>[] cacheArray = (LazyOptional<IEnergyStorage>[]) new LazyOptional[6];
+	private final TileEntity tile;
+
+	public EnergyCache(TileEntity te) {
+		tile = te;
+	}
 
 	@Nullable
-	public IEnergyStorage getCached(Direction dir, World world, BlockPos pos) {
+	public IEnergyStorage getCached(Direction dir) {
 		final int d = dir.ordinal();
 		LazyOptional<IEnergyStorage> lazy = cacheArray[d];
 		if (lazy == null) {
-			assert world != null;
-			TileEntity te = world.getTileEntity(pos.offset(dir));
+			World w = tile.getWorld();
+			assert w != null;
+			TileEntity te = w.getTileEntity(tile.getPos().offset(dir));
 			if (te == null) return null;
 			if (te instanceof EnergyCableTile)
 				lazy = ((EnergyCableTile) te).getSide(dir.getOpposite());
@@ -33,5 +39,9 @@ public class EnergyCache {
 			}
 		}
 		return lazy.orElse(null);
+	}
+
+	public void clear() {
+		for (int i = 0; i < 6; i++) cacheArray[i] = null;
 	}
 }

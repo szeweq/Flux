@@ -19,7 +19,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	private int energy, cooldown = 0;
 	private final Side[] sides = new Side[6];
 	private byte sideFlag = 0;
-	private final EnergyCache energyCache = new EnergyCache();
+	private final EnergyCache energyCache = new EnergyCache(this);
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
 		super(type);
@@ -42,17 +42,16 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote) {
-			if (cooldown > 0) {
-				--cooldown;
-			} else {
+			if (cooldown > 0) --cooldown;
+			else {
 				cooldown = 4;
-				byte sf = sideFlag;
+				byte sf = (byte) (sideFlag ^ 63);
 				sideFlag = 0;
 				int i = 0;
 				final Direction[] dirs = Direction.values();
-				while (i < 6) {
-					if ((sf & 1) == 0) {
-						IEnergyStorage ie = energyCache.getCached(dirs[i], world, pos);
+				while (i < 6 && sf != 0) {
+					if ((sf & 1) != 0) {
+						IEnergyStorage ie = energyCache.getCached(dirs[i]);
 						if (ie != null) {
 							int r;
 							if (ie instanceof Side) {
@@ -101,17 +100,15 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	@Override
 	public void remove() {
 		super.remove();
-		for (Side s : sides) {
-			s.lazy.invalidate();
-		}
+		for (Side s : sides) s.lazy.invalidate();
 	}
 
 	public final class Side implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
-		private final int bit;
+		private final byte bit;
 		private LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
 
 		private Side(int i) {
-			bit = 1 << i;
+			bit = (byte) (1 << i);
 		}
 
 		public int receiveEnergy(int maxReceive, boolean simulate) {
@@ -135,7 +132,6 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 				energy -= r;
 				sideFlag |= bit;
 			}
-
 			return r;
 		}
 
