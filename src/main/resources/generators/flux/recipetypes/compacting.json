@@ -1,6 +1,5 @@
 {
   "minecraft:diamond": {
-    "ingredients": [{"tag": "forge:storage_blocks/coal"}],
-    "cost": 16
+    "ingredients": [{"type": "flux:counted", "tag": "forge:storage_blocks/coal", "count": 16}]
   }
 }

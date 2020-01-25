@@ -11,7 +11,7 @@ inline class JsonCreator(val jw: JsonWriter) {
     }
     inline fun obj(fn: JsonCreator.() -> Unit) {
         jw.beginObject()
-        this.fn()
+        fn()
         jw.endObject()
     }
     inline fun arr(fn: JsonCreator.() -> Unit) {

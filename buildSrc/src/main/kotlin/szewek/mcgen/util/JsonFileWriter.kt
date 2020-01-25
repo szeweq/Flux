@@ -1,7 +1,5 @@
 package szewek.mcgen.util
 
-import com.google.gson.JsonElement
-import com.google.gson.internal.Streams
 import com.google.gson.stream.JsonWriter
 import java.io.File
 import java.io.FileWriter

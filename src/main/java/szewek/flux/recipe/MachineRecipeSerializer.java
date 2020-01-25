@@ -19,6 +19,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import java.util.stream.Stream;
+
 public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 	private final MachineRecipeSerializer.IFactory<T> factory;
 	private final int defaultProcess;
@@ -56,19 +58,6 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 
 			b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
 			b.process = JSONUtils.getInt(json, "processtime", this.defaultProcess);
-			if (json.has("cost")) {
-				JsonElement jc = json.get("cost");
-				if (jc.isJsonPrimitive()) {
-					b.costs = IntLists.singleton(jc.getAsInt());
-				} else if (jc.isJsonArray()) {
-					JsonArray ja = jc.getAsJsonArray();
-					IntList cl = new IntArrayList(ja.size());
-					for (JsonElement je : ja) {
-						cl.add(je.getAsInt());
-					}
-					b.costs = cl;
-				}
-			} else b.costs = IntLists.singleton(1);
 
 			return factory.create(recipeId, s, b);
 		}
@@ -78,29 +67,14 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		String s = buffer.readString(32767);
 		MachineRecipeSerializer.Builder b = new MachineRecipeSerializer.Builder();
 		int size = buffer.readByte();
-		int var6 = 0;
 
-		for(int var7 = size; var6 < var7; ++var6) {
+		for(int i = 0; i < size; ++i) {
 			b.ingredients.add(Ingredient.read(buffer));
 		}
 
 		b.result = buffer.readItemStack();
 		b.experience = buffer.readFloat();
 		b.process = buffer.readVarInt();
-		size = buffer.readByte();
-		if (size > 0) {
-			if (size == 1) {
-				b.costs = IntLists.singleton(buffer.readVarInt());
-			} else {
-				IntArrayList itemCost = new IntArrayList(size);
-
-				for(int var10 = 0; var10 < size; ++var10) {
-					itemCost.add(buffer.readVarInt());
-				}
-
-				b.costs = itemCost;
-			}
-		}
 		return factory.create(recipeId, s, b);
 	}
 
@@ -115,13 +89,6 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		buffer.writeItemStack(recipe.result);
 		buffer.writeFloat(recipe.experience);
 		buffer.writeVarInt(recipe.processTime);
-		int[] itemCost = recipe.getCosts();
-		buffer.writeByte(itemCost.length);
-
-		for (int n : itemCost) {
-			buffer.writeVarInt(n);
-		}
-
 	}
 
 	public interface IFactory<T extends AbstractMachineRecipe> {
@@ -133,6 +100,5 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		public ItemStack result = ItemStack.EMPTY;
 		public float experience;
 		public int process;
-		public IntList costs;
 	}
 }

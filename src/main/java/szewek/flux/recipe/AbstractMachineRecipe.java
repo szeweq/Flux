@@ -18,7 +18,6 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 	public final ItemStack result;
 	public final float experience;
 	public final int processTime;
-	private final int[] costs;
 	private final IRecipeType<?> type;
 	private final ResourceLocation id;
 	private final String group;
@@ -31,7 +30,6 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 		result = builder.result;
 		experience = builder.experience;
 		processTime = builder.process;
-		costs = builder.costs.toIntArray();
 	}
 
 	public IRecipeType<?> getType() {
@@ -54,10 +52,6 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 		return ingredients;
 	}
 
-	public int[] getCosts() {
-		return costs;
-	}
-
 	public boolean matches(IInventoryIO inv, World worldIn) {
 		ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
@@ -66,14 +60,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 		}
 
 		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
-		if (match != null) {
-			for(int i = 0; i < match.length; ++i) {
-				if (filledInputs.get(i).getCount() < getCostAt(match[i])) {
-					return false;
-				}
-			}
-			return true;
-		} else return false;
+		return match != null;
 	}
 
 	public ItemStack getCraftingResult(IInventoryIO inv) {
@@ -82,10 +69,6 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 
 	public boolean canFit(int width, int height) {
 		return ingredients.size() <= width * height;
-	}
-
-	public final int getCostAt(int n) {
-		return costs[n >= costs.length ? costs.length - 1 : n];
 	}
 
 	public final void consumeItems(List<ItemStack> stacks) {
@@ -98,7 +81,9 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
 		if (match != null) {
 			for(int i = 0; i < match.length; ++i) {
-				filledInputs.get(i).grow(-getCostAt(match[i]));
+				Ingredient ingredient = ingredients.get(match[i]);
+				int count = ingredient instanceof CountedIngredient ? ((CountedIngredient) ingredient).count : 1;
+				filledInputs.get(i).grow(-count);
 			}
 		}
 	}

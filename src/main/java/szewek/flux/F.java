@@ -22,6 +22,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
@@ -122,6 +124,7 @@ public final class F {
 				R.WASHING_SERIALIZER,
 				R.COMPACTING_SERIALIZER
 		);
+		CraftingHelper.register(new ResourceLocation(MODID, "counted"), CountedIngredient.Serializer.INSTANCE);
 	}
 
 	@SubscribeEvent

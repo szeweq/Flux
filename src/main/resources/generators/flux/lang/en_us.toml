@@ -61,5 +61,11 @@
  washable = "Showing washable only"
  compactable = "Showing compactable only"
 
+[gui.flux.jei.category]
+ grinding = "Grinding"
+ alloying = "Alloying"
+ washing = "Washing"
+ compacting = "Compacting"
+
 [entity.minecraft.villager.flux]
  flux_engineer = "Flux Engineer"
