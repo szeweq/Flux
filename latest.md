@@ -1,10 +1,8 @@
-# Flux (Version 4.3.0)
+# Flux (Version 4.3.1)
 
-### New Village Type: Flux Engineer
-Place a Flux Generator in a village. In some time a villager will be assigned as a Flux Engineer.
-It has trade offers for items coming from Flux.
-
-More offers will be added in future versions.
+### JEI Integration
+You can lookup every recipe for Flux machines (Grinding Mill, Alloy Caster, Washer, Compactor).
 
 ### Other minor changes
-Flux has been optimized for size.
+Changed recipe schema. Item costs are now gone.
+Instead a counted ingredient (with "flux:counted" type) should be used.
