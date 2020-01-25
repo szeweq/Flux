@@ -81,7 +81,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	}
 
-	public void func_201771_a(RecipeItemHelper helper) {
+	public void fillStackedContents(RecipeItemHelper helper) {
 		if (this.machineInventory instanceof IRecipeHelperPopulator) {
 			((IRecipeHelperPopulator) machineInventory).fillStackedContents(helper);
 		}
@@ -92,6 +92,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	}
 
 	public void func_217056_a(boolean placeAll, IRecipe<?> recipe, ServerPlayerEntity player) {
+		//noinspection unchecked
 		new ServerRecipePlacerMachine<>(this, this.inputSize, this.outputSize).place(player, (IRecipe<IInventory>) recipe, placeAll);
 	}
 

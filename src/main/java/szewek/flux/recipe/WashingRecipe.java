@@ -7,15 +7,15 @@ import szewek.flux.F;
 
 public final class WashingRecipe extends AbstractMachineRecipe {
 	public WashingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(F.Recipes.WASHING, idIn, groupIn, builder);
+		super(F.R.WASHING, idIn, groupIn, builder);
 	}
 
 	public ItemStack getIcon() {
-		return new ItemStack(F.Blocks.WASHER);
+		return new ItemStack(F.B.WASHER);
 	}
 
 	public IRecipeSerializer<?> getSerializer() {
-		return F.Recipes.WASHING_SERIALIZER;
+		return F.R.WASHING_SERIALIZER;
 	}
 
 

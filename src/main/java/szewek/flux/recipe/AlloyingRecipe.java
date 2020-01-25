@@ -7,14 +7,14 @@ import szewek.flux.F;
 
 public final class AlloyingRecipe extends AbstractMachineRecipe {
 	public AlloyingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(F.Recipes.ALLOYING, idIn, groupIn, builder);
+		super(F.R.ALLOYING, idIn, groupIn, builder);
 	}
 
 	public ItemStack getIcon() {
-		return new ItemStack(F.Blocks.ALLOY_CASTER);
+		return new ItemStack(F.B.ALLOY_CASTER);
 	}
 
 	public IRecipeSerializer<?> getSerializer() {
-		return F.Recipes.ALLOYING_SERIALIZER;
+		return F.R.ALLOYING_SERIALIZER;
 	}
 }

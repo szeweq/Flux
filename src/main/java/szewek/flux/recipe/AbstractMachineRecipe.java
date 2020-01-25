@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
-	public final NonNullList<Ingredient> ingredientsList;
+	public final NonNullList<Ingredient> ingredients;
 	public final ItemStack result;
 	public final float experience;
 	public final int processTime;
-	private final int[] itemCost;
+	private final int[] costs;
 	private final IRecipeType<?> type;
 	private final ResourceLocation id;
 	private final String group;
@@ -27,11 +27,11 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 		this.type = type;
 		this.id = id;
 		this.group = group;
-		this.ingredientsList = builder.ingredients;
-		this.result = builder.result;
-		this.experience = builder.experience;
-		this.processTime = builder.process;
-		this.itemCost = builder.itemCost.toIntArray();
+		ingredients = builder.ingredients;
+		result = builder.result;
+		experience = builder.experience;
+		processTime = builder.process;
+		costs = builder.costs.toIntArray();
 	}
 
 	public IRecipeType<?> getType() {
@@ -51,11 +51,11 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 	}
 
 	public NonNullList<Ingredient> getIngredients() {
-		return ingredientsList;
+		return ingredients;
 	}
 
-	public int[] getItemCost() {
-		return itemCost;
+	public int[] getCosts() {
+		return costs;
 	}
 
 	public boolean matches(IInventoryIO inv, World worldIn) {
@@ -65,7 +65,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 			if (!stack.isEmpty()) filledInputs.add(stack);
 		}
 
-		int[] match = RecipeMatcher.findMatches(filledInputs, ingredientsList);
+		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
 		if (match != null) {
 			for(int i = 0; i < match.length; ++i) {
 				if (filledInputs.get(i).getCount() < getCostAt(match[i])) {
@@ -81,11 +81,11 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 	}
 
 	public boolean canFit(int width, int height) {
-		return ingredientsList.size() <= width * height;
+		return ingredients.size() <= width * height;
 	}
 
 	public final int getCostAt(int n) {
-		return itemCost[n >= itemCost.length ? itemCost.length - 1 : n];
+		return costs[n >= costs.length ? costs.length - 1 : n];
 	}
 
 	public final void consumeItems(List<ItemStack> stacks) {
@@ -95,7 +95,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 			if (!stack.isEmpty()) filledInputs.add(stack);
 		}
 
-		int[] match = RecipeMatcher.findMatches(filledInputs, ingredientsList);
+		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
 		if (match != null) {
 			for(int i = 0; i < match.length; ++i) {
 				filledInputs.get(i).grow(-getCostAt(match[i]));

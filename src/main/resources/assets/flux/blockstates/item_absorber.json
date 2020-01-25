@@ -1,4 +1,0 @@
-{"variants": {
-  "lit=false": {"model": "flux:block/item_absorber"},
-  "lit=true": {"model": "flux:block/item_absorber_on"}
-}}

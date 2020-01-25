@@ -1,0 +1,4 @@
+{
+  "name": "activeBlockStates",
+  "args": ["digger", "farmer", "butcher", "mob_pounder", "item_absorber"]
+}

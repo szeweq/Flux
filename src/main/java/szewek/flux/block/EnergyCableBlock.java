@@ -20,6 +20,6 @@ public final class EnergyCableBlock extends AbstractCableBlock {
 
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return F.Tiles.ENERGY_CABLE.create();
+		return F.T.ENERGY_CABLE.create();
 	}
 }

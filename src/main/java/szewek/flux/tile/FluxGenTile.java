@@ -27,15 +27,16 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import szewek.flux.F;
-import szewek.flux.FluxConfig;
+import szewek.flux.FluxCfg;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.energy.EnergyCache;
 import szewek.flux.recipe.FluxGenRecipes;
+import szewek.flux.util.IntPair;
 
 import javax.annotation.Nullable;
 
 public class FluxGenTile extends LockableTileEntity implements IInventory, IItemHandler, IFluidHandler, ITickableTileEntity, INamedContainerProvider, IEnergyStorage {
-	public static final int maxEnergy = 1000000, fluidCap = 4000;
+	public static final int fluidCap = 4000;
 	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 	private final FluidStack[] fluids = new FluidStack[] {FluidStack.EMPTY, FluidStack.EMPTY};
@@ -74,13 +75,13 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 	private final LazyOptional<FluxGenTile> selfHandler = LazyOptional.of(() -> this);
 
 	public FluxGenTile() {
-		super(F.Tiles.FLUXGEN);
+		super(F.T.FLUXGEN);
 	}
 
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		energy = MathHelper.clamp(compound.getInt("E"), 0, maxEnergy);
+		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		workTicks = compound.getInt("WorkTicks");
 		maxWork = compound.getInt("MaxWork");
 		energyGen = compound.getInt("Gen");
@@ -112,7 +113,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 			if ((maxWork == 0 && ForgeHooks.getBurnTime(items.get(0)) > 0) || workTicks >= maxWork) {
 				workTicks = 0;
 				maxWork = updateWork();
-			} else if (energy + energyGen <= maxEnergy) {
+			} else if (energy + energyGen <= 1000000) {
 				energy += energyGen;
 				workTicks += workSpeed;
 				if (maxWork <= workTicks) {
@@ -145,21 +146,21 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		int f = ForgeHooks.getBurnTime(fuel);
 		if (f == 0) return 0;
 		ItemStack catalyst = items.get(1);
-		FluxGenRecipes.Result genCat = FluxGenRecipes.getCatalyst(catalyst.getItem());
-		FluxGenRecipes.Result genHot = FluxGenRecipes.getHotFluid(fluids[0]);
-		FluxGenRecipes.Result genCold = FluxGenRecipes.getColdFluid(fluids[1]);
-		energyGen = FluxConfig.COMMON.fluxGenBaseEnergyValue.get();
-		if (genCat.usage <= catalyst.getCount()) {
-			energyGen *= genCat.factor;
-			catalyst.grow(-genCat.usage);
+		IntPair genCat = FluxGenRecipes.getCatalyst(catalyst.getItem());
+		IntPair genHot = FluxGenRecipes.getHotFluid(fluids[0]);
+		IntPair genCold = FluxGenRecipes.getColdFluid(fluids[1]);
+		energyGen = FluxCfg.COMMON.fluxGenBaseEnergyValue.get();
+		if (genCat.r <= catalyst.getCount()) {
+			energyGen *= genCat.l;
+			catalyst.grow(-genCat.r);
 		}
-		if (genHot.usage <= fluids[0].getAmount()) {
-			f *= genHot.factor;
-			fluids[0].grow(-genHot.usage);
+		if (genHot.r <= fluids[0].getAmount()) {
+			f *= genHot.l;
+			fluids[0].grow(-genHot.r);
 		}
-		if (genCold.usage <= fluids[1].getAmount()) {
-			workSpeed = genCold.factor < genCat.factor ? genCold.factor - genCat.factor : 1;
-			fluids[1].grow(-genCold.usage);
+		if (genCold.r <= fluids[1].getAmount()) {
+			workSpeed = genCold.l < genCat.l ? genCold.l - genCat.l : 1;
+			fluids[1].grow(-genCold.r);
 		} else {
 			workSpeed = 1;
 		}
@@ -191,7 +192,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 
 	@Override
 	public int getMaxEnergyStored() {
-		return maxEnergy;
+		return 1000000;
 	}
 
 	@Override
@@ -376,6 +377,6 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 
 	@Override
 	protected Container createMenu(int id, PlayerInventory playerInv) {
-		return new FluxGenContainer(id, playerInv, this, this.fluxGenData);
+		return new FluxGenContainer(id, playerInv, this, fluxGenData);
 	}
 }

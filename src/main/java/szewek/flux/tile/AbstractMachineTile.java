@@ -28,7 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import szewek.flux.FluxConfig;
+import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.energy.IEnergyReceiver;
@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxConfig.IConfigChangeListener {
+public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
 	private final int inputSize, outputSize;
 	protected int energy = 0, process = 0, processTotal = 0, energyUse;
 	protected boolean isDirty = false;
@@ -81,13 +81,13 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		items = NonNullList.withSize(inSize + outSize, ItemStack.EMPTY);
 		inputSize = inSize;
 		outputSize = outSize;
-		energyUse = FluxConfig.COMMON.basicMachineEU.get();
-		FluxConfig.addListener(this);
+		energyUse = FluxCfg.COMMON.basicMachineEU.get();
+		FluxCfg.addListener(this);
 	}
 
 	@Override
 	public void onConfigChanged() {
-		energyUse = FluxConfig.COMMON.basicMachineEU.get();
+		energyUse = FluxCfg.COMMON.basicMachineEU.get();
 	}
 
 	@Override
@@ -371,7 +371,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 			count -= x;
 			player.world.addEntity(new ExperienceOrbEntity(
 					player.world,
-					player.func_226277_ct_(), player.func_226278_cu_() + 0.5D, player.func_226281_cx_() + 0.5D,
+					player.getPosX(), player.getPosY() + 0.5D, player.getPosZ() + 0.5D,
 					x
 			));
 		}
@@ -386,6 +386,6 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	public void remove() {
 		super.remove();
 		energyHandler.invalidate();
-		FluxConfig.removeListener(this);
+		FluxCfg.removeListener(this);
 	}
 }

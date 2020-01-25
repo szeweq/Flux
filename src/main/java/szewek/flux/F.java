@@ -1,7 +1,7 @@
 package szewek.flux;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -22,10 +22,15 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
 import szewek.flux.block.*;
-import szewek.flux.container.*;
+import szewek.flux.container.AbstractMachineContainer;
+import szewek.flux.container.FluxContainerType;
+import szewek.flux.container.FluxGenContainer;
+import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.FluxGenScreen;
 import szewek.flux.gui.MachineScreen;
 import szewek.flux.item.FluxToolItem;
@@ -46,8 +51,98 @@ import static szewek.flux.FluxMod.FLUX_GROUP;
 import static szewek.flux.FluxMod.MODID;
 
 public final class F {
+	@SubscribeEvent
+	public static void blocks(final RegistryEvent.Register<Block> re) {
+		final IForgeRegistry<Block> reg = re.getRegistry();
+		for (FluxOreBlock ore : B.ORES.values()) reg.register(ore);
+		for (MetalBlock metalBlock : B.METAL_BLOCKS.values()) reg.register(metalBlock);
+		reg.registerAll(
+				B.FLUXGEN.setRegistryName(MODID, "fluxgen"),
+				B.ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
+				B.DIGGER.setRegistryName(MODID, "digger"),
+				B.FARMER.setRegistryName(MODID, "farmer"),
+				B.BUTCHER.setRegistryName(MODID, "butcher"),
+				B.MOB_POUNDER.setRegistryName(MODID, "mob_pounder"),
+				B.ITEM_ABSORBER.setRegistryName(MODID, "item_absorber"),
+				B.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
+				B.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
+				B.WASHER.setRegistryName(MODID, "washer"),
+				B.COMPACTOR.setRegistryName(MODID, "compactor")
+		);
+	}
 
-	public static final class Blocks {
+	@SubscribeEvent
+	public static void items(final RegistryEvent.Register<Item> re) {
+		final IForgeRegistry<Item> reg = re.getRegistry();
+		for (MetalItem grit : I.GRITS.values()) reg.register(grit);
+		for (MetalItem dust : I.DUSTS.values()) reg.register(dust);
+		for (MetalItem ingot : I.INGOTS.values()) reg.register(ingot);
+		B.ORES.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_ore")));
+		B.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_block")));
+		reg.registerAll(
+				I.FLUXTOOL, I.GIFT, I.MACHINE_BASE,
+				fromBlock(B.FLUXGEN, "fluxgen"),
+				fromBlock(B.GRINDING_MILL, "grinding_mill"),
+				fromBlock(B.ALLOY_CASTER, "alloy_caster"),
+				fromBlock(B.WASHER, "washer"),
+				fromBlock(B.COMPACTOR, "compactor"),
+				fromBlock(B.ENERGY_CABLE, "energy_cable"),
+				fromBlock(B.DIGGER, "digger"),
+				fromBlock(B.FARMER, "farmer"),
+				fromBlock(B.BUTCHER, "butcher"),
+				fromBlock(B.MOB_POUNDER, "mob_pounder"),
+				fromBlock(B.ITEM_ABSORBER, "item_absorber")
+		);
+	}
+
+	@SubscribeEvent
+	public static void tiles(final RegistryEvent.Register<TileEntityType<?>> re) {
+		re.getRegistry().registerAll(
+				T.FLUXGEN, T.ENERGY_CABLE, T.DIGGER, T.FARMER, T.BUTCHER, T.MOB_POUNDER, T.ITEM_ABSORBER,
+				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR
+		);
+	}
+
+	@SubscribeEvent
+	public static void containers(final RegistryEvent.Register<ContainerType<?>> re) {
+		re.getRegistry().registerAll(
+				C.FLUXGEN.setRegistryName(MODID, "fluxgen"),
+				C.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
+				C.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
+				C.WASHER.setRegistryName(MODID, "washer"),
+				C.COMPACTOR.setRegistryName(MODID, "compactor")
+		);
+	}
+
+	@SubscribeEvent
+	public static void recipes(final RegistryEvent.Register<IRecipeSerializer<?>> re) {
+		re.getRegistry().registerAll(
+				R.GRINDING_SERIALIZER,
+				R.ALLOYING_SERIALIZER,
+				R.WASHING_SERIALIZER,
+				R.COMPACTING_SERIALIZER
+		);
+	}
+
+	@SubscribeEvent
+	public static void professions(final RegistryEvent.Register<VillagerProfession> re) {
+		re.getRegistry().register(V.FLUX_ENGINEER.setRegistryName(MODID, "flux_engineer"));
+		Int2ObjectMap<VillagerTrades.ITrade[]> lvlTrades = new Int2ObjectOpenHashMap<>();
+		lvlTrades.put(1, new VillagerTrades.ITrade[]{
+				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metal.COPPER), 6, 10, 4)
+		});
+		lvlTrades.put(2, new VillagerTrades.ITrade[]{
+				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metal.TIN), 4, 8, 4)
+		});
+		VillagerTrades.VILLAGER_DEFAULT_TRADES.put(V.FLUX_ENGINEER, lvlTrades);
+	}
+
+	@SubscribeEvent
+	public static void pointsOfInterest(final RegistryEvent.Register<PointOfInterestType> re) {
+		re.getRegistry().register(V.FLUX_ENGINEER_POI);
+	}
+
+	public static final class B {
 		public static final Map<Metal, FluxOreBlock> ORES = makeOres();
 		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeBlocks();
 		public static final FluxGenBlock FLUXGEN = new FluxGenBlock(Block.Properties.create(Material.IRON)
@@ -67,85 +162,100 @@ public final class F {
 				ALLOY_CASTER = new MachineBlock(),
 				WASHER = new MachineBlock(),
 				COMPACTOR = new MachineBlock();
-
-		public static void register(final IForgeRegistry<Block> reg) {
-			ORES.values().forEach(reg::register);
-			METAL_BLOCKS.values().forEach(reg::register);
-			reg.registerAll(
-					FLUXGEN.setRegistryName(MODID, "fluxgen"),
-					ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
-					DIGGER.setRegistryName(MODID, "digger"),
-					FARMER.setRegistryName(MODID, "farmer"),
-					BUTCHER.setRegistryName(MODID, "butcher"),
-					MOB_POUNDER.setRegistryName(MODID, "mob_pounder"),
-					ITEM_ABSORBER.setRegistryName(MODID, "item_absorber"),
-					GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
-					ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
-					WASHER.setRegistryName(MODID, "washer"),
-					COMPACTOR.setRegistryName(MODID, "compactor")
-			);
-		}
-
-		private static Map<Metal, FluxOreBlock> makeOres() {
-			Map<Metal, FluxOreBlock> m = new EnumMap<>(Metal.class);
-			Metal[] var4 = Metal.values();
-			for (Metal metal : var4) {
-				if (metal.notVanillaOrAlloy()) {
-					FluxOreBlock b = new FluxOreBlock(metal);
-					b.setRegistryName("flux", metal.metalName + "_ore");
-					m.put(metal, b);
-				}
-			}
-			return m;
-		}
-
-		private static Map<Metal, MetalBlock> makeBlocks() {
-			Map<Metal, MetalBlock> m = new EnumMap<>(Metal.class);
-			Metal[] var4 = Metal.values();
-			for (Metal metal : var4) {
-				if (metal.nonVanilla()) {
-					MetalBlock b = new MetalBlock(metal);
-					b.setRegistryName("flux", metal.metalName + "_block");
-					m.put(metal, b);
-				}
-			}
-			return m;
-		}
 	}
 
-	public static final class Items {
+	public static final class I {
 		public static final EnumMap<Metal, MetalItem>
 				GRITS = metalMap("grit", Metal::nonAlloy),
 				DUSTS = metalMap("dust", Metal::all),
 				INGOTS = metalMap("ingot", Metal::nonVanilla);
-		public static final FluxToolItem FLUXTOOL = create(FluxToolItem::new, "mftool", new Item.Properties().maxStackSize(1));
-		public static final GiftItem GIFT = create(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
-		public static final Item MACHINE_BASE = create(Item::new, "machine_base", new Item.Properties());
+		public static final FluxToolItem FLUXTOOL = item(FluxToolItem::new, "mftool", new Item.Properties().maxStackSize(1));
+		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
+		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());
+	}
 
-		public static void register(final IForgeRegistry<Item> reg) {
-			GRITS.values().forEach(reg::register);
-			DUSTS.values().forEach(reg::register);
-			INGOTS.values().forEach(reg::register);
-			F.Blocks.ORES.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_ore")));
-			F.Blocks.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_block")));
-			reg.registerAll(
-					FLUXTOOL, GIFT, MACHINE_BASE,
-					fromBlock(Blocks.FLUXGEN, "fluxgen"),
-					fromBlock(Blocks.GRINDING_MILL, "grinding_mill"),
-					fromBlock(Blocks.ALLOY_CASTER, "alloy_caster"),
-					fromBlock(Blocks.WASHER, "washer"),
-					fromBlock(Blocks.COMPACTOR, "compactor"),
-					fromBlock(Blocks.ENERGY_CABLE, "energy_cable"),
-					fromBlock(Blocks.DIGGER, "digger"),
-					fromBlock(Blocks.FARMER, "farmer"),
-					fromBlock(Blocks.BUTCHER, "butcher"),
-					fromBlock(Blocks.MOB_POUNDER, "mob_pounder"),
-					fromBlock(Blocks.ITEM_ABSORBER, "item_absorber")
-			);
+	public static final class T {
+		public static final TileEntityType<FluxGenTile> FLUXGEN;
+		public static final TileEntityType<EnergyCableTile> ENERGY_CABLE;
+		public static final TileEntityType<DiggerTile> DIGGER;
+		public static final TileEntityType<FarmerTile> FARMER;
+		public static final TileEntityType<ButcherTile> BUTCHER;
+		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
+		public static final TileEntityType<ItemAbsorberTile> ITEM_ABSORBER;
+		public static final FluxTileType<?> GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
+
+		static {
+			FLUXGEN = tile(FluxGenTile::new, "fluxgen", B.FLUXGEN);
+			ENERGY_CABLE = tile(EnergyCableTile::new, "energy_cable", B.ENERGY_CABLE);
+			DIGGER = tile(DiggerTile::new, "digger", B.DIGGER);
+			FARMER = tile(FarmerTile::new, "farmer", B.FARMER);
+			BUTCHER = tile(ButcherTile::new, "butcher", B.BUTCHER);
+			MOB_POUNDER = tile(MobPounderTile::new, "mob_pounder", B.MOB_POUNDER);
+			ITEM_ABSORBER = tile(ItemAbsorberTile::new, "item_absorber", B.ITEM_ABSORBER);
+			GRINDING_MILL = tile(Machine2For1Tile.make(R.GRINDING, C.GRINDING_MILL, "grinding_mill"), "grinding_mill", B.GRINDING_MILL);
+			ALLOY_CASTER = tile(Machine2For1Tile.make(R.ALLOYING, C.ALLOY_CASTER, "alloy_caster"), "alloy_caster", B.ALLOY_CASTER);
+			WASHER = tile(Machine2For1Tile.make(R.WASHING, C.WASHER, "washer"), "washer", B.WASHER);
+			COMPACTOR = tile(Machine2For1Tile.make(R.COMPACTING, C.COMPACTOR, "compactor"), "compactor", B.COMPACTOR);
 		}
 	}
 
-	private static <T extends Item> T create(Function<Item.Properties, T> f, String name, Item.Properties props) {
+	public static final class C {
+		public static final ContainerType<FluxGenContainer> FLUXGEN;
+		public static final FluxContainerType<Machine2For1Container>
+				GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
+
+		static {
+			FLUXGEN = container(FluxGenContainer::new, FluxGenScreen::new);
+			GRINDING_MILL = container(Machine2For1Container.make(R.GRINDING), "grindable", "grinding_mill");
+			ALLOY_CASTER = container(Machine2For1Container.make(R.ALLOYING), "alloyable", "alloy_caster");
+			WASHER = container(Machine2For1Container.make(R.WASHING), "washable", "washer");
+			COMPACTOR = container(Machine2For1Container.make(R.COMPACTING), "compactable", "compactor");
+		}
+	}
+
+	public static final class R {
+		public static FluxRecipeType<GrindingRecipe> GRINDING = recipe("grinding");
+		public static FluxRecipeType<AlloyingRecipe> ALLOYING = recipe("alloying");
+		public static FluxRecipeType<WashingRecipe> WASHING = recipe("washing");
+		public static FluxRecipeType<CompactingRecipe> COMPACTING = recipe("compacting");
+		public static MachineRecipeSerializer<GrindingRecipe> GRINDING_SERIALIZER = serializer(GrindingRecipe::new, "grinding");
+		public static MachineRecipeSerializer<AlloyingRecipe> ALLOYING_SERIALIZER = serializer(AlloyingRecipe::new, "alloying");
+		public static MachineRecipeSerializer<WashingRecipe> WASHING_SERIALIZER = serializer(WashingRecipe::new, "washing");
+		public static MachineRecipeSerializer<CompactingRecipe> COMPACTING_SERIALIZER = serializer(CompactingRecipe::new, "compacting");
+	}
+
+	public static final class V {
+		public static final PointOfInterestType FLUX_ENGINEER_POI = poi("flux_engineer", B.FLUXGEN);
+		public static final VillagerProfession FLUX_ENGINEER = new VillagerProfession("flux:flux_engineer", FLUX_ENGINEER_POI, ImmutableSet.of(), ImmutableSet.of(), null);
+	}
+
+	private static Map<Metal, FluxOreBlock> makeOres() {
+		Map<Metal, FluxOreBlock> m = new EnumMap<>(Metal.class);
+		Metal[] var4 = Metal.values();
+		for (Metal metal : var4) {
+			if (metal.notVanillaOrAlloy()) {
+				FluxOreBlock b = new FluxOreBlock(metal);
+				b.setRegistryName("flux", metal.metalName + "_ore");
+				m.put(metal, b);
+			}
+		}
+		return m;
+	}
+
+	private static Map<Metal, MetalBlock> makeBlocks() {
+		Map<Metal, MetalBlock> m = new EnumMap<>(Metal.class);
+		Metal[] var4 = Metal.values();
+		for (Metal metal : var4) {
+			if (metal.nonVanilla()) {
+				MetalBlock b = new MetalBlock(metal);
+				b.setRegistryName("flux", metal.metalName + "_block");
+				m.put(metal, b);
+			}
+		}
+		return m;
+	}
+
+	private static <T extends Item> T item(Function<Item.Properties, T> f, String name, Item.Properties props) {
 		T item = f.apply(props.group(FLUX_GROUP));
 		item.setRegistryName(MODID, name);
 		return item;
@@ -162,86 +272,25 @@ public final class F {
 		Item.Properties props = new Item.Properties();
 		for (Metal met : Metal.values()) {
 			if (filter.test(met)) {
-				m.put(met, create(MetalItem::new, met.metalName + '_' + type, props).withMetal(met));
+				m.put(met, item(MetalItem::new, met.metalName + '_' + type, props).withMetal(met));
 			}
 		}
 		return m;
 	}
 
-	public static final class Tiles {
-		public static final TileEntityType<FluxGenTile> FLUXGEN;
-		public static final TileEntityType<EnergyCableTile> ENERGY_CABLE;
-		public static final TileEntityType<DiggerTile> DIGGER;
-		public static final TileEntityType<FarmerTile> FARMER;
-		public static final TileEntityType<ButcherTile> BUTCHER;
-		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
-		public static final TileEntityType<ItemAbsorberTile> ITEM_ABSORBER;
-		public static final FluxTileType<?> GRINDING_MILL;
-		public static final FluxTileType<?> ALLOY_CASTER;
-		public static final FluxTileType<?> WASHER;
-		public static final FluxTileType<?> COMPACTOR;
-
-		public static void register(final IForgeRegistry<TileEntityType<?>> reg) {
-			reg.registerAll(
-					FLUXGEN, ENERGY_CABLE, DIGGER, FARMER, BUTCHER, MOB_POUNDER, ITEM_ABSORBER,
-					GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR
-			);
-		}
-
-		static {
-			FLUXGEN = create(FluxGenTile::new, "fluxgen", Blocks.FLUXGEN);
-			ENERGY_CABLE = create(EnergyCableTile::new, "energy_cable", Blocks.ENERGY_CABLE);
-			DIGGER = create(DiggerTile::new, "digger", Blocks.DIGGER);
-			FARMER = create(FarmerTile::new, "farmer", Blocks.FARMER);
-			BUTCHER = create(ButcherTile::new, "butcher", Blocks.BUTCHER);
-			MOB_POUNDER = create(MobPounderTile::new, "mob_pounder", Blocks.MOB_POUNDER);
-			ITEM_ABSORBER = create(ItemAbsorberTile::new, "item_absorber", Blocks.ITEM_ABSORBER);
-			GRINDING_MILL = create(Machine2For1Tile.make(Recipes.GRINDING, GrindingMillContainer::new, "grinding_mill"), "grinding_mill", Blocks.GRINDING_MILL);
-			ALLOY_CASTER = create(Machine2For1Tile.make(Recipes.ALLOYING, AlloyCasterContainer::new, "alloy_caster"), "alloy_caster", Blocks.ALLOY_CASTER);
-			WASHER = create(Machine2For1Tile.make(Recipes.WASHING, WasherContainer::new, "washer"), "washer", Blocks.WASHER);
-			COMPACTOR = create(Machine2For1Tile.make(Recipes.COMPACTING, CompactorContainer::new, "compactor"), "compactor", Blocks.COMPACTOR);
-		}
-	}
-
-	private static <T extends TileEntity> TileEntityType<T> create(Supplier<T> f, String name, Block b) {
+	private static <T extends TileEntity> TileEntityType<T> tile(Supplier<T> f, String name, Block b) {
 		TileEntityType<T> type = new TileEntityType<>(f, Collections.singleton(b), null);
 		type.setRegistryName(MODID, name);
 		return type;
 	}
 
-	private static <T extends TileEntity> FluxTileType<T> create(Function<FluxTileType<T>, T> f, String name, Block b) {
+	private static <T extends TileEntity> FluxTileType<T> tile(Function<FluxTileType<T>, T> f, String name, Block b) {
 		FluxTileType<T> type = new FluxTileType<>(f, Collections.singleton(b), null);
 		type.setRegistryName(MODID, name);
 		return type;
 	}
 
-	public static final class Containers {
-		public static final ContainerType<FluxGenContainer> FLUXGEN;
-		public static final ContainerType<GrindingMillContainer> GRINDING_MILL;
-		public static final ContainerType<AlloyCasterContainer> ALLOY_CASTER;
-		public static final ContainerType<WasherContainer> WASHER;
-		public static final ContainerType<CompactorContainer> COMPACTOR;
-
-		public static void register(final IForgeRegistry<ContainerType<?>> reg) {
-			reg.registerAll(
-					FLUXGEN.setRegistryName(MODID, "fluxgen"),
-					GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
-					ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
-					WASHER.setRegistryName(MODID, "washer"),
-					COMPACTOR.setRegistryName(MODID, "compactor")
-			);
-		}
-
-		static {
-			FLUXGEN = F.create(FluxGenContainer::new, FluxGenScreen::new);
-			GRINDING_MILL = create(GrindingMillContainer::new, "grindable", "grinding_mill");
-			ALLOY_CASTER = create(AlloyCasterContainer::new, "alloyable", "alloy_caster");
-			WASHER = create(WasherContainer::new, "washable", "washer");
-			COMPACTOR = create(CompactorContainer::new, "compactable", "compactor");
-		}
-	}
-
-	private static <C extends Container, S extends Screen & IHasContainer<C>> ContainerType<C> create(IContainerFactory<C> factory, ScreenManager.IScreenFactory<C, S> screenFactory) {
+	private static <C extends Container, S extends Screen & IHasContainer<C>> ContainerType<C> container(IContainerFactory<C> factory, ScreenManager.IScreenFactory<C, S> screenFactory) {
 		ContainerType<C> cont = new ContainerType<>(factory);
 		if (screenFactory != null) {
 			ScreenManager.registerFactory(cont, screenFactory);
@@ -249,64 +298,26 @@ public final class F {
 		return cont;
 	}
 
-	private static <C extends AbstractMachineContainer> ContainerType<C> create(IContainerFactory<C> cf, String showType, String title) {
-		ContainerType<C> cont = new ContainerType<>(cf);
+	private static <C extends AbstractMachineContainer> FluxContainerType<C> container(FluxContainerType.IContainerBuilder<C> cb, String showType, String title) {
+		FluxContainerType<C> cont = new FluxContainerType<>(cb);
 		ScreenManager.registerFactory(cont, MachineScreen.make(showType, title));
 		return cont;
 	}
 
-	public static final class Recipes {
-		public static FluxRecipeType<GrindingRecipe> GRINDING = type("grinding");
-		public static FluxRecipeType<AlloyingRecipe> ALLOYING = type("alloying");
-		public static FluxRecipeType<WashingRecipe> WASHING = type("washing");
-		public static FluxRecipeType<CompactingRecipe> COMPACTING = type("compacting");
-		public static MachineRecipeSerializer<GrindingRecipe> GRINDING_SERIALIZER = serializer(GrindingRecipe::new, "grinding");
-		public static MachineRecipeSerializer<AlloyingRecipe> ALLOYING_SERIALIZER = serializer(AlloyingRecipe::new, "alloying");
-		public static MachineRecipeSerializer<WashingRecipe> WASHING_SERIALIZER = serializer(WashingRecipe::new, "washing");
-		public static MachineRecipeSerializer<CompactingRecipe> COMPACTING_SERIALIZER = serializer(CompactingRecipe::new, "compacting");
-
-		public static void register(final IForgeRegistry<IRecipeSerializer<?>> reg) {
-			reg.registerAll(
-					GRINDING_SERIALIZER,
-					ALLOYING_SERIALIZER,
-					WASHING_SERIALIZER,
-					COMPACTING_SERIALIZER
-			);
-		}
-
-		private static <T extends IRecipe<?>> FluxRecipeType<T> type(String key) {
-			return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key));
-		}
-
-		private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(MachineRecipeSerializer.IFactory<T> factory, String key) {
-			MachineRecipeSerializer<T> mrs = new MachineRecipeSerializer<>(factory, 200);
-			mrs.setRegistryName(MODID, key);
-			return mrs;
-		}
+	private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key) {
+		return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key));
 	}
 
-	public static final class Villagers {
-		public static final PointOfInterestType FLUX_ENGINEER_POI = poi("flux:flux_engineer", Blocks.FLUXGEN);
-		public static final VillagerProfession FLUX_ENGINEER = new VillagerProfession("flux:flux_engineer", FLUX_ENGINEER_POI, ImmutableSet.of(), ImmutableSet.of(), null);
+	private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(MachineRecipeSerializer.IFactory<T> factory, String key) {
+		MachineRecipeSerializer<T> mrs = new MachineRecipeSerializer<>(factory, 200);
+		mrs.setRegistryName(MODID, key);
+		return mrs;
+	}
 
-		public static void register(final IForgeRegistry<VillagerProfession> reg) {
-			reg.register(FLUX_ENGINEER.setRegistryName(MODID, "flux_engineer"));
-			VillagerTrades.VILLAGER_DEFAULT_TRADES.put(FLUX_ENGINEER, new Int2ObjectOpenHashMap<>(ImmutableMap.of(
-					1, new VillagerTrades.ITrade[]{
-							new VillagerTrades.EmeraldForItemsTrade(Items.INGOTS.get(Metal.COPPER), 6, 10, 4)
-					},
-					2, new VillagerTrades.ITrade[]{
-							new VillagerTrades.EmeraldForItemsTrade(Items.INGOTS.get(Metal.TIN), 4, 8, 4)
-					}
-			)));
-		}
-
-		public static void registerPOI(final IForgeRegistry<PointOfInterestType> reg) {
-			reg.register(FLUX_ENGINEER_POI.setRegistryName(MODID, "flux_engineer"));
-		}
-
-		private static PointOfInterestType poi(String name, Block b) {
-			return PointOfInterestType.func_221052_a(new PointOfInterestType(name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1));
-		}
+	private static PointOfInterestType poi(String name, Block b) {
+		return PointOfInterestType.func_221052_a(
+				new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1)
+				.setRegistryName(MODID, name)
+		);
 	}
 }

@@ -1,4 +1,0 @@
-{"variants": {
-  "lit=false": {"model": "flux:block/butcher"},
-  "lit=true": {"model": "flux:block/butcher_on"}
-}}

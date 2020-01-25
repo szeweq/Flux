@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FluxConfig {
+public class FluxCfg {
 	private static Set<IConfigChangeListener> listeners = new HashSet<>();
 
 	public static class Common {

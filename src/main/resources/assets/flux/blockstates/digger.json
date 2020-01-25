@@ -1,4 +1,0 @@
-{"variants": {
-  "lit=false": {"model": "flux:block/digger"},
-  "lit=true": {"model": "flux:block/digger_on"}
-}}

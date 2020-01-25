@@ -7,14 +7,14 @@ import szewek.flux.F;
 
 public final class GrindingRecipe extends AbstractMachineRecipe {
 	public GrindingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(F.Recipes.GRINDING, idIn, groupIn, builder);
+		super(F.R.GRINDING, idIn, groupIn, builder);
 	}
 
 	public ItemStack getIcon() {
-		return new ItemStack(F.Blocks.GRINDING_MILL);
+		return new ItemStack(F.B.GRINDING_MILL);
 	}
 
 	public IRecipeSerializer<?> getSerializer() {
-		return F.Recipes.GRINDING_SERIALIZER;
+		return F.R.GRINDING_SERIALIZER;
 	}
 }

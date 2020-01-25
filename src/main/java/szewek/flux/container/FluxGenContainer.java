@@ -14,7 +14,6 @@ import net.minecraft.util.IntArray;
 import net.minecraftforge.common.ForgeHooks;
 import szewek.flux.F;
 import szewek.flux.recipe.FluxGenRecipes;
-import szewek.flux.tile.FluxGenTile;
 
 public class FluxGenContainer extends Container {
 	private final IInventory fluxGenInv;
@@ -25,7 +24,7 @@ public class FluxGenContainer extends Container {
 	}
 
 	public FluxGenContainer(int i, PlayerInventory pinv, IInventory iinv, IIntArray extra) {
-		super(F.Containers.FLUXGEN, i);
+		super(F.C.FLUXGEN, i);
 		fluxGenInv = iinv;
 		extraData = extra;
 
@@ -56,11 +55,11 @@ public class FluxGenContainer extends Container {
 	}
 
 	public float getEnergyFill() {
-		return (float) extraData.get(0) / (float) FluxGenTile.maxEnergy;
+		return (float) extraData.get(0) / (float) 1e6;
 	}
 
 	public String energyText() {
-		return extraData.get(0) + " / " + FluxGenTile.maxEnergy + " F";
+		return extraData.get(0) + " / 1000000 F";
 	}
 
 	public String genText() {

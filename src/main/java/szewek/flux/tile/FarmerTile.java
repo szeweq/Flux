@@ -9,7 +9,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import szewek.flux.F;
-import szewek.flux.FluxConfig;
+import szewek.flux.FluxCfg;
 import szewek.flux.util.ItemsUtil;
 
 import java.util.List;
@@ -17,14 +17,14 @@ import java.util.List;
 public class FarmerTile extends BlockInteractingTile {
 
 	public FarmerTile() {
-		super(F.Tiles.FARMER);
+		super(F.T.FARMER);
 		offsetX = offsetZ = -5;
 	}
 
 	@Override
 	public void tick() {
 		assert world != null;
-		final int usage = FluxConfig.COMMON.farmerEU.get();
+		final int usage = FluxCfg.COMMON.farmerEU.get();
 		if (!world.isRemote() && energy >= usage) {
 			if (offsetX == 5 && offsetZ == 5) {
 				offsetX = -5;
@@ -37,7 +37,7 @@ public class FarmerTile extends BlockInteractingTile {
 			BlockPos bp = pos.add(offsetX, 0, offsetZ);
 			BlockState bs = world.getBlockState(bp);
 			Block b = bs.getBlock();
-			if (b != F.Blocks.FARMER) {
+			if (b != F.B.FARMER) {
 				if (b instanceof CropsBlock) {
 					CropsBlock crop = (CropsBlock) b;
 					if (crop.isMaxAge(bs)) {

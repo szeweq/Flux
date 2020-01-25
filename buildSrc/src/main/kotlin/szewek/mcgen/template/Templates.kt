@@ -22,10 +22,49 @@ object Templates {
         add("containerLootTables", ::containerLootTables)
         add("metalLootTables", ::metalLootTables)
         add("blockLootTables", ::blockLootTables)
+        add("machineBlockStates", ::machineBlockStates)
+        add("activeBlockStates", ::activeBlockStates)
+        add("defaultBlockStates", ::defaultBlockStates)
     }
 
     private fun unimplemented(o: JsonElement, out: JsonFileWriter) {
         throw NotImplementedError("Template not implemented")
+    }
+
+    private fun machineBlockStates(v: JsonElement, out: JsonFileWriter) {
+        val item = v.asString
+        val ns = out.namespace
+        val dirs = arrayOf("north", "east", "south", "west")
+        val lit = arrayOf("false", "true")
+        out(item) {
+            variants {
+                for (i in lit.indices) for (j in dirs.indices) {
+                    "facing=${dirs[j]},lit=${lit[i]}" obj {
+                        "model" to (if (i == 0) "$ns:block/$item" else "$ns:block/${item}_on")
+                        if (j > 0) "y" to (90*j)
+                    }
+                }
+            }
+        }
+    }
+    private fun activeBlockStates(v: JsonElement, out: JsonFileWriter) {
+        val item = v.asString
+        val ns = out.namespace
+        out(item) {
+            variants {
+                "lit=false" obj { "model" to "$ns:block/$item" }
+                "lit=true" obj { "model" to "$ns:block/${item}_on" }
+            }
+        }
+    }
+    private fun defaultBlockStates(v: JsonElement, out: JsonFileWriter) {
+        val item = v.asString
+        val ns = out.namespace
+        out(item) {
+            variants {
+                "" obj { "model" to "$ns:block/$item" }
+            }
+        }
     }
 
     private fun metalRecipes(v: JsonElement, out: JsonFileWriter) {
@@ -250,5 +289,8 @@ object Templates {
         "values" arr {
             for(name in names) add(name)
         }
+    }
+    private inline fun JsonCreator.variants(fn: JsonCreator.() -> Unit) = obj {
+        "variants" obj fn
     }
 }

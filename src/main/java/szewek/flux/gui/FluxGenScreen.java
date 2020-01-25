@@ -107,10 +107,10 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vb.func_225582_a_(left, bottom, z).func_227885_a_(yr, yg, yb, ya).endVertex();
-		vb.func_225582_a_(right, bottom, z).func_227885_a_(yr, yg, yb, ya).endVertex();
-		vb.func_225582_a_(right, top, z).func_227885_a_(yr, yg, yb, ya).endVertex();
-		vb.func_225582_a_(left, top, z).func_227885_a_(yr, yg, yb, ya).endVertex();
+		vb.pos(left, bottom, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(right, bottom, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(right, top, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(left, top, z).color(yr, yg, yb, ya).endVertex();
 		tes.draw();
 	}
 
@@ -128,15 +128,15 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		if (right - left > bottom - top) {
-			vb.func_225582_a_(right, top, z).func_227885_a_(yr, yg, yb, ya).endVertex();
-			vb.func_225582_a_(left, top, z).func_227885_a_(zr, zg, zb, za).endVertex();
-			vb.func_225582_a_(left, bottom, z).func_227885_a_(zr, zg, zb, za).endVertex();
-			vb.func_225582_a_(right, bottom, z).func_227885_a_(yr, yg, yb, ya).endVertex();
+			vb.pos(right, top, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(left, top, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(left, bottom, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(right, bottom, z).color(yr, yg, yb, ya).endVertex();
 		} else {
-			vb.func_225582_a_(right, top, z).func_227885_a_(yr, yg, yb, ya).endVertex();
-			vb.func_225582_a_(left, top, z).func_227885_a_(yr, yg, yb, ya).endVertex();
-			vb.func_225582_a_(left, bottom, z).func_227885_a_(zr, zg, zb, za).endVertex();
-			vb.func_225582_a_(right, bottom, z).func_227885_a_(zr, zg, zb, za).endVertex();
+			vb.pos(right, top, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(left, top, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(left, bottom, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(right, bottom, z).color(zr, zg, zb, za).endVertex();
 		}
 		tes.draw();
 	}

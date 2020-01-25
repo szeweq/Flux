@@ -52,18 +52,19 @@ public final class FluxMod {
 	public static final String MODID = "flux";
 	public static final ItemGroup FLUX_GROUP = new ItemGroup("flux.items") {
 		@Override public ItemStack createIcon() {
-			return new ItemStack(F.Blocks.FLUXGEN);
+			return new ItemStack(F.B.FLUXGEN);
 		}
 	};
 	static IModInfo modInfo = null;
 
 	public FluxMod() {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FluxConfig.commonSpec);
-		modEventBus.register(FluxConfig.class);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FluxCfg.commonSpec);
+		modEventBus.register(FluxCfg.class);
+		modEventBus.register(CommonEvents.class);
+		modEventBus.register(F.class);
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	final static class CommonEvents {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
@@ -75,7 +76,7 @@ public final class FluxMod {
 							GenerationStage.Decoration.UNDERGROUND_ORES,
 							Feature.ORE.func_225566_b_(new OreFeatureConfig(
 									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-									F.Blocks.ORES.get(Metal.COPPER).getDefaultState(),
+									F.B.ORES.get(Metal.COPPER).getDefaultState(),
 							7
                             )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 96)))
                     );
@@ -83,47 +84,12 @@ public final class FluxMod {
 							GenerationStage.Decoration.UNDERGROUND_ORES,
 							Feature.ORE.func_225566_b_(new OreFeatureConfig(
 									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-									F.Blocks.ORES.get(Metal.TIN).getDefaultState(),
+									F.B.ORES.get(Metal.TIN).getDefaultState(),
 							7
                             )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 72)))
                     );
 				}
 			});
-		}
-
-		@SubscribeEvent
-		public static void onBlocksRegistry(RegistryEvent.Register<Block> re) {
-			F.Blocks.register(re.getRegistry());
-		}
-
-		@SubscribeEvent
-		public static void onItemsRegistry(RegistryEvent.Register<Item> re) {
-			F.Items.register(re.getRegistry());
-		}
-
-		@SubscribeEvent
-		public static void onTilesRegistry(RegistryEvent.Register<TileEntityType<?>> re) {
-			F.Tiles.register(re.getRegistry());
-		}
-
-		@SubscribeEvent
-		public static void onContainersRegistry(RegistryEvent.Register<ContainerType<?>> re) {
-			F.Containers.register(re.getRegistry());
-		}
-
-		@SubscribeEvent
-		public static void onRecipesRegistry(RegistryEvent.Register<IRecipeSerializer<?>> re) {
-			F.Recipes.register(re.getRegistry());
-		}
-
-		@SubscribeEvent
-		public static void onProfessionsRegistry(RegistryEvent.Register<VillagerProfession> re) {
-			F.Villagers.register(re.getRegistry());
-		}
-
-		@SubscribeEvent
-		public static void onPOIRegistry(RegistryEvent.Register<PointOfInterestType> re) {
-			F.Villagers.registerPOI(re.getRegistry());
 		}
 	}
 
@@ -133,10 +99,10 @@ public final class FluxMod {
 		public static void setupClient(final FMLClientSetupEvent e) {
 			Minecraft mc = e.getMinecraftSupplier().get();
 			ItemColors ic = mc.getItemColors();
-			ic.register(Gifts::colorByGift, F.Items.GIFT);
-			ic.register(Metal::gritColors, F.Items.GRITS.values().toArray(new Item[0]));
-			ic.register(Metal::itemColors, F.Items.DUSTS.values().toArray(new Item[0]));
-			ic.register(Metal::ingotColors, F.Items.INGOTS.values().toArray(new Item[0]));
+			ic.register(Gifts::colorByGift, F.I.GIFT);
+			ic.register(Metal::gritColors, F.I.GRITS.values().toArray(new Item[0]));
+			ic.register(Metal::itemColors, F.I.DUSTS.values().toArray(new Item[0]));
+			ic.register(Metal::ingotColors, F.I.INGOTS.values().toArray(new Item[0]));
 		}
 	}
 
@@ -174,7 +140,7 @@ public final class FluxMod {
 						data.putInt("lastXYear", xyear);
 						CompoundNBT itemTag = new CompoundNBT();
 						itemTag.putInt("xDay", xday);
-						ItemStack giftStack = new ItemStack(F.Items.GIFT, 1);
+						ItemStack giftStack = new ItemStack(F.I.GIFT, 1);
 						giftStack.setTag(itemTag);
 						ItemHandlerHelper.giveItemToPlayer(player, giftStack, -1);
 					}

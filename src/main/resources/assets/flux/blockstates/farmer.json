@@ -1,4 +1,0 @@
-{"variants": {
-  "lit=false": {"model": "flux:block/farmer"},
-  "lit=true": {"model": "flux:block/farmer_on"}
-}}

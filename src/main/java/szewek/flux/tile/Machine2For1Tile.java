@@ -5,6 +5,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import szewek.flux.container.FluxContainerType;
+import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
 import java.util.function.Function;
@@ -35,8 +37,8 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 		return new TranslationTextComponent(this.titleId);
 	}
 
-	public static Function<FluxTileType<Machine2For1Tile>, Machine2For1Tile> make(final IRecipeType<? extends AbstractMachineRecipe> recipeType, final MenuFactory mf, String titleName) {
+	public static Function<FluxTileType<Machine2For1Tile>, Machine2For1Tile> make(final IRecipeType<? extends AbstractMachineRecipe> recipeType, final FluxContainerType<Machine2For1Container> ctype, String titleName) {
 		final String titleId = "container.flux." + titleName;
-		return type -> new Machine2For1Tile(type, recipeType, mf, titleId);
+		return type -> new Machine2For1Tile(type, recipeType, (id, player, inv, data) -> new Machine2For1Container(ctype, recipeType, id, player, inv, data), titleId);
 	}
 }

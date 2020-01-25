@@ -30,14 +30,14 @@ public final class FluxGenBlock extends ContainerBlock {
 	}
 
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
-		return F.Tiles.FLUXGEN.create();
+		return F.T.FLUXGEN.create();
 	}
 
 	public TileEntity createTileEntity(BlockState var1, IBlockReader var2) {
-		return F.Tiles.FLUXGEN.create();
+		return F.T.FLUXGEN.create();
 	}
 
-	public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
 		if (!world.isRemote()) {
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile instanceof FluxGenTile) {

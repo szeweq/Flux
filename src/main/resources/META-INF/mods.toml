@@ -1,8 +1,5 @@
 modLoader="javafml"
 loaderVersion="[30,)"
-
-#modLoader="flux"
-#loaderVersion="[1,)"
 issueTrackerURL="https://github.com/Szewek/Flux/issues"
 
 [[mods]]

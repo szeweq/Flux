@@ -43,7 +43,7 @@ public final class MachineBlock extends ContainerBlock {
 		return state.get(LIT) ? super.getLightValue(state) : 0;
 	}
 
-	public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
 		if (!world.isRemote()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te != null) {

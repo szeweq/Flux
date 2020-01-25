@@ -6,15 +6,16 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.IIntArray;
+import net.minecraftforge.fml.network.IContainerFactory;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
-abstract class Machine2For1Container extends AbstractMachineContainer {
-	protected Machine2For1Container(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
-		super(containerTypeIn, recipeType, id, playerInventoryIn, inputSize, outputSize);
+public class Machine2For1Container extends AbstractMachineContainer {
+	public Machine2For1Container(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn) {
+		super(containerTypeIn, recipeType, id, playerInventoryIn, 2, 1);
 	}
 
-	protected Machine2For1Container(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
-		super(containerTypeIn, recipeType, id, playerInventoryIn, inputSize, outputSize, machineInventoryIn, dataIn);
+	public Machine2For1Container(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, IInventory machineInventoryIn, IIntArray dataIn) {
+		super(containerTypeIn, recipeType, id, playerInventoryIn, 2, 1, machineInventoryIn, dataIn);
 	}
 
 	protected void initSlots(PlayerInventory playerInventory) {
@@ -22,5 +23,9 @@ abstract class Machine2For1Container extends AbstractMachineContainer {
 		addSlot(new Slot(machineInventory, 1, 56, 44));
 		addSlot(new MachineResultSlot(playerInventory.player, machineInventory, 2, 116, 35));
 		initPlayerSlotsAt(playerInventory, 8, 84);
+	}
+
+	public static FluxContainerType.IContainerBuilder<Machine2For1Container> make(final IRecipeType<? extends AbstractMachineRecipe> rtype) {
+		return (type, id, inv, data) -> new Machine2For1Container(type, rtype, id, inv);
 	}
 }

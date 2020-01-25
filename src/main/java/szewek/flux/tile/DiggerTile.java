@@ -9,7 +9,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.common.Tags;
 import szewek.flux.F;
-import szewek.flux.FluxConfig;
+import szewek.flux.FluxCfg;
 import szewek.flux.block.ActiveTileBlock;
 import szewek.flux.util.ItemsUtil;
 
@@ -19,14 +19,14 @@ public final class DiggerTile extends BlockInteractingTile {
 	private boolean lastFlag;
 
 	public DiggerTile() {
-		super(F.Tiles.DIGGER);
+		super(F.T.DIGGER);
 	}
 
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote) {
 			boolean flag = !disabled;
-			final int usage = FluxConfig.COMMON.diggerEU.get();
+			final int usage = FluxCfg.COMMON.diggerEU.get();
 			if (flag && energy >= usage) {
 				if (offsetY == 0 || offsetX == 5 && offsetZ == 5) {
 					offsetX = -5;

@@ -7,14 +7,14 @@ import szewek.flux.F;
 
 public final class CompactingRecipe extends AbstractMachineRecipe {
 	public CompactingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(F.Recipes.COMPACTING, idIn, groupIn, builder);
+		super(F.R.COMPACTING, idIn, groupIn, builder);
 	}
 
 	public ItemStack getIcon() {
-		return new ItemStack(F.Blocks.COMPACTOR);
+		return new ItemStack(F.B.COMPACTOR);
 	}
 
 	public IRecipeSerializer<?> getSerializer() {
-		return F.Recipes.COMPACTING_SERIALIZER;
+		return F.R.COMPACTING_SERIALIZER;
 	}
 }

@@ -1,0 +1,4 @@
+{
+  "name": "machineBlockStates",
+  "args": ["grinding_mill", "alloy_caster", "washer", "compactor"]
+}
