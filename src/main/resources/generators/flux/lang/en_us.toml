@@ -1,3 +1,4 @@
+# Feel free to translate this to your native language
 [flux]
  energystat = "Energy: %s / %s F"
  gen = "Generating %s F/t"
