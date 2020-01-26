@@ -1,22 +1,16 @@
 package szewek.flux;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
@@ -74,7 +68,7 @@ public final class FluxMod {
 				if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
 					biome.addFeature(
 							GenerationStage.Decoration.UNDERGROUND_ORES,
-							Feature.ORE.func_225566_b_(new OreFeatureConfig(
+							Feature.ORE.withConfiguration(new OreFeatureConfig(
 									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
 									F.B.ORES.get(Metal.COPPER).getDefaultState(),
 							7
@@ -82,7 +76,7 @@ public final class FluxMod {
                     );
 					biome.addFeature(
 							GenerationStage.Decoration.UNDERGROUND_ORES,
-							Feature.ORE.func_225566_b_(new OreFeatureConfig(
+							Feature.ORE.withConfiguration(new OreFeatureConfig(
 									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
 									F.B.ORES.get(Metal.TIN).getDefaultState(),
 							7

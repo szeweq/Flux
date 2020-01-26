@@ -23,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
@@ -119,10 +118,10 @@ public final class F {
 	@SubscribeEvent
 	public static void recipes(final RegistryEvent.Register<IRecipeSerializer<?>> re) {
 		re.getRegistry().registerAll(
-				R.GRINDING_SERIALIZER,
-				R.ALLOYING_SERIALIZER,
-				R.WASHING_SERIALIZER,
-				R.COMPACTING_SERIALIZER
+				R.GRINDING.serializer,
+				R.ALLOYING.serializer,
+				R.WASHING.serializer,
+				R.COMPACTING.serializer
 		);
 		CraftingHelper.register(new ResourceLocation(MODID, "counted"), CountedIngredient.Serializer.INSTANCE);
 	}
@@ -217,14 +216,10 @@ public final class F {
 	}
 
 	public static final class R {
-		public static FluxRecipeType<GrindingRecipe> GRINDING = recipe("grinding");
-		public static FluxRecipeType<AlloyingRecipe> ALLOYING = recipe("alloying");
-		public static FluxRecipeType<WashingRecipe> WASHING = recipe("washing");
-		public static FluxRecipeType<CompactingRecipe> COMPACTING = recipe("compacting");
-		public static MachineRecipeSerializer<GrindingRecipe> GRINDING_SERIALIZER = serializer(GrindingRecipe::new, "grinding");
-		public static MachineRecipeSerializer<AlloyingRecipe> ALLOYING_SERIALIZER = serializer(AlloyingRecipe::new, "alloying");
-		public static MachineRecipeSerializer<WashingRecipe> WASHING_SERIALIZER = serializer(WashingRecipe::new, "washing");
-		public static MachineRecipeSerializer<CompactingRecipe> COMPACTING_SERIALIZER = serializer(CompactingRecipe::new, "compacting");
+		public static FluxRecipeType<GrindingRecipe> GRINDING = recipe("grinding", serializer(GrindingRecipe::new, "grinding"));
+		public static FluxRecipeType<AlloyingRecipe> ALLOYING = recipe("alloying", serializer(AlloyingRecipe::new, "alloying"));
+		public static FluxRecipeType<WashingRecipe> WASHING = recipe("washing", serializer(WashingRecipe::new, "washing"));
+		public static FluxRecipeType<CompactingRecipe> COMPACTING = recipe("compacting", serializer(CompactingRecipe::new, "compacting"));
 	}
 
 	public static final class V {
@@ -307,8 +302,8 @@ public final class F {
 		return cont;
 	}
 
-	private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key) {
-		return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key));
+	private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key, IRecipeSerializer<T> ser) {
+		return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key, ser));
 	}
 
 	private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(MachineRecipeSerializer.IFactory<T> factory, String key) {

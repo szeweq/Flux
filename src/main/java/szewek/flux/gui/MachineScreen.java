@@ -16,6 +16,7 @@ import net.minecraft.util.text.ITextComponent;
 import szewek.flux.container.AbstractMachineContainer;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public final class MachineScreen<T extends AbstractMachineContainer> extends ContainerScreen<T> implements IRecipeShownListener {
 	private final AbstractRecipeBookGui recipeGui;
@@ -70,7 +71,7 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
 		if (151 <= mx && 168 >= mx && 16 <= my && 69 >= my) {
-			renderTooltip(Arrays.asList(container.energyText()), mx, my);
+			renderTooltip(Collections.singletonList(container.energyText()), mx, my);
 		}
 
 	}

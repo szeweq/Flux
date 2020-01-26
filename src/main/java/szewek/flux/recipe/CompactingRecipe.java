@@ -13,8 +13,4 @@ public final class CompactingRecipe extends AbstractMachineRecipe {
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.COMPACTOR);
 	}
-
-	public IRecipeSerializer<?> getSerializer() {
-		return F.R.COMPACTING_SERIALIZER;
-	}
 }

@@ -13,8 +13,4 @@ public final class GrindingRecipe extends AbstractMachineRecipe {
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.GRINDING_MILL);
 	}
-
-	public IRecipeSerializer<?> getSerializer() {
-		return F.R.GRINDING_SERIALIZER;
-	}
 }

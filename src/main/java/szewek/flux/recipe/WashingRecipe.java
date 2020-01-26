@@ -14,9 +14,5 @@ public final class WashingRecipe extends AbstractMachineRecipe {
 		return new ItemStack(F.B.WASHER);
 	}
 
-	public IRecipeSerializer<?> getSerializer() {
-		return F.R.WASHING_SERIALIZER;
-	}
-
 
 }

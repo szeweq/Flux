@@ -13,8 +13,4 @@ public final class AlloyingRecipe extends AbstractMachineRecipe {
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.ALLOY_CASTER);
 	}
-
-	public IRecipeSerializer<?> getSerializer() {
-		return F.R.ALLOYING_SERIALIZER;
-	}
 }

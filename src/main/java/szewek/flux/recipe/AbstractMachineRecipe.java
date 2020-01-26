@@ -2,6 +2,7 @@ package szewek.flux.recipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
@@ -18,11 +19,11 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 	public final ItemStack result;
 	public final float experience;
 	public final int processTime;
-	private final IRecipeType<?> type;
+	private final FluxRecipeType<?> type;
 	private final ResourceLocation id;
 	private final String group;
 
-	public AbstractMachineRecipe(IRecipeType<?> type, ResourceLocation id, String group, MachineRecipeSerializer.Builder builder) {
+	public AbstractMachineRecipe(FluxRecipeType<?> type, ResourceLocation id, String group, MachineRecipeSerializer.Builder builder) {
 		this.type = type;
 		this.id = id;
 		this.group = group;
@@ -50,6 +51,11 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 
 	public NonNullList<Ingredient> getIngredients() {
 		return ingredients;
+	}
+
+	@Override
+	public IRecipeSerializer<?> getSerializer() {
+		return type.serializer;
 	}
 
 	public boolean matches(IInventoryIO inv, World worldIn) {
