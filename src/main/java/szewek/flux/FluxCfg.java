@@ -60,7 +60,7 @@ public class FluxCfg {
 	}
 
 	@SubscribeEvent
-	public static void onFileChange(final ModConfig.ConfigReloading configEvent) {
+	public static void onFileChange(final ModConfig.Reloading configEvent) {
 		LogManager.getLogger().fatal("Flux config just got changed on the file system!");
 		for (IConfigChangeListener l : listeners) l.onConfigChanged();
 	}
