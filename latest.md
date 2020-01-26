@@ -1,4 +1,3 @@
-# Flux (Version 4.3.2)
+# Flux (Version 4.4.0)
 
-### Required fix from Forge
-Class `ConfigReloading` was renamed to `Reloading`.
+Now requires Minecraft 1.15.2
