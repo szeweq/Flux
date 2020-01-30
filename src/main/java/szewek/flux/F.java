@@ -39,10 +39,11 @@ import szewek.flux.item.GiftItem;
 import szewek.flux.item.MetalItem;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
-import szewek.flux.util.Metal;
+import szewek.flux.util.metals.Metal;
+import szewek.flux.util.metals.Metals;
 
 import java.util.Collections;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -131,10 +132,10 @@ public final class F {
 		re.getRegistry().register(V.FLUX_ENGINEER.setRegistryName(MODID, "flux_engineer"));
 		Int2ObjectMap<VillagerTrades.ITrade[]> lvlTrades = new Int2ObjectOpenHashMap<>();
 		lvlTrades.put(1, new VillagerTrades.ITrade[]{
-				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metal.COPPER), 6, 10, 4)
+				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metals.COPPER), 6, 10, 4)
 		});
 		lvlTrades.put(2, new VillagerTrades.ITrade[]{
-				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metal.TIN), 4, 8, 4)
+				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metals.TIN), 4, 8, 4)
 		});
 		VillagerTrades.VILLAGER_DEFAULT_TRADES.put(V.FLUX_ENGINEER, lvlTrades);
 	}
@@ -167,9 +168,9 @@ public final class F {
 	}
 
 	public static final class I {
-		public static final EnumMap<Metal, MetalItem>
+		public static final Map<Metal, MetalItem>
 				GRITS = metalMap("grit", Metal::nonAlloy),
-				DUSTS = metalMap("dust", Metal::all),
+				DUSTS = metalMap("dust", null),
 				INGOTS = metalMap("ingot", Metal::nonVanilla);
 		public static final FluxToolItem FLUXTOOL = item(FluxToolItem::new, "mftool", new Item.Properties().maxStackSize(1));
 		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
@@ -228,9 +229,8 @@ public final class F {
 	}
 
 	private static Map<Metal, FluxOreBlock> makeOres() {
-		Map<Metal, FluxOreBlock> m = new EnumMap<>(Metal.class);
-		Metal[] var4 = Metal.values();
-		for (Metal metal : var4) {
+		Map<Metal, FluxOreBlock> m = new HashMap<>();
+		for (Metal metal : Metals.all()) {
 			if (metal.notVanillaOrAlloy()) {
 				FluxOreBlock b = new FluxOreBlock(metal);
 				b.setRegistryName("flux", metal.metalName + "_ore");
@@ -241,9 +241,8 @@ public final class F {
 	}
 
 	private static Map<Metal, MetalBlock> makeBlocks() {
-		Map<Metal, MetalBlock> m = new EnumMap<>(Metal.class);
-		Metal[] var4 = Metal.values();
-		for (Metal metal : var4) {
+		Map<Metal, MetalBlock> m = new HashMap<>();
+		for (Metal metal : Metals.all()) {
 			if (metal.nonVanilla()) {
 				MetalBlock b = new MetalBlock(metal);
 				b.setRegistryName("flux", metal.metalName + "_block");
@@ -265,11 +264,11 @@ public final class F {
 		return item;
 	}
 
-	private static EnumMap<Metal, MetalItem> metalMap(String type, Predicate<Metal> filter) {
-		EnumMap<Metal, MetalItem> m = new EnumMap<>(Metal.class);
+	private static Map<Metal, MetalItem> metalMap(String type, Predicate<Metal> filter) {
+		Map<Metal, MetalItem> m = new HashMap<>();
 		Item.Properties props = new Item.Properties();
-		for (Metal met : Metal.values()) {
-			if (filter.test(met)) {
+		for (Metal met : Metals.all()) {
+			if (filter == null || filter.test(met)) {
 				m.put(met, item(MetalItem::new, met.metalName + '_' + type, props).withMetal(met));
 			}
 		}

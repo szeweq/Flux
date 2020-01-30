@@ -35,9 +35,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.util.MappingFixer;
-import szewek.flux.util.Metal;
 import szewek.flux.util.gift.GiftData;
 import szewek.flux.util.gift.Gifts;
+import szewek.flux.util.metals.Metals;
 
 import java.util.Calendar;
 
@@ -70,7 +70,7 @@ public final class FluxMod {
 							GenerationStage.Decoration.UNDERGROUND_ORES,
 							Feature.ORE.withConfiguration(new OreFeatureConfig(
 									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-									F.B.ORES.get(Metal.COPPER).getDefaultState(),
+									F.B.ORES.get(Metals.COPPER).getDefaultState(),
 							7
                             )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 96)))
                     );
@@ -78,7 +78,7 @@ public final class FluxMod {
 							GenerationStage.Decoration.UNDERGROUND_ORES,
 							Feature.ORE.withConfiguration(new OreFeatureConfig(
 									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-									F.B.ORES.get(Metal.TIN).getDefaultState(),
+									F.B.ORES.get(Metals.TIN).getDefaultState(),
 							7
                             )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 72)))
                     );
@@ -94,9 +94,9 @@ public final class FluxMod {
 			Minecraft mc = e.getMinecraftSupplier().get();
 			ItemColors ic = mc.getItemColors();
 			ic.register(Gifts::colorByGift, F.I.GIFT);
-			ic.register(Metal::gritColors, F.I.GRITS.values().toArray(new Item[0]));
-			ic.register(Metal::itemColors, F.I.DUSTS.values().toArray(new Item[0]));
-			ic.register(Metal::ingotColors, F.I.INGOTS.values().toArray(new Item[0]));
+			ic.register(Metals::gritColors, F.I.GRITS.values().toArray(new Item[0]));
+			ic.register(Metals::itemColors, F.I.DUSTS.values().toArray(new Item[0]));
+			ic.register(Metals::ingotColors, F.I.INGOTS.values().toArray(new Item[0]));
 		}
 	}
 

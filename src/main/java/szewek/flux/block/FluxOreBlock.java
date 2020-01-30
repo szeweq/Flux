@@ -3,7 +3,7 @@ package szewek.flux.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ToolType;
-import szewek.flux.util.Metal;
+import szewek.flux.util.metals.Metal;
 
 public final class FluxOreBlock extends Block {
 	public FluxOreBlock(Metal metal) {
