@@ -4,9 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntLists;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -19,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import java.util.stream.Stream;
+import javax.annotation.Nullable;
 
 public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 	private final MachineRecipeSerializer.IFactory<T> factory;
@@ -30,37 +27,52 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		this.defaultProcess = defaultProcess;
 	}
 
+	@Nullable
 	public T read(ResourceLocation recipeId, JsonObject json) {
 		String s = JSONUtils.getString(json, "group", "");
-		JsonArray arr = JSONUtils.getJsonArray(json, "ingredients");
-		MachineRecipeSerializer.Builder b = new MachineRecipeSerializer.Builder();
-		for (JsonElement jc : arr) {
-			Ingredient ingredient = Ingredient.deserialize(jc);
-			if (!ingredient.hasNoMatchingItems()) {
-				b.ingredients.add(ingredient);
-			}
-		}
-
 		if (!json.has("result")) {
 			throw new JsonSyntaxException("Missing result, expected to find a string or object");
-		} else {
-			if (json.get("result").isJsonObject()) {
-				b.result = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-			} else {
-				String s1 = JSONUtils.getString(json, "result");
-				ResourceLocation location = new ResourceLocation(s1);
-				Item item = ForgeRegistries.ITEMS.getValue(location);
-				if (item == null) {
-					throw new IllegalStateException("Item: " + s1 + " does not exist");
-				}
-				b.result = new ItemStack(item);
-			}
-
-			b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
-			b.process = JSONUtils.getInt(json, "processtime", this.defaultProcess);
-
-			return factory.create(recipeId, s, b);
 		}
+		boolean tagResult = false;
+		MachineRecipeSerializer.Builder b = new MachineRecipeSerializer.Builder();
+		if (json.get("result").isJsonObject()) {
+			JsonObject ro = JSONUtils.getJsonObject(json, "result");
+			if (ro.has("item")) {
+				b.result = ShapedRecipe.deserializeItem(ro);
+			}
+			if (ro.has("tag") && b.result == ItemStack.EMPTY) {
+				b.result = RecipeCompat.findItemTag(ro);
+				tagResult = true;
+			}
+			if (b.result == ItemStack.EMPTY) {
+				return null;
+			}
+		} else {
+			String s1 = JSONUtils.getString(json, "result");
+			ResourceLocation location = new ResourceLocation(s1);
+			Item item = ForgeRegistries.ITEMS.getValue(location);
+			if (item == null) {
+				throw new IllegalStateException("Item: " + s1 + " does not exist");
+			}
+			b.result = new ItemStack(item);
+		}
+		JsonArray arr = JSONUtils.getJsonArray(json, "ingredients");
+		try {
+			for (JsonElement jc : arr) {
+				Ingredient ingredient = Ingredient.deserialize(jc);
+				if (!ingredient.hasNoMatchingItems()) {
+					b.ingredients.add(ingredient);
+				}
+			}
+		} catch (Exception e) {
+			if (tagResult) return null;
+			else throw e;
+		}
+
+		b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
+		b.process = JSONUtils.getInt(json, "processtime", this.defaultProcess);
+
+		return factory.create(recipeId, s, b);
 	}
 
 	public T read(ResourceLocation recipeId, PacketBuffer buffer) {

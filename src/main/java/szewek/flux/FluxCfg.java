@@ -7,7 +7,9 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class FluxCfg {
@@ -18,11 +20,10 @@ public class FluxCfg {
 				fluxGenBaseEnergyValue,
 				basicMachineEU,
 				diggerEU, farmerEU, butcherEU, mobPounderEU, itemAbsorberEU;
+		public final ForgeConfigSpec.ConfigValue<List<? extends String>> preferModCompat;
 
 		Common(ForgeConfigSpec.Builder bld) {
-			fluxGenBaseEnergyValue = bld
-					.comment("Base energy generation for Flux Generator")
-					.translation("flux.configgui.fluxGenBaseEnergyValue")
+			fluxGenBaseEnergyValue = translate(bld, "fluxGenBaseEnergyValue", "Base energy generation for Flux Generator")
 					.defineInRange("fluxGenBaseEnergyValue", 40, 0, Integer.MAX_VALUE);
 			basicMachineEU = energyUsage(bld,
 					"basic machines (Grinding Mill, Washer, etc.)", "basicMachine", 40
@@ -32,6 +33,15 @@ public class FluxCfg {
 			butcherEU = energyUsage(bld, "Butcher", "butcher", 700);
 			mobPounderEU = energyUsage(bld, "Mob Pounder", "mobPounder", 1000);
 			itemAbsorberEU = energyUsage(bld, "Item Absorber", "itemAbsorber", 100);
+			preferModCompat = translate(bld, "preferModCompat", "Order of preferred mod names for item recipe results.",
+					"Empty list means that first item available from specific tag is chosen.",
+					"First mod name has the highest priority.",
+					"Add \"jaopca\" to ignore all tag recipes.")
+					.defineList("preferModCompat", Collections::emptyList, o -> true);
+		}
+
+		private static ForgeConfigSpec.Builder translate(ForgeConfigSpec.Builder bld, String name, String... comment) {
+			return bld.comment(comment).translation("flux.configgui." + name);
 		}
 
 		private static IntValue energyUsage(ForgeConfigSpec.Builder bld, String comment, String name, int def) {

@@ -16,6 +16,7 @@ object Templates {
 
     init {
         add("metalRecipes", ::metalRecipes)
+        add("metalRecipesTagged", ::metalRecipesTagged)
         add("colorRecipes", ::colorRecipes)
         add("metalTags", ::metalTags)
         add("typeTags", ::typeTags)
@@ -134,6 +135,42 @@ object Templates {
                 "group" to "${item}_ingot"
                 key("ingredient").tag("forge:dusts/${item}")
                 result((if (isVanilla(item)) "minecraft" else ns) + ":${item}_ingot")
+            }
+        }
+    }
+
+    private fun metalRecipesTagged(v: JsonElement, out: JsonFileWriter) {
+        val item = v.asString
+        out("${item}_dust_grinding_ore") {
+            typed("flux:grinding") {
+                ingredients {
+                    tag("forge:ores/$item")
+                }
+                resultTag("forge:dusts/$item", 2)
+            }
+        }
+        out("${item}_dust_grinding_grit") {
+            typed("flux:grinding") {
+                ingredients {
+                    tag("forge:grits/$item")
+                }
+                resultTag("forge:dusts/$item")
+            }
+        }
+        out("${item}_dust_grinding_ingot") {
+            typed("flux:grinding") {
+                ingredients {
+                    tag("forge:ingots/$item")
+                }
+                resultTag("forge:dusts/$item")
+            }
+        }
+        out("${item}_grit_washing_ore") {
+            typed("flux:washing") {
+                ingredients {
+                    tag("forge:ores/$item")
+                }
+                resultTag("forge:grits/$item", 3)
             }
         }
     }
@@ -280,6 +317,10 @@ object Templates {
     private inline fun JsonCreator.ingredients(fn: JsonCreator.() -> Unit) = "ingredients" arr fn
     private fun JsonCreator.result(item: String, count: Int = 1) = "result" obj {
         "item" to item
+        if (count > 1) "count" to count
+    }
+    private fun JsonCreator.resultTag(tag: String, count: Int = 1) = "result" obj {
+        "tag" to tag
         if (count > 1) "count" to count
     }
     private fun JsonCreator.item(name: String) = obj { "item" to name }
