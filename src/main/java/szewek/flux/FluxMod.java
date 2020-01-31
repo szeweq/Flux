@@ -97,6 +97,7 @@ public final class FluxMod {
 			ic.register(Metals::gritColors, F.I.GRITS.values().toArray(new Item[0]));
 			ic.register(Metals::itemColors, F.I.DUSTS.values().toArray(new Item[0]));
 			ic.register(Metals::ingotColors, F.I.INGOTS.values().toArray(new Item[0]));
+			F.screens();
 		}
 	}
 

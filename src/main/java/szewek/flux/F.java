@@ -6,9 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.inventory.container.Container;
@@ -22,6 +20,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -145,6 +145,15 @@ public final class F {
 		re.getRegistry().register(V.FLUX_ENGINEER_POI);
 	}
 
+	@OnlyIn(Dist.CLIENT)
+	static void screens() {
+		ScreenManager.registerFactory(C.FLUXGEN, FluxGenScreen::new);
+		ScreenManager.registerFactory(C.GRINDING_MILL, MachineScreen.make("grindable", "grinding_mill"));
+		ScreenManager.registerFactory(C.ALLOY_CASTER, MachineScreen.make("alloyable", "alloy_caster"));
+		ScreenManager.registerFactory(C.WASHER, MachineScreen.make("washable", "washer"));
+		ScreenManager.registerFactory(C.COMPACTOR, MachineScreen.make("compactable", "compactor"));
+	}
+
 	public static final class B {
 		public static final Map<Metal, FluxOreBlock> ORES = makeOres();
 		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeBlocks();
@@ -208,11 +217,11 @@ public final class F {
 				GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
 
 		static {
-			FLUXGEN = container(FluxGenContainer::new, FluxGenScreen::new);
-			GRINDING_MILL = container(Machine2For1Container.make(R.GRINDING), "grindable", "grinding_mill");
-			ALLOY_CASTER = container(Machine2For1Container.make(R.ALLOYING), "alloyable", "alloy_caster");
-			WASHER = container(Machine2For1Container.make(R.WASHING), "washable", "washer");
-			COMPACTOR = container(Machine2For1Container.make(R.COMPACTING), "compactable", "compactor");
+			FLUXGEN = container(FluxGenContainer::new);
+			GRINDING_MILL = containerFlux(Machine2For1Container.make(R.GRINDING));
+			ALLOY_CASTER = containerFlux(Machine2For1Container.make(R.ALLOYING));
+			WASHER = containerFlux(Machine2For1Container.make(R.WASHING));
+			COMPACTOR = containerFlux(Machine2For1Container.make(R.COMPACTING));
 		}
 	}
 
@@ -287,18 +296,12 @@ public final class F {
 		return type;
 	}
 
-	private static <C extends Container, S extends Screen & IHasContainer<C>> ContainerType<C> container(IContainerFactory<C> factory, ScreenManager.IScreenFactory<C, S> screenFactory) {
-		ContainerType<C> cont = new ContainerType<>(factory);
-		if (screenFactory != null) {
-			ScreenManager.registerFactory(cont, screenFactory);
-		}
-		return cont;
+	private static <C extends Container> ContainerType<C> container(IContainerFactory<C> factory) {
+		return new ContainerType<>(factory);
 	}
 
-	private static <C extends AbstractMachineContainer> FluxContainerType<C> container(FluxContainerType.IContainerBuilder<C> cb, String showType, String title) {
-		FluxContainerType<C> cont = new FluxContainerType<>(cb);
-		ScreenManager.registerFactory(cont, MachineScreen.make(showType, title));
-		return cont;
+	private static <C extends AbstractMachineContainer> FluxContainerType<C> containerFlux(FluxContainerType.IContainerBuilder<C> cb) {
+		return new FluxContainerType<>(cb);
 	}
 
 	private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key, IRecipeSerializer<T> ser) {
