@@ -1,5 +1,6 @@
 package szewek.flux.container;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.RecipeBookCategories;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,10 +21,13 @@ import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.util.ServerRecipePlacerMachine;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractMachineContainer extends RecipeBookContainer<IInventory> {
@@ -35,7 +39,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	private final int outputSize;
 
 	protected AbstractMachineContainer(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
-		this(containerTypeIn, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize), new IntArray(4));
+		this(containerTypeIn, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(5));
 	}
 
 	protected AbstractMachineContainer(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
@@ -43,8 +47,8 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		this.recipeType = recipeType;
 		this.inputSize = inputSize;
 		this.outputSize = outputSize;
-		Container.assertInventorySize(machineInventoryIn, this.inputSize + this.outputSize);
-		Container.assertIntArraySize(dataIn, 4);
+		Container.assertInventorySize(machineInventoryIn, inputSize + outputSize + 1);
+		Container.assertIntArraySize(dataIn, 5);
 		machineInventory = machineInventoryIn;
 		data = dataIn;
 		world = playerInventoryIn.player.world;
@@ -56,25 +60,19 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	protected final void initPlayerSlotsAt(PlayerInventory playerInventory, int x, int y) {
 		int xBase = x;
-		int i = 0;
+		int i;
 
-		byte var8;
-		for(var8 = 2; i <= var8; ++i) {
-			int j = 0;
-
-			for(byte var10 = 8; j <= var10; ++j) {
+		for(i = 0; i < 3; ++i) {
+			for(int j = 0; j < 9; ++j) {
 				this.addSlot(new Slot(playerInventory, 9 * i + j + 9, x, y));
 				x += 18;
 			}
-
 			x = xBase;
 			y += 18;
 		}
 
 		y += 4;
-		i = 0;
-
-		for(var8 = 8; i <= var8; ++i) {
+		for(i = 0; i < 9; ++i) {
 			this.addSlot(new Slot(playerInventory, i, x, y));
 			x += 18;
 		}
@@ -82,30 +80,30 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	}
 
 	public void fillStackedContents(RecipeItemHelper helper) {
-		if (this.machineInventory instanceof IRecipeHelperPopulator) {
+		if (machineInventory instanceof IRecipeHelperPopulator) {
 			((IRecipeHelperPopulator) machineInventory).fillStackedContents(helper);
 		}
 	}
 
 	public void clear() {
-		this.machineInventory.clear();
+		machineInventory.clear();
 	}
 
 	public void func_217056_a(boolean placeAll, IRecipe<?> recipe, ServerPlayerEntity player) {
 		//noinspection unchecked
-		new ServerRecipePlacerMachine<>(this, this.inputSize, this.outputSize).place(player, (IRecipe<IInventory>) recipe, placeAll);
+		new ServerRecipePlacerMachine<>(this, inputSize, outputSize).place(player, (IRecipe<IInventory>) recipe, placeAll);
 	}
 
 	public boolean matches(IRecipe<? super IInventory> recipeIn) {
-		return recipeIn.getType() == this.recipeType && recipeIn.matches(this.machineInventory, this.world);
+		return recipeIn.getType() == recipeType && recipeIn.matches(machineInventory, world);
 	}
 
 	public int getOutputSlot() {
-		return this.inputSize;
+		return inputSize;
 	}
 
 	public int getWidth() {
-		return this.inputSize;
+		return inputSize;
 	}
 
 	public int getHeight() {
@@ -114,11 +112,11 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@OnlyIn(Dist.CLIENT)
 	public int getSize() {
-		return this.inputSize + 1;
+		return inputSize + 1;
 	}
 
 	public boolean canInteractWith(PlayerEntity playerIn) {
-		return this.machineInventory.isUsableByPlayer(playerIn);
+		return machineInventory.isUsableByPlayer(playerIn);
 	}
 
 	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
@@ -127,20 +125,23 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
-			int s = inputSize + outputSize;
+			int s = inputSize + outputSize + 1;
 			int e = s + 36;
 			if (index >= s) {
-				e = s;
-				s = 0;
+				if (slotStack.getItem() instanceof ChipItem) {
+					s = inputSize + outputSize;
+					e = s + 1;
+				} else {
+					e = s;
+					s = 0;
+				}
 			}
 
-			ItemStack var8;
-			if (!this.mergeItemStack(slotStack, s, e, false)) {
-				var8 = ItemStack.EMPTY;
-				return var8;
+			if (!mergeItemStack(slotStack, s, e, false)) {
+				return ItemStack.EMPTY;
 			}
 
-			if (index >= inputSize && index < inputSize + outputSize) {
+			if (index >= inputSize && index < inputSize + outputSize + 1) {
 				slot.onSlotChange(slotStack, stack);
 			}
 
@@ -150,10 +151,8 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 				slot.onSlotChanged();
 			}
 
-			int var10000 = slotStack.getCount();
-			if (var10000 == stack.getCount()) {
-				var8 = ItemStack.EMPTY;
-				return var8;
+			if (slotStack.getCount() == stack.getCount()) {
+				return ItemStack.EMPTY;
 			}
 
 			slot.onTake(playerIn, slotStack);
@@ -167,19 +166,19 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@OnlyIn(Dist.CLIENT)
 	public final int processScaled() {
-		int i = this.data.get(1);
-		int j = this.data.get(2);
+		int i = data.get(1);
+		int j = data.get(2);
 		return j != 0 && i != 0 ? i * 24 / j : 0;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public final int energyScaled() {
-		return this.data.get(0) * 54 / 1000000;
+		return data.get(0) * 54 / 1000000;
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public final String energyText() {
-		return this.data.get(0) + " / " + 1000000 + " F";
+	public final List<String> energyText() {
+		return Arrays.asList(data.get(0) + " / " + 1000000 + " F", I18n.format("flux.usage", data.get(3)));
 	}
 
 }

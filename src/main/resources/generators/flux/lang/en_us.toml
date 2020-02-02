@@ -2,6 +2,7 @@
 [flux]
  energystat = "Energy: %s / %s F"
  gen = "Generating %s F/t"
+ usage = "Using %s F/t"
  update = "Flux has a newer version: %s"
 
 [flux.gift]
@@ -9,6 +10,10 @@
 
 [flux.gift.text]
  newyear = "Happy New Year!"
+
+[flux.chip]
+ speed = "Speed"
+ energy = "Energy"
 
 [flux.configgui]
  fluxGenBaseEnergyValue = "Base energy generation for Flux Generator"
@@ -18,6 +23,7 @@
  mftool = "Flux Tool"
  gift = "Flux Gift"
  machine_base = "Machine Base"
+ chip = "Flux Chip"
  iron_grit = "Iron Grit"
  gold_grit = "Gold Grit"
  copper_grit = "Copper Grit"
@@ -26,8 +32,10 @@
  gold_dust = "Gold Dust"
  copper_dust = "Copper Dust"
  tin_dust = "Tin Dust"
+ bronze_dust = "Bronze Dust"
  copper_ingot = "Copper Ingot"
  tin_ingot = "Tin Ingot"
+ bronze_ingot = "Bronze Ingot"
 
 [itemGroup.flux]
  items = "Flux Items"
@@ -42,6 +50,7 @@
  tin_ore = "Tin Ore"
  copper_block = "Block of Copper"
  tin_block = "Block of Tin"
+ bronze_block = "Block of Bronze"
  energy_cable = "Energy Cable"
  digger = "Digger"
  farmer = "Farmer"

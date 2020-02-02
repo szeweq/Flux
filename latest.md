@@ -1,6 +1,12 @@
-# Flux (Version 4.4.2)
+# Flux (Version 4.5.0)
 
-### Fixed server-side crash
-Registering machine GUIs are now done on client setup instead of containers.
+### Bronze
+New items and recipes are added for bronze.
 
-It should work on both the server and client side.
+### Chips and upgrades
+Some machines can now use Flux Chips to change process speed and energy usage.
+Upgrades can only be purchased from Villagers (Flux Engineers sell these).
+
+### Disabling ore generation
+You can disable generating ores in the world.
+You should use this option only if another mod generates tin and copper ores and there is too much of them.

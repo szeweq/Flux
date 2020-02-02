@@ -63,7 +63,7 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
-			ForgeRegistries.BIOMES.getValues().forEach(biome -> {
+			if (!FluxCfg.COMMON.disableOres.get()) ForgeRegistries.BIOMES.getValues().forEach(biome -> {
 				Biome.Category cat = biome.getCategory();
 				if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
 					biome.addFeature(

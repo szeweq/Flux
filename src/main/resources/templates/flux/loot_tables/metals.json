@@ -1,4 +1,4 @@
 {
   "name": "metalLootTables",
-  "args": ["copper", "tin"]
+  "args": ["copper", "tin", "bronze"]
 }

@@ -1,5 +1,5 @@
 {
   "grit": ["gold", "iron", "copper", "tin"],
-  "dust": ["gold", "iron", "copper", "tin"],
-  "ingot": ["copper", "tin"]
+  "dust": ["gold", "iron", "copper", "tin", "bronze"],
+  "ingot": ["copper", "tin", "bronze"]
 }

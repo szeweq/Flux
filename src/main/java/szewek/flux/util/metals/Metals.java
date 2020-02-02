@@ -14,7 +14,8 @@ public final class Metals {
 			IRON = new VanillaMetal(0xE2C0BA, "iron", 1),
 			GOLD = new VanillaMetal(0xFFD700, "gold", 2),
 			COPPER = new SimpleMetal(0xE99868, "copper", 1),
-			TIN = new SimpleMetal(0xD0D3D6, "tin", 1);
+			TIN = new SimpleMetal(0xD0D3D6, "tin", 1),
+			BRONZE = new AlloyMetal(0xCD7F32, "bronze", 2);
 
 	private Metals() {}
 

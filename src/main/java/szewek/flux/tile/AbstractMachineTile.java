@@ -28,8 +28,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
+import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.energy.IEnergyReceiver;
 import szewek.flux.util.IInventoryIO;
@@ -40,7 +42,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
 	private final int inputSize, outputSize;
-	protected int energy = 0, process = 0, processTotal = 0, energyUse;
+	protected int energy = 0, process = 0, processTotal = 0, energyUse, processSpeed = 100;
 	protected boolean isDirty = false;
 	protected NonNullList<ItemStack> items;
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
@@ -54,6 +56,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				case 1: return process;
 				case 2: return processTotal;
 				case 3: return energyUse;
+				case 4: return processSpeed;
 				default: return 0;
 			}
 		}
@@ -65,12 +68,13 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				case 1: process = value; break;
 				case 2: processTotal = value; break;
 				case 3: energyUse = value; break;
+				case 4: processSpeed = value; break;
 			}
 		}
 
 		@Override
 		public int size() {
-			return 4;
+			return 5;
 		}
 	};
 
@@ -78,7 +82,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		super(typeIn);
 		recipeType = recipeTypeIn;
 		menuFactory = factory;
-		items = NonNullList.withSize(inSize + outSize, ItemStack.EMPTY);
+		items = NonNullList.withSize(inSize + outSize + 1, ItemStack.EMPTY);
 		inputSize = inSize;
 		outputSize = outSize;
 		energyUse = FluxCfg.COMMON.basicMachineEU.get();
@@ -87,13 +91,13 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 
 	@Override
 	public void onConfigChanged() {
-		energyUse = FluxCfg.COMMON.basicMachineEU.get();
+		updateValues();
 	}
 
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		items = NonNullList.withSize(inputSize + outputSize, ItemStack.EMPTY);
+		items.clear();
 		ItemStackHelper.loadAllItems(compound, items);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		process = compound.getInt("Process");
@@ -104,6 +108,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 			int c = compound.getInt("RCount" + j);
 			recipesCount.put(location, c);
 		}
+		updateValues();
 	}
 
 	@Override
@@ -142,11 +147,13 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				AbstractMachineRecipe recipe = world.getRecipeManager().getRecipe(recipeType, this, world).orElse(null);
 				if (recipe != null && canProcess(recipe)) {
 					energy -= energyUse;
-					if (process++ == processTotal) {
+					if (process >= processTotal) {
 						process = 0;
-						processTotal = recipe.processTime;
+						processTotal = recipe.processTime * 100;
 						produceResult(recipe);
 						isDirty = true;
+					} else {
+						process += processSpeed;
 					}
 				} else {
 					process = 0;
@@ -241,7 +248,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 
 	@Override
 	public List<ItemStack> getOutputs() {
-		int size = items.size();
+		int size = items.size() - 1;
 		return items.subList(size - outputSize, size);
 	}
 
@@ -293,7 +300,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		if (stack.getCount() > 64) stack.setCount(64);
 		if (index < inputSize && !same) {
 			assert world != null;
-			processTotal = world.getRecipeManager().getRecipe(recipeType, this, world).map(r -> r.processTime).orElse(200);
+			processTotal = world.getRecipeManager().getRecipe(recipeType, this, world).map(r -> r.processTime).orElse(200) * 100;
 			process = 0;
 			markDirty();
 		}
@@ -353,6 +360,21 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				.collect(Collectors.toList());
 		player.unlockRecipes(recipes);
 		recipesCount.clear();
+	}
+
+	public void updateValues() {
+		energyUse = FluxCfg.COMMON.basicMachineEU.get();
+		processSpeed = 100;
+		ItemStack chipStack = items.get(inputSize + outputSize);
+		if (!chipStack.isEmpty() && chipStack.getItem() instanceof ChipItem) {
+			ChipItem ci = (ChipItem) chipStack.getItem();
+			CompoundNBT tag = chipStack.getTag();
+			if (tag != null) {
+				processSpeed = ci.countValue(tag, "speed", processSpeed);
+				energyUse = ci.countValue(tag, "energy", energyUse) * processSpeed / 100;
+			}
+
+		}
 	}
 
 	private static void collectExperience(PlayerEntity player, int count, float xp) {

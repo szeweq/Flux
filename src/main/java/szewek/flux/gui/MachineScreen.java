@@ -71,7 +71,7 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
 		if (151 <= mx && 168 >= mx && 16 <= my && 69 >= my) {
-			renderTooltip(Collections.singletonList(container.energyText()), mx, my);
+			renderTooltip(container.energyText(), mx, my);
 		}
 
 	}

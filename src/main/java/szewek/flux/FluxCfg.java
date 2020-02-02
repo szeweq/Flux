@@ -20,6 +20,7 @@ public class FluxCfg {
 				fluxGenBaseEnergyValue,
 				basicMachineEU,
 				diggerEU, farmerEU, butcherEU, mobPounderEU, itemAbsorberEU;
+		public final ForgeConfigSpec.BooleanValue disableOres;
 		public final ForgeConfigSpec.ConfigValue<List<? extends String>> preferModCompat;
 
 		Common(ForgeConfigSpec.Builder bld) {
@@ -38,6 +39,7 @@ public class FluxCfg {
 					"First mod name has the highest priority.",
 					"Add \"jaopca\" to ignore all tag recipes.")
 					.defineList("preferModCompat", Collections::emptyList, o -> true);
+			disableOres = translate(bld, "disableOres", "Disable Ore Generation").define("disableOres", false);
 		}
 
 		private static ForgeConfigSpec.Builder translate(ForgeConfigSpec.Builder bld, String name, String... comment) {

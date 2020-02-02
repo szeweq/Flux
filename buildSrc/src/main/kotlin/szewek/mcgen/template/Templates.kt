@@ -5,10 +5,11 @@ import szewek.mcgen.util.JsonCreator
 import szewek.mcgen.util.JsonFileWriter
 
 object Templates {
-    private val UNIMPLEMENTED = ::unimplemented as TemplateFunc
     private val nameMap = HashMap<String, TemplateFunc>()
 
-    fun byName(name: String): TemplateFunc = nameMap.getOrDefault(name, UNIMPLEMENTED)
+    fun byName(name: String): TemplateFunc {
+        return nameMap[name] ?: throw NotImplementedError("Template not implemented")
+    }
 
     private fun add(name: String, fn: TemplateFunc) {
         nameMap[name] = fn
@@ -26,10 +27,6 @@ object Templates {
         add("machineBlockStates", ::machineBlockStates)
         add("activeBlockStates", ::activeBlockStates)
         add("defaultBlockStates", ::defaultBlockStates)
-    }
-
-    private fun unimplemented(o: JsonElement, out: JsonFileWriter) {
-        throw NotImplementedError("Template not implemented")
     }
 
     private fun machineBlockStates(v: JsonElement, out: JsonFileWriter) {
@@ -75,9 +72,7 @@ object Templates {
             out("${item}_block") {
                 typed("minecraft:crafting_shaped") {
                     "pattern" arr { add("###").add("###").add("###") }
-                    "key" obj {
-                        key("#").item("$ns:${item}_ingot")
-                    }
+                    "key" obj { key("#").item("$ns:${item}_ingot") }
                     result("$ns:${item}_block")
                 }
             }
@@ -90,7 +85,7 @@ object Templates {
                     result("$ns:${item}_ingot", 9)
                 }
             }
-            out("${item}_ingot_smelting_ore") {
+            if (!isAlloy(item)) out("${item}_ingot_smelting_ore") {
                 typed("minecraft:smelting") {
                     "group" to "${item}_ingot"
                     key("ingredient").tag("forge:ores/${item}")
@@ -98,20 +93,30 @@ object Templates {
                 }
             }
         }
-        out("${item}_dust_grinding_ore") {
-            typed("flux:grinding") {
-                ingredients {
-                    tag("forge:ores/${item}")
+        if (!isAlloy(item)) {
+            out("${item}_dust_grinding_ore") {
+                typed("flux:grinding") {
+                    ingredients {
+                        tag("forge:ores/${item}")
+                    }
+                    result("$ns:${item}_dust", 2)
                 }
-                result("$ns:${item}_dust", 2)
             }
-        }
-        out("${item}_dust_grinding_grit") {
-            typed("flux:grinding") {
-                ingredients {
-                    tag("forge:grits/${item}")
+            out("${item}_grit_washing_ore") {
+                typed("flux:washing") {
+                    ingredients {
+                        tag("forge:ores/${item}")
+                    }
+                    result("$ns:${item}_grit", 3)
                 }
-                result("$ns:${item}_dust")
+            }
+            out("${item}_dust_grinding_grit") {
+                typed("flux:grinding") {
+                    ingredients {
+                        tag("forge:grits/${item}")
+                    }
+                    result("$ns:${item}_dust")
+                }
             }
         }
         out("${item}_dust_grinding_ingot") {
@@ -120,14 +125,6 @@ object Templates {
                     tag("forge:ingots/${item}")
                 }
                 result("$ns:${item}_dust")
-            }
-        }
-        out("${item}_grit_washing_ore") {
-            typed("flux:washing") {
-                ingredients {
-                    tag("forge:ores/${item}")
-                }
-                result("$ns:${item}_grit", 3)
             }
         }
         out("${item}_ingot_smelting_dust") {
@@ -200,17 +197,19 @@ object Templates {
         val item = v.asString
         val ns = out.namespace
         if (!isVanilla(item)) {
+            if (!isAlloy(item)) {
+                out("items/ores/${item}") {
+                    tagList("$ns:${item}_ore")
+                }
+                out("blocks/ores/${item}") {
+                    tagList("$ns:${item}_ore")
+                }
+            }
             out("items/ingots/${item}") {
                 tagList("$ns:${item}_ingot")
             }
-            out("items/ores/${item}") {
-                tagList("$ns:${item}_ore")
-            }
             out("items/storage_blocks/${item}") {
                 tagList("$ns:${item}_block")
-            }
-            out("blocks/ores/${item}") {
-                tagList("$ns:${item}_ore")
             }
             out("blocks/storage_blocks/${item}") {
                 tagList("$ns:${item}_block")
@@ -219,7 +218,7 @@ object Templates {
         out("items/dusts/${item}") {
             tagList("$ns:${item}_dust")
         }
-        out("items/grits/${item}") {
+        if (!isAlloy(item)) out("items/grits/${item}") {
             tagList("$ns:${item}_grit")
         }
     }
@@ -267,7 +266,7 @@ object Templates {
 
     private fun metalLootTables(v: JsonElement, out: JsonFileWriter) {
         val item = v.asString
-        val types = arrayOf("ore", "block")
+        val types = if (isAlloy(item)) arrayOf("block") else arrayOf("ore", "block")
         for (typ in types) out("blocks/${item}_$typ") {
             typed("minecraft:block") {
                 "pools" arr {
@@ -309,10 +308,11 @@ object Templates {
     }
 
     private fun isVanilla(name: String) = name == "iron" || name == "gold"
+    private fun isAlloy(name: String) = name == "bronze"
 
     private inline fun JsonCreator.typed(type: String, fn: JsonCreator.() -> Unit) = obj {
         "type" to type
-        this.fn()
+        fn()
     }
     private inline fun JsonCreator.ingredients(fn: JsonCreator.() -> Unit) = "ingredients" arr fn
     private fun JsonCreator.result(item: String, count: Int = 1) = "result" obj {

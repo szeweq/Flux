@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "N N",
+    "NMN",
+    "N N"
+  ],
+  "key": {
+    "M": {"item": "flux:machine_base"},
+    "N": {"item": "minecraft:gold_nugget"}
+  },
+  "result": {
+    "item": "flux:chip",
+    "count": 1
+  }
+}

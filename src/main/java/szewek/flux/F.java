@@ -34,11 +34,13 @@ import szewek.flux.container.FluxGenContainer;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.FluxGenScreen;
 import szewek.flux.gui.MachineScreen;
+import szewek.flux.item.ChipItem;
 import szewek.flux.item.FluxToolItem;
 import szewek.flux.item.GiftItem;
 import szewek.flux.item.MetalItem;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
+import szewek.flux.util.ChipUpgradeTrade;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
@@ -82,7 +84,7 @@ public final class F {
 		B.ORES.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_ore")));
 		B.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_block")));
 		reg.registerAll(
-				I.FLUXTOOL, I.GIFT, I.MACHINE_BASE,
+				I.FLUXTOOL, I.GIFT, I.MACHINE_BASE, I.CHIP,
 				fromBlock(B.FLUXGEN, "fluxgen"),
 				fromBlock(B.GRINDING_MILL, "grinding_mill"),
 				fromBlock(B.ALLOY_CASTER, "alloy_caster"),
@@ -132,10 +134,21 @@ public final class F {
 		re.getRegistry().register(V.FLUX_ENGINEER.setRegistryName(MODID, "flux_engineer"));
 		Int2ObjectMap<VillagerTrades.ITrade[]> lvlTrades = new Int2ObjectOpenHashMap<>();
 		lvlTrades.put(1, new VillagerTrades.ITrade[]{
-				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metals.COPPER), 6, 10, 4)
+				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metals.COPPER), 6, 10, 4),
+				new ChipUpgradeTrade(-1, 5)
 		});
 		lvlTrades.put(2, new VillagerTrades.ITrade[]{
-				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metals.TIN), 4, 8, 4)
+				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metals.TIN), 4, 8, 4),
+				new ChipUpgradeTrade(-3, 10)
+		});
+		lvlTrades.put(3, new VillagerTrades.ITrade[]{
+				new ChipUpgradeTrade(-5, 20)
+		});
+		lvlTrades.put(4, new VillagerTrades.ITrade[]{
+				new ChipUpgradeTrade(-9, 50)
+		});
+		lvlTrades.put(5, new VillagerTrades.ITrade[]{
+				new ChipUpgradeTrade(-9, 100)
 		});
 		VillagerTrades.VILLAGER_DEFAULT_TRADES.put(V.FLUX_ENGINEER, lvlTrades);
 	}
@@ -184,6 +197,7 @@ public final class F {
 		public static final FluxToolItem FLUXTOOL = item(FluxToolItem::new, "mftool", new Item.Properties().maxStackSize(1));
 		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());
+		public static final ChipItem CHIP = item(ChipItem::new, "chip", new Item.Properties());
 	}
 
 	public static final class T {

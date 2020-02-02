@@ -1,10 +1,10 @@
 {
   "name": "typeTags",
   "args": [
-    {"tag": "ingots", "items": ["copper", "tin"], "blocks": false},
-    {"tag": "dusts", "items": ["iron", "gold", "copper", "tin"], "blocks": false},
+    {"tag": "ingots", "items": ["copper", "tin", "bronze"], "blocks": false},
+    {"tag": "dusts", "items": ["iron", "gold", "copper", "tin", "bronze"], "blocks": false},
     {"tag": "grits", "items": ["iron", "gold", "copper", "tin"], "blocks": false},
     {"tag": "ores", "items": ["copper", "tin"], "blocks": true},
-    {"tag": "storage_blocks", "items": ["copper", "tin"], "blocks": true}
+    {"tag": "storage_blocks", "items": ["copper", "tin", "bronze"], "blocks": true}
   ]
 }

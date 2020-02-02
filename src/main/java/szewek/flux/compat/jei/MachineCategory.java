@@ -23,8 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipeCategory<T> {
-	private final IDrawable background;
-	private final IDrawable icon;
+	private final IDrawable background, icon;
 	private final String localizedName;
 	protected final IDrawableAnimated arrow;
 	private final ResourceLocation uid;

@@ -5,10 +5,6 @@ import com.google.gson.internal.Streams
 import com.google.gson.stream.JsonWriter
 
 inline class JsonCreator(val jw: JsonWriter) {
-    operator fun invoke(k: String): JsonCreator {
-        jw.name(k)
-        return this
-    }
     inline fun obj(fn: JsonCreator.() -> Unit) {
         jw.beginObject()
         fn()
