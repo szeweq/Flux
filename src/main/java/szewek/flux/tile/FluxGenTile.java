@@ -152,15 +152,15 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		energyGen = FluxCfg.COMMON.fluxGenBaseEnergyValue.get();
 		if (genCat.r <= catalyst.getCount()) {
 			energyGen *= genCat.l;
-			catalyst.grow(-genCat.r);
+			if (genCat.r > 0) catalyst.grow(-genCat.r);
 		}
 		if (genHot.r <= fluids[0].getAmount()) {
 			f *= genHot.l;
-			fluids[0].grow(-genHot.r);
+			if (genHot.r > 0) fluids[0].grow(-genHot.r);
 		}
 		if (genCold.r <= fluids[1].getAmount()) {
 			workSpeed = genCold.l < genCat.l ? genCold.l - genCat.l : 1;
-			fluids[1].grow(-genCold.r);
+			if (genCold.r > 0) fluids[1].grow(-genCold.r);
 		} else {
 			workSpeed = 1;
 		}
