@@ -3,6 +3,7 @@ package szewek.flux.container;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
@@ -12,21 +13,24 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 import szewek.flux.F;
 import szewek.flux.recipe.FluxGenRecipes;
 
 public class FluxGenContainer extends Container {
 	private final IInventory fluxGenInv;
-	private final IIntArray extraData;
+	private final IIntArray data;
 
 	public FluxGenContainer(int i, PlayerInventory pinv, PacketBuffer data) {
-		this(i, pinv, new Inventory(2), new IntArray(5));
+		this(i, pinv, new Inventory(2), new IntArray(9));
 	}
 
 	public FluxGenContainer(int i, PlayerInventory pinv, IInventory iinv, IIntArray extra) {
 		super(F.C.FLUXGEN, i);
 		fluxGenInv = iinv;
-		extraData = extra;
+		data = extra;
 
 		addSlot(new Slot(fluxGenInv, 0, 67, 35));
 		addSlot(new Slot(fluxGenInv, 1, 93, 35));
@@ -50,20 +54,27 @@ public class FluxGenContainer extends Container {
 	}
 
 	public float getWorkFill() {
-		int maxWork = extraData.get(2);
-		return maxWork == 0 ? 0 : (float) extraData.get(1) / (float) maxWork;
+		int maxWork = data.get(2);
+		return maxWork == 0 ? 0 : (float) data.get(1) / (float) maxWork;
 	}
 
 	public float getEnergyFill() {
-		return (float) extraData.get(0) / (float) 1e6;
+		return (float) data.get(0) / (float) 1e6;
 	}
 
 	public String energyText() {
-		return extraData.get(0) + " / 1000000 F";
+		return data.get(0) + " / 1000000 F";
 	}
 
 	public String genText() {
-		return I18n.format("flux.gen", extraData.get(3));
+		return I18n.format("flux.gen", data.get(3));
+	}
+
+	public FluidStack getHotFluid() {
+		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(5)), data.get(6));
+	}
+	public FluidStack getColdFluid() {
+		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(7)), data.get(8));
 	}
 
 	@Override

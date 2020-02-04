@@ -1,12 +1,9 @@
-# Flux (Version 4.5.0)
+# Flux (Version 4.5.1)
 
-### Bronze
-New items and recipes are added for bronze.
+### Important Flux Generator crash fix
+Setting any fluid amount (even zero) into an empty fluid was causing game crash.
+A fix prevents unnecessary setting.
 
-### Chips and upgrades
-Some machines can now use Flux Chips to change process speed and energy usage.
-Upgrades can only be purchased from Villagers (Flux Engineers sell these).
-
-### Disabling ore generation
-You can disable generating ores in the world.
-You should use this option only if another mod generates tin and copper ores and there is too much of them.
+### Fluids in Flux Generator
+**FINALLY!** Fluids have now more meaning in the Flux Generator.
+They can be seen in GUI. Click the machine with bucket to fill its containers.

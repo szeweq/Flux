@@ -2,6 +2,7 @@ package szewek.flux.tile;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
@@ -26,6 +27,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.container.FluxGenContainer;
@@ -52,6 +55,10 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 				case 2: return maxWork;
 				case 3: return energyGen;
 				case 4: return workSpeed;
+				case 5: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[0].getFluid());
+				case 6: return fluids[0].getAmount();
+				case 7: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[1].getFluid());
+				case 8: return fluids[1].getAmount();
 				default: return 0;
 			}
 		}
@@ -64,12 +71,16 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 				case 2: maxWork = v;
 				case 3: energyGen = v;
 				case 4: workSpeed = v;
+				case 5: fluids[0] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
+				case 6: if (!fluids[0].isEmpty()) fluids[0].setAmount(v);
+				case 7: fluids[1] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
+				case 8: if (!fluids[1].isEmpty()) fluids[0].setAmount(v);
 			}
 		}
 
 		@Override
 		public int size() {
-			return 5;
+			return 9;
 		}
 	};
 	private final LazyOptional<FluxGenTile> selfHandler = LazyOptional.of(() -> this);
@@ -347,14 +358,16 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		int s = -1;
 		if (FluxGenRecipes.isHotFluid(resource)) s = 0;
 		else if (FluxGenRecipes.isColdFluid(resource)) s = 1;
-		if (s == -1 || !fluids[s].isFluidEqual(resource)) return 0;
-		int l = fluidCap - fluids[s].getAmount();
+		else return 0;
+		FluidStack fs = fluids[s];
+		if (!fs.isEmpty() && !fs.isFluidEqual(resource)) return 0;
+		int l = fluidCap - fs.getAmount();
 		if (l > resource.getAmount())
 			l = resource.getAmount();
 		if (l > 0 && action.execute()) {
-			if (fluids[s].isEmpty())
+			if (fs.isEmpty())
 				fluids[s] = resource.copy();
-			else fluids[s].grow(l);
+			else fs.grow(l);
 			isDirty = true;
 		}
 		return l;
