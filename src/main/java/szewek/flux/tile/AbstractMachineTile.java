@@ -31,7 +31,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
 import szewek.flux.item.ChipItem;
@@ -230,6 +229,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
+		if (maxReceive <= 0) return 0;
 		int r = maxReceive;
 		if (r > 1000000 - energy) r = 1000000 - energy;
 		if (!simulate) {

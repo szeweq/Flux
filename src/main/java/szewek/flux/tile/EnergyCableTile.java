@@ -112,6 +112,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		}
 
 		public int receiveEnergy(int maxReceive, boolean simulate) {
+			if (maxReceive <= 0) return 0;
 			int r = maxReceive;
 			if (maxReceive > 50000 - energy) {
 				r = 50000 - energy;
@@ -124,6 +125,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		}
 
 		public int extractEnergy(int maxExtract, boolean simulate) {
+			if (maxExtract <= 0) return 0;
 			int r = maxExtract;
 			if (maxExtract > energy) {
 				r = energy;

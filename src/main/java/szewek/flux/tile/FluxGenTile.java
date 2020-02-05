@@ -9,6 +9,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.Direction;
@@ -98,6 +99,15 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		energyGen = compound.getInt("Gen");
 		workSpeed = compound.getInt("WorkSpeed");
 		ItemStackHelper.loadAllItems(compound, items);
+
+		ListNBT fluidNBT = compound.getList("Fluids", 10);
+		for (int i = 0; i < fluidNBT.size(); i++) {
+			CompoundNBT nbt = fluidNBT.getCompound(i);
+			int j = nbt.getByte("Slot") & 255;
+			if (j >= 0 && j < fluids.length) {
+				fluids[j] = FluidStack.loadFluidStackFromNBT(nbt);
+			}
+		}
 	}
 
 	@Override
@@ -109,6 +119,19 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		compound.putInt("Gen", energyGen);
 		compound.putInt("WorkSpeed", workSpeed);
 		ItemStackHelper.saveAllItems(compound, items);
+
+		ListNBT fluidNBT = new ListNBT();
+		for (int i = 0; i < fluids.length; i++) {
+			FluidStack fs = fluids[i];
+			if (!fs.isEmpty()) {
+				CompoundNBT nbt = new CompoundNBT();
+				nbt.putByte("Slot", (byte) i);
+				fs.writeToNBT(nbt);
+				fluidNBT.add(nbt);
+			}
+		}
+		compound.put("Fluids", fluidNBT);
+
 		return compound;
 	}
 
@@ -223,6 +246,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
+		if (maxExtract <= 0) return 0;
 		int r = maxExtract;
 		if (r > energy) r = energy;
 		if (!simulate) {
@@ -355,7 +379,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
 		if (resource.getAmount() <= 0) return 0;
-		int s = -1;
+		int s;
 		if (FluxGenRecipes.isHotFluid(resource)) s = 0;
 		else if (FluxGenRecipes.isColdFluid(resource)) s = 1;
 		else return 0;

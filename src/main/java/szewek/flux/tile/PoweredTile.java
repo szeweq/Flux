@@ -42,6 +42,7 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 	}
 
 	public int receiveEnergy(int maxReceive, boolean simulate) {
+		if (maxReceive <= 0) return 0;
 		int r = maxReceive;
 		if (maxReceive > 500000 - energy) {
 			r = 500000 - energy;
