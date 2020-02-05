@@ -28,6 +28,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
@@ -208,10 +211,20 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	}
 
 	private final LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> this);
+	private final LazyOptional<? extends IItemHandler>[] sideHandlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed && cap == CapabilityEnergy.ENERGY) return energyHandler.cast();
+		if (!removed) {
+			if (cap == CapabilityEnergy.ENERGY)
+				return energyHandler.cast();
+			if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+				if (side == Direction.UP)
+					return sideHandlers[0].cast();
+				else if (side == Direction.DOWN)
+					return sideHandlers[1].cast();
+				else return sideHandlers[2].cast();
+		}
 		return super.getCapability(cap, side);
 	}
 
@@ -264,7 +277,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 
 	@Override
 	public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
-		return true;
+		return index >= inputSize && index < inputSize + outputSize;
 	}
 
 	@Override
