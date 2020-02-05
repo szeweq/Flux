@@ -1,9 +1,9 @@
-# Flux (Version 4.5.1)
+# Flux (Version 4.5.2)
 
-### Important Flux Generator crash fix
-Setting any fluid amount (even zero) into an empty fluid was causing game crash.
-A fix prevents unnecessary setting.
+### Fluids in Flux Generator, part 2
+Fluids should not be lost while saving and re-entering the world.
 
-### Fluids in Flux Generator
-**FINALLY!** Fluids have now more meaning in the Flux Generator.
-They can be seen in GUI. Click the machine with bucket to fill its containers.
+### Other fixes
+Machines ignore negative energy.
+
+Processing machines can now properly work with hoppers and other blocks that use item handler capability.
