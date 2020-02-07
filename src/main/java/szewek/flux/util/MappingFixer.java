@@ -13,9 +13,7 @@ public final class MappingFixer {
 			ResourceLocation key = m.key;
 			if ("mcflux".equals(key.getNamespace())) {
 				T o = m.registry.getValue(FluxMod.location(key.getPath()));
-				if (o != null) {
-					m.remap(o);
-				}
+				if (o != null) m.remap(o);
 			}
 		}
 	}

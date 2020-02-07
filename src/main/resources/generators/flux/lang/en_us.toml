@@ -10,6 +10,9 @@
 
 [flux.gift.text]
  newyear = "Happy New Year!"
+ valentine = "It's Valentine's Day! Hearts for You!"
+ pi = "Happy Pi Day!"
+ water = "It's Water Day!"
 
 [flux.chip]
  speed = "Speed"

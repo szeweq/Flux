@@ -2,11 +2,15 @@ package szewek.flux.util.gift;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.data.NBTToSNBTConverter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTDynamicOps;
+import net.minecraft.nbt.NBTTypes;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public final class Gifts {
@@ -35,6 +39,15 @@ public final class Gifts {
 		add(1, 1, "newyear", 0x2020F0, 0xF0F020, Arrays.asList(
 			new ItemStack(Items.NETHER_STAR),
 			new ItemStack(Items.FIREWORK_ROCKET, 16)
+		));
+		add(14, 2, "valentine", 0xF01010, 0xF88080, Collections.singletonList(
+				new ItemStack(Items.HEART_OF_THE_SEA, 2)
+		));
+		add(14, 3, "pi", 0x808080, 0x2020DF, Collections.singletonList(
+				new ItemStack(Items.PUMPKIN_PIE)
+		));
+		add(22, 3, "water", 0x0808F8, 0x3232F0, Collections.singletonList(
+				new ItemStack(Items.WATER_BUCKET)
 		));
 	}
 }
