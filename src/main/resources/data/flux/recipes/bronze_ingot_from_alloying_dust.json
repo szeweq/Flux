@@ -1,8 +1,0 @@
-{
-  "type": "flux:alloying",
-  "ingredients": [
-    {"type": "flux:counted", "tag": "forge:dusts/copper", "count": 3},
-    {"tag": "forge:dusts/tin"}
-  ],
-  "result": {"item": "flux:bronze_ingot", "count": 4}
-}

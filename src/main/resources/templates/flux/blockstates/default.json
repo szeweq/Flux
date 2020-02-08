@@ -1,4 +1,4 @@
 {
   "name": "defaultBlockStates",
-  "args": ["fluxgen", "copper_block", "copper_ore", "tin_block", "tin_ore", "bronze_block"]
+  "args": ["fluxgen", "copper_block", "copper_ore", "tin_block", "tin_ore", "bronze_block", "steel_block"]
 }

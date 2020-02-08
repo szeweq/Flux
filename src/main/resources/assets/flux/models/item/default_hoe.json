@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {"layer0": "flux:item/hoe_blade", "layer1": "flux:item/hoe_handle"}
+}

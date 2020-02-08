@@ -100,6 +100,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	@Override
 	public void remove() {
 		super.remove();
+		energyCache.clear();
 		for (Side s : sides) s.lazy.invalidate();
 	}
 

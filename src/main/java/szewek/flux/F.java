@@ -41,6 +41,8 @@ import szewek.flux.item.MetalItem;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.ChipUpgradeTrade;
+import szewek.flux.util.FluxItemTier;
+import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
@@ -97,6 +99,8 @@ public final class F {
 				fromBlock(B.MOB_POUNDER, "mob_pounder"),
 				fromBlock(B.ITEM_ABSORBER, "item_absorber")
 		);
+		I.BRONZE_TOOLS.registerTools(reg);
+		I.STEEL_TOOLS.registerTools(reg);
 	}
 
 	@SubscribeEvent
@@ -198,6 +202,14 @@ public final class F {
 		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());
 		public static final ChipItem CHIP = item(ChipItem::new, "chip", new Item.Properties());
+
+		public static final FluxItemTier
+				BRONZE_TIER = new FluxItemTier(2, 500, 7f, 2.5f, 20, "ingots/bronze"),
+				STEEL_TIER = new FluxItemTier(3, 1500, 8.5f, 3f, 22, "ingots/steel");
+		public static final Toolset
+				BRONZE_TOOLS = new Toolset(BRONZE_TIER, "bronze"),
+				STEEL_TOOLS = new Toolset(STEEL_TIER, "steel");
+
 	}
 
 	public static final class T {

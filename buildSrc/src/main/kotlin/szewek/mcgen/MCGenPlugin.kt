@@ -26,6 +26,7 @@ class MCGenPlugin : Plugin<Project> {
         val tmplTags = p.tasks.create("processTemplateTags", TemplateTags::class.java, confSources)
         val tmplLootTables = p.tasks.create("processLootTables", TemplateLootTables::class.java, confSources)
         val tmplBlockStates = p.tasks.create("processBlockStates", TemplateBlockStates::class.java, confSources)
+        val tmplModels = p.tasks.create("processModels", TemplateModels::class.java, confSources)
 
         srcSet.resources.srcDir(genResourcesDir)
         val processResources = p.tasks.getByName("processResources") as AbstractCopyTask
@@ -34,7 +35,8 @@ class MCGenPlugin : Plugin<Project> {
             processResources.exclude("templates")
         }
         processResources.dependsOn(
-                itemModelTask, itemBlockModelTask, langTask, recipeTask, tmplRecipes, tmplTags, tmplLootTables, tmplBlockStates
+                itemModelTask, itemBlockModelTask, langTask, recipeTask,
+                tmplRecipes, tmplTags, tmplLootTables, tmplBlockStates, tmplModels
         )
     }
 }

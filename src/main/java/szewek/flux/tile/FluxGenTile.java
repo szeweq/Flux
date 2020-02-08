@@ -216,6 +216,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 	@Override
 	public void remove() {
 		super.remove();
+		energyCache.clear();
 		selfHandler.invalidate();
 	}
 

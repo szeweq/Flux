@@ -1,5 +1,10 @@
 {
   "grit": ["gold", "iron", "copper", "tin"],
-  "dust": ["gold", "iron", "copper", "tin", "bronze"],
-  "ingot": ["copper", "tin", "bronze"]
+  "dust": ["gold", "iron", "copper", "tin", "bronze", "steel"],
+  "ingot": ["copper", "tin", "bronze", "steel"],
+  "sword": ["bronze", "steel"],
+  "shovel": ["bronze", "steel"],
+  "pickaxe": ["bronze", "steel"],
+  "axe": ["bronze", "steel"],
+  "hoe": ["bronze", "steel"]
 }

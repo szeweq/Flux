@@ -1,9 +1,10 @@
-# Flux (Version 4.5.2)
+# Flux (Version 4.6.0)
 
-### Fluids in Flux Generator, part 2
-Fluids should not be lost while saving and re-entering the world.
+### Bronze tools
+Bronze Sword, Shovel, Pickaxe, Axe and Hoe are added.
+
+### Steel
+Added steel ingot, block, dust and tools.
 
 ### Other fixes
-Machines ignore negative energy.
-
-Processing machines can now properly work with hoppers and other blocks that use item handler capability.
+Bronze color matches its block form

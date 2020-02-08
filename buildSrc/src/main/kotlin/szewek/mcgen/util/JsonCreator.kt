@@ -42,6 +42,11 @@ inline class JsonCreator(val jw: JsonWriter) {
     infix fun String.to(v: Boolean) {
         jw.name(this).value(v)
     }
+    infix fun String.to(v: Array<String>) {
+        jw.name(this).beginArray()
+        for (s in v) jw.value(s)
+        jw.endArray()
+    }
     infix fun String.to(v: JsonElement) {
         jw.name(this)
         Streams.write(v, jw)

@@ -19,6 +19,7 @@ object Templates {
         add("metalRecipes", ::metalRecipes)
         add("metalRecipesTagged", ::metalRecipesTagged)
         add("colorRecipes", ::colorRecipes)
+        add("toolRecipes", ::toolRecipes)
         add("metalTags", ::metalTags)
         add("typeTags", ::typeTags)
         add("containerLootTables", ::containerLootTables)
@@ -59,9 +60,7 @@ object Templates {
         val item = v.asString
         val ns = out.namespace
         out(item) {
-            variants {
-                "" obj { "model" to "$ns:block/$item" }
-            }
+            variants { "" obj { "model" to "$ns:block/$item" } }
         }
     }
 
@@ -70,6 +69,7 @@ object Templates {
         val ns = out.namespace
         if (!isVanilla(item)) {
             out("${item}_block") {
+                craftingShaped(arrayOf("###", "###", "###"), mapOf(Pair("#", "$ns:${item}_ingot")), "$ns:${item}_block")
                 typed("minecraft:crafting_shaped") {
                     "pattern" arr { add("###").add("###").add("###") }
                     "key" obj { key("#").item("$ns:${item}_ingot") }
@@ -193,6 +193,22 @@ object Templates {
         }
     }
 
+    private fun toolRecipes(v: JsonElement, out: JsonFileWriter) {
+        val item = v.asString
+        val ns = out.namespace
+        val mapKeys = mapOf("X" to "$ns:${item}_ingot", "#" to "minecraft:stick")
+        val mapShapes = mapOf(
+                "sword" to arrayOf("X", "X", "#"),
+                "shovel" to arrayOf("X", "#", "#"),
+                "pickaxe" to arrayOf("XXX", " # ", " # "),
+                "axe" to arrayOf("XX", "X#", " #"),
+                "hoe" to arrayOf("XX", " #", " #")
+        )
+        for((name, pat) in mapShapes) out("${item}_$name") {
+            craftingShaped(pat, mapKeys, "$ns:${item}_$name")
+        }
+    }
+
     private fun metalTags(v: JsonElement, out: JsonFileWriter) {
         val item = v.asString
         val ns = out.namespace
@@ -308,7 +324,7 @@ object Templates {
     }
 
     private fun isVanilla(name: String) = name == "iron" || name == "gold"
-    private fun isAlloy(name: String) = name == "bronze"
+    private fun isAlloy(name: String) = name == "bronze" || name == "steel"
 
     private inline fun JsonCreator.typed(type: String, fn: JsonCreator.() -> Unit) = obj {
         "type" to type
@@ -334,4 +350,12 @@ object Templates {
     private inline fun JsonCreator.variants(fn: JsonCreator.() -> Unit) = obj {
         "variants" obj fn
     }
+    private fun JsonCreator.craftingShaped(pattern: Array<String>, keys: Map<String, String>, result: String, count: Int = 1) =
+            typed("minecraft:crafting_shaped") {
+                "pattern" to pattern
+                "key" obj {
+                    for ((t, u) in keys) key(t).item(u)
+                }
+                result(result, count)
+            }
 }

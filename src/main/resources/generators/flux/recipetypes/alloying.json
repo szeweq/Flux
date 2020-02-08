@@ -1,3 +1,30 @@
 {
-
+  "flux:bronze_ingot": [
+    {
+      "ingredients": [
+        {"type": "flux:counted", "tag": "forge:ingots/copper", "count": 3},
+        {"tag": "forge:ingots/tin"}
+      ], "count": 4
+    },
+    {
+      "ingredients": [
+        {"type": "flux:counted", "tag": "forge:dusts/copper", "count": 3},
+        {"tag": "forge:dusts/tin"}
+      ], "count": 4
+    }
+  ],
+  "flux:steel_ingot": [
+    {
+      "ingredients": [
+        {"tag": "forge:ingots/iron"},
+        {"type": "flux:counted", "item": "minecraft:coal", "count": 4}
+      ]
+    },
+    {
+      "ingredients": [
+        {"tag": "forge:dusts/iron"},
+        {"type": "flux:counted", "item": "minecraft:coal", "count": 4}
+      ]
+    }
+  ]
 }

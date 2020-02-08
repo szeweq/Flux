@@ -1,4 +1,4 @@
 {
   "name": "metalRecipes",
-  "args": ["iron", "gold", "copper", "tin", "bronze"]
+  "args": ["iron", "gold", "copper", "tin", "bronze", "steel"]
 }
