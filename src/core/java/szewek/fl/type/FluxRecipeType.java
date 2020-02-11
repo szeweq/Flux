@@ -1,4 +1,4 @@
-package szewek.flux.recipe;
+package szewek.fl.type;
 
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;

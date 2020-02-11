@@ -35,7 +35,7 @@ import szewek.flux.FluxCfg;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.energy.EnergyCache;
 import szewek.flux.recipe.FluxGenRecipes;
-import szewek.flux.util.IntPair;
+import szewek.fl.util.IntPair;
 
 import javax.annotation.Nullable;
 

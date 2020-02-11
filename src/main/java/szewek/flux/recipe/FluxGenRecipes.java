@@ -5,7 +5,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraftforge.fluids.FluidStack;
-import szewek.flux.util.IntPair;
+import szewek.fl.util.IntPair;
 
 import java.util.HashMap;
 import java.util.Map;

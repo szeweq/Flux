@@ -9,6 +9,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
+import szewek.fl.type.FluxRecipeType;
 import szewek.flux.util.IInventoryIO;
 
 import java.util.ArrayList;

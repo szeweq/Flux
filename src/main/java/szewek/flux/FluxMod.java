@@ -19,7 +19,6 @@ import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,7 +33,6 @@ import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import szewek.flux.energy.FurnaceEnergy;
-import szewek.flux.util.MappingFixer;
 import szewek.flux.util.gift.GiftData;
 import szewek.flux.util.gift.Gifts;
 import szewek.flux.util.metals.Metals;
@@ -143,11 +141,6 @@ public final class FluxMod {
 					}
 				}
 			}
-		}
-
-		@SubscribeEvent
-		public static void missingBlockMappings(RegistryEvent.MissingMappings<?>mm) {
-			MappingFixer.fixMapping(mm.getAllMappings());
 		}
 	}
 

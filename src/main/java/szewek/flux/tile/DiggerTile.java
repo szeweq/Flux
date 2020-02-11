@@ -11,7 +11,7 @@ import net.minecraftforge.common.Tags;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.ActiveTileBlock;
-import szewek.flux.util.ItemsUtil;
+import szewek.fl.util.ItemsUtil;
 
 import java.util.List;
 

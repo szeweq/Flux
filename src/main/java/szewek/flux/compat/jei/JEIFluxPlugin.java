@@ -1,6 +1,5 @@
 package szewek.flux.compat.jei;
 
-import com.google.common.collect.Streams;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -18,8 +17,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
-import org.apache.commons.lang3.tuple.Pair;
 import szewek.flux.F;
 import szewek.flux.F.R;
 import szewek.flux.F.B;
@@ -27,13 +24,10 @@ import szewek.flux.FluxMod;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.MachineScreen;
 import szewek.flux.recipe.*;
-import szewek.flux.util.FluxItemTier;
 import szewek.flux.util.Toolset;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @JeiPlugin
 public class JEIFluxPlugin implements IModPlugin {

@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[30,)"
+issueTrackerURL="https://github.com/Szewek/Flux/issues"
+
+[[mods]]
+ modId="fl"
+ version="${coreVersion}"
+ displayName="Flux Library"
+ displayURL="https://www.curseforge.com/minecraft/mc-mods/fl"
+ credits="Szewek"
+ authors="Szewek"
+
+[[dependencies.fl]]
+ modId="forge"
+ mandatory=true
+ versionRange="[31,)"
+ ordering="NONE"
+ side="BOTH"
+
+[[dependencies.fl]]
+ modId="minecraft"
+ mandatory=true
+ versionRange="[1.15.2]"
+ ordering="NONE"
+ side="BOTH"

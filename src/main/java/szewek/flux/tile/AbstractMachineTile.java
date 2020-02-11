@@ -35,7 +35,7 @@ import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
 import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
-import szewek.flux.energy.IEnergyReceiver;
+import szewek.fl.energy.IEnergyReceiver;
 import szewek.flux.util.IInventoryIO;
 
 import javax.annotation.Nullable;

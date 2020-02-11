@@ -4,7 +4,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
-import szewek.flux.util.ItemsUtil;
+import szewek.fl.util.ItemsUtil;
 
 import java.util.ArrayList;
 import java.util.List;

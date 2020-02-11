@@ -1,4 +1,4 @@
-package szewek.flux.util;
+package szewek.fl.util;
 
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;

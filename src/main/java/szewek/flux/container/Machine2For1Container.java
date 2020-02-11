@@ -6,7 +6,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.IIntArray;
-import net.minecraftforge.fml.network.IContainerFactory;
+import szewek.fl.type.FluxContainerType;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
 public class Machine2For1Container extends AbstractMachineContainer {

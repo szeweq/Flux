@@ -1,4 +1,4 @@
-package szewek.flux.energy;
+package szewek.fl.energy;
 
 import net.minecraftforge.energy.IEnergyStorage;
 

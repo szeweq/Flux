@@ -10,7 +10,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
-import szewek.flux.util.ItemsUtil;
+import szewek.fl.util.ItemsUtil;
 
 import java.util.List;
 

@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: szewek.mcgen.MCGenPlugin
@@ -22,10 +22,39 @@ archivesBaseName = 'flux'
 
 project.version = project.version + ((project.versionSub as int) > 0 ? "-${project.versionType}${project.versionSub}" : "")
 
+String core_version = "3.0.0"
+String metals_version = "1.0.0"
+
 String mc_version = "1.15.2"
 String jei_version = "6.0.0.2"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+idea {
+    module {
+        inheritOutputDirs = true
+        for (String excludeDirName in ["run", "out", "logs", "gradle"]) {
+            File excludeDir = new File(projectDir, excludeDirName)
+            excludeDirs.add(excludeDir)
+        }
+    }
+}
+sourceSets {
+    core { java { srcDir 'src/core/java' } }
+    metals {
+        java { srcDir 'src/metals/java' }
+        compileClasspath += sourceSets.core.output
+    }
+    main { compileClasspath += sourceSets.core.output }
+}
+configurations {
+    def extendCompile = [coreCompile, metalsCompile]
+    def extendCompileOnly = [coreCompileOnly, metalsCompileOnly]
+    def extendRuntimeOnly = [coreRuntimeOnly, metalsRuntimeOnly]
+    for (def c : extendCompile) c.extendsFrom(compile)
+    for (def co : extendCompileOnly) co.extendsFrom(compileOnly)
+    for (def ro : extendRuntimeOnly) ro.extendsFrom(runtimeOnly)
+}
 
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
@@ -48,9 +77,8 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                flux {
-                    source sourceSets.main
-                }
+                flux { source sourceSets.main }
+                fl { source sourceSets.core }
             }
         }
 
@@ -61,9 +89,8 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                flux {
-                    source sourceSets.main
-                }
+                flux { source sourceSets.main }
+                fl { source sourceSets.core }
             }
         }
 
@@ -73,12 +100,11 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'mcflux', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'flux', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                flux {
-                    source sourceSets.main
-                }
+                flux { source sourceSets.main }
+                fl { source sourceSets.core }
             }
         }
     }
@@ -91,6 +117,16 @@ processResources {
         expand 'modVersion': project.version
     }
     from (sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
+processCoreResources {
+    inputs.property('coreVersion', core_version)
+    from (sourceSets.core.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand 'coreVersion': core_version
+    }
+    from (sourceSets.core.resources.srcDirs) {
         exclude 'META-INF/mods.toml'
     }
 }
@@ -117,7 +153,6 @@ dependencies {
 
     // These dependencies get remapped to your current MCP mappings
     // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
 }
 
 jar {
@@ -134,6 +169,15 @@ jar {
     }
 }
 
+task coreJar(type: Jar) {
+    archiveName = "fl-${core_version}.jar"
+    from sourceSets.core.output
+}
+task metalsJar(type: Jar) {
+    archiveName = "fluxmetals-${metals_version}.jar"
+    from sourceSets.metals.output
+}
+
 // Example configuration to allow publishing using the maven-publish task
 // we define a custom artifact that is sourced from the reobfJar output task
 // and then declare that to be published
@@ -142,6 +186,16 @@ def reobfFile = file("$buildDir/reobfJar/output.jar")
 def reobfArtifact = artifacts.add('default', reobfFile) {
     type 'jar'
     builtBy 'reobfJar'
+}
+
+artifacts {
+    archives coreJar
+    archives metalsJar
+}
+
+reobf {
+    coreJar { classpath = sourceSets.core.compileClasspath }
+    metalsJar { classpath = sourceSets.metals.compileClasspath }
 }
 
 publishing {
@@ -159,12 +213,24 @@ publishing {
 
 curseforge {
     apiKey = project.hasProperty("cfKey") ? project.cfKey : ""
-    project {
+    project { // Flux
         id = "248942"
         releaseType = project.versionType
         changelogType = "markdown"
         changelog = file("latest.md")
-        addGameVersion "1.15.1"
+        relations {
+            requiredDependency "fl"
+            optionalDependency "jei"
+        }
+    }
+    project { // Flux Library
+        id = "262385"
+        releaseType = "release"
+        changelogType = "markdown"
+        changelog = file("latest-fl.md")
+        mainArtifact(coreJar) {
+
+        }
     }
 }
 repositories {

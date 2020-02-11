@@ -5,7 +5,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import szewek.flux.container.FluxContainerType;
+import szewek.fl.type.FluxTileType;
+import szewek.fl.type.FluxContainerType;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
 

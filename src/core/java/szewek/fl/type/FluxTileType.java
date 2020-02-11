@@ -1,4 +1,4 @@
-package szewek.flux.tile;
+package szewek.fl.type;
 
 import com.mojang.datafixers.types.Type;
 import net.minecraft.block.Block;

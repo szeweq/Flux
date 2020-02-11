@@ -1,10 +1,6 @@
-# Flux (Version 4.6.0)
+# Flux (Version 4.7.0)
 
-### Bronze tools
-Bronze Sword, Shovel, Pickaxe, Axe and Hoe are added.
+### Flux Library requirement
 
-### Steel
-Added steel ingot, block, dust and tools.
-
-### Other fixes
-Bronze color matches its block form
+Download Flux Library (3.0.0) here:
+https://www.curseforge.com/minecraft/mc-mods/fl/files

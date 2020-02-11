@@ -1,4 +1,4 @@
-package szewek.flux.container;
+package szewek.fl.type;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

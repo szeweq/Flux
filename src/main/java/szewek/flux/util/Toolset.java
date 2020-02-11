@@ -3,6 +3,7 @@ package szewek.flux.util;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.*;
 import net.minecraftforge.registries.IForgeRegistry;
+import szewek.fl.util.FluxItemTier;
 import szewek.flux.FluxMod;
 import szewek.flux.util.metals.Metal;
 
