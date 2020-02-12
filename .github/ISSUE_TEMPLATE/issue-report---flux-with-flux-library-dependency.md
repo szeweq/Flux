@@ -1,8 +1,8 @@
 ---
-name: Issue report
-about: Submit a new issue. Use this only for Flux older than 4.7.0.
+name: Issue report - Flux with Flux Library dependency
+about: Use this template if you have Flux version 4.7.0 or later.
 title: ''
-labels: pre-4.7.0
+labels: with FL
 assignees: ''
 
 ---
@@ -13,6 +13,7 @@ assignees: ''
 **Versions:**
 - **Minecraft:** {Minecraft version}
 - **Forge:** {Forge Version}
+- **Flux Library:** {Flux Library version}
 - **Flux:** {Flux Version}
 
 **Logs:** {Link(s) to GitHub Gist (or Pastebin) with full `latest.log` and/or crash report}

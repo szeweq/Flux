@@ -1,5 +1,5 @@
 ---
-name: Issue report
+name: Issue report - Flux (before 4.7.0)
 about: Submit a new issue. Use this only for Flux older than 4.7.0.
 title: ''
 labels: pre-4.7.0

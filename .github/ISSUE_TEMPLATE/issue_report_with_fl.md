@@ -2,9 +2,11 @@
 name: Issue report (Flux with Flux Library dependency)
 about: Use this template if you have Flux version 4.7.0 or later.
 title: ''
-assignees: ''
 labels: with FL
+assignees: ''
+
 ---
+
 <!-- Remove brackets while writing an issue -->
 <!-- Thank you for reporting! -->
 
