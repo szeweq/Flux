@@ -1,6 +1,4 @@
-# Flux (Version 4.7.0)
+# Flux (Version 4.7.1)
 
-### Flux Library requirement
-
-Download Flux Library (3.0.0) here:
-https://www.curseforge.com/minecraft/mc-mods/fl/files
+### FIX: SideCached fix
+Fixed `EnergyCache` returning `null` while energy provider was not found.
