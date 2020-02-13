@@ -1,4 +1,3 @@
-# Flux (Version 4.7.1)
+# Flux (Version 4.7.2)
 
-### FIX: SideCached fix
-Fixed `EnergyCache` returning `null` while energy provider was not found.
+Moved methods to Flux Library. Now it requires version 3.0.1.

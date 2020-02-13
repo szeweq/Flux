@@ -22,7 +22,7 @@ archivesBaseName = 'flux'
 
 project.version = project.version + ((project.versionSub as int) > 0 ? "-${project.versionType}${project.versionSub}" : "")
 
-String core_version = "3.0.0"
+String core_version = "3.0.1"
 String metals_version = "1.0.0"
 
 String mc_version = "1.15.2"
