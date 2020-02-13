@@ -9,7 +9,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.Direction;
@@ -30,14 +29,17 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
+import szewek.fl.util.FluidsUtil;
+import szewek.fl.util.IntPair;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.energy.EnergyCache;
 import szewek.flux.recipe.FluxGenRecipes;
-import szewek.fl.util.IntPair;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
 public class FluxGenTile extends LockableTileEntity implements IInventory, IItemHandler, IFluidHandler, ITickableTileEntity, INamedContainerProvider, IEnergyStorage {
 	public static final int fluidCap = 4000;
@@ -99,15 +101,10 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		energyGen = compound.getInt("Gen");
 		workSpeed = compound.getInt("WorkSpeed");
 		ItemStackHelper.loadAllItems(compound, items);
-
-		ListNBT fluidNBT = compound.getList("Fluids", 10);
-		for (int i = 0; i < fluidNBT.size(); i++) {
-			CompoundNBT nbt = fluidNBT.getCompound(i);
-			int j = nbt.getByte("Slot") & 255;
-			if (j >= 0 && j < fluids.length) {
-				fluids[j] = FluidStack.loadFluidStackFromNBT(nbt);
-			}
-		}
+		List<FluidStack> fluidList = NonNullList.withSize(fluids.length, FluidStack.EMPTY);
+		FluidsUtil.loadAllFluids(compound, fluidList);
+		for (int i = 0; i < fluids.length; i++)
+			fluids[i] = fluidList.get(i);
 	}
 
 	@Override
@@ -119,18 +116,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		compound.putInt("Gen", energyGen);
 		compound.putInt("WorkSpeed", workSpeed);
 		ItemStackHelper.saveAllItems(compound, items);
-
-		ListNBT fluidNBT = new ListNBT();
-		for (int i = 0; i < fluids.length; i++) {
-			FluidStack fs = fluids[i];
-			if (!fs.isEmpty()) {
-				CompoundNBT nbt = new CompoundNBT();
-				nbt.putByte("Slot", (byte) i);
-				fs.writeToNBT(nbt);
-				fluidNBT.add(nbt);
-			}
-		}
-		compound.put("Fluids", fluidNBT);
+		FluidsUtil.saveAllFluids(compound, Arrays.asList(fluids), true);
 
 		return compound;
 	}
