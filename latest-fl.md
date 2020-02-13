@@ -1,6 +1,4 @@
-# Flux Library (Version 3.0.1)
+# Flux Library (Version 3.0.2)
 
-Added Flux+ service to gather information about compatibility with Flux.
-It does NOT collect any personal data.
-
-Some utility methods were moved from Flux for future use in other mods.
+Filtering Minecraft and Flux items as they do not have to be reported all the time.
+This library should report only items from other mods.

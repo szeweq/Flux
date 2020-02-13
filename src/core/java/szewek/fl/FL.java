@@ -49,11 +49,11 @@ public final class FL {
 			for (Item item : entry.getValue().getAllElements()) {
 				ResourceLocation rl = item.getRegistryName();
 				if (rl == null) continue;
-				//String ins = rl.getNamespace();
-				//if (!"minecraft".equals(ins) && !"flux".equals(ins)) {
+				String ins = rl.getNamespace();
+				if (!"minecraft".equals(ins) && !"flux".equals(ins)) {
 					int id = itemIds.computeIntIfAbsent(rl.toString(), k -> itemIds.size());
 					tagToIds.computeIfAbsent(tagName, s -> new IntOpenHashSet()).add(id);
-				//}
+				}
 			}
 		}
 		Map<String, Object> collected = new HashMap<>();
