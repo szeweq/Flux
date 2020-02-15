@@ -251,6 +251,24 @@ object Templates {
         if (blocks) out("blocks/$tag") {
             tagList(*items.map{"#forge:$tag/${it.asString}"}.toTypedArray())
         }
+        when (tag) {
+            "storage_blocks" -> {
+                out("blocks/supports_beacon") {
+                    tagList(*items.map{"#forge:$tag/${it.asString}"}.toTypedArray())
+                }
+                out("../../minecraft/tags/blocks/beacon_base_blocks") {
+                    tagList(*items.map{"#forge:$tag/${it.asString}"}.toTypedArray())
+                }
+            }
+            "ingots" -> {
+                out("items/beacon_payment") {
+                    tagList(*items.map{"#forge:$tag/${it.asString}"}.toTypedArray())
+                }
+                out("../../minecraft/tags/items/beacon_payment_items") {
+                    tagList(*items.map{"#forge:$tag/${it.asString}"}.toTypedArray())
+                }
+            }
+        }
     }
 
     private fun containerLootTables(v: JsonElement, out: JsonFileWriter) {

@@ -1,3 +1,8 @@
-# Flux (Version 4.7.2)
+# Flux (Version 4.7.3)
 
-Moved methods to Flux Library. Now it requires version 3.0.1.
+Added metal blocks to beacon support tags (compatible with MC 1.16).
+
+Added metal ingots to beacon payment tags (compatible with MC 1.16).
+
+Flux Chip is now tagged as a "circuit".
+It can be used in crafting recipes that use circuits.
