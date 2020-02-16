@@ -1,4 +1,3 @@
-# Flux Library (Version 3.0.2)
+# Flux Library (Version 3.0.3)
 
-Filtering Minecraft and Flux items as they do not have to be reported all the time.
-This library should report only items from other mods.
+Registering modded recipes (other than crafting) for analysis.
