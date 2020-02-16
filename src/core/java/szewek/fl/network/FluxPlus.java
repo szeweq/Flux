@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class FluxPlus {
-	private static final String HOST = "http://localhost:3000/api"; //"https://fluxplus.herokuapp.com/api";
+	private static final String HOST = "https://fluxplus.herokuapp.com/api";
 	private static final Logger LOGGER = LogManager.getLogger("Flux+");
 	private static final Gson GSON = new GsonBuilder().setLenient().create();
 	private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
