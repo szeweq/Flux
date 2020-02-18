@@ -1,5 +1,8 @@
-# Flux Library (Version 3.0.4)
+# Flux Library (Version 3.0.5)
 
-QUICK FIX: Flux Library should not look for a local server.
+Better exception handling.
 
-Registering modded recipes (other than crafting) for analysis.
+Some recipes are returning empty items as its result.
+It is mostly done if the recipe has more output items.
+Each mod handles multi-output by themselves.
+Flux Library will skip them anyway when it registers recipes.

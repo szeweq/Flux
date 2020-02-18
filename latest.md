@@ -1,8 +1,9 @@
-# Flux (Version 4.7.3)
+# Flux (Version 4.7.4)
 
-Added metal blocks to beacon support tags (compatible with MC 1.16).
+## New Flux products
+**Flux Seal** – made by "alloying" wodden log with coal
 
-Added metal ingots to beacon payment tags (compatible with MC 1.16).
+**Flux Glue** – made by alloying Flux Seal with Slimeball (or Honey Block).
+Can be used to craft Sticky Pistons.
 
-Flux Chip is now tagged as a "circuit".
-It can be used in crafting recipes that use circuits.
+**Flux Paste** – made in Compactor from 4 Flux Seals
