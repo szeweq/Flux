@@ -101,6 +101,7 @@ public final class FL {
 					ResourceLocation serName = r.getSerializer().getRegistryName();
 					if (serName == null || serName.getPath().startsWith("craft")) continue;
 					ItemStack stack = r.getRecipeOutput();
+					if (stack.isEmpty()) continue;
 					ResourceLocation itemLoc = stack.getItem().getRegistryName();
 					if (itemLoc == null) continue;
 					int[] info = new int[4];
