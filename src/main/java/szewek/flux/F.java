@@ -36,10 +36,7 @@ import szewek.flux.container.FluxGenContainer;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.FluxGenScreen;
 import szewek.flux.gui.MachineScreen;
-import szewek.flux.item.ChipItem;
-import szewek.flux.item.FluxToolItem;
-import szewek.flux.item.GiftItem;
-import szewek.flux.item.MetalItem;
+import szewek.flux.item.*;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.ChipUpgradeTrade;
@@ -89,6 +86,7 @@ public final class F {
 		B.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_block")));
 		reg.registerAll(
 				I.FLUXTOOL, I.GIFT, I.MACHINE_BASE, I.CHIP,
+				I.SEAL, I.GLUE, I.PASTE,
 				fromBlock(B.FLUXGEN, "fluxgen"),
 				fromBlock(B.GRINDING_MILL, "grinding_mill"),
 				fromBlock(B.ALLOY_CASTER, "alloy_caster"),
@@ -204,6 +202,9 @@ public final class F {
 		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());
 		public static final ChipItem CHIP = item(ChipItem::new, "chip", new Item.Properties());
+		public static final FluxAdhesiveItem SEAL = item(FluxAdhesiveItem::new, "seal", new Item.Properties());
+		public static final FluxAdhesiveItem GLUE = item(FluxAdhesiveItem::new, "glue", new Item.Properties());
+		public static final FluxAdhesiveItem PASTE = item(FluxAdhesiveItem::new, "paste", new Item.Properties());
 
 		public static final FluxItemTier
 				BRONZE_TIER = new FluxItemTier(2, 500, 7f, 2.5f, 20, "ingots/bronze"),

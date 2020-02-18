@@ -26,5 +26,12 @@
         {"type": "flux:counted", "item": "minecraft:coal", "count": 4}
       ]
     }
-  ]
+  ],
+  "flux:seal": {
+    "ingredients": [{"tag": "minecraft:logs"}, {"tag": "minecraft:coals"}]
+  },
+  "flux:glue": {
+    "ingredients": [{"item": "flux:seal"}, {"tag": "flux:sticky"}],
+    "count": 2
+  }
 }

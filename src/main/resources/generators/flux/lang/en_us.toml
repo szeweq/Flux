@@ -4,6 +4,7 @@
  gen = "Generating %s F/t"
  usage = "Using %s F/t"
  update = "Flux has a newer version: %s"
+ works_underwater = "It even works underwater!"
 
 [flux.gift]
  invalid = "Invalid Gift!"
@@ -27,6 +28,9 @@
  gift = "Flux Gift"
  machine_base = "Machine Base"
  chip = "Flux Chip"
+ seal = "Flux Seal"
+ glue = "Flux Glue"
+ paste = "Flux Paste"
  iron_grit = "Iron Grit"
  gold_grit = "Gold Grit"
  copper_grit = "Copper Grit"

@@ -1,5 +1,8 @@
 {
   "minecraft:diamond": {
     "ingredients": [{"type": "flux:counted", "tag": "forge:storage_blocks/coal", "count": 16}]
+  },
+  "flux:paste": {
+    "ingredients": [{"type": "flux:counted", "item": "flux:seal", "count": 4}]
   }
 }
