@@ -59,7 +59,7 @@ public class FluxPlus {
 				boolean b = API.get("/action?type=" + type, Boolean.TYPE);
 				if (b) ACTIONS.add(type);
 				else LOGGER.warn("Action type {} is not acceptable", type);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception while registering an action", e);
 			}
 		});
@@ -69,7 +69,7 @@ public class FluxPlus {
 		EXEC.execute(() -> {
 			try {
 				API.post("/items", fullMap, Boolean.TYPE);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception while registering item map", e);
 			}
 		});
@@ -78,7 +78,7 @@ public class FluxPlus {
 		EXEC.execute(() -> {
 			try {
 				API.post("/serializers", fullMap, Boolean.TYPE);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception while registering serializer map", e);
 			}
 		});
@@ -87,7 +87,7 @@ public class FluxPlus {
 		EXEC.execute(() -> {
 			try {
 				API.post("/recipes", fullMap, Boolean.TYPE);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception while registering recipe information map", e);
 			}
 		});
