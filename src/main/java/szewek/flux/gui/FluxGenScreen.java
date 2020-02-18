@@ -14,6 +14,8 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import szewek.flux.FluxMod;
@@ -21,6 +23,7 @@ import szewek.flux.container.FluxGenContainer;
 
 import java.util.Arrays;
 
+@OnlyIn(Dist.CLIENT)
 public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 	private static final ResourceLocation BG_TEX = FluxMod.location("textures/gui/fluxgen.png");
 
