@@ -1,3 +1,7 @@
-# Flux Library (Version 3.0.6)
+# Flux Library (Version 3.0.7)
 
-New HTTP Client implemented. It should now work properly on dedicated servers.
+Addind recipe compatibility layer.
+This means some recipes from different mods will work on Flux machines.
+
+Moved counted ingredient class from Flux.
+Any recipe with item use count should use `fl:counted` instead of `flux:counted`. 
