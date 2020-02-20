@@ -9,13 +9,15 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
+import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.type.FluxRecipeType;
 import szewek.flux.util.IInventoryIO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
+public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Consumer<List<ItemStack>> {
 	public final NonNullList<Ingredient> ingredients;
 	public final ItemStack result;
 	public final float experience;
@@ -78,7 +80,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 		return ingredients.size() <= width * height;
 	}
 
-	public final void consumeItems(List<ItemStack> stacks) {
+	public final void accept(List<ItemStack> stacks) {
 		ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
 		for (ItemStack stack : stacks) {
@@ -89,7 +91,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO> {
 		if (match != null) {
 			for(int i = 0; i < match.length; ++i) {
 				Ingredient ingredient = ingredients.get(match[i]);
-				int count = ingredient instanceof CountedIngredient ? ((CountedIngredient) ingredient).count : 1;
+				int count = ingredient instanceof CountedIngredient ? ((CountedIngredient) ingredient).getCount() : 1;
 				filledInputs.get(i).grow(-count);
 			}
 		}

@@ -5,10 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IRecipeHelperPopulator;
-import net.minecraft.inventory.IRecipeHolder;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.*;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -31,6 +28,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import szewek.fl.recipe.RecipeCompat;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
 import szewek.flux.item.ChipItem;
@@ -50,6 +48,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
 	private final MenuFactory menuFactory;
+	private IRecipe<?> cachedRecipe = null;
 	protected final IIntArray machineData = new IIntArray() {
 		@Override
 		public int get(int index) {
@@ -146,13 +145,15 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				}
 			}
 			if (isPowered() && !inputEmpty) {
-				AbstractMachineRecipe recipe = world.getRecipeManager().getRecipe(recipeType, this, world).orElse(null);
-				if (recipe != null && canProcess(recipe)) {
+				if (cachedRecipe == null)
+					cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
+				//AbstractMachineRecipe recipe = world.getRecipeManager().getRecipe(recipeType, this, world).orElse(null);
+				if (canProcess()) {
 					energy -= energyUse;
 					if (process >= processTotal) {
 						process = 0;
-						processTotal = recipe.processTime * 100;
-						produceResult(recipe);
+						processTotal = getProcessTime() * 100;
+						produceResult();
 						isDirty = true;
 					} else {
 						process += processSpeed;
@@ -175,9 +176,9 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		return process > 0;
 	}
 
-	protected boolean canProcess(@Nullable IRecipe<?> recipe) {
-		if (recipe != null) {
-			ItemStack result = recipe.getRecipeOutput();
+	protected boolean canProcess() {
+		if (cachedRecipe != null) {
+			ItemStack result = cachedRecipe.getRecipeOutput();
 			for (ItemStack outputStack : getOutputs()) {
 				if (outputStack.isEmpty()) return true;
 				if (!outputStack.isItemEqual(result)) return false;
@@ -188,9 +189,13 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		return false;
 	}
 
-	protected void produceResult(@Nullable AbstractMachineRecipe recipe) {
-		if (recipe != null && canProcess(recipe)) {
-			ItemStack result = recipe.getRecipeOutput();
+	protected int getProcessTime() {
+		return cachedRecipe instanceof AbstractMachineRecipe ? ((AbstractMachineRecipe) cachedRecipe).processTime : 200;
+	}
+
+	protected void produceResult() {
+		if (canProcess()) {
+			ItemStack result = cachedRecipe.getRecipeOutput();
 			List<ItemStack> outputs = getOutputs();
 			for (int i = 0; i < outputs.size(); i++) {
 				ItemStack outputStack = outputs.get(i);
@@ -204,8 +209,9 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				}
 			}
 			List<ItemStack> inputs = getInputs();
-			recipe.consumeItems(inputs);
-			setRecipeUsed(recipe);
+			RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(inputs);
+			setRecipeUsed(cachedRecipe);
+			cachedRecipe = null;
 		}
 	}
 
@@ -247,11 +253,6 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	@Override
 	public int getMaxEnergyStored() {
 		return 1000000;
-	}
-
-	@Override
-	public boolean canReceive() {
-		return true;
 	}
 
 	@Override
@@ -313,7 +314,8 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		if (stack.getCount() > 64) stack.setCount(64);
 		if (index < inputSize && !same) {
 			assert world != null;
-			processTotal = world.getRecipeManager().getRecipe(recipeType, this, world).map(r -> r.processTime).orElse(200) * 100;
+			cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
+			processTotal = getProcessTime() * 100;
 			process = 0;
 			markDirty();
 		}
@@ -364,7 +366,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		List<IRecipe<?>> recipes = recipesCount.object2IntEntrySet().stream()
 				.map(e -> {
 					IRecipe<?> recipe = recipeManager.getRecipe(e.getKey()).orElse(null);
-					if (recipe != null) {
+					if (recipe instanceof AbstractMachineRecipe) {
 						collectExperience(player, e.getIntValue(), ((AbstractMachineRecipe) recipe).experience);
 					}
 					return recipe;

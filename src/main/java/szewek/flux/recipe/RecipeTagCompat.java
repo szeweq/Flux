@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public final class RecipeCompat {
+public final class RecipeTagCompat {
 
 	static ItemStack findItemTag(JsonObject json) {
 		String tagName = JSONUtils.getString(json, "tag");
@@ -54,5 +54,5 @@ public final class RecipeCompat {
 		return foundItem;
 	}
 
-	private RecipeCompat() {}
+	private RecipeTagCompat() {}
 }

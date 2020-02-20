@@ -27,6 +27,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
+import szewek.fl.recipe.CountedIngredient;
+import szewek.fl.recipe.RecipeCompat;
 import szewek.fl.type.FluxRecipeType;
 import szewek.fl.type.FluxTileType;
 import szewek.flux.block.*;
@@ -130,7 +132,10 @@ public final class F {
 				R.WASHING.serializer,
 				R.COMPACTING.serializer
 		);
-		CraftingHelper.register(new ResourceLocation(MODID, "counted"), CountedIngredient.Serializer.INSTANCE);
+		RecipeCompat.registerCompatRecipeTypes(R.GRINDING);
+		RecipeCompat.registerCompatRecipeTypes(R.ALLOYING);
+		RecipeCompat.registerCompatRecipeTypes(R.WASHING);
+		RecipeCompat.registerCompatRecipeTypes(R.COMPACTING);
 	}
 
 	@SubscribeEvent

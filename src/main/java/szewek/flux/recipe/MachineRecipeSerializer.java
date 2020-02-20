@@ -41,7 +41,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 				b.result = ShapedRecipe.deserializeItem(ro);
 			}
 			if (ro.has("tag") && b.result == ItemStack.EMPTY) {
-				b.result = RecipeCompat.findItemTag(ro);
+				b.result = RecipeTagCompat.findItemTag(ro);
 				tagResult = true;
 			}
 			if (b.result == ItemStack.EMPTY) {
