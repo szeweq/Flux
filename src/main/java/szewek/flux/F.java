@@ -15,6 +15,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -47,12 +48,12 @@ import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static szewek.flux.FluxMod.FLUX_GROUP;
 import static szewek.flux.FluxMod.MODID;
@@ -132,10 +133,21 @@ public final class F {
 				R.WASHING.serializer,
 				R.COMPACTING.serializer
 		);
-		RecipeCompat.registerCompatRecipeTypes(R.GRINDING);
-		RecipeCompat.registerCompatRecipeTypes(R.ALLOYING);
-		RecipeCompat.registerCompatRecipeTypes(R.WASHING);
-		RecipeCompat.registerCompatRecipeTypes(R.COMPACTING);
+		@SuppressWarnings("unchecked")
+		final List<String> blacklist = (List<String>) FluxCfg.COMMON.blacklistCompatRecipes.get();
+		final Predicate<String> filterBlacklist = s -> !blacklist.contains(s);
+
+		recipeCompat(R.GRINDING, filterBlacklist,
+				"pattysmorestuff:crushing",
+				"silents_mechanisms:crushing",
+				"usefulmachinery:crushing"
+		);
+		recipeCompat(R.ALLOYING, filterBlacklist,
+				"blue_power:alloy_smelting",
+				"silents_mechanisms:alloy_smelting"
+		);
+		recipeCompat(R.WASHING, filterBlacklist);
+		recipeCompat(R.COMPACTING, filterBlacklist, "wtbw_machines:compressing");
 	}
 
 	@SubscribeEvent
@@ -353,5 +365,9 @@ public final class F {
 				new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1)
 				.setRegistryName(MODID, name)
 		);
+	}
+
+	private static void recipeCompat(IRecipeType<?> rtype, Predicate<String> filter, String... compats) {
+		RecipeCompat.registerCompatRecipeTypes(rtype, Arrays.stream(compats).filter(filter).collect(Collectors.toSet()));
 	}
 }
