@@ -9,6 +9,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,12 +18,16 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import szewek.fl.network.FluxPlus;
+import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.util.ValueToIDMap;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Main mod class
+ */
 @Mod(FL.ID)
 public final class FL {
 	public static final String ID = "fl";
@@ -45,6 +50,8 @@ public final class FL {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			FluxPlus.putAction("start");
+			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
+
 			final Map<String, Map<String, String>> serMap = new HashMap<>();
 			final Collection<IRecipeSerializer<?>> sers = ForgeRegistries.RECIPE_SERIALIZERS.getValues();
 			for (IRecipeSerializer<?> ser : sers) {

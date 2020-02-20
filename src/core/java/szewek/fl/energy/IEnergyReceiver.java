@@ -2,6 +2,9 @@ package szewek.fl.energy;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
+/**
+ * Interface for receiving energy.
+ */
 public interface IEnergyReceiver extends IEnergyStorage {
 	@Override
 	default boolean canExtract() {

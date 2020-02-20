@@ -1,4 +1,4 @@
-package szewek.flux.recipe;
+package szewek.fl.recipe;
 
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
@@ -10,6 +10,9 @@ import net.minecraftforge.common.crafting.IIngredientSerializer;
 import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
+/**
+ * Ingredient with set count for an item stack
+ */
 public class CountedIngredient extends Ingredient {
 	final int count;
 	private boolean counted = false;
@@ -17,6 +20,10 @@ public class CountedIngredient extends Ingredient {
 	CountedIngredient(Stream<? extends IItemList> stream, int count) {
 		super(stream);
 		this.count = count;
+	}
+
+	public int getCount() {
+		return count;
 	}
 
 	@Override

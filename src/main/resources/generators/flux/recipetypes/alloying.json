@@ -17,13 +17,13 @@
     {
       "ingredients": [
         {"tag": "forge:ingots/iron"},
-        {"type": "flux:counted", "item": "minecraft:coal", "count": 4}
+        {"type": "fl:counted", "item": "minecraft:coal", "count": 4}
       ]
     },
     {
       "ingredients": [
         {"tag": "forge:dusts/iron"},
-        {"type": "flux:counted", "item": "minecraft:coal", "count": 4}
+        {"type": "fl:counted", "item": "minecraft:coal", "count": 4}
       ]
     }
   ],
