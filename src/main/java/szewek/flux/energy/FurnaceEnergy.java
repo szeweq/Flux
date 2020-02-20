@@ -54,7 +54,7 @@ public final class FurnaceEnergy extends EnergyCapable {
 		return w != null ?
 			w.getRecipeManager()
 					.getRecipe(furnace.recipeType, furnace, w)
-					.map(recipe -> furnace.canSmelt(recipe))
+					.map(furnace::canSmelt)
 					.orElse(false)
 		: false;
 	}
