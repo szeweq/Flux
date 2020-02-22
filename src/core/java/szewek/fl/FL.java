@@ -37,7 +37,7 @@ public final class FL {
 		MinecraftForge.EVENT_BUS.register(Events.class);
 	}
 
-	private static boolean unfamiliar(ResourceLocation loc) {
+	private static boolean unfamiliar(final ResourceLocation loc) {
 		final String ns = loc.getNamespace();
 		return !"minecraft".equals(ns) && !"flux".equals(ns) && !"forge".equals(ns);
 	}
