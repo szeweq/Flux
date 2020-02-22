@@ -9,7 +9,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import szewek.fl.util.SideCached;
 import szewek.flux.tile.EnergyCableTile;
 
-import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public class EnergyCache extends SideCached<IEnergyStorage> {

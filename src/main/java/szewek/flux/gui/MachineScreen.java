@@ -17,9 +17,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.container.AbstractMachineContainer;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 @OnlyIn(Dist.CLIENT)
 public final class MachineScreen<T extends AbstractMachineContainer> extends ContainerScreen<T> implements IRecipeShownListener {
 	private final AbstractRecipeBookGui recipeGui;

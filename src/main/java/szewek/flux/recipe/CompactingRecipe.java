@@ -1,7 +1,6 @@
 package szewek.flux.recipe;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
 

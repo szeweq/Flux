@@ -26,8 +26,6 @@ import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.util.ServerRecipePlacerMachine;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractMachineContainer extends RecipeBookContainer<IInventory> {
