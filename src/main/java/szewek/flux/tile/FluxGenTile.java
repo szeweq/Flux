@@ -69,15 +69,23 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		@Override
 		public void set(int i, int v) {
 			switch (i) {
-				case 0: energy = v;
-				case 1: workTicks = v;
-				case 2: maxWork = v;
-				case 3: energyGen = v;
-				case 4: workSpeed = v;
-				case 5: fluids[0] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
-				case 6: if (!fluids[0].isEmpty()) fluids[0].setAmount(v);
-				case 7: fluids[1] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
-				case 8: if (!fluids[1].isEmpty()) fluids[0].setAmount(v);
+				case 0: energy = v; break;
+				case 1: workTicks = v; break;
+				case 2: maxWork = v; break;
+				case 3: energyGen = v; break;
+				case 4: workSpeed = v; break;
+				case 5:
+					fluids[0] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
+					break;
+				case 6:
+					if (!fluids[0].isEmpty()) fluids[0].setAmount(v);
+					break;
+				case 7:
+					fluids[1] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
+					break;
+				case 8:
+					if (!fluids[1].isEmpty()) fluids[0].setAmount(v);
+					break;
 			}
 		}
 
