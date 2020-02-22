@@ -74,13 +74,7 @@ public class JEIFluxPlugin implements IModPlugin {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration reg) {
-		reg.addGuiContainerHandler(MachineScreen.class, new IGuiContainerHandler<MachineScreen>() {
-			@Override
-			public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen) {
-				IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, FluxMod.location(((MachineScreen<?>) containerScreen).getContainer().recipeType.toString()));
-				return Collections.singleton(area);
-			}
-		});
+		reg.addGuiContainerHandler(MachineScreen.class, new MachineScreenHandler());
 	}
 
 	@Override
@@ -128,5 +122,13 @@ public class JEIFluxPlugin implements IModPlugin {
 			}
 		}
 		return recipes;
+	}
+
+	private static class MachineScreenHandler implements IGuiContainerHandler<MachineScreen> {
+		@Override
+		public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen) {
+			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, FluxMod.location(((MachineScreen<?>) containerScreen).getContainer().recipeType.toString()));
+			return Collections.singleton(area);
+		}
 	}
 }
