@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.*;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -42,13 +43,13 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
 	private final int inputSize, outputSize;
-	protected int energy = 0, process = 0, processTotal = 0, energyUse, processSpeed = 100;
-	protected boolean isDirty = false;
+	protected int energy, process, processTotal, energyUse, processSpeed = 100;
+	protected boolean isDirty;
 	protected NonNullList<ItemStack> items;
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
 	private final MenuFactory menuFactory;
-	private IRecipe<?> cachedRecipe = null;
+	private IRecipe<?> cachedRecipe;
 	protected final IIntArray machineData = new IIntArray() {
 		@Override
 		public int get(int index) {
@@ -70,6 +71,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				case 2: processTotal = value; break;
 				case 3: energyUse = value; break;
 				case 4: processSpeed = value; break;
+				default:
 			}
 		}
 
@@ -147,7 +149,6 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 			if (isPowered() && !inputEmpty) {
 				if (cachedRecipe == null)
 					cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
-				//AbstractMachineRecipe recipe = world.getRecipeManager().getRecipe(recipeType, this, world).orElse(null);
 				if (canProcess()) {
 					energy -= energyUse;
 					if (process >= processTotal) {
@@ -345,12 +346,12 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 
 	@Nullable
 	@Override
-	public IRecipe<?> getRecipeUsed() {
+	public final IRecipe<?> getRecipeUsed() {
 		return null;
 	}
 
 	@Override
-	public void onCrafting(PlayerEntity player) {
+	public final void onCrafting(PlayerEntity player) {
 
 	}
 
@@ -381,8 +382,9 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		energyUse = FluxCfg.COMMON.basicMachineEU.get();
 		processSpeed = 100;
 		ItemStack chipStack = items.get(inputSize + outputSize);
-		if (!chipStack.isEmpty() && chipStack.getItem() instanceof ChipItem) {
-			ChipItem ci = (ChipItem) chipStack.getItem();
+		Item item = chipStack.getItem();
+		if (!chipStack.isEmpty() && item instanceof ChipItem) {
+			ChipItem ci = (ChipItem) item;
 			CompoundNBT tag = chipStack.getTag();
 			if (tag != null) {
 				processSpeed = ci.countValue(tag, "speed", processSpeed);

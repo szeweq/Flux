@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 
 abstract class EntityInteractingTile extends PoweredTile {
 	protected AxisAlignedBB aabb;
-	protected int cooldown = 0;
+	protected int cooldown;
 
 	public EntityInteractingTile(TileEntityType tileEntityTypeIn) {
 		super(tileEntityTypeIn);

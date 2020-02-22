@@ -23,18 +23,17 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
-import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.recipe.RecipeCompat;
+import szewek.fl.type.FluxContainerType;
 import szewek.fl.type.FluxRecipeType;
 import szewek.fl.type.FluxTileType;
+import szewek.fl.util.FluxItemTier;
 import szewek.flux.block.*;
 import szewek.flux.container.AbstractMachineContainer;
-import szewek.fl.type.FluxContainerType;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.FluxGenScreen;
@@ -43,7 +42,6 @@ import szewek.flux.item.*;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.ChipUpgradeTrade;
-import szewek.fl.util.FluxItemTier;
 import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
@@ -53,7 +51,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static szewek.flux.FluxMod.FLUX_GROUP;
 import static szewek.flux.FluxMod.MODID;
@@ -370,4 +367,6 @@ public final class F {
 	private static void recipeCompat(IRecipeType<?> rtype, Predicate<String> filter, String... compats) {
 		RecipeCompat.registerCompatRecipeTypes(rtype, Arrays.stream(compats).filter(filter).collect(Collectors.toSet()));
 	}
+
+	private F() {}
 }

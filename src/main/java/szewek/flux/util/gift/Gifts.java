@@ -50,4 +50,6 @@ public final class Gifts {
 				new ItemStack(Items.WATER_BUCKET)
 		));
 	}
+
+	private Gifts() {}
 }

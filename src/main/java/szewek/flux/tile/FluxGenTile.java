@@ -176,7 +176,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		IntPair genCat = FluxGenRecipes.getCatalyst(catalyst.getItem());
 		IntPair genHot = FluxGenRecipes.getHotFluid(fluids[0].getFluid());
 		IntPair genCold = FluxGenRecipes.getColdFluid(fluids[1].getFluid());
-		energyGen = FluxCfg.COMMON.fluxGenBaseEnergyValue.get();
+		energyGen = FluxCfg.COMMON.fluxGenBaseEnergy.get();
 		if (genCat.r <= catalyst.getCount()) {
 			energyGen *= genCat.l;
 			if (genCat.r > 0) catalyst.grow(-genCat.r);
@@ -318,20 +318,20 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		}
 		int l = stack.getMaxStackSize();
 		if (l > 64) l = 64;
-		int sc = stack.getCount();
+		int stackCount = stack.getCount();
 		ItemStack xis = items.get(slot);
 		if (!xis.isEmpty()) {
 			if (!ItemHandlerHelper.canItemStacksStack(stack, xis)) return stack;
 			l -= xis.getCount();
 		}
 		if (0 >= l) return stack;
-		boolean rl = sc > l;
+		boolean rl = stackCount > l;
 		if (!simulate) {
 			if (xis.isEmpty()) items.set(slot, rl ? ItemHandlerHelper.copyStackWithSize(stack, l) : stack);
-			else xis.grow(rl ? l : sc);
+			else xis.grow(rl ? l : stackCount);
 			isDirty = true;
 		}
-		return rl ? ItemHandlerHelper.copyStackWithSize(stack, sc - l) : ItemStack.EMPTY;
+		return rl ? ItemHandlerHelper.copyStackWithSize(stack, stackCount - l) : ItemStack.EMPTY;
 	}
 
 	@Override
