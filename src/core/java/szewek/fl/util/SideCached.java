@@ -3,17 +3,19 @@ package szewek.fl.util;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public class SideCached<T> {
 	@SuppressWarnings("unchecked")
 	private final LazyOptional<T>[] cacheArray = (LazyOptional<T>[]) new LazyOptional[6];
-	private Function<Direction, LazyOptional<T>> getFromDir;
+	private final Function<Direction, LazyOptional<T>> getFromDir;
 
 	public SideCached(Function<Direction, LazyOptional<T>> dirFn) {
 		getFromDir = dirFn;
 	}
 
+	@Nullable
 	public T getCached(Direction dir) {
 		final int d = dir.ordinal();
 		LazyOptional<T> lazy = cacheArray[d];

@@ -10,6 +10,7 @@ public final class CompactingRecipe extends AbstractMachineRecipe {
 		super(F.R.COMPACTING, idIn, groupIn, builder);
 	}
 
+	@Override
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.COMPACTOR);
 	}

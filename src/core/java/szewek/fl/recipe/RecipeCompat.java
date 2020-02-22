@@ -13,13 +13,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
  * Utility class for modded recipes
  */
-public class RecipeCompat {
-	private static final Map<IRecipeType<?>, Set<IRecipeType<?>>> compatMap = new HashMap<>();
+public final class RecipeCompat {
+	private static final Map<IRecipeType<?>, Set<IRecipeType<?>>> compatMap = new ConcurrentHashMap<>();
 
 	@SuppressWarnings("unchecked")
 	public static <C extends IInventory, T extends IRecipe<C>> Optional<IRecipe<C>> getCompatRecipe(IRecipeType<?> rtype, World w, IInventory inv) {

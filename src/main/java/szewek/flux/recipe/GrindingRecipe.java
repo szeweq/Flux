@@ -10,6 +10,7 @@ public final class GrindingRecipe extends AbstractMachineRecipe {
 		super(F.R.GRINDING, idIn, groupIn, builder);
 	}
 
+	@Override
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.GRINDING_MILL);
 	}

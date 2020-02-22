@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  */
 public class CountedIngredient extends Ingredient {
 	final int count;
-	private boolean counted = false;
+	private boolean counted;
 
 	CountedIngredient(Stream<? extends IItemList> stream, int count) {
 		super(stream);

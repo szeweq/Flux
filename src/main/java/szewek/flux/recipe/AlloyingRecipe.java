@@ -10,6 +10,7 @@ public final class AlloyingRecipe extends AbstractMachineRecipe {
 		super(F.R.ALLOYING, idIn, groupIn, builder);
 	}
 
+	@Override
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.ALLOY_CASTER);
 	}

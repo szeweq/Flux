@@ -18,6 +18,7 @@ public class FluxContainerType<T extends Container> extends ContainerType<T> {
 	}
 
 	@OnlyIn(Dist.CLIENT)
+	@Override
 	public T create(int windowId, PlayerInventory player) {
 		return builder.create(this, windowId, player, null);
 	}

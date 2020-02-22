@@ -30,10 +30,12 @@ public abstract class AbstractCableBlock extends SixWayBlock {
 
 	protected abstract boolean checkTile(TileEntity te, Direction dir);
 
+	@Override
 	public boolean hasTileEntity(BlockState state) {
 		return true;
 	}
 
+	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return makeConnections(context.getWorld(), context.getPos());
 	}
@@ -56,6 +58,7 @@ public abstract class AbstractCableBlock extends SixWayBlock {
 		return bs;
 	}
 
+	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		Block b = facingState.getBlock();
 		boolean x = true;
@@ -68,10 +71,12 @@ public abstract class AbstractCableBlock extends SixWayBlock {
 		return stateIn.with(FACING_TO_PROPERTY_MAP.get(facing), x);
 	}
 
+	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN);
 	}
 
+	@Override
 	public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
 		return false;
 	}

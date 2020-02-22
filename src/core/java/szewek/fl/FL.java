@@ -24,6 +24,7 @@ import szewek.fl.util.ValueToIDMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Main mod class
@@ -52,7 +53,7 @@ public final class FL {
 			FluxPlus.putAction("start");
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
 
-			final Map<String, Map<String, String>> serMap = new HashMap<>();
+			final Map<String, Map<String, String>> serMap = new ConcurrentHashMap<>();
 			final Collection<IRecipeSerializer<?>> sers = ForgeRegistries.RECIPE_SERIALIZERS.getValues();
 			for (IRecipeSerializer<?> ser : sers) {
 				ResourceLocation loc = ser.getRegistryName();
@@ -74,7 +75,7 @@ public final class FL {
 		@SubscribeEvent
 		public static void tagsLoaded(final TagsUpdatedEvent e) {
 			final ValueToIDMap<String> itemIds = new ValueToIDMap<>();
-			final Map<String, IntSet> tagToIds = new HashMap<>();
+			final Map<String, IntSet> tagToIds = new ConcurrentHashMap<>();
 			Map<ResourceLocation, Tag<Item>> tagMap = e.getTagManager().getItems().getTagMap();
 			for (Map.Entry<ResourceLocation, Tag<Item>> entry : tagMap.entrySet()) {
 				final ResourceLocation tag = entry.getKey();
@@ -89,7 +90,7 @@ public final class FL {
 					}
 				}
 			}
-			Map<String, Object> collected = new HashMap<>();
+			Map<String, Object> collected = new ConcurrentHashMap<>();
 			collected.put("items", itemIds.values());
 			collected.put("tags", tagToIds);
 			FluxPlus.sendItemMap(collected);
@@ -97,10 +98,10 @@ public final class FL {
 
 		@SubscribeEvent
 		public static void recipesLoaded(final RecipesUpdatedEvent e) {
-			final Map<String, Object> recipeInfos = new HashMap<>();
+			final Map<String, Object> recipeInfos = new ConcurrentHashMap<>();
 			final ValueToIDMap<String> typeIds = new ValueToIDMap<>();
 			final ValueToIDMap<String> itemIds = new ValueToIDMap<>();
-			final Map<String, Map<String, Object>> namespaces = new HashMap<>();
+			final Map<String, Map<String, Object>> namespaces = new ConcurrentHashMap<>();
 			final Collection<IRecipe<?>> recipes = e.getRecipeManager().getRecipes();
 			for (IRecipe<?> r : recipes) {
 				ResourceLocation id = r.getId();

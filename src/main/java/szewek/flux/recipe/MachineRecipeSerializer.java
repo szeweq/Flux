@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 
 public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+	private static final String RESULT = "result";
 	private final MachineRecipeSerializer.IFactory<T> factory;
 	private final int defaultProcess;
 
@@ -30,13 +31,13 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 	@Nullable
 	public T read(ResourceLocation recipeId, JsonObject json) {
 		String s = JSONUtils.getString(json, "group", "");
-		if (!json.has("result")) {
+		if (!json.has(RESULT)) {
 			throw new JsonSyntaxException("Missing result, expected to find a string or object");
 		}
 		boolean tagResult = false;
 		MachineRecipeSerializer.Builder b = new MachineRecipeSerializer.Builder();
-		if (json.get("result").isJsonObject()) {
-			JsonObject ro = JSONUtils.getJsonObject(json, "result");
+		if (json.get(RESULT).isJsonObject()) {
+			JsonObject ro = JSONUtils.getJsonObject(json, RESULT);
 			if (ro.has("item")) {
 				b.result = ShapedRecipe.deserializeItem(ro);
 			}
@@ -48,7 +49,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 				return null;
 			}
 		} else {
-			String s1 = JSONUtils.getString(json, "result");
+			String s1 = JSONUtils.getString(json, RESULT);
 			ResourceLocation location = new ResourceLocation(s1);
 			Item item = ForgeRegistries.ITEMS.getValue(location);
 			if (item == null) {
@@ -64,7 +65,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 					b.ingredients.add(ingredient);
 				}
 			}
-		} catch (Exception e) {
+		} catch (JsonSyntaxException e) {
 			if (tagResult) return null;
 			else throw e;
 		}
