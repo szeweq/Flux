@@ -29,7 +29,7 @@ public class FluidsUtil {
 		for (int i = 0; i < fluidNBT.size(); i++) {
 			CompoundNBT nbt = fluidNBT.getCompound(i);
 			int j = nbt.getByte("Slot") & 255;
-			if (j >= 0 && j < fluids.size()) {
+			if (j < fluids.size()) {
 				fluids.set(j, FluidStack.loadFluidStackFromNBT(nbt));
 			}
 		}
