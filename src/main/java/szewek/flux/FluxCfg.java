@@ -17,14 +17,14 @@ public class FluxCfg {
 
 	public static class Common {
 		public final IntValue
-				fluxGenBaseEnergyValue,
+				fluxGenBaseEnergy,
 				basicMachineEU,
 				diggerEU, farmerEU, butcherEU, mobPounderEU, itemAbsorberEU;
 		public final ForgeConfigSpec.BooleanValue disableOres;
 		public final ForgeConfigSpec.ConfigValue<List<? extends String>> preferModCompat, blacklistCompatRecipes;
 
 		Common(ForgeConfigSpec.Builder bld) {
-			fluxGenBaseEnergyValue = translate(bld, "fluxGenBaseEnergyValue", "Base energy generation for Flux Generator")
+			fluxGenBaseEnergy = translate(bld, "fluxGenBaseEnergyValue", "Base energy generation for Flux Generator")
 					.defineInRange("fluxGenBaseEnergyValue", 40, 0, Integer.MAX_VALUE);
 			basicMachineEU = energyUsage(bld,
 					"basic machines (Grinding Mill, Washer, etc.)", "basicMachine", 40

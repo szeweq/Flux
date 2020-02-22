@@ -30,7 +30,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 
 	@Nullable
 	public T read(ResourceLocation recipeId, JsonObject json) {
-		String s = JSONUtils.getString(json, "group", "");
+		String group = JSONUtils.getString(json, "group", "");
 		if (!json.has(RESULT)) {
 			throw new JsonSyntaxException("Missing result, expected to find a string or object");
 		}
@@ -49,11 +49,11 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 				return null;
 			}
 		} else {
-			String s1 = JSONUtils.getString(json, RESULT);
-			ResourceLocation location = new ResourceLocation(s1);
+			String result = JSONUtils.getString(json, RESULT);
+			ResourceLocation location = new ResourceLocation(result);
 			Item item = ForgeRegistries.ITEMS.getValue(location);
 			if (item == null) {
-				throw new IllegalStateException("Item: " + s1 + " does not exist");
+				throw new IllegalStateException("Item: " + result + " does not exist");
 			}
 			b.result = new ItemStack(item);
 		}
@@ -73,7 +73,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
 		b.process = JSONUtils.getInt(json, "processtime", this.defaultProcess);
 
-		return factory.create(recipeId, s, b);
+		return factory.create(recipeId, group, b);
 	}
 
 	public T read(ResourceLocation recipeId, PacketBuffer buffer) {
