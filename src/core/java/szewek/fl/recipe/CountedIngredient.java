@@ -48,7 +48,7 @@ public class CountedIngredient extends Ingredient {
 	}
 
 	public static class Serializer implements IIngredientSerializer<CountedIngredient> {
-		public static Serializer INSTANCE = new Serializer();
+		public static final Serializer INSTANCE = new Serializer();
 
 		@Override
 		public CountedIngredient parse(PacketBuffer buffer) {
