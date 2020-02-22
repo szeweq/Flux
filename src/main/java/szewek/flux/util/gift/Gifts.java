@@ -17,7 +17,7 @@ public final class Gifts {
 	private static final Int2ObjectMap<GiftData> GIFT_MAP = new Int2ObjectOpenHashMap<>();
 
 	private static void add(int day, int month, String name, int boxColor, int ribbonColor, List<ItemStack> stacks) {
-		GIFT_MAP.put(month * 32 + day, new GiftData(name, day, month, boxColor, ribbonColor, stacks));
+		GIFT_MAP.put(month * 32 + day, new GiftData(name, boxColor, ribbonColor, stacks));
 	}
 
 	public static GiftData get(int xday) {

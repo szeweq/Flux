@@ -9,13 +9,11 @@ import java.util.stream.Collectors;
 
 public final class GiftData implements IGift {
 	public final String name;
-	public final int day, month, boxColor, ribbonColor;
+	public final int boxColor, ribbonColor;
 	private final List<ItemStack> stacks;
 
-	public GiftData(String name, int day, int month, int boxColor, int ribbonColor, List<ItemStack> stacks) {
+	public GiftData(String name, int boxColor, int ribbonColor, List<ItemStack> stacks) {
 		this.name = name;
-		this.day = day;
-		this.month = month;
 		this.boxColor = boxColor;
 		this.ribbonColor = ribbonColor;
 		this.stacks = stacks;
