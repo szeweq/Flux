@@ -47,13 +47,14 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		if (maxReceive <= 0) return 0;
 		int r = maxReceive;
-		if (maxReceive > 500000 - energy) {
-			r = 500000 - energy;
-		}
-		if (!simulate) {
-			energy += r;
+		if (r > 0) {
+			if (r > 500000 - energy) {
+				r = 500000 - energy;
+			}
+			if (!simulate) {
+				energy += r;
+			}
 		}
 		return r;
 	}
@@ -62,7 +63,9 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!removed && CapabilityEnergy.ENERGY == cap) {
 			return handler.cast();
-		} else return super.getCapability(cap, side);
+		} else {
+			return super.getCapability(cap, side);
+		}
 	}
 
 

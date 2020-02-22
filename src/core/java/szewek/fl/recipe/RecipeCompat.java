@@ -34,7 +34,9 @@ public final class RecipeCompat {
 
 	public static void registerCompatRecipeTypes(IRecipeType<?> rtype, Set<String> compats) {
 		ResourceLocation loc = Registry.RECIPE_TYPE.getKey(rtype);
-		if (loc == null || !"flux".equals(loc.getNamespace())) return;
+		if (loc == null || !"flux".equals(loc.getNamespace())) {
+			return;
+		}
 
 		Set<IRecipeType<?>> result = new LinkedHashSet<>();
 		result.add(rtype);
@@ -56,7 +58,9 @@ public final class RecipeCompat {
 				ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
 				for (ItemStack stack : stacks) {
-					if (!stack.isEmpty()) filledInputs.add(stack);
+					if (!stack.isEmpty()) {
+						filledInputs.add(stack);
+					}
 				}
 
 				int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);

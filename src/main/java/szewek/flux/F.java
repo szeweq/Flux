@@ -59,8 +59,12 @@ public final class F {
 	@SubscribeEvent
 	public static void blocks(final RegistryEvent.Register<Block> re) {
 		final IForgeRegistry<Block> reg = re.getRegistry();
-		for (FluxOreBlock ore : B.ORES.values()) reg.register(ore);
-		for (MetalBlock metalBlock : B.METAL_BLOCKS.values()) reg.register(metalBlock);
+		for (FluxOreBlock ore : B.ORES.values()) {
+			reg.register(ore);
+		}
+		for (MetalBlock metalBlock : B.METAL_BLOCKS.values()) {
+			reg.register(metalBlock);
+		}
 		reg.registerAll(
 				B.FLUXGEN.setRegistryName(MODID, "fluxgen"),
 				B.ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
@@ -79,9 +83,15 @@ public final class F {
 	@SubscribeEvent
 	public static void items(final RegistryEvent.Register<Item> re) {
 		final IForgeRegistry<Item> reg = re.getRegistry();
-		for (MetalItem grit : I.GRITS.values()) reg.register(grit);
-		for (MetalItem dust : I.DUSTS.values()) reg.register(dust);
-		for (MetalItem ingot : I.INGOTS.values()) reg.register(ingot);
+		for (MetalItem grit : I.GRITS.values()) {
+			reg.register(grit);
+		}
+		for (MetalItem dust : I.DUSTS.values()) {
+			reg.register(dust);
+		}
+		for (MetalItem ingot : I.INGOTS.values()) {
+			reg.register(ingot);
+		}
 		B.ORES.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_ore")));
 		B.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_block")));
 		reg.registerAll(
@@ -237,7 +247,11 @@ public final class F {
 		public static final TileEntityType<ButcherTile> BUTCHER;
 		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
 		public static final TileEntityType<ItemAbsorberTile> ITEM_ABSORBER;
-		public static final FluxTileType<?> GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
+		public static final FluxTileType<?>
+				GRINDING_MILL,
+				ALLOY_CASTER,
+				WASHER,
+				COMPACTOR;
 
 		static {
 			FLUXGEN = tile(FluxGenTile::new, "fluxgen", B.FLUXGEN);

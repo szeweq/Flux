@@ -7,7 +7,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public final class FurnaceEnergy extends EnergyCapable {
-	private static final int CAP = 25000, USE = 20;
+	private static final int
+			CAP = 25000,
+			USE = 20;
 	private final AbstractFurnaceTileEntity furnace;
 
 	public FurnaceEnergy(AbstractFurnaceTileEntity furnace) {
@@ -51,7 +53,7 @@ public final class FurnaceEnergy extends EnergyCapable {
 	public boolean canReceive() {
 		if (furnace.isRemoved()) return false;
 		World w = furnace.getWorld();
-		return w == null ? false : w.getRecipeManager()
+		return w != null && w.getRecipeManager()
 				.getRecipe(furnace.recipeType, furnace, w)
 				.map(furnace::canSmelt)
 				.orElse(false);

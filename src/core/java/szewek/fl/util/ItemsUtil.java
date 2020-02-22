@@ -29,7 +29,9 @@ public final class ItemsUtil {
 					//noinspection ConstantConditions
 					iih = il.orElse(null);
 				} else {
-					if (!(te instanceof IInventory)) continue;
+					if (!(te instanceof IInventory)) {
+						continue;
+					}
 					iih = new InvWrapper((IInventory)te);
 				}
 				inv.add(iih);
@@ -37,14 +39,17 @@ public final class ItemsUtil {
 		}
 
 		itemloop: for (ItemStack stack : items) {
+			ItemStack tempStack = stack;
 			for (IItemHandler iih : inv) {
 				int l = iih.getSlots();
 				for(int i = 0; i < l; ++i) {
-					if (iih.isItemValid(i, stack)) {
-						stack = iih.insertItem(i, stack, false);
+					if (iih.isItemValid(i, tempStack)) {
+						tempStack = iih.insertItem(i, tempStack, false);
 					}
 				}
-				if (stack.isEmpty()) continue itemloop;
+				if (stack.isEmpty()) {
+					continue itemloop;
+				}
 			}
 			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), stack);
 		}

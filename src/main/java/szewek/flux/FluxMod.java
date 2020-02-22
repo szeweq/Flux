@@ -61,27 +61,29 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
-			if (!FluxCfg.COMMON.disableOres.get()) ForgeRegistries.BIOMES.getValues().forEach(biome -> {
-				Biome.Category cat = biome.getCategory();
-				if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
-					biome.addFeature(
-							GenerationStage.Decoration.UNDERGROUND_ORES,
-							Feature.ORE.withConfiguration(new OreFeatureConfig(
-									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-									F.B.ORES.get(Metals.COPPER).getDefaultState(),
-							7
-                            )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 96)))
-                    );
-					biome.addFeature(
-							GenerationStage.Decoration.UNDERGROUND_ORES,
-							Feature.ORE.withConfiguration(new OreFeatureConfig(
-									OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-									F.B.ORES.get(Metals.TIN).getDefaultState(),
-							7
-                            )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 72)))
-                    );
-				}
-			});
+			if (!FluxCfg.COMMON.disableOres.get()) {
+				ForgeRegistries.BIOMES.getValues().forEach(biome -> {
+					Biome.Category cat = biome.getCategory();
+					if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
+						biome.addFeature(
+								GenerationStage.Decoration.UNDERGROUND_ORES,
+								Feature.ORE.withConfiguration(new OreFeatureConfig(
+										OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+										F.B.ORES.get(Metals.COPPER).getDefaultState(),
+								7
+	                            )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 96)))
+	                    );
+						biome.addFeature(
+								GenerationStage.Decoration.UNDERGROUND_ORES,
+								Feature.ORE.withConfiguration(new OreFeatureConfig(
+										OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+										F.B.ORES.get(Metals.TIN).getDefaultState(),
+								7
+	                            )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 72)))
+	                    );
+					}
+				});
+			}
 		}
 	}
 
@@ -127,7 +129,9 @@ public final class FluxMod {
 				Calendar calendar = Calendar.getInstance();
 				int xday = (1 + calendar.get(Calendar.MONTH)) * 32 + calendar.get(Calendar.DAY_OF_MONTH);
 				int xyear = calendar.get(Calendar.YEAR);
-				if (lastXYear < xyear) lastXDay = 0;
+				if (lastXYear < xyear) {
+					lastXDay = 0;
+				}
 				if (lastXDay < xday) {
 					GiftData gd = Gifts.get(xday);
 					if (gd != null) {

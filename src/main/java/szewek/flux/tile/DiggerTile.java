@@ -36,7 +36,9 @@ public final class DiggerTile extends BlockInteractingTile {
 				} else if (offsetX == 5) {
 					offsetX = -5;
 					offsetZ++;
-				} else offsetX++;
+				} else {
+					offsetX++;
+				}
 
 				BlockPos bp = pos.add(offsetX, offsetY, offsetZ);
 				if (bp.getY() < 0) {

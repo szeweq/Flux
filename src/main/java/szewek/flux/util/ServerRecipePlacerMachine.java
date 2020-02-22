@@ -36,7 +36,9 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 					--r;
 				}
 			}
-			if (r < j) return;
+			if (r < j) {
+				return;
+			}
 		}
 
 		j = getMaxAmount(placeAll, i, matches);

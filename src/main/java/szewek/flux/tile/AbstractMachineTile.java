@@ -225,11 +225,13 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 			if (cap == CapabilityEnergy.ENERGY)
 				return energyHandler.cast();
 			if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-				if (side == Direction.UP)
+				if (side == Direction.UP) {
 					return sideHandlers[0].cast();
-				else if (side == Direction.DOWN)
+				} else if (side == Direction.DOWN) {
 					return sideHandlers[1].cast();
-				else return sideHandlers[2].cast();
+				} else {
+					return sideHandlers[2].cast();
+				}
 		}
 		return super.getCapability(cap, side);
 	}

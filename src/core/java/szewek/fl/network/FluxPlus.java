@@ -24,18 +24,21 @@ public final class FluxPlus {
 	private FluxPlus() {}
 
 	private static APICall connect(String path) throws IOException {
-		HttpURLConnection huc = (HttpURLConnection) new URL(HOST + path).openConnection();
+		final HttpURLConnection huc = (HttpURLConnection) new URL(HOST + path).openConnection();
 		return new APICall(huc);
 	}
 
 	public static void putAction(final String type) {
-		if (ACTIONS.contains(type)) return;
+		if (ACTIONS.contains(type)) {
+			return;
+		}
 		EXEC.execute(() -> {
 			try {
 				boolean b = connect("/action?type=" + type)
 						.response(Boolean.TYPE);
-				if (b) ACTIONS.add(type);
-				else LOGGER.warn("Action type {} is not acceptable", type);
+				if (b) {
+					ACTIONS.add(type);
+				} else LOGGER.warn("Action type {} is not acceptable", type);
 			} catch (Exception e) {
 				LOGGER.error("Exception while registering an action", e);
 			}

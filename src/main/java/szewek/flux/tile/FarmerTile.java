@@ -32,20 +32,20 @@ public class FarmerTile extends BlockInteractingTile {
 			} else if (offsetX == 5) {
 				offsetX = -5;
 				offsetZ++;
-			} else offsetX++;
+			} else {
+				offsetX++;
+			}
 
 			BlockPos bp = pos.add(offsetX, 0, offsetZ);
 			BlockState bs = world.getBlockState(bp);
 			Block b = bs.getBlock();
-			if (b != F.B.FARMER) {
-				if (b instanceof CropsBlock) {
-					CropsBlock crop = (CropsBlock) b;
-					if (crop.isMaxAge(bs)) {
-						List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)world).withParameter(LootParameters.POSITION, pos).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
-						if (!drops.isEmpty()) {
-							world.setBlockState(bp, crop.withAge(0));
-							ItemsUtil.trySendingItems(drops, world, pos);
-						}
+			if (b != F.B.FARMER && b instanceof CropsBlock) {
+				CropsBlock crop = (CropsBlock) b;
+				if (crop.isMaxAge(bs)) {
+					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)world).withParameter(LootParameters.POSITION, pos).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
+					if (!drops.isEmpty()) {
+						world.setBlockState(bp, crop.withAge(0));
+						ItemsUtil.trySendingItems(drops, world, pos);
 					}
 				}
 			}

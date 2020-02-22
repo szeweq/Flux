@@ -77,11 +77,15 @@ public final class FL {
 			final ValueToIDMap<String> itemIds = new ValueToIDMap<>();
 			final Map<String, IntSet> tagToIds = new ConcurrentHashMap<>();
 			Map<ResourceLocation, Tag<Item>> tagMap = e.getTagManager().getItems().getTagMap();
+
+			ResourceLocation tag;
+			String ns;
+			char cns;
 			for (Map.Entry<ResourceLocation, Tag<Item>> entry : tagMap.entrySet()) {
-				final ResourceLocation tag = entry.getKey();
-				final String ns = tag.getNamespace();
-				final char charNs = "minecraft".equals(ns) ? '$' : "forge".equals(ns) ? '#' : 0;
-				final String tagName = charNs == 0 ? tag.toString() : charNs + tag.getPath();
+				tag = entry.getKey();
+				ns = tag.getNamespace();
+				cns = "minecraft".equals(ns) ? '$' : "forge".equals(ns) ? '#' : 0;
+				final String tagName = cns == 0 ? tag.toString() : cns + tag.getPath();
 				for (Item item : entry.getValue().getAllElements()) {
 					ResourceLocation rl = item.getRegistryName();
 					if (rl != null && unfamiliar(rl)) {
@@ -107,11 +111,17 @@ public final class FL {
 				ResourceLocation id = r.getId();
 				if (unfamiliar(id)) {
 					ResourceLocation serName = r.getSerializer().getRegistryName();
-					if (serName == null || serName.getPath().startsWith("craft")) continue;
+					if (serName == null || serName.getPath().startsWith("craft")) {
+						continue;
+					}
 					ItemStack stack = r.getRecipeOutput();
-					if (stack.isEmpty()) continue;
+					if (stack.isEmpty()) {
+						continue;
+					}
 					ResourceLocation itemLoc = stack.getItem().getRegistryName();
-					if (itemLoc == null) continue;
+					if (itemLoc == null) {
+						continue;
+					}
 					int[] info = new int[4];
 					info[0] = typeIds.get(serName.toString());
 					info[1] = r.getIngredients().size();

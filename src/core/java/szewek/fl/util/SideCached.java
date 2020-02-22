@@ -30,6 +30,8 @@ public class SideCached<T> {
 	}
 
 	public void clear() {
-		for (int i = 0; i < 6; i++) cacheArray[i] = null;
+		for (int i = 0; i < 6; i++) {
+			cacheArray[i] = null;
+		}
 	}
 }

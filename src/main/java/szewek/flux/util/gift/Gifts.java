@@ -23,13 +23,17 @@ public final class Gifts {
 
 	public static int colorByGift(ItemStack stack, int pass) {
 		CompoundNBT tag = stack.getTag();
-		if (tag != null) {
+		if (tag == null) {
+			return 0x808080;
+		} else {
 			int xday = tag.getInt("xDay");
 			GiftData gd = GIFT_MAP.get(xday);
-			if (gd != null) {
+			if (gd == null) {
+				return 0x404040;
+			} else {
 				return pass == 0 ? gd.boxColor : gd.ribbonColor;
-			} else return 0x404040;
-		} else return 0x808080;
+			}
+		}
 	}
 
 	static {

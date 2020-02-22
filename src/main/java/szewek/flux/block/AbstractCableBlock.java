@@ -50,8 +50,9 @@ public abstract class AbstractCableBlock extends SixWayBlock {
 			Block b = w.getBlockState(pos).getBlock();
 			if (b != this) {
 				TileEntity te = w.getTileEntity(bp);
-				if (te == null || !checkTile(te, dir.getOpposite()))
+				if (te == null || !checkTile(te, dir.getOpposite())) {
 					x = false;
+				}
 			}
 			bs = bs.with(e.getValue(), x);
 		}

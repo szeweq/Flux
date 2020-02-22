@@ -30,7 +30,9 @@ public class CountedIngredient extends Ingredient {
 	public ItemStack[] getMatchingStacks() {
 		ItemStack[] stacks = super.getMatchingStacks();
 		if (!counted) {
-			for(ItemStack stack : stacks) stack.setCount(count);
+			for(ItemStack stack : stacks) {
+				stack.setCount(count);
+			}
 			counted = true;
 		}
 		return stacks;
@@ -68,8 +70,9 @@ public class CountedIngredient extends Ingredient {
 			ItemStack[] items = ingredient.getMatchingStacks();
 			buffer.writeVarInt(items.length);
 
-			for (ItemStack stack : items)
+			for (ItemStack stack : items) {
 				buffer.writeItemStack(stack);
+			}
 		}
 	}
 }

@@ -198,9 +198,8 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction dir) {
-		if (!removed) {
-			if (cap == CapabilityEnergy.ENERGY || cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-				return selfHandler.cast();
+		if (!removed && (cap == CapabilityEnergy.ENERGY || cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
+			return selfHandler.cast();
 		}
 		return super.getCapability(cap, dir);
 	}
@@ -239,11 +238,12 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
-		if (maxExtract <= 0) return 0;
 		int r = maxExtract;
-		if (r > energy) r = energy;
-		if (!simulate) {
-			energy -= r;
+		if (r > 0) {
+			if (r > energy) r = energy;
+			if (!simulate) {
+				energy -= r;
+			}
 		}
 		return r;
 	}
@@ -327,8 +327,11 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		if (0 >= l) return stack;
 		boolean rl = stackCount > l;
 		if (!simulate) {
-			if (xis.isEmpty()) items.set(slot, rl ? ItemHandlerHelper.copyStackWithSize(stack, l) : stack);
-			else xis.grow(rl ? l : stackCount);
+			if (xis.isEmpty()) {
+				items.set(slot, rl ? ItemHandlerHelper.copyStackWithSize(stack, l) : stack);
+			} else {
+				xis.grow(rl ? l : stackCount);
+			}
 			isDirty = true;
 		}
 		return rl ? ItemHandlerHelper.copyStackWithSize(stack, stackCount - l) : ItemStack.EMPTY;
@@ -373,18 +376,27 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 	public int fill(FluidStack resource, FluidAction action) {
 		if (resource.getAmount() <= 0) return 0;
 		int s;
-		if (FluxGenRecipes.isHotFluid(resource.getFluid())) s = 0;
-		else if (FluxGenRecipes.isColdFluid(resource.getFluid())) s = 1;
-		else return 0;
+		if (FluxGenRecipes.isHotFluid(resource.getFluid())) {
+			s = 0;
+		} else if (FluxGenRecipes.isColdFluid(resource.getFluid())) {
+			s = 1;
+		} else {
+			return 0;
+		}
 		FluidStack fs = fluids[s];
-		if (!fs.isEmpty() && !fs.isFluidEqual(resource)) return 0;
+		if (!fs.isEmpty() && !fs.isFluidEqual(resource)) {
+			return 0;
+		}
 		int l = fluidCap - fs.getAmount();
-		if (l > resource.getAmount())
+		if (l > resource.getAmount()) {
 			l = resource.getAmount();
+		}
 		if (l > 0 && action.execute()) {
-			if (fs.isEmpty())
+			if (fs.isEmpty()) {
 				fluids[s] = resource.copy();
-			else fs.grow(l);
+			} else {
+				fs.grow(l);
+			}
 			isDirty = true;
 		}
 		return l;

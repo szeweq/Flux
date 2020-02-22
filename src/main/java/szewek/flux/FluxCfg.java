@@ -19,7 +19,11 @@ public class FluxCfg {
 		public final IntValue
 				fluxGenBaseEnergy,
 				basicMachineEU,
-				diggerEU, farmerEU, butcherEU, mobPounderEU, itemAbsorberEU;
+				diggerEU,
+				farmerEU,
+				butcherEU,
+				mobPounderEU,
+				itemAbsorberEU;
 		public final ForgeConfigSpec.BooleanValue disableOres;
 		public final ForgeConfigSpec.ConfigValue<List<? extends String>> preferModCompat, blacklistCompatRecipes;
 
@@ -77,7 +81,9 @@ public class FluxCfg {
 	@SubscribeEvent
 	public static void onFileChange(final ModConfig.Reloading configEvent) {
 		LogManager.getLogger().fatal("Flux config just got changed on the file system!");
-		for (IConfigChangeListener l : listeners) l.onConfigChanged();
+		for (IConfigChangeListener l : listeners) {
+			l.onConfigChanged();
+		}
 	}
 
 	public static void addListener(final IConfigChangeListener listener) {

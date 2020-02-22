@@ -25,20 +25,20 @@ public class APICall {
 		}
 	}
 
-	public APICall post(Object obj) throws IOException {
+	public APICall post(final Object obj) throws IOException {
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Content-Type", "application/json");
 		conn.setDoOutput(true);
-		OutputStream out = conn.getOutputStream();
+		final OutputStream out = conn.getOutputStream();
 		FluxPlus.GSON.toJson(obj, new OutputStreamWriter(out, StandardCharsets.UTF_8));
 		out.close();
 		return this;
 	}
 
-	public <T> T response(Class<T> outClass) throws IOException {
+	public <T> T response(final Class<T> type) throws IOException {
 		checkStatus();
-		InputStream in = conn.getInputStream();
-		T t = FluxPlus.GSON.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), outClass);
+		final InputStream in = conn.getInputStream();
+		T t = FluxPlus.GSON.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), type);
 		in.close();
 		return t;
 	}

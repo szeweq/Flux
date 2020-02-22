@@ -166,10 +166,11 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 		Fluid fl = fs.getFluid();
 		if (fl == Fluids.EMPTY) return;
 		int am = fs.getAmount();
+		int ny = y;
+		int nh = h;
 		if (am < cap) {
-			int nh = h * am / cap;
-			y += h - nh;
-			h = nh;
+			nh = h * am / cap;
+			ny += h - nh;
 		}
 
 		ResourceLocation still = fl.getAttributes().getStillTexture();
@@ -181,10 +182,10 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 
 		final int xTileCount = w / 16;
 		final int xRemainder = w - (xTileCount * 16);
-		final int yTileCount = h / 16;
-		final int yRemainder = h - (yTileCount * 16);
+		final int yTileCount = nh / 16;
+		final int yRemainder = nh - (yTileCount * 16);
 
-		final int yStart = y + h;
+		final int yStart = ny + nh;
 		final float z = getBlitOffset();
 
 		float uMin = tas.getMinU();

@@ -45,8 +45,9 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote) {
-			if (cooldown > 0) --cooldown;
-			else {
+			if (cooldown > 0) {
+				--cooldown;
+			} else {
 				cooldown = 4;
 				byte sf = (byte) (sideFlag ^ 63);
 				sideFlag = 0;
