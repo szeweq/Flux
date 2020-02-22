@@ -34,7 +34,7 @@ public final class Metals {
 	}
 
 	public static int ingotColors(ItemStack stack, int layer) {
-		return layer != 0 ? 0xffffff : getColor(stack);
+		return layer == 0 ? getColor(stack) : 0xffffff;
 	}
 
 	public static int itemColors(ItemStack stack, int layer) {

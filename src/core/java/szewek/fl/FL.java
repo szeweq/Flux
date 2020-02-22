@@ -81,7 +81,7 @@ public final class FL {
 				final ResourceLocation tag = entry.getKey();
 				final String ns = tag.getNamespace();
 				final char charNs = "minecraft".equals(ns) ? '$' : "forge".equals(ns) ? '#' : 0;
-				final String tagName = charNs != 0 ? charNs + tag.getPath() : tag.toString();
+				final String tagName = charNs == 0 ? tag.toString() : charNs + tag.getPath();
 				for (Item item : entry.getValue().getAllElements()) {
 					ResourceLocation rl = item.getRegistryName();
 					if (rl != null && unfamiliar(rl)) {

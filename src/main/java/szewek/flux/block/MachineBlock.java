@@ -36,7 +36,7 @@ public final class MachineBlock extends ContainerBlock {
 
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
 		TileEntityType<?> tetype = ForgeRegistries.TILE_ENTITIES.getValue(getRegistryName());
-		return tetype != null ? tetype.create() : null;
+		return tetype == null ? null : tetype.create();
 	}
 
 	public int getLightValue(BlockState state) {

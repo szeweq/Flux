@@ -3,7 +3,9 @@ package szewek.fl.util;
 public final class IntPair implements Comparable<IntPair> {
 	public static final IntPair ZERO = of(0, 0);
 
-	public final int l, r;
+	public final int
+			l,
+			r;
 
 	private IntPair(int l, int r) {
 		this.l = l;

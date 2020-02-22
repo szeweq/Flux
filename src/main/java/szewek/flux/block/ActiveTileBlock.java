@@ -28,7 +28,7 @@ public class ActiveTileBlock extends Block {
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		TileEntityType<?> tetype = ForgeRegistries.TILE_ENTITIES.getValue(getRegistryName());
-		return tetype != null ? tetype.create() : null;
+		return tetype == null ? null : tetype.create();
 	}
 
 	@Override

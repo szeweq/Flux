@@ -168,7 +168,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	public final int processScaled() {
 		int i = data.get(1);
 		int j = data.get(2);
-		return j != 0 && i != 0 ? i * 24 / j : 0;
+		return j == 0 || i == 0 ? 0 : i * 24 / j;
 	}
 
 	@OnlyIn(Dist.CLIENT)
