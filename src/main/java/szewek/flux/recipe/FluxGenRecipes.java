@@ -7,15 +7,17 @@ import net.minecraft.item.Items;
 import net.minecraftforge.fluids.FluidStack;
 import szewek.fl.util.IntPair;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class FluxGenRecipes {
 	/* IntPair values: l = factor; r = usage */
 	public static final IntPair DEFAULT = IntPair.of(1, 0);
-	private static final Map<Item, IntPair> catalysts = new HashMap<>();
-	private static final Map<FluidStack, IntPair> coldFluids = new HashMap<>();
-	private static final Map<FluidStack, IntPair> hotFluids = new HashMap<>();
+	private static final Map<Item, IntPair> catalysts = new ConcurrentHashMap<>();
+	private static final Map<Fluid, IntPair> coldFluids = new ConcurrentHashMap<>();
+	private static final Map<Fluid, IntPair> hotFluids = new ConcurrentHashMap<>();
 
 	public static boolean isCatalyst(Item item) {
 		return catalysts.containsKey(item);
@@ -25,52 +27,28 @@ public final class FluxGenRecipes {
 		return catalysts.getOrDefault(item, DEFAULT);
 	}
 
-	public static boolean isHotFluid(FluidStack stack) {
-		return isFluid(stack, hotFluids);
+	public static boolean isHotFluid(Fluid fluid) {
+		return isFluid(fluid, hotFluids);
 	}
 
-	public static IntPair getHotFluid(FluidStack stack) {
-		return getFluid(stack, hotFluids);
+	public static IntPair getHotFluid(Fluid fluid) {
+		return getFluid(fluid, hotFluids);
 	}
 
-	public static boolean isColdFluid(FluidStack stack) {
-		return isFluid(stack, coldFluids);
+	public static boolean isColdFluid(Fluid fluid) {
+		return isFluid(fluid, coldFluids);
 	}
 
-	public static IntPair getColdFluid(FluidStack stack) {
-		return getFluid(stack, coldFluids);
+	public static IntPair getColdFluid(Fluid fluid) {
+		return getFluid(fluid, coldFluids);
 	}
 
-	private static boolean isFluid(FluidStack stack, Map<FluidStack, IntPair> m) {
-		if (stack == null || stack.isEmpty()) {
-			return false;
-		} else if (m.containsKey(stack)) {
-			return true;
-		} else {
-			Fluid fl = stack.getFluid();
-			for (FluidStack fs : m.keySet()) {
-				if (fs.getRawFluid() == fl) return true;
-			}
-			return false;
-		}
+	private static boolean isFluid(@Nullable Fluid fluid, Map<Fluid, IntPair> m) {
+		return m.containsKey(fluid);
 	}
 
-	private static IntPair getFluid(FluidStack stack, Map<FluidStack, IntPair> m) {
-		if (stack == null || stack.isEmpty()) {
-			return DEFAULT;
-		} else {
-			if (m.containsKey(stack)) {
-				return m.getOrDefault(stack, DEFAULT);
-			} else {
-				Fluid fl = stack.getFluid();
-				for (FluidStack fs : m.keySet()) {
-					if (fs.getRawFluid() == fl) {
-						return m.getOrDefault(fs, DEFAULT);
-					}
-				}
-				return DEFAULT;
-			}
-		}
+	private static IntPair getFluid(@Nullable Fluid fluid, Map<Fluid, IntPair> m) {
+		return m.getOrDefault(fluid, DEFAULT);
 	}
 
 	private static void add(Item item, int factor, int usage) {
@@ -90,7 +68,7 @@ public final class FluxGenRecipes {
 		add(Items.DRAGON_BREATH, 60, 1);
 		add(Items.NETHER_STAR, 100, 1);
 		add(Items.TOTEM_OF_UNDYING, 200, 1);
-		hotFluids.put(new FluidStack(Fluids.LAVA, 0), IntPair.of(2, 200));
-		coldFluids.put(new FluidStack(Fluids.WATER, 0), IntPair.of(50, 200));
+		hotFluids.put(Fluids.LAVA, IntPair.of(2, 200));
+		coldFluids.put(Fluids.WATER, IntPair.of(50, 200));
 	}
 }

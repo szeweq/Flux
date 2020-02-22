@@ -3,10 +3,8 @@ package szewek.flux.tile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -41,14 +39,14 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class FluxGenTile extends LockableTileEntity implements IInventory, IItemHandler, IFluidHandler, ITickableTileEntity, INamedContainerProvider, IEnergyStorage {
+public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFluidHandler, ITickableTileEntity, IEnergyStorage {
 	public static final int fluidCap = 4000;
 	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 	private final FluidStack[] fluids = new FluidStack[] {FluidStack.EMPTY, FluidStack.EMPTY};
-	private int tickCount = 0, energy = 0, workTicks = 0, maxWork = 0, energyGen = 0, workSpeed = 0;
-	private boolean isReady = false, isDirty = false;
-	public boolean receivedRedstone = false;
+	private int tickCount, energy, workTicks, maxWork, energyGen, workSpeed;
+	private boolean isReady, isDirty;
+	public boolean receivedRedstone;
 	protected final IIntArray fluxGenData = new IIntArray() {
 		@Override
 		public int get(int i) {
@@ -86,6 +84,7 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 				case 8:
 					if (!fluids[1].isEmpty()) fluids[0].setAmount(v);
 					break;
+				default:
 			}
 		}
 
@@ -175,8 +174,8 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		if (f == 0) return 0;
 		ItemStack catalyst = items.get(1);
 		IntPair genCat = FluxGenRecipes.getCatalyst(catalyst.getItem());
-		IntPair genHot = FluxGenRecipes.getHotFluid(fluids[0]);
-		IntPair genCold = FluxGenRecipes.getColdFluid(fluids[1]);
+		IntPair genHot = FluxGenRecipes.getHotFluid(fluids[0].getFluid());
+		IntPair genCold = FluxGenRecipes.getColdFluid(fluids[1].getFluid());
 		energyGen = FluxCfg.COMMON.fluxGenBaseEnergyValue.get();
 		if (genCat.r <= catalyst.getCount()) {
 			energyGen *= genCat.l;
@@ -197,7 +196,6 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 		return f;
 	}
 
-	@Nullable
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction dir) {
 		if (!removed) {
@@ -375,8 +373,8 @@ public class FluxGenTile extends LockableTileEntity implements IInventory, IItem
 	public int fill(FluidStack resource, FluidAction action) {
 		if (resource.getAmount() <= 0) return 0;
 		int s;
-		if (FluxGenRecipes.isHotFluid(resource)) s = 0;
-		else if (FluxGenRecipes.isColdFluid(resource)) s = 1;
+		if (FluxGenRecipes.isHotFluid(resource.getFluid())) s = 0;
+		else if (FluxGenRecipes.isColdFluid(resource.getFluid())) s = 1;
 		else return 0;
 		FluidStack fs = fluids[s];
 		if (!fs.isEmpty() && !fs.isFluidEqual(resource)) return 0;
