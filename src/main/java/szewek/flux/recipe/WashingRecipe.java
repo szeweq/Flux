@@ -9,6 +9,7 @@ public final class WashingRecipe extends AbstractMachineRecipe {
 		super(F.R.WASHING, idIn, groupIn, builder);
 	}
 
+	@Override
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.WASHER);
 	}

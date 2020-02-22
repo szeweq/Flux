@@ -34,15 +34,18 @@ public final class MachineBlock extends ContainerBlock {
 		this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
 	}
 
+	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
 		TileEntityType<?> tetype = ForgeRegistries.TILE_ENTITIES.getValue(getRegistryName());
 		return tetype == null ? null : tetype.create();
 	}
 
+	@Override
 	public int getLightValue(BlockState state) {
 		return state.get(LIT) ? super.getLightValue(state) : 0;
 	}
 
+	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
 		if (!world.isRemote()) {
 			TileEntity te = world.getTileEntity(pos);
@@ -57,10 +60,12 @@ public final class MachineBlock extends ContainerBlock {
 		return ActionResultType.SUCCESS;
 	}
 
+	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
 	}
 
+	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		if (stack.hasDisplayName()) {
 			TileEntity tileentity = worldIn.getTileEntity(pos);
@@ -71,6 +76,7 @@ public final class MachineBlock extends ContainerBlock {
 
 	}
 
+	@Override
 	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity tileentity = worldIn.getTileEntity(pos);
@@ -84,26 +90,32 @@ public final class MachineBlock extends ContainerBlock {
 
 	}
 
+	@Override
 	public boolean hasComparatorInputOverride(BlockState state) {
 		return true;
 	}
 
+	@Override
 	public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
 		return Container.calcRedstone(worldIn.getTileEntity(pos));
 	}
 
+	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.MODEL;
 	}
 
+	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.with(FACING, rot.rotate(state.get(FACING)));
 	}
 
+	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
 	}
 
+	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING, LIT);
 	}

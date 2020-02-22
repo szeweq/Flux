@@ -116,6 +116,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			bit = (byte) (1 << i);
 		}
 
+		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			if (maxReceive <= 0) return 0;
 			int r = maxReceive;
@@ -129,6 +130,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			return r;
 		}
 
+		@Override
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			if (maxExtract <= 0) return 0;
 			int r = maxExtract;
@@ -142,18 +144,22 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			return r;
 		}
 
+		@Override
 		public int getEnergyStored() {
 			return energy;
 		}
 
+		@Override
 		public int getMaxEnergyStored() {
 			return 50000;
 		}
 
+		@Override
 		public boolean canExtract() {
 			return true;
 		}
 
+		@Override
 		public boolean canReceive() {
 			return true;
 		}

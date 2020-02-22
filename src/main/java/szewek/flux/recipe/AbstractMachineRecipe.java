@@ -36,22 +36,27 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 		processTime = builder.process;
 	}
 
+	@Override
 	public IRecipeType<?> getType() {
 		return type;
 	}
 
+	@Override
 	public ResourceLocation getId() {
 		return id;
 	}
 
+	@Override
 	public String getGroup() {
 		return group;
 	}
 
+	@Override
 	public ItemStack getRecipeOutput() {
 		return result;
 	}
 
+	@Override
 	public NonNullList<Ingredient> getIngredients() {
 		return ingredients;
 	}
@@ -61,6 +66,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 		return type.serializer;
 	}
 
+	@Override
 	public boolean matches(IInventoryIO inv, World worldIn) {
 		ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
@@ -72,14 +78,17 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 		return match != null;
 	}
 
+	@Override
 	public ItemStack getCraftingResult(IInventoryIO inv) {
 		return result.copy();
 	}
 
+	@Override
 	public boolean canFit(int width, int height) {
 		return ingredients.size() <= width * height;
 	}
 
+	@Override
 	public final void accept(List<ItemStack> stacks) {
 		ArrayList<ItemStack> filledInputs = new ArrayList<>();
 

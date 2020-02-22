@@ -23,6 +23,7 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 		this.titleId = titleId;
 	}
 
+	@Override
 	public int[] getSlotsForFace(Direction side) {
 		switch (side) {
 			case UP:
@@ -34,6 +35,7 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 		}
 	}
 
+	@Override
 	public ITextComponent getDefaultName() {
 		return new TranslationTextComponent(this.titleId);
 	}

@@ -30,6 +30,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 		super(screenContainer, inv, titleIn);
 	}
 
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		this.renderBackground(0);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -43,6 +44,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 		RenderSystem.popMatrix();
 	}
 
+	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		String s = title.getFormattedText();
 		this.font.drawString(s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 5.0F, 0x404040);

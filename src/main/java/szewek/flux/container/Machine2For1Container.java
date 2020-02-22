@@ -18,6 +18,7 @@ public class Machine2For1Container extends AbstractMachineContainer {
 		super(containerTypeIn, recipeType, id, playerInventoryIn, 2, 1, machineInventoryIn, dataIn);
 	}
 
+	@Override
 	protected void initSlots(PlayerInventory playerInventory) {
 		addSlot(new Slot(machineInventory, 0, 56, 26));
 		addSlot(new Slot(machineInventory, 1, 56, 44));

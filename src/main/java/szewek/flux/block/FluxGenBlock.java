@@ -25,18 +25,22 @@ public final class FluxGenBlock extends ContainerBlock {
 		super(props);
 	}
 
+	@Override
 	public boolean hasTileEntity(BlockState state) {
 		return true;
 	}
 
+	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
 		return F.T.FLUXGEN.create();
 	}
 
+	@Override
 	public TileEntity createTileEntity(BlockState var1, IBlockReader var2) {
 		return F.T.FLUXGEN.create();
 	}
 
+	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
 		if (!world.isRemote()) {
 			TileEntity tile = world.getTileEntity(pos);
@@ -49,14 +53,17 @@ public final class FluxGenBlock extends ContainerBlock {
 		return ActionResultType.SUCCESS;
 	}
 
+	@Override
 	public void onBlockPlacedBy(World w, BlockPos pos, BlockState state, LivingEntity ent, ItemStack stack) {
 		if (!w.isRemote()) this.updateRedstoneState(w, pos);
 	}
 
+	@Override
 	public void onNeighborChange(BlockState state, IWorldReader w, BlockPos pos, BlockPos neighbor) {
 		if (!w.isRemote() && w instanceof World) this.updateRedstoneState((World) w, pos);
 	}
 
+	@Override
 	public BlockRenderType getRenderType(BlockState p_149645_1_) {
 		return BlockRenderType.MODEL;
 	}

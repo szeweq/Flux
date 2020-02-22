@@ -23,30 +23,37 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 		filterName = "gui.flux.recipebook.toggleRecipes." + name;
 	}
 
+	@Override
 	protected boolean func_212962_b() {
 		return recipeBook.isFilteringCraftable();
 	}
 
+	@Override
 	protected void func_212959_a(boolean v) {
 		recipeBook.setFilteringCraftable(v);
 	}
 
+	@Override
 	protected boolean func_212963_d() {
 		return recipeBook.isGuiOpen();
 	}
 
+	@Override
 	protected void func_212957_c(boolean v) {
 		recipeBook.setGuiOpen(v);
 	}
 
+	@Override
 	protected String func_212960_g() {
 		return filterName;
 	}
 
+	@Override
 	protected Set<Item> func_212958_h() {
 		return Collections.singleton(Items.AIR);
 	}
 
+	@Override
 	protected void updateCollections(boolean resetPage) {
 		List<RecipeList> list = recipeBook.getRecipes(currentTab.func_201503_d());
 		list.forEach(rl -> rl.canCraft(stackedContents, field_201522_g.getWidth(), field_201522_g.getHeight(), recipeBook));

@@ -29,6 +29,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 	}
 
 	@Nullable
+	@Override
 	public T read(ResourceLocation recipeId, JsonObject json) {
 		String group = JSONUtils.getString(json, "group", "");
 		if (!json.has(RESULT)) {
@@ -76,6 +77,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		return factory.create(recipeId, group, b);
 	}
 
+	@Override
 	public T read(ResourceLocation recipeId, PacketBuffer buffer) {
 		String s = buffer.readString(32767);
 		MachineRecipeSerializer.Builder b = new MachineRecipeSerializer.Builder();
@@ -91,6 +93,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		return factory.create(recipeId, s, b);
 	}
 
+	@Override
 	public void write(PacketBuffer buffer, T recipe) {
 		buffer.writeString(recipe.getGroup());
 		buffer.writeByte(recipe.ingredients.size());

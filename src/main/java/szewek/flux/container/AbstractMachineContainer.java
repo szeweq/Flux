@@ -77,46 +77,56 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	}
 
+	@Override
 	public void fillStackedContents(RecipeItemHelper helper) {
 		if (machineInventory instanceof IRecipeHelperPopulator) {
 			((IRecipeHelperPopulator) machineInventory).fillStackedContents(helper);
 		}
 	}
 
+	@Override
 	public void clear() {
 		machineInventory.clear();
 	}
 
+	@Override
 	public void func_217056_a(boolean placeAll, IRecipe<?> recipe, ServerPlayerEntity player) {
 		//noinspection unchecked
 		new ServerRecipePlacerMachine<>(this, inputSize, outputSize).place(player, (IRecipe<IInventory>) recipe, placeAll);
 	}
 
+	@Override
 	public boolean matches(IRecipe<? super IInventory> recipeIn) {
 		return recipeIn.getType() == recipeType && recipeIn.matches(machineInventory, world);
 	}
 
+	@Override
 	public int getOutputSlot() {
 		return inputSize;
 	}
 
+	@Override
 	public int getWidth() {
 		return inputSize;
 	}
 
+	@Override
 	public int getHeight() {
 		return 1;
 	}
 
 	@OnlyIn(Dist.CLIENT)
+	@Override
 	public int getSize() {
 		return inputSize + 1;
 	}
 
+	@Override
 	public boolean canInteractWith(PlayerEntity playerIn) {
 		return machineInventory.isUsableByPlayer(playerIn);
 	}
 
+	@Override
 	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
 		ItemStack stack = ItemStack.EMPTY;
 		Slot slot = inventorySlots.get(index);
@@ -158,6 +168,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		return stack;
 	}
 
+	@Override
 	public List<RecipeBookCategories> getRecipeBookCategories() {
 		return Arrays.asList(RecipeBookCategories.SEARCH, RecipeBookCategories.EQUIPMENT, RecipeBookCategories.BUILDING_BLOCKS, RecipeBookCategories.MISC, RecipeBookCategories.REDSTONE);
 	}
