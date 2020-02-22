@@ -30,9 +30,10 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 	public MachineScreen(T screenContainer, String filterName, PlayerInventory inv, ITextComponent titleIn, ResourceLocation guiTexture) {
 		super(screenContainer, inv, titleIn);
 		this.guiTexture = guiTexture;
-		this.recipeGui = new MachineRecipeGui(screenContainer.recipeType, filterName);
+		recipeGui = new MachineRecipeGui(screenContainer.recipeType, filterName);
 	}
 
+	@Override
 	public void init() {
 		super.init();
 		recipeBookShown = this.width < 379;
@@ -46,11 +47,13 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 		})));
 	}
 
+	@Override
 	public void tick() {
 		super.tick();
 		recipeGui.tick();
 	}
 
+	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		renderBackground();
 		if (recipeGui.isVisible() && recipeBookShown) {
@@ -66,6 +69,7 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 		recipeGui.renderTooltip(guiLeft, guiTop, mouseX, mouseY);
 	}
 
+	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		String s = title.getFormattedText();
 		font.drawString(s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6.0F, 0x404040);
@@ -79,6 +83,7 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 
 	}
 
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		minecraft.getTextureManager().bindTexture(guiTexture);
@@ -98,36 +103,44 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 
 	}
 
+	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		return recipeGui.mouseClicked(mouseX, mouseY, mouseButton) || (recipeBookShown && recipeGui.isVisible() || super.mouseClicked(mouseX, mouseY, mouseButton));
 	}
 
+	@Override
 	protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
 		super.handleMouseClick(slotIn, slotId, mouseButton, type);
 		recipeGui.slotClicked(slotIn);
 	}
 
+	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		return !recipeGui.keyPressed(keyCode, scanCode, modifiers) && super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
+	@Override
 	protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
 		boolean flag = mouseX < (double)guiLeftIn || mouseY < (double)guiTopIn || mouseX >= (double)(guiLeftIn + xSize) || mouseY >= (double)(guiTopIn + ySize);
 		return recipeGui.func_195604_a(mouseX, mouseY, guiLeft, guiTop, xSize, ySize, mouseButton) && flag;
 	}
 
+	@Override
 	public boolean charTyped(char c, int modifiers) {
 		return recipeGui.charTyped(c, modifiers) || super.charTyped(c, modifiers);
 	}
 
+	@Override
 	public void recipesUpdated() {
 		recipeGui.recipesUpdated();
 	}
 
+	@Override
 	public RecipeBookGui getRecipeGui() {
 		return recipeGui;
 	}
 
+	@Override
 	public void removed() {
 		recipeGui.removed();
 		super.removed();

@@ -19,10 +19,12 @@ public final class GiftData implements IGift {
 		this.stacks = stacks;
 	}
 
+	@Override
 	public List<ItemStack> getStacks() {
 		return this.stacks.stream().map(ItemStack::copy).collect(Collectors.toList());
 	}
 
+	@Override
 	public ITextComponent getText() {
 		return new TranslationTextComponent("flux.gift.text." + this.name);
 	}

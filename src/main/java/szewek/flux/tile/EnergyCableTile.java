@@ -16,9 +16,9 @@ import szewek.flux.energy.EnergyCache;
 import javax.annotation.Nullable;
 
 public final class EnergyCableTile extends TileEntity implements ITickableTileEntity {
-	private int energy, cooldown = 0;
+	private int energy, cooldown;
 	private final Side[] sides = new Side[6];
-	private byte sideFlag = 0;
+	private byte sideFlag;
 	private final EnergyCache energyCache = new EnergyCache(this);
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
@@ -28,17 +28,20 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		}
 	}
 
+	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 50000);
 	}
 
+	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 		compound.putInt("E", energy);
 		return compound;
 	}
 
+	@Override
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote) {
@@ -91,6 +94,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 		return sides[dir.getIndex()].lazy;
 	}
 
+	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!removed && cap == CapabilityEnergy.ENERGY && side != null) {
 			return sides[side.getIndex()].lazy.cast();
@@ -106,7 +110,7 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 
 	public final class Side implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
 		private final byte bit;
-		private LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
+		private final LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
 
 		private Side(int i) {
 			bit = (byte) (1 << i);

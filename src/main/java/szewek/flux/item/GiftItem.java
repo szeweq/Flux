@@ -23,19 +23,23 @@ public final class GiftItem extends Item {
 		super(properties);
 	}
 
+	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		playerIn.setActiveHand(handIn);
 		return new ActionResult<>(ActionResultType.CONSUME, playerIn.getHeldItem(handIn));
 	}
 
+	@Override
 	public int getUseDuration(ItemStack stack) {
 		return 30;
 	}
 
+	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.EAT;
 	}
 
+	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
 		if (!worldIn.isRemote() && entityLiving instanceof ServerPlayerEntity && stack.getItem() == (GiftItem)this) {
 			CompoundNBT tag = stack.getTag();

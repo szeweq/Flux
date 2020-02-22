@@ -22,6 +22,7 @@ public final class DiggerTile extends BlockInteractingTile {
 		super(F.T.DIGGER);
 	}
 
+	@Override
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote) {

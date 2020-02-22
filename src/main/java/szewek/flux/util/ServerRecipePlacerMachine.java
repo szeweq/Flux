@@ -22,6 +22,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 		this.outputSize = outputSize;
 	}
 
+	@Override
 	protected void tryPlaceRecipe(IRecipe<C> recipe, boolean placeAll) {
 		matches = recipeBookContainer.matches(recipe);
 		int i = recipeItemHelper.getBiggestCraftableStack(recipe, null);
@@ -51,6 +52,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 
 	}
 
+	@Override
 	protected void clear() {
 		int l = inputSize + outputSize;
 		for(int i = inputSize; i < l; ++i) {

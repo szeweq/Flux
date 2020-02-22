@@ -22,25 +22,30 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 		super(tileEntityTypeIn);
 	}
 
+	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 500000);
 	}
 
+	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 		compound.putInt("E", energy);
 		return compound;
 	}
 
+	@Override
 	public int getMaxEnergyStored() {
 		return 500000;
 	}
 
+	@Override
 	public int getEnergyStored() {
 		return energy;
 	}
 
+	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		if (maxReceive <= 0) return 0;
 		int r = maxReceive;
@@ -53,6 +58,7 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 		return r;
 	}
 
+	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!removed && CapabilityEnergy.ENERGY == cap) {
 			return handler.cast();
