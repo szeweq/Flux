@@ -47,11 +47,11 @@ public final class ItemsUtil {
 						tempStack = iih.insertItem(i, tempStack, false);
 					}
 				}
-				if (stack.isEmpty()) {
+				if (tempStack.isEmpty()) {
 					continue itemloop;
 				}
 			}
-			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), stack);
+			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), tempStack);
 		}
 	}
 
