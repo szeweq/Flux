@@ -67,8 +67,11 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 				}
 			}
 		} catch (JsonSyntaxException e) {
-			if (tagResult) return null;
-			else throw e;
+			if (tagResult) {
+				return null;
+			} else {
+				throw e;
+			}
 		}
 
 		b.experience = JSONUtils.getFloat(json, "experience", 0.0F);

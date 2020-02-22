@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * Ingredient with set count for an item stack
  */
 public class CountedIngredient extends Ingredient {
-	final int count;
+	private final int count;
 	private boolean counted;
 
 	CountedIngredient(Stream<? extends IItemList> stream, int count) {

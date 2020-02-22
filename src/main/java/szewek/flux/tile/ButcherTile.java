@@ -22,7 +22,9 @@ public class ButcherTile extends EntityInteractingTile {
 			for (AnimalEntity animal : animals) {
 				animal.attackEntityFrom(DamageSource.GENERIC, 100);
 				energy -= usage;
-				if (energy < usage) break;
+				if (energy < usage) {
+					break;
+				}
 			}
 		}
 	}

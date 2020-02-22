@@ -147,8 +147,9 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 				}
 			}
 			if (isPowered() && !inputEmpty) {
-				if (cachedRecipe == null)
+				if (cachedRecipe == null) {
 					cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
+				}
 				if (canProcess()) {
 					energy -= energyUse;
 					if (process >= processTotal) {

@@ -22,8 +22,12 @@ public class EnergyCache extends SideCached<IEnergyStorage> {
 			World w = tile.getWorld();
 			assert w != null;
 			TileEntity te = w.getTileEntity(tile.getPos().offset(dir));
-			if (te == null) return LazyOptional.empty();
-			if (te instanceof EnergyCableTile) return ((EnergyCableTile) te).getSide(dir.getOpposite());
+			if (te == null) {
+				return LazyOptional.empty();
+			}
+			if (te instanceof EnergyCableTile) {
+				return ((EnergyCableTile) te).getSide(dir.getOpposite());
+			}
 			return te.getCapability(CapabilityEnergy.ENERGY, dir.getOpposite());
 		};
 	}

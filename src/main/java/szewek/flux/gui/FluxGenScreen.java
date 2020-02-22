@@ -162,9 +162,13 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 	}
 
 	private void drawFluidStack(int x, int y, int w, int h, FluidStack fs, int cap) {
-		if (fs.isEmpty()) return;
+		if (fs.isEmpty()) {
+			return;
+		}
 		Fluid fl = fs.getFluid();
-		if (fl == Fluids.EMPTY) return;
+		if (fl == Fluids.EMPTY) {
+			return;
+		}
 		int am = fs.getAmount();
 		int ny = y;
 		int nh = h;

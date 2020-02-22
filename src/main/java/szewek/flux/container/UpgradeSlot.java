@@ -18,7 +18,9 @@ public class UpgradeSlot extends Slot {
 
 	@Override
 	public void onSlotChanged() {
-		if (inventory instanceof AbstractMachineTile) ((AbstractMachineTile) inventory).updateValues();
+		if (inventory instanceof AbstractMachineTile) {
+			((AbstractMachineTile) inventory).updateValues();
+		}
 		super.onSlotChanged();
 	}
 }

@@ -38,7 +38,9 @@ public final class FluxPlus {
 						.response(Boolean.TYPE);
 				if (b) {
 					ACTIONS.add(type);
-				} else LOGGER.warn("Action type {} is not acceptable", type);
+				} else {
+					LOGGER.warn("Action type {} is not acceptable", type);
+				}
 			} catch (Exception e) {
 				LOGGER.error("Exception while registering an action", e);
 			}

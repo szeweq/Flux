@@ -47,7 +47,7 @@ public final class FluxMod {
 			return new ItemStack(F.B.FLUXGEN);
 		}
 	};
-	static IModInfo modInfo;
+	private static IModInfo modInfo;
 
 	public FluxMod() {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

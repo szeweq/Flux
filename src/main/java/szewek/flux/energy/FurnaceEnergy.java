@@ -18,14 +18,22 @@ public final class FurnaceEnergy extends EnergyCapable {
 
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		if (!canReceive() || maxReceive <= 0) return 0;
+		if (!canReceive() || maxReceive <= 0) {
+			return 0;
+		}
 		World w = furnace.getWorld();
-		if (w == null) return 0;
+		if (w == null) {
+			return 0;
+		}
 		IIntArray data = furnace.furnaceData;
 		int burnTime = data.get(0) * USE;
-		if (burnTime >= CAP) return 0;
+		if (burnTime >= CAP) {
+			return 0;
+		}
 		int r = CAP - burnTime;
-		if (r > maxReceive) r = maxReceive - maxReceive % USE;
+		if (r > maxReceive) {
+			r = maxReceive - maxReceive % USE;
+		}
 		if (!simulate && r / USE > 0) {
 			int maxBurnTime = data.get(1) * USE;
 			if (maxBurnTime < CAP) data.set(1, CAP / USE);
@@ -51,7 +59,9 @@ public final class FurnaceEnergy extends EnergyCapable {
 
 	@Override
 	public boolean canReceive() {
-		if (furnace.isRemoved()) return false;
+		if (furnace.isRemoved()) {
+			return false;
+		}
 		World w = furnace.getWorld();
 		return w != null && w.getRecipeManager()
 				.getRecipe(furnace.recipeType, furnace, w)

@@ -99,7 +99,9 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!removed && cap == CapabilityEnergy.ENERGY && side != null) {
 			return sides[side.getIndex()].lazy.cast();
-		} else return super.getCapability(cap, side);
+		} else {
+			return super.getCapability(cap, side);
+		}
 	}
 
 	@Override
@@ -119,28 +121,30 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
-			if (maxReceive <= 0) return 0;
 			int r = maxReceive;
-			if (maxReceive > 50000 - energy) {
-				r = 50000 - energy;
-			}
-			if (!simulate) {
-				energy += r;
-				sideFlag |= bit;
+			if (r > 0) {
+				if (r > 50000 - energy) {
+					r = 50000 - energy;
+				}
+				if (!simulate) {
+					energy += r;
+					sideFlag |= bit;
+				}
 			}
 			return r;
 		}
 
 		@Override
 		public int extractEnergy(int maxExtract, boolean simulate) {
-			if (maxExtract <= 0) return 0;
 			int r = maxExtract;
-			if (maxExtract > energy) {
-				r = energy;
-			}
-			if (!simulate) {
-				energy -= r;
-				sideFlag |= bit;
+			if (r > 0) {
+				if (r > energy) {
+					r = energy;
+				}
+				if (!simulate) {
+					energy -= r;
+					sideFlag |= bit;
+				}
 			}
 			return r;
 		}

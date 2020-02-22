@@ -9,11 +9,13 @@ public final class ValueToIDMap<T> {
 	private final Object2IntMap<T> toID = new Object2IntLinkedOpenHashMap<>();
 
 	public int get(T t) {
+		int v;
 		if (toID.containsKey(t)) {
-			return toID.getInt(t);
+			v = toID.getInt(t);
+		} else {
+			v = toID.size();
+			toID.put(t, v);
 		}
-		int v = toID.size();
-		toID.put(t, v);
 		return v;
 	}
 

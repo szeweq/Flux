@@ -46,8 +46,11 @@ public final class FluxGenBlock extends ContainerBlock {
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile instanceof FluxGenTile) {
 				FluidActionResult far = FluidUtil.tryEmptyContainerAndStow(player.getHeldItem(hand), (FluxGenTile) tile, new InvWrapper(player.inventory), 4000, player, true);
-				if (far.success) player.setHeldItem(hand, far.getResult());
-				else player.openContainer((FluxGenTile) tile);
+				if (far.success) {
+					player.setHeldItem(hand, far.getResult());
+				} else {
+					player.openContainer((FluxGenTile) tile);
+				}
 			}
 		}
 		return ActionResultType.SUCCESS;
@@ -55,12 +58,16 @@ public final class FluxGenBlock extends ContainerBlock {
 
 	@Override
 	public void onBlockPlacedBy(World w, BlockPos pos, BlockState state, LivingEntity ent, ItemStack stack) {
-		if (!w.isRemote()) this.updateRedstoneState(w, pos);
+		if (!w.isRemote()) {
+			updateRedstoneState(w, pos);
+		}
 	}
 
 	@Override
 	public void onNeighborChange(BlockState state, IWorldReader w, BlockPos pos, BlockPos neighbor) {
-		if (!w.isRemote() && w instanceof World) this.updateRedstoneState((World) w, pos);
+		if (!w.isRemote() && w instanceof World) {
+			updateRedstoneState((World) w, pos);
+		}
 	}
 
 	@Override

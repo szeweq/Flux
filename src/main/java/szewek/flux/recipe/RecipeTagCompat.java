@@ -16,19 +16,20 @@ import java.util.Objects;
 
 public final class RecipeTagCompat {
 
-	static ItemStack findItemTag(JsonObject json) {
+	public static ItemStack findItemTag(JsonObject json) {
 		String tagName = JSONUtils.getString(json, "tag");
 		Tag<Item> tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
-		if (tag == null || tag.getAllElements().isEmpty()) {
-			return ItemStack.EMPTY;
+		if (tag != null && !tag.getAllElements().isEmpty()) {
+			Item foundItem = itemFromTagCompat(tag.getAllElements());
+			if (foundItem != null) {
+				return new ItemStack(foundItem, JSONUtils.getInt(json, "count", 1));
+			}
 		}
-		Item foundItem = itemFromTagCompat(tag.getAllElements());
-		if (foundItem == null) return ItemStack.EMPTY;
-		return new ItemStack(foundItem, JSONUtils.getInt(json, "count", 1));
+		return ItemStack.EMPTY;
 	}
 
 	@Nullable
-	static Item itemFromTagCompat(Collection<Item> items) {
+	public static Item itemFromTagCompat(Collection<Item> items) {
 		if (items.isEmpty()) return null;
 		//noinspection unchecked
 		final List<String> modCompat = (List<String>) FluxCfg.COMMON.preferModCompat.get();
