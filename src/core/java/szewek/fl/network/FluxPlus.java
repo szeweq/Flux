@@ -34,7 +34,7 @@ public final class FluxPlus {
 		}
 		EXEC.execute(() -> {
 			try {
-				boolean b = connect("/action?type=" + type)
+				boolean b = connect("/collect/action?type=" + type)
 						.response(Boolean.TYPE);
 				if (b) {
 					ACTIONS.add(type);
@@ -50,7 +50,7 @@ public final class FluxPlus {
 	public static void sendItemMap(final Map<String, Object> fullMap) {
 		EXEC.execute(() -> {
 			try {
-				connect("/items")
+				connect("/collect/items")
 						.post(fullMap)
 						.response(Boolean.TYPE);
 			} catch (Exception e) {
@@ -61,7 +61,7 @@ public final class FluxPlus {
 	public static void sendSerializerNames(final Map<String, Map<String, String>> fullMap) {
 		EXEC.execute(() -> {
 			try {
-				connect("/serializers")
+				connect("/collect/serializers")
 						.post(fullMap)
 						.response(Boolean.TYPE);
 			} catch (Exception e) {
@@ -72,7 +72,7 @@ public final class FluxPlus {
 	public static void sendRecipeInfos(final Map<String, Object> fullMap) {
 		EXEC.execute(() -> {
 			try {
-				connect("/recipes")
+				connect("/collect/recipes")
 						.post(fullMap)
 						.response(Boolean.TYPE);
 			} catch (Exception e) {
