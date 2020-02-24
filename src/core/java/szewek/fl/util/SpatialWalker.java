@@ -101,8 +101,8 @@ public abstract class SpatialWalker {
 		return z;
 	}
 
-	public BlockPos getPos() {
-		return new BlockPos(x, y, z);
+	public BlockPos getPosOffset(BlockPos pos) {
+		return pos.add(x, y, z);
 	}
 
 	public <T> Iterator<T> iterator(GeoFunction<T> gf) {
