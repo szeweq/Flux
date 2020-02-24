@@ -132,6 +132,4 @@ public abstract class SpatialWalker {
 	public enum Action {
 		X_POS, X_NEG, Y_POS, Y_NEG, Z_POS, Z_NEG, LOOP
 	}
-
-	public static class Builder {}
 }
