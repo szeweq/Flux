@@ -1,7 +1,7 @@
-# Flux Library (Version 3.0.7)
+# Flux Library (Version 3.0.8)
 
-Addind recipe compatibility layer.
-This means some recipes from different mods will work on Flux machines.
+Added Spacial Walker (just a library class) - it allows to manage "walking"
+(iterating over blocks) with specified actions.
+This is made for block-interacting machines from Flux (like Farmer or Digger).
 
-Moved counted ingredient class from Flux.
-Any recipe with item use count should use `fl:counted` instead of `flux:counted`. 
+Bug fixes.

@@ -2,13 +2,13 @@
   "flux:bronze_ingot": [
     {
       "ingredients": [
-        {"type": "flux:counted", "tag": "forge:ingots/copper", "count": 3},
+        {"type": "fl:counted", "tag": "forge:ingots/copper", "count": 3},
         {"tag": "forge:ingots/tin"}
       ], "count": 4
     },
     {
       "ingredients": [
-        {"type": "flux:counted", "tag": "forge:dusts/copper", "count": 3},
+        {"type": "fl:counted", "tag": "forge:dusts/copper", "count": 3},
         {"tag": "forge:dusts/tin"}
       ], "count": 4
     }
