@@ -8,10 +8,12 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.common.Tags;
+import szewek.fl.util.ItemsUtil;
+import szewek.fl.util.SpatialWalker;
+import szewek.fl.util.SpatialWalker.Action;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.ActiveTileBlock;
-import szewek.fl.util.ItemsUtil;
 
 import java.util.List;
 
@@ -19,7 +21,14 @@ public final class DiggerTile extends BlockInteractingTile {
 	private boolean lastFlag;
 
 	public DiggerTile() {
-		super(F.T.DIGGER);
+		super(F.T.DIGGER, new SpatialWalker(-5, -256, -5, 5, -1, 5) {
+			@Override
+			public boolean canWalk() {
+				return true;
+			}
+		});
+		walker.startFrom(true, false, true);
+		walker.putActions(Action.X_POS, Action.Z_POS, Action.Y_NEG);
 	}
 
 	@Override
@@ -29,18 +38,9 @@ public final class DiggerTile extends BlockInteractingTile {
 			boolean flag = !disabled;
 			final int usage = FluxCfg.COMMON.diggerEU.get();
 			if (flag && energy >= usage) {
-				if (offsetY == 0 || offsetX == 5 && offsetZ == 5) {
-					offsetX = -5;
-					offsetZ = -5;
-					offsetY += -1;
-				} else if (offsetX == 5) {
-					offsetX = -5;
-					offsetZ++;
-				} else {
-					offsetX++;
-				}
+				walker.walk();
+				BlockPos bp = walker.getPosOffset(pos);
 
-				BlockPos bp = pos.add(offsetX, offsetY, offsetZ);
 				if (bp.getY() < 0) {
 					disabled = true;
 					world.setBlockState(pos, world.getBlockState(pos).with(ActiveTileBlock.LIT, false), 3);

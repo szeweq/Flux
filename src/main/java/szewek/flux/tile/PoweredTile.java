@@ -68,5 +68,9 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 		}
 	}
 
-
+	@Override
+	public void remove() {
+		super.remove();
+		handler.invalidate();
+	}
 }

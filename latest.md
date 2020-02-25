@@ -4,3 +4,4 @@ Requires Flux Library 3.0.8 - [Download here](https://www.curseforge.com/minecra
 # Bug fixes
 - World interacting machines now will be properly removed (with its energy handlers).
 - Fixed Digger not working from the start.
+- Fixed bronze ingot alloying recipe.

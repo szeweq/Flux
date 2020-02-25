@@ -8,17 +8,25 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
+import szewek.fl.util.ItemsUtil;
+import szewek.fl.util.SpatialWalker;
+import szewek.fl.util.SpatialWalker.Action;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
-import szewek.fl.util.ItemsUtil;
 
 import java.util.List;
 
 public class FarmerTile extends BlockInteractingTile {
 
 	public FarmerTile() {
-		super(F.T.FARMER);
-		offsetX = offsetZ = -5;
+		super(F.T.FARMER, new SpatialWalker(-5, 0, -5, 5, 0, 5) {
+			@Override
+			public boolean canWalk() {
+				return true;
+			}
+		});
+		walker.startFrom(true, true, true);
+		walker.putActions(Action.X_POS, Action.Z_POS, Action.LOOP);
 	}
 
 	@Override
@@ -26,17 +34,9 @@ public class FarmerTile extends BlockInteractingTile {
 		assert world != null;
 		final int usage = FluxCfg.COMMON.farmerEU.get();
 		if (!world.isRemote() && energy >= usage) {
-			if (offsetX == 5 && offsetZ == 5) {
-				offsetX = -5;
-				offsetZ = -5;
-			} else if (offsetX == 5) {
-				offsetX = -5;
-				offsetZ++;
-			} else {
-				offsetX++;
-			}
+			walker.walk();
+			BlockPos bp = walker.getPosOffset(pos);
 
-			BlockPos bp = pos.add(offsetX, 0, offsetZ);
 			BlockState bs = world.getBlockState(bp);
 			Block b = bs.getBlock();
 			if (b != F.B.FARMER && b instanceof CropsBlock) {
