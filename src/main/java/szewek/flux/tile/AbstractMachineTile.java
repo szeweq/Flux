@@ -5,7 +5,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.IRecipeHelperPopulator;
+import net.minecraft.inventory.IRecipeHolder;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,16 +32,18 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import szewek.fl.energy.IEnergyReceiver;
 import szewek.fl.recipe.RecipeCompat;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
 import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
-import szewek.fl.energy.IEnergyReceiver;
 import szewek.flux.util.IInventoryIO;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
@@ -54,11 +59,12 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		@Override
 		public int get(int index) {
 			switch (index) {
-				case 0: return energy;
-				case 1: return process;
-				case 2: return processTotal;
-				case 3: return energyUse;
-				case 4: return processSpeed;
+				case 0: return energy >> 16;
+				case 1: return energy & 0xFFFF;
+				case 2: return process;
+				case 3: return processTotal;
+				case 4: return energyUse;
+				case 5: return processSpeed;
 				default: return 0;
 			}
 		}
@@ -66,18 +72,19 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		@Override
 		public void set(int index, int value) {
 			switch (index) {
-				case 0: energy = value; break;
-				case 1: process = value; break;
-				case 2: processTotal = value; break;
-				case 3: energyUse = value; break;
-				case 4: processSpeed = value; break;
+				case 0: energy = (energy & 0xFFFF) + (value << 16); break;
+				case 1: energy = (energy & 0xFFFF0000) + value; break;
+				case 2: process = value; break;
+				case 3: processTotal = value; break;
+				case 4: energyUse = value; break;
+				case 5: processSpeed = value; break;
 				default:
 			}
 		}
 
 		@Override
 		public int size() {
-			return 5;
+			return 6;
 		}
 	};
 

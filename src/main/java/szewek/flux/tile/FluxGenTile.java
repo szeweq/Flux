@@ -51,15 +51,16 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		@Override
 		public int get(int i) {
 			switch (i) {
-				case 0: return energy;
-				case 1: return workTicks;
-				case 2: return maxWork;
-				case 3: return energyGen;
-				case 4: return workSpeed;
-				case 5: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[0].getFluid());
-				case 6: return fluids[0].getAmount();
-				case 7: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[1].getFluid());
-				case 8: return fluids[1].getAmount();
+				case 0: return energy >> 16;
+				case 1: return energy & 0xFFFF;
+				case 2: return workTicks;
+				case 3: return maxWork;
+				case 4: return energyGen;
+				case 5: return workSpeed;
+				case 6: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[0].getFluid());
+				case 7: return fluids[0].getAmount();
+				case 8: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[1].getFluid());
+				case 9: return fluids[1].getAmount();
 				default: return 0;
 			}
 		}
@@ -67,21 +68,22 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		@Override
 		public void set(int i, int v) {
 			switch (i) {
-				case 0: energy = v; break;
-				case 1: workTicks = v; break;
-				case 2: maxWork = v; break;
-				case 3: energyGen = v; break;
-				case 4: workSpeed = v; break;
-				case 5:
+				case 0: energy = (energy & 0xFFFF) + (v << 16); break;
+				case 1: energy = (energy & 0xFFFF0000) + v; break;
+				case 2: workTicks = v; break;
+				case 3: maxWork = v; break;
+				case 4: energyGen = v; break;
+				case 5: workSpeed = v; break;
+				case 6:
 					fluids[0] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
 					break;
-				case 6:
+				case 7:
 					if (!fluids[0].isEmpty()) fluids[0].setAmount(v);
 					break;
-				case 7:
+				case 8:
 					fluids[1] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
 					break;
-				case 8:
+				case 9:
 					if (!fluids[1].isEmpty()) fluids[0].setAmount(v);
 					break;
 				default:
@@ -90,7 +92,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 
 		@Override
 		public int size() {
-			return 9;
+			return 10;
 		}
 	};
 	private final LazyOptional<FluxGenTile> selfHandler = LazyOptional.of(() -> this);

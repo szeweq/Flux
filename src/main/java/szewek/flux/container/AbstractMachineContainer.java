@@ -37,7 +37,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	private final int outputSize;
 
 	protected AbstractMachineContainer(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
-		this(containerTypeIn, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(5));
+		this(containerTypeIn, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(6));
 	}
 
 	protected AbstractMachineContainer(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
@@ -46,12 +46,12 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		this.inputSize = inputSize;
 		this.outputSize = outputSize;
 		Container.assertInventorySize(machineInventoryIn, inputSize + outputSize + 1);
-		Container.assertIntArraySize(dataIn, 5);
+		Container.assertIntArraySize(dataIn, 6);
 		machineInventory = machineInventoryIn;
 		data = dataIn;
 		world = playerInventoryIn.player.world;
 		initSlots(playerInventoryIn);
-		trackIntArray(dataIn);
+		trackIntArray(data);
 	}
 
 	protected abstract void initSlots(PlayerInventory var1);
@@ -175,19 +175,23 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@OnlyIn(Dist.CLIENT)
 	public final int processScaled() {
-		int i = data.get(1);
-		int j = data.get(2);
+		int i = data.get(2);
+		int j = data.get(3);
 		return j == 0 || i == 0 ? 0 : i * 24 / j;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public final int energyScaled() {
-		return data.get(0) * 54 / 1000000;
+		return getEnergy() * 54 / 1000000;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public final List<String> energyText() {
-		return Arrays.asList(data.get(0) + " / " + 1000000 + " F", I18n.format("flux.usage", data.get(3)));
+		return Arrays.asList(getEnergy() + " / " + 1000000 + " F", I18n.format("flux.usage", data.get(3)));
+	}
+
+	private int getEnergy() {
+		return (data.get(0) << 16) + data.get(1);
 	}
 
 }

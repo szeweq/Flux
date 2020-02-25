@@ -24,7 +24,7 @@ public class FluxGenContainer extends Container {
 	private final IIntArray data;
 
 	public FluxGenContainer(int i, PlayerInventory pinv, PacketBuffer data) {
-		this(i, pinv, new Inventory(2), new IntArray(9));
+		this(i, pinv, new Inventory(2), new IntArray(10));
 	}
 
 	public FluxGenContainer(int i, PlayerInventory pinv, IInventory iinv, IIntArray extra) {
@@ -54,27 +54,31 @@ public class FluxGenContainer extends Container {
 	}
 
 	public float getWorkFill() {
-		int maxWork = data.get(2);
-		return maxWork == 0 ? 0 : (float) data.get(1) / (float) maxWork;
+		int maxWork = data.get(3);
+		return maxWork == 0 ? 0 : (float) data.get(2) / (float) maxWork;
+	}
+
+	private int getEnergy() {
+		return (data.get(0) << 16) + data.get(1);
 	}
 
 	public float getEnergyFill() {
-		return (float) data.get(0) / (float) 1e6;
+		return (float) getEnergy() / (float) 1e6;
 	}
 
 	public String energyText() {
-		return data.get(0) + " / 1000000 F";
+		return getEnergy() + " / 1000000 F";
 	}
 
 	public String genText() {
-		return I18n.format("flux.gen", data.get(3));
+		return I18n.format("flux.gen", data.get(4));
 	}
 
 	public FluidStack getHotFluid() {
-		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(5)), data.get(6));
+		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(6)), data.get(7));
 	}
 	public FluidStack getColdFluid() {
-		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(7)), data.get(8));
+		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(8)), data.get(9));
 	}
 
 	@Override
