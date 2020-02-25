@@ -3,6 +3,7 @@ package szewek.flux.tile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
@@ -15,9 +16,15 @@ import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.ActiveTileBlock;
 
+import java.util.Arrays;
 import java.util.List;
 
 public final class DiggerTile extends BlockInteractingTile {
+	private static final List<Tag<Block>> skipTags = Arrays.asList(
+			Tags.Blocks.DIRT,
+			Tags.Blocks.STONE,
+			Tags.Blocks.COBBLESTONE
+	);
 	private boolean lastFlag;
 
 	public DiggerTile() {
@@ -50,7 +57,7 @@ public final class DiggerTile extends BlockInteractingTile {
 
 				BlockState bs = world.getBlockState(bp);
 				Block b = bs.getBlock();
-				if (!Tags.Blocks.DIRT.contains(b) && !Tags.Blocks.STONE.contains(b) && !Tags.Blocks.COBBLESTONE.contains(b)) {
+				if (skipTags.stream().noneMatch(tag -> tag.contains(b)) && !b.hasTileEntity(bs)) {
 					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)world).withParameter(LootParameters.POSITION, pos).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
 					if (!drops.isEmpty()) {
 						world.removeBlock(bp, false);
