@@ -1,5 +1,6 @@
 package szewek.fl.util;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Iterator;
@@ -99,6 +100,19 @@ public abstract class SpatialWalker {
 
 	public int getZ() {
 		return z;
+	}
+
+	public void read(CompoundNBT compound) {
+		x = compound.getInt("OffX");
+		y = compound.getInt("OffY");
+		z = compound.getInt("OffZ");
+	}
+
+	public CompoundNBT write(CompoundNBT compound) {
+		compound.putInt("OffX", x);
+		compound.putInt("OffY", y);
+		compound.putInt("OffZ", z);
+		return compound;
 	}
 
 	public BlockPos getPosOffset(BlockPos pos) {
