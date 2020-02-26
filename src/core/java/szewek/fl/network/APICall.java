@@ -27,19 +27,21 @@ public class APICall {
 
 	public APICall post(final Object obj) throws IOException {
 		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
 		conn.setDoOutput(true);
 		final OutputStream out = conn.getOutputStream();
-		FluxPlus.GSON.toJson(obj, new OutputStreamWriter(out, StandardCharsets.UTF_8));
-		out.close();
+		final OutputStreamWriter writer = new OutputStreamWriter(new BufferedOutputStream(out), StandardCharsets.UTF_8);
+		FluxPlus.GSON.toJson(obj, writer);
+		writer.close();
 		return this;
 	}
 
 	public <T> T response(final Class<T> type) throws IOException {
 		checkStatus();
 		final InputStream in = conn.getInputStream();
-		T t = FluxPlus.GSON.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), type);
-		in.close();
+		final InputStreamReader reader = new InputStreamReader(new BufferedInputStream(in), StandardCharsets.UTF_8);
+		T t = FluxPlus.GSON.fromJson(reader, type);
+		reader.close();
 		return t;
 	}
 }
