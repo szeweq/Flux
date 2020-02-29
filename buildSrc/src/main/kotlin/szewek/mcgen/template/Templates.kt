@@ -70,11 +70,6 @@ object Templates {
         if (!isVanilla(item)) {
             out("${item}_block") {
                 craftingShaped(arrayOf("###", "###", "###"), mapOf(Pair("#", "$ns:${item}_ingot")), "$ns:${item}_block")
-                typed("minecraft:crafting_shaped") {
-                    "pattern" arr { add("###").add("###").add("###") }
-                    "key" obj { key("#").item("$ns:${item}_ingot") }
-                    result("$ns:${item}_block")
-                }
             }
             out("${item}_ingot_from_${item}_block") {
                 typed("minecraft:crafting_shapeless") {
