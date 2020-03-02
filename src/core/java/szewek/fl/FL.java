@@ -1,22 +1,16 @@
 package szewek.fl;
 
-import it.unimi.dsi.fastutil.ints.*;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import szewek.fl.network.FluxPlus;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.util.ValueToIDMap;
@@ -52,17 +46,6 @@ public final class FL {
 		public static void setup(final FMLCommonSetupEvent e) {
 			FluxPlus.putAction("start");
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
-
-			final Map<String, Map<String, String>> serMap = new ConcurrentHashMap<>();
-			final Collection<IRecipeSerializer<?>> sers = ForgeRegistries.RECIPE_SERIALIZERS.getValues();
-			for (IRecipeSerializer<?> ser : sers) {
-				ResourceLocation loc = ser.getRegistryName();
-				if (loc != null && unfamiliar(loc) && !loc.getPath().startsWith("craft")) {
-					serMap.computeIfAbsent(loc.getNamespace(), FL::map)
-							.put(loc.getPath(), ser.getClass().getName());
-				}
-			}
-			FluxPlus.sendSerializerNames(serMap);
 		}
 
 		@SubscribeEvent
@@ -72,34 +55,6 @@ public final class FL {
 	}
 
 	static class Events {
-		@SubscribeEvent
-		public static void tagsLoaded(final TagsUpdatedEvent e) {
-			final ValueToIDMap<String> itemIds = new ValueToIDMap<>();
-			final Map<String, IntSet> tagToIds = new ConcurrentHashMap<>();
-			Map<ResourceLocation, Tag<Item>> tagMap = e.getTagManager().getItems().getTagMap();
-
-			ResourceLocation tag;
-			String ns;
-			char cns;
-			for (Map.Entry<ResourceLocation, Tag<Item>> entry : tagMap.entrySet()) {
-				tag = entry.getKey();
-				ns = tag.getNamespace();
-				cns = "minecraft".equals(ns) ? '$' : "forge".equals(ns) ? '#' : 0;
-				final String tagName = cns == 0 ? tag.toString() : cns + tag.getPath();
-				for (Item item : entry.getValue().getAllElements()) {
-					ResourceLocation rl = item.getRegistryName();
-					if (rl != null && unfamiliar(rl)) {
-						int id = itemIds.get(rl.toString());
-						tagToIds.computeIfAbsent(tagName, s -> new IntOpenHashSet()).add(id);
-					}
-				}
-			}
-			Map<String, Object> collected = new ConcurrentHashMap<>();
-			collected.put("items", itemIds.values());
-			collected.put("tags", tagToIds);
-			FluxPlus.sendItemMap(collected);
-		}
-
 		@SubscribeEvent
 		public static void recipesLoaded(final RecipesUpdatedEvent e) {
 			final Map<String, Object> recipeInfos = new ConcurrentHashMap<>();

@@ -47,28 +47,6 @@ public final class FluxPlus {
 		});
 	}
 
-	public static void sendItemMap(final Map<String, Object> fullMap) {
-		EXEC.execute(() -> {
-			try {
-				connect("/collect/items")
-						.post(fullMap)
-						.response(Boolean.TYPE);
-			} catch (Exception e) {
-				LOGGER.error("Exception while registering item map", e);
-			}
-		});
-	}
-	public static void sendSerializerNames(final Map<String, Map<String, String>> fullMap) {
-		EXEC.execute(() -> {
-			try {
-				connect("/collect/serializers")
-						.post(fullMap)
-						.response(Boolean.TYPE);
-			} catch (Exception e) {
-				LOGGER.error("Exception while registering serializer map", e);
-			}
-		});
-	}
 	public static void sendRecipeInfos(final Map<String, Object> fullMap) {
 		EXEC.execute(() -> {
 			try {
