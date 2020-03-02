@@ -1,3 +1,3 @@
-# Flux Library (Version 3.0.9)
+# Flux Library (Version 3.0.10)
 
-Fixed API Calls not writing all of JSON data.
+Removed collecting item tags and recipe serializers.

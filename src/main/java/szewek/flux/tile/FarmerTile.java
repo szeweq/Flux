@@ -1,9 +1,8 @@
 package szewek.flux.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CropsBlock;
+import net.minecraft.block.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
@@ -14,6 +13,8 @@ import szewek.fl.util.SpatialWalker.Action;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 public class FarmerTile extends BlockInteractingTile {
@@ -39,17 +40,54 @@ public class FarmerTile extends BlockInteractingTile {
 
 			BlockState bs = world.getBlockState(bp);
 			Block b = bs.getBlock();
-			if (b != F.B.FARMER && b instanceof CropsBlock) {
-				CropsBlock crop = (CropsBlock) b;
-				if (crop.isMaxAge(bs)) {
-					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)world).withParameter(LootParameters.POSITION, pos).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
-					if (!drops.isEmpty()) {
-						world.setBlockState(bp, crop.withAge(0));
-						ItemsUtil.trySendingItems(drops, world, pos);
+			if (b != F.B.FARMER) {
+				if (b instanceof CropsBlock) {
+					CropsBlock crop = (CropsBlock) b;
+					if (crop.isMaxAge(bs)) {
+						tryHarvest(bs, bp, crop.withAge(0));
+					}
+				} else if (b instanceof StemGrownBlock) {
+					tryHarvest(bs, bp, null);
+				} else if (b == Blocks.SUGAR_CANE || b == Blocks.CACTUS) {
+					for (int i = getCropPillarHeight(bp, b, 3); i > 0; i--) {
+						BlockPos pbp = bp.up(i);
+						tryHarvest(world.getBlockState(pbp), pbp, null);
+					}
+				} else if (b == Blocks.BAMBOO) {
+					for (int i = getCropPillarHeight(bp, b, 16); i > 0; i--) {
+						BlockPos pbp = bp.up(i);
+						tryHarvest(world.getBlockState(pbp), pbp, null);
+					}
+				} else if (b == Blocks.SEA_PICKLE && bs.get(SeaPickleBlock.PICKLES) > 1) {
+					tryHarvest(bs, bp, bs.with(SeaPickleBlock.PICKLES, 1));
+				} else if (b == Blocks.SWEET_BERRY_BUSH) {
+					int n = bs.get(SweetBerryBushBlock.AGE);
+					if (n > 1) {
+						world.setBlockState(bp, bs.with(SweetBerryBushBlock.AGE, 1));
+						ItemsUtil.trySendingItems(Collections.singleton(new ItemStack(Items.SWEET_BERRIES, n)), world, pos);
 					}
 				}
+				energy -= usage;
 			}
-			energy -= usage;
+		}
+	}
+
+	private int getCropPillarHeight(BlockPos bp, Block b, int max) {
+		int i;
+		//noinspection StatementWithEmptyBody
+		for (i = 0; i < max && world.getBlockState(bp.up(i + 1)).getBlock() == b; ++i);
+		return i;
+	}
+
+	private void tryHarvest(BlockState bs, BlockPos bp, @Nullable BlockState nbs) {
+		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld) world).withParameter(LootParameters.POSITION, bp).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
+		if (!drops.isEmpty()) {
+			if (nbs == null) {
+				world.removeBlock(bp, false);
+			} else {
+				world.setBlockState(bp, nbs);
+			}
+			ItemsUtil.trySendingItems(drops, world, pos);
 		}
 	}
 }
