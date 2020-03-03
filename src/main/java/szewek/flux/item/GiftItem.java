@@ -41,7 +41,7 @@ public final class GiftItem extends Item {
 
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		if (!worldIn.isRemote() && entityLiving instanceof ServerPlayerEntity && stack.getItem() == (GiftItem)this) {
+		if (!worldIn.isRemote() && entityLiving instanceof ServerPlayerEntity && stack.getItem() == this) {
 			CompoundNBT tag = stack.getTag();
 			if (tag == null || tag.isEmpty()) {
 				entityLiving.sendMessage(new TranslationTextComponent("flux.gift.invalid"));

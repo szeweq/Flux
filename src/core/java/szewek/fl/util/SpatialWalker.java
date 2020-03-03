@@ -36,7 +36,7 @@ public abstract class SpatialWalker {
 	}
 
 	public void putActions(Action... actions) {
-		this.actions = actions;
+		this.actions = actions.clone();
 	}
 
 	public boolean walk() {

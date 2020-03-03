@@ -179,7 +179,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> {
 
 		ResourceLocation still = fl.getAttributes().getStillTexture();
 		int color = fl.getAttributes().getColor(fs);
-		TextureAtlasSprite tas = minecraft.getTextureGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
+		TextureAtlasSprite tas = minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
 		minecraft.textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 
 		glColorInt(color);

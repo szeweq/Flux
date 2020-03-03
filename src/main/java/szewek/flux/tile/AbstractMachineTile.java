@@ -50,7 +50,7 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	private final int inputSize, outputSize;
 	protected int energy, process, processTotal, energyUse, processSpeed = 100;
 	protected boolean isDirty;
-	protected NonNullList<ItemStack> items;
+	protected final NonNullList<ItemStack> items;
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
 	private final MenuFactory menuFactory;

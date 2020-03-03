@@ -6,7 +6,7 @@ import szewek.fl.util.SpatialWalker;
 
 abstract class BlockInteractingTile extends PoweredTile {
 	protected final SpatialWalker walker;
-	protected boolean disabled = false;
+	protected boolean disabled;
 
 	public BlockInteractingTile(TileEntityType teType, SpatialWalker walker) {
 		super(teType);

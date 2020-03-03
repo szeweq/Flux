@@ -115,7 +115,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 	}
 
 	public static final class Builder {
-		public NonNullList<Ingredient> ingredients = NonNullList.create();
+		public final NonNullList<Ingredient> ingredients = NonNullList.create();
 		public ItemStack result = ItemStack.EMPTY;
 		public float experience;
 		public int process;

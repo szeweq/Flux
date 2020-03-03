@@ -45,48 +45,47 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	public void tick() {
 		assert world != null;
 		if (!world.isRemote) {
-			if (cooldown > 0) {
-				--cooldown;
-			} else {
-				cooldown = 4;
-				byte sf = (byte) (sideFlag ^ 63);
-				sideFlag = 0;
-				int i = 0;
-				final Direction[] dirs = Direction.values();
-				while (i < 6 && sf != 0) {
-					if ((sf & 1) != 0) {
-						IEnergyStorage ie = energyCache.getCached(dirs[i]);
-						if (ie != null) {
-							int r;
-							if (ie instanceof Side) {
-								r = ie.getEnergyStored();
-								if (r < energy) {
-									r = (r - energy) / 2;
-									if (r > 0) {
-										energy -= r;
-										ie.receiveEnergy(r, false);
-									}
-								} else if (r > energy) {
-									r = (r - energy) / 2;
-									if (r > 0) {
-										energy += r;
-										ie.extractEnergy(r, false);
-									}
-								}
-							} else if (ie.canReceive()) {
-								r = 10000;
-								if (r >= energy) r = energy;
-								r = ie.receiveEnergy(r, true);
+			if (--cooldown > 0) {
+				return;
+			}
+			cooldown = 4;
+			byte sf = (byte) (sideFlag ^ 63);
+			sideFlag = 0;
+			int i = 0;
+			final Direction[] dirs = Direction.values();
+			while (i < 6 && sf != 0) {
+				if ((sf & 1) != 0) {
+					IEnergyStorage ie = energyCache.getCached(dirs[i]);
+					if (ie != null) {
+						int r;
+						if (ie instanceof Side) {
+							r = ie.getEnergyStored();
+							if (r < energy) {
+								r = (r - energy) / 2;
 								if (r > 0) {
-									energy = energy - r;
+									energy -= r;
 									ie.receiveEnergy(r, false);
 								}
+							} else if (r > energy) {
+								r = (r - energy) / 2;
+								if (r > 0) {
+									energy += r;
+									ie.extractEnergy(r, false);
+								}
+							}
+						} else if (ie.canReceive()) {
+							r = 10000;
+							if (r >= energy) r = energy;
+							r = ie.receiveEnergy(r, true);
+							if (r > 0) {
+								energy = energy - r;
+								ie.receiveEnergy(r, false);
 							}
 						}
 					}
-					sf >>= 1;
-					i++;
 				}
+				sf >>= 1;
+				i++;
 			}
 		}
 	}

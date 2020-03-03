@@ -71,7 +71,7 @@ public final class FluxMod {
 										OreFeatureConfig.FillerBlockType.NATURAL_STONE,
 										F.B.ORES.get(Metals.COPPER).getDefaultState(),
 								7
-	                            )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 96)))
+	                            )).withPlacement(Placement.COUNT_RANGE.configure(new CountRangeConfig(20, 0, 0, 96)))
 	                    );
 						biome.addFeature(
 								GenerationStage.Decoration.UNDERGROUND_ORES,
@@ -79,7 +79,7 @@ public final class FluxMod {
 										OreFeatureConfig.FillerBlockType.NATURAL_STONE,
 										F.B.ORES.get(Metals.TIN).getDefaultState(),
 								7
-	                            )).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(20, 0, 0, 72)))
+	                            )).withPlacement(Placement.COUNT_RANGE.configure(new CountRangeConfig(20, 0, 0, 72)))
 	                    );
 					}
 				});

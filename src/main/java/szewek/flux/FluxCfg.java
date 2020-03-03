@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 public class FluxCfg {
-	private static Set<IConfigChangeListener> listeners = new HashSet<>();
+	private static final Set<IConfigChangeListener> listeners = new HashSet<>();
 
 	public static class Common {
 		public final IntValue

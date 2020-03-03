@@ -1,6 +1,7 @@
 package szewek.fl.recipe;
 
 import com.google.gson.JsonObject;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 /**
  * Ingredient with set count for an item stack
  */
+@MethodsReturnNonnullByDefault
 public class CountedIngredient extends Ingredient {
 	private final int count;
 	private boolean counted;

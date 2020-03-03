@@ -18,12 +18,15 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
-import szewek.flux.F.R;
 import szewek.flux.F.B;
+import szewek.flux.F.R;
 import szewek.flux.FluxMod;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.MachineScreen;
-import szewek.flux.recipe.*;
+import szewek.flux.recipe.AlloyingRecipe;
+import szewek.flux.recipe.CompactingRecipe;
+import szewek.flux.recipe.GrindingRecipe;
+import szewek.flux.recipe.WashingRecipe;
 import szewek.flux.util.Toolset;
 
 import java.util.*;
@@ -37,11 +40,6 @@ public class JEIFluxPlugin implements IModPlugin {
 			WASHING = FluxMod.location("washing"),
 			COMPACTING = FluxMod.location("compacting");
 
-	private MachineCategory<GrindingRecipe> grindingCategory;
-	private MachineCategory<AlloyingRecipe> alloyingCategory;
-	private MachineCategory<WashingRecipe> washingCategory;
-	private MachineCategory<CompactingRecipe> compactingCategory;
-
 	@Override
 	public ResourceLocation getPluginUid() {
 		return FluxMod.location("jei");
@@ -51,10 +49,10 @@ public class JEIFluxPlugin implements IModPlugin {
 	public void registerCategories(IRecipeCategoryRegistration reg) {
 		IJeiHelpers jeiHelpers = reg.getJeiHelpers();
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
-		grindingCategory = new MachineCategory<>(guiHelper, "grinding", "grinding_mill", GrindingRecipe.class, B.GRINDING_MILL, 200);
-		alloyingCategory = new MachineCategory<>(guiHelper, "alloying", "alloy_caster", AlloyingRecipe.class, B.ALLOY_CASTER, 200);
-		washingCategory = new MachineCategory<>(guiHelper, "washing", "washer", WashingRecipe.class, B.WASHER, 200);
-		compactingCategory = new MachineCategory<>(guiHelper, "compacting", "compactor", CompactingRecipe.class, B.COMPACTOR, 200);
+		MachineCategory<GrindingRecipe> grindingCategory = new MachineCategory<>(guiHelper, "grinding", "grinding_mill", GrindingRecipe.class, B.GRINDING_MILL, 200);
+		MachineCategory<AlloyingRecipe> alloyingCategory = new MachineCategory<>(guiHelper, "alloying", "alloy_caster", AlloyingRecipe.class, B.ALLOY_CASTER, 200);
+		MachineCategory<WashingRecipe> washingCategory = new MachineCategory<>(guiHelper, "washing", "washer", WashingRecipe.class, B.WASHER, 200);
+		MachineCategory<CompactingRecipe> compactingCategory = new MachineCategory<>(guiHelper, "compacting", "compactor", CompactingRecipe.class, B.COMPACTOR, 200);
 		reg.addRecipeCategories(
 				grindingCategory, alloyingCategory, washingCategory, compactingCategory
 		);
@@ -71,7 +69,6 @@ public class JEIFluxPlugin implements IModPlugin {
 		reg.addRecipes(getFluxRepairRecipes(vanillaRecipeFactory), VanillaRecipeCategoryUid.ANVIL);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration reg) {
 		reg.addGuiContainerHandler(MachineScreen.class, new MachineScreenHandler());
@@ -124,6 +121,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		return recipes;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private static class MachineScreenHandler implements IGuiContainerHandler<MachineScreen> {
 		@Override
 		public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen) {
