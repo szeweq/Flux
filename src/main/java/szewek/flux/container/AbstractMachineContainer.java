@@ -187,7 +187,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@OnlyIn(Dist.CLIENT)
 	public final List<String> energyText() {
-		return Arrays.asList(getEnergy() + " / " + 1000000 + " F", I18n.format("flux.usage", data.get(3)));
+		return Arrays.asList(getEnergy() + " / " + 1000000 + " F", I18n.format("flux.usage", data.get(4)));
 	}
 
 	private int getEnergy() {
