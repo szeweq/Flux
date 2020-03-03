@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,18 +42,6 @@ public final class FluxPlus {
 				}
 			} catch (Exception e) {
 				LOGGER.error("Exception while registering an action", e);
-			}
-		});
-	}
-
-	public static void sendRecipeInfos(final Map<String, Object> fullMap) {
-		EXEC.execute(() -> {
-			try {
-				connect("/collect/recipes")
-						.post(fullMap)
-						.response(Boolean.TYPE);
-			} catch (Exception e) {
-				LOGGER.error("Exception while registering recipe information map", e);
 			}
 		});
 	}
