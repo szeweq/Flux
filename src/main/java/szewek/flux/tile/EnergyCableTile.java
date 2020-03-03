@@ -59,19 +59,10 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 					if (ie != null) {
 						int r;
 						if (ie instanceof Side) {
-							r = ie.getEnergyStored();
-							if (r < energy) {
-								r = (r - energy) / 2;
-								if (r > 0) {
-									energy -= r;
-									ie.receiveEnergy(r, false);
-								}
-							} else if (r > energy) {
-								r = (r - energy) / 2;
-								if (r > 0) {
-									energy += r;
-									ie.extractEnergy(r, false);
-								}
+							r = (energy - ie.getEnergyStored()) / 2;
+							if (r != 0) {
+								energy -= r;
+								((Side) ie).syncEnergy(r);
 							}
 						} else if (ie.canReceive()) {
 							r = 10000;
@@ -146,6 +137,11 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 				}
 			}
 			return r;
+		}
+
+		private void syncEnergy(int diff) {
+			energy += diff;
+			sideFlag |= bit;
 		}
 
 		@Override
