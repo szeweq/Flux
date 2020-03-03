@@ -49,15 +49,9 @@ public class FarmerTile extends BlockInteractingTile {
 				} else if (b instanceof StemGrownBlock) {
 					tryHarvest(bs, bp, null);
 				} else if (b == Blocks.SUGAR_CANE || b == Blocks.CACTUS) {
-					for (int i = getCropPillarHeight(bp, b, 3); i > 0; i--) {
-						BlockPos pbp = bp.up(i);
-						tryHarvest(world.getBlockState(pbp), pbp, null);
-					}
+					harvestPillar(b, bp, 3);
 				} else if (b == Blocks.BAMBOO) {
-					for (int i = getCropPillarHeight(bp, b, 16); i > 0; i--) {
-						BlockPos pbp = bp.up(i);
-						tryHarvest(world.getBlockState(pbp), pbp, null);
-					}
+					harvestPillar(b, bp, 16);
 				} else if (b == Blocks.SEA_PICKLE && bs.get(SeaPickleBlock.PICKLES) > 1) {
 					tryHarvest(bs, bp, bs.with(SeaPickleBlock.PICKLES, 1));
 				} else if (b == Blocks.SWEET_BERRY_BUSH) {
@@ -72,11 +66,14 @@ public class FarmerTile extends BlockInteractingTile {
 		}
 	}
 
-	private int getCropPillarHeight(BlockPos bp, Block b, int max) {
+	private void harvestPillar(Block b, BlockPos bp, int max) {
 		int i;
 		//noinspection StatementWithEmptyBody
 		for (i = 0; i < max && world.getBlockState(bp.up(i + 1)).getBlock() == b; ++i);
-		return i;
+		for (; i > 0; i--) {
+			BlockPos pbp = bp.up(i);
+			tryHarvest(world.getBlockState(pbp), pbp, null);
+		}
 	}
 
 	private void tryHarvest(BlockState bs, BlockPos bp, @Nullable BlockState nbs) {
