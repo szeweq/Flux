@@ -1,10 +1,6 @@
 package szewek.mcgen.task
 
 import com.google.gson.JsonParser
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
 import szewek.mcgen.util.RecipeBatchWriter
 import java.io.File

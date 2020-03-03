@@ -2,19 +2,12 @@ package szewek.mcgen.task
 
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.file.FileConfig
-import com.electronwill.nightconfig.toml.TomlFormat
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.internal.Streams
 import com.google.gson.stream.JsonWriter
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
 import java.io.File
 import java.io.FileWriter
-import java.io.IOException
 
 open class ProcessLangFiles : AbstractProcessTask() {
 
