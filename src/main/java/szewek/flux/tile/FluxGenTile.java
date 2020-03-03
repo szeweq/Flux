@@ -132,7 +132,8 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 
 	@Override
 	public void tick() {
-		if (world == null || world.isRemote) return;
+		assert world != null;
+		if (world.isRemote) return;
 		if (!isReady) {
 			if (world.getRedstonePowerFromNeighbors(pos) > 0)
 				receivedRedstone = true;
@@ -318,8 +319,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		if ((slot == 0 && ForgeHooks.getBurnTime(stack) == 0) || (slot == 1 && !FluxGenRecipes.isCatalyst(stack.getItem()))) {
 			return stack;
 		}
-		int l = stack.getMaxStackSize();
-		if (l > 64) l = 64;
+		int l = Math.min(stack.getMaxStackSize(), 64);
 		int stackCount = stack.getCount();
 		ItemStack xis = items.get(slot);
 		if (!xis.isEmpty()) {

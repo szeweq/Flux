@@ -145,7 +145,8 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	@Override
 	public void tick() {
 		boolean workState = isWorking();
-		if (world != null && !world.isRemote) {
+		assert world != null;
+		if (!world.isRemote) {
 			boolean inputEmpty = true;
 			for (ItemStack inputStack : getInputs()) {
 				if (!inputStack.isEmpty()) {
