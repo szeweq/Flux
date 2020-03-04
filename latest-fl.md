@@ -1,3 +1,5 @@
-# Flux Library (Version 3.0.10)
+# Flux Library (Version 3.0.11)
 
-Removed collecting item tags and recipe serializers.
+Removed collecting recipes.
+
+First version for 1.15.2 released with sources.
