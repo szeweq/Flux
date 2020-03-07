@@ -28,11 +28,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import szewek.flux.energy.FurnaceEnergy;
+import szewek.flux.util.FluxDataManager;
 import szewek.flux.util.gift.GiftData;
 import szewek.flux.util.gift.Gifts;
 import szewek.flux.util.metals.Metals;
@@ -61,6 +63,7 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
+
 			if (!FluxCfg.COMMON.disableOres.get()) {
 				ForgeRegistries.BIOMES.getValues().forEach(biome -> {
 					Biome.Category cat = biome.getCategory();
@@ -145,6 +148,11 @@ public final class FluxMod {
 					}
 				}
 			}
+		}
+
+		@SubscribeEvent
+		public static void serverAboutToStart(final FMLServerAboutToStartEvent e) {
+			e.getServer().getResourceManager().addReloadListener(new FluxDataManager());
 		}
 	}
 

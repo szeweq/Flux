@@ -108,7 +108,10 @@ public final class F {
 				fromBlock(B.FARMER, "farmer"),
 				fromBlock(B.BUTCHER, "butcher"),
 				fromBlock(B.MOB_POUNDER, "mob_pounder"),
-				fromBlock(B.ITEM_ABSORBER, "item_absorber")
+				fromBlock(B.ITEM_ABSORBER, "item_absorber"),
+				fromBlock(B.MULTIFACTORY, "multifactory"),
+				fromBlock(B.RR_TABLE, "rrtable"),
+				fromBlock(B.ONLINE_MARKET, "online_market")
 		);
 		I.BRONZE_TOOLS.registerTools(reg);
 		I.STEEL_TOOLS.registerTools(reg);
@@ -118,7 +121,7 @@ public final class F {
 	public static void tiles(final RegistryEvent.Register<TileEntityType<?>> re) {
 		re.getRegistry().registerAll(
 				T.FLUXGEN, T.ENERGY_CABLE, T.DIGGER, T.FARMER, T.BUTCHER, T.MOB_POUNDER, T.ITEM_ABSORBER,
-				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR
+				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR, T.MULTIFACTORY, T.RR_TABLE, T.ONLINE_MARKET
 		);
 	}
 

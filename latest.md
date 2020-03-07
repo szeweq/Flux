@@ -1,6 +1,14 @@
-# Flux (Version 4.8.6)
-Requires Flux Library 3.0.8 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux (Version 4.9.0)
+Requires Flux Library 3.1.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
-# Minor fixes
-- Fixed machines showing wrong energy usage values.
-- Improved sharing energy in Energy Cables.
+- Changed most of GUI methods
+- Increased Energy Capacity for Vanilla furnaces
+
+### Attention!
+This version of Flux contains features that are planned to be released in future versions.
+
+These features are:
+- Multifactory (WIP)
+- Recipe Research Table (WIP)
+- Online Market (WIP)
+- Adding Flux Generator values for catalysts, hot and cold fluids (using JSON files; WIP)

@@ -77,6 +77,9 @@
  butcher = "Butcher"
  mob_pounder = "Mob Pounder"
  item_absorber = "Item Absorber"
+ multifactory = "Multifactory"
+ rrtable = "Recipe Research Table"
+ online_market = "Online Market"
 
 [container.flux]
  fluxgen = "Flux Generator"

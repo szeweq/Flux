@@ -6,7 +6,6 @@ import net.minecraft.client.gui.recipebook.AbstractRecipeBookGui;
 import net.minecraft.client.gui.recipebook.IRecipeShownListener;
 import net.minecraft.client.gui.recipebook.RecipeBookGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -33,15 +32,15 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 	@Override
 	public void init() {
 		super.init();
-		recipeBookShown = this.width < 379;
+		recipeBookShown = width < 379;
 		recipeGui.init(width, height, minecraft, recipeBookShown, container);
 		guiLeft = recipeGui.updateScreenPosition(recipeBookShown, width, xSize);
-		addButton((Widget)(new ImageButton(guiLeft + 20, height / 2 - 49, 20, 18, 0, 0, 19, recipeTex, button -> {
+		addButton(new ImageButton(guiLeft + 20, height / 2 - 49, 20, 18, 0, 0, 19, recipeTex, button -> {
 			recipeGui.initSearchBar(recipeBookShown);
 			recipeGui.toggleVisibility();
 			guiLeft = recipeGui.updateScreenPosition(recipeBookShown, width, xSize);
 			((ImageButton)button).setPosition(guiLeft + 20, height / 2 - 49);
-		})));
+		}));
 	}
 
 	@Override
