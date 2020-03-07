@@ -1,8 +1,7 @@
 package szewek.flux.block;
 
-import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -20,7 +19,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import szewek.flux.F;
 import szewek.flux.tile.FluxGenTile;
 
-public final class FluxGenBlock extends ContainerBlock {
+public final class FluxGenBlock extends Block {
 	public FluxGenBlock(Properties props) {
 		super(props);
 	}
@@ -28,11 +27,6 @@ public final class FluxGenBlock extends ContainerBlock {
 	@Override
 	public boolean hasTileEntity(BlockState state) {
 		return true;
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(IBlockReader worldIn) {
-		return F.T.FLUXGEN.create();
 	}
 
 	@Override
@@ -68,11 +62,6 @@ public final class FluxGenBlock extends ContainerBlock {
 		if (!w.isRemote() && w instanceof World) {
 			updateRedstoneState((World) w, pos);
 		}
-	}
-
-	@Override
-	public BlockRenderType getRenderType(BlockState p_149645_1_) {
-		return BlockRenderType.MODEL;
 	}
 
 	private void updateRedstoneState(World w, BlockPos pos) {

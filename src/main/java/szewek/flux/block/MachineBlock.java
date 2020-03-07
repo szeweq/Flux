@@ -25,7 +25,7 @@ import szewek.flux.tile.AbstractMachineTile;
 
 import javax.annotation.Nullable;
 
-public final class MachineBlock extends ContainerBlock {
+public final class MachineBlock extends Block {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
@@ -35,7 +35,13 @@ public final class MachineBlock extends ContainerBlock {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader worldIn) {
+	public boolean hasTileEntity(BlockState state) {
+		return true;
+	}
+
+	@Nullable
+	@Override
+	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		TileEntityType<?> tetype = ForgeRegistries.TILE_ENTITIES.getValue(getRegistryName());
 		return tetype == null ? null : tetype.create();
 	}
@@ -98,11 +104,6 @@ public final class MachineBlock extends ContainerBlock {
 	@Override
 	public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
 		return Container.calcRedstone(worldIn.getTileEntity(pos));
-	}
-
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
 	}
 
 	@Override
