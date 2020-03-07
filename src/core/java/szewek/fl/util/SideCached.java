@@ -6,6 +6,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
+/**
+ * Simple caching mechanism for getting specific capabilities from neighbors.
+ * Invalidated lazy objects are removed automatically.
+ * @param <T> Capability class type
+ */
 public class SideCached<T> {
 	@SuppressWarnings("unchecked")
 	private final LazyOptional<T>[] cacheArray = (LazyOptional<T>[]) new LazyOptional[6];

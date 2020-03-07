@@ -1,5 +1,8 @@
 package szewek.fl.util;
 
+/**
+ * Pair of integers (primitive values).
+ */
 public final class IntPair implements Comparable<IntPair> {
 	public static final IntPair ZERO = of(0, 0);
 

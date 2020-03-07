@@ -4,6 +4,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 
+/**
+ * Recipe type used in Flux mod(s).
+ * A serializer is stored within the type for easier access.
+ * @param <T> Recipe class
+ */
 public class FluxRecipeType<T extends IRecipe<?>> implements IRecipeType<T> {
 	private final String key;
 	public final IRecipeSerializer<T> serializer;

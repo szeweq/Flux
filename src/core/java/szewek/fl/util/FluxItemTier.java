@@ -7,6 +7,10 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * Custom item tier used in Flux mod(s).
+ * This uses tags to determine repair materials.
+ */
 public class FluxItemTier implements IItemTier {
 	private final int harvestLevel;
 	private final int maxUses;

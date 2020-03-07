@@ -9,6 +9,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+/**
+ * Container type used in Flux mod(s).
+ * This makes it easy to assign a specific type to different instances of same container class.
+ * @param <T> Container class
+ */
 public class FluxContainerType<T extends Container> extends ContainerType<T> {
 	private final IContainerBuilder<T> builder;
 

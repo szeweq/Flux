@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * SpatialWalker is a programmable block position iterator
+ * SpatialWalker is a programmable block position iterator.
  */
 public abstract class SpatialWalker {
 	private int x, y, z;

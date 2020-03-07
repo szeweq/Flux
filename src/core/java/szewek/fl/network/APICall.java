@@ -7,6 +7,9 @@ import java.net.HttpURLConnection;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * API Call for easy request building and response conversion.
+ */
 public class APICall {
 	private final HttpURLConnection conn;
 

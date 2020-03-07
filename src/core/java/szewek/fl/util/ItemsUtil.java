@@ -15,6 +15,9 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class for interacting with items.
+ */
 public final class ItemsUtil {
 	private static final Direction[] DIRS = Direction.values();
 

@@ -1,5 +1,6 @@
-# Flux Library (Version 3.0.11)
+# Flux Library (Version 3.1.0)
 
-Removed collecting recipes.
-
-First version for 1.15.2 released with sources.
+### New GUI Methods
+- Rendering gradient bars
+- Rendering fluid tank slots
+- Setting rectangle area for displaying tooltips

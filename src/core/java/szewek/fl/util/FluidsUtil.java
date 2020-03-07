@@ -6,7 +6,12 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
+/**
+ * Utility class for interacting with fluids.
+ */
 public class FluidsUtil {
+	private FluidsUtil() {}
+
 	public static void saveAllFluids(CompoundNBT tag, List<FluidStack> fluids, boolean saveEmpty) {
 		ListNBT fluidNBT = new ListNBT();
 		for (int i = 0; i < fluids.size(); i++) {

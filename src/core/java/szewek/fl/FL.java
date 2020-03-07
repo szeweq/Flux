@@ -29,17 +29,17 @@ public final class FL {
 			FluxPlus.putAction("start");
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
 		}
-
-		@SubscribeEvent
-		public static void stop(final FMLServerStoppedEvent e) {
-			FluxPlus.putAction("exit");
-		}
 	}
 
 	static class Events {
 		@SubscribeEvent
 		public static void playerLogin(final PlayerEvent.PlayerLoggedInEvent e) {
 			FluxPlus.putAction("login");
+		}
+
+		@SubscribeEvent
+		public static void stop(final FMLServerStoppedEvent e) {
+			FluxPlus.putAction("exit");
 		}
 	}
 }

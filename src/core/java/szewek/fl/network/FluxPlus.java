@@ -13,6 +13,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Class interacting with Flux+ API.
+ */
 public final class FluxPlus {
 	private static final String HOST = "https://fluxplus.herokuapp.com/api";
 	private static final Logger LOGGER = LogManager.getLogger("Flux+");
