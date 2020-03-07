@@ -2,6 +2,8 @@ package szewek.flux.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -20,8 +22,8 @@ import szewek.flux.F;
 import szewek.flux.tile.FluxGenTile;
 
 public final class FluxGenBlock extends Block {
-	public FluxGenBlock(Properties props) {
-		super(props);
+	public FluxGenBlock() {
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(1f).sound(SoundType.METAL));
 	}
 
 	@Override

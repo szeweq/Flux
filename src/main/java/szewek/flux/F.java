@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades;
@@ -73,6 +71,9 @@ public final class F {
 				B.BUTCHER.setRegistryName(MODID, "butcher"),
 				B.MOB_POUNDER.setRegistryName(MODID, "mob_pounder"),
 				B.ITEM_ABSORBER.setRegistryName(MODID, "item_absorber"),
+				B.MULTIFACTORY.setRegistryName(MODID, "multifactory"),
+				B.RR_TABLE.setRegistryName(MODID, "rrtable"),
+				B.ONLINE_MARKET.setRegistryName(MODID, "online_market"),
 				B.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
 				B.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
 				B.WASHER.setRegistryName(MODID, "washer"),
@@ -198,12 +199,11 @@ public final class F {
 	public static final class B {
 		public static final Map<Metal, FluxOreBlock> ORES = makeOres();
 		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeBlocks();
-		public static final FluxGenBlock FLUXGEN = new FluxGenBlock(Block.Properties.create(Material.IRON)
-				.hardnessAndResistance(1f).sound(SoundType.METAL)
-		);
-		public static final EnergyCableBlock ENERGY_CABLE = new EnergyCableBlock(Block.Properties.create(Material.IRON)
-				.hardnessAndResistance(0.3f)
-		);
+		public static final FluxGenBlock FLUXGEN = new FluxGenBlock();
+		public static final EnergyCableBlock ENERGY_CABLE = new EnergyCableBlock();
+		public static final MultifactoryBlock MULTIFACTORY = new MultifactoryBlock();
+		public static final RRTableBlock RR_TABLE = new RRTableBlock();
+		public static final OnlineMarketBlock ONLINE_MARKET = new OnlineMarketBlock();
 		public static final ActiveTileBlock
 				DIGGER = new ActiveTileBlock(),
 				FARMER = new ActiveTileBlock(),
@@ -247,6 +247,9 @@ public final class F {
 		public static final TileEntityType<ButcherTile> BUTCHER;
 		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
 		public static final TileEntityType<ItemAbsorberTile> ITEM_ABSORBER;
+		public static final TileEntityType<MultifactoryTile> MULTIFACTORY;
+		public static final TileEntityType<RRTableTile> RR_TABLE;
+		public static final TileEntityType<OnlineMarketTile> ONLINE_MARKET;
 		public static final FluxTileType<?>
 				GRINDING_MILL,
 				ALLOY_CASTER,
@@ -261,6 +264,9 @@ public final class F {
 			BUTCHER = tile(ButcherTile::new, "butcher", B.BUTCHER);
 			MOB_POUNDER = tile(MobPounderTile::new, "mob_pounder", B.MOB_POUNDER);
 			ITEM_ABSORBER = tile(ItemAbsorberTile::new, "item_absorber", B.ITEM_ABSORBER);
+			MULTIFACTORY = tile(MultifactoryTile::new, "multifactory", B.MULTIFACTORY);
+			RR_TABLE = tile(RRTableTile::new, "rrtable", B.RR_TABLE);
+			ONLINE_MARKET = tile(OnlineMarketTile::new, "online_market", B.ONLINE_MARKET);
 			GRINDING_MILL = tile(Machine2For1Tile.make(R.GRINDING, C.GRINDING_MILL, "grinding_mill"), "grinding_mill", B.GRINDING_MILL);
 			ALLOY_CASTER = tile(Machine2For1Tile.make(R.ALLOYING, C.ALLOY_CASTER, "alloy_caster"), "alloy_caster", B.ALLOY_CASTER);
 			WASHER = tile(Machine2For1Tile.make(R.WASHING, C.WASHER, "washer"), "washer", B.WASHER);
