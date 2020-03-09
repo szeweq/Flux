@@ -1,16 +1,29 @@
 package szewek.flux.recipe;
 
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import org.apache.commons.lang3.tuple.Triple;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import szewek.fl.util.IntPair;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 public final class FluxGenRecipes {
+	private static final Logger LOGGER = LogManager.getLogger("FluxGenRecipes");
 	/* IntPair values: l = factor; r = usage */
 	public static final IntPair DEFAULT = IntPair.of(1, 0);
 	private static final Map<Item, IntPair> catalysts = new ConcurrentHashMap<>();
@@ -49,24 +62,63 @@ public final class FluxGenRecipes {
 		return m.getOrDefault(fluid, DEFAULT);
 	}
 
-	private static void add(Item item, int factor, int usage) {
+	public static void add(Item item, int factor, int usage) {
 		catalysts.put(item, IntPair.of(factor, usage));
+	}
+
+	public static void collectValues(Triple<Collection<Entry>, Collection<Entry>, Collection<Entry>> tr) {
+		convertMap(catalysts, tr.getLeft(), ForgeRegistries.ITEMS, ItemTags.getCollection());
+		convertMap(hotFluids, tr.getMiddle(), ForgeRegistries.FLUIDS, FluidTags.getCollection());
+		convertMap(coldFluids, tr.getRight(), ForgeRegistries.FLUIDS, FluidTags.getCollection());
 	}
 
 	private FluxGenRecipes() {
 	}
 
-	static {
-		add(Items.FLINT, 2, 2);
-		add(Items.REDSTONE, 2, 1);
-		add(Items.REDSTONE_BLOCK, 10, 1);
-		add(Items.BLAZE_POWDER, 4, 1);
-		add(Items.PRISMARINE_SHARD, 3, 1);
-		add(Items.CONDUIT, 30, 1);
-		add(Items.DRAGON_BREATH, 60, 1);
-		add(Items.NETHER_STAR, 100, 1);
-		add(Items.TOTEM_OF_UNDYING, 200, 1);
-		hotFluids.put(Fluids.LAVA, IntPair.of(2, 200));
-		coldFluids.put(Fluids.WATER, IntPair.of(50, 200));
+	private static <T extends IForgeRegistryEntry<T>> void convertMap(Map<T, IntPair> map, Collection<Entry> col, IForgeRegistry<T> reg, TagCollection<T> tags) {
+		for (Entry e : col) {
+			for (T c : e.type.resolve(e.loc, reg::getValue, tags::get)) {
+				map.put(c, e.values);
+			}
+		}
+	}
+
+	public enum EntryType {
+		TAG, SINGLE;
+
+		private <T> Collection<T> resolve(ResourceLocation loc, Function<ResourceLocation, T> reg, Function<ResourceLocation, Tag<T>> tags) {
+			Collection<T> col = Collections.emptySet();
+			switch (this) {
+				case TAG:
+					Tag<T> tag = tags.apply(loc);
+					if (tag == null) {
+						LOGGER.error("Couldn't find tag with name: {}", loc);
+					} else {
+						col = tag.getAllElements();
+					}
+					break;
+				case SINGLE:
+					T t = reg.apply(loc);
+					if (t == null) {
+						LOGGER.error("Couldn't find resource with name: {}", loc);
+					} else {
+						col = Collections.singleton(t);
+					}
+					break;
+			}
+			return col;
+		}
+	}
+
+	public static class Entry {
+		public final ResourceLocation loc;
+		public final EntryType type;
+		public final IntPair values;
+
+		public Entry(ResourceLocation loc, EntryType type, int usage, int factor) {
+			this.loc = loc;
+			this.type = type;
+			this.values = IntPair.of(factor, usage);
+		}
 	}
 }

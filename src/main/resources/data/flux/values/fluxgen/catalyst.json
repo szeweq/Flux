@@ -1,6 +1,14 @@
 {
   "replace": false,
   "values": {
-    "#flux:test": [20, 1]
+    "minecraft:flint": [2, 2],
+    "#forge:dusts/redstone": 2,
+    "#forge:storage_blocks/redstone": 20,
+    "minecraft:blaze_powder": 4,
+    "#forge:dusts/prismarine": 3,
+    "minecraft:conduit": 30,
+    "minecraft:dragon_breath": 60,
+    "#forge:nether_stars": 100,
+    "minecraft:totem_of_undying": 200
   }
 }

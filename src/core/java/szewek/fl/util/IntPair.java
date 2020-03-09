@@ -44,4 +44,9 @@ public final class IntPair implements Comparable<IntPair> {
 	public int hashCode() {
 		return 31 * l + r;
 	}
+
+	@Override
+	public String toString() {
+		return "(" + l + ',' + r + ')';
+	}
 }

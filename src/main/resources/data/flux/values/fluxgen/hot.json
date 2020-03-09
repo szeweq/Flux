@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": {
-    "#fl:test": [10, 1]
+    "#minecraft:lava": [2, 200]
   }
 }
