@@ -18,18 +18,20 @@ public class FluxItemTier implements IItemTier {
 	private final float attackDamage;
 	private final int enchantability;
 	public final Tag<Item> repairMaterialTag;
+	public final Item material;
 
-	public FluxItemTier(int harvestLevel, int maxUses, float efficiency, float attackDamage, int enchantability, String tagName) {
-		this(harvestLevel, maxUses, efficiency, attackDamage, enchantability, new ItemTags.Wrapper(new ResourceLocation("forge", tagName)));
+	public FluxItemTier(int harvestLevel, int maxUses, float efficiency, float attackDamage, int enchantability, String tagName, Item material) {
+		this(harvestLevel, maxUses, efficiency, attackDamage, enchantability, new ItemTags.Wrapper(new ResourceLocation("forge", tagName)), material);
 	}
 
-	public FluxItemTier(int harvestLevel, int maxUses, float efficiency, float attackDamage, int enchantability, Tag<Item> repairMaterialTag) {
+	public FluxItemTier(int harvestLevel, int maxUses, float efficiency, float attackDamage, int enchantability, Tag<Item> repairMaterialTag, Item material) {
 		this.harvestLevel = harvestLevel;
 		this.maxUses = maxUses;
 		this.efficiency = efficiency;
 		this.attackDamage = attackDamage;
 		this.enchantability = enchantability;
 		this.repairMaterialTag = repairMaterialTag;
+		this.material = material;
 	}
 
 

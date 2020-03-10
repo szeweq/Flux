@@ -234,8 +234,8 @@ public final class F {
 		public static final FluxAdhesiveItem PASTE = item(FluxAdhesiveItem::new, "paste", new Item.Properties());
 
 		public static final FluxItemTier
-				BRONZE_TIER = new FluxItemTier(2, 500, 7f, 2.5f, 20, "ingots/bronze"),
-				STEEL_TIER = new FluxItemTier(3, 1500, 8.5f, 3f, 22, "ingots/steel");
+				BRONZE_TIER = new FluxItemTier(2, 500, 7f, 2.5f, 20, "ingots/bronze", INGOTS.get(Metals.BRONZE)),
+				STEEL_TIER = new FluxItemTier(3, 1500, 8.5f, 3f, 22, "ingots/steel", INGOTS.get(Metals.STEEL));
 		public static final Toolset
 				BRONZE_TOOLS = new Toolset(BRONZE_TIER, "bronze"),
 				STEEL_TOOLS = new Toolset(STEEL_TIER, "steel");
