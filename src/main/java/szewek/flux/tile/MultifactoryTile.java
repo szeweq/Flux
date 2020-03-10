@@ -1,21 +1,26 @@
 package szewek.flux.tile;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import szewek.flux.F;
 
-public class MultifactoryTile extends LockableTileEntity {
+public class MultifactoryTile extends PoweredDeviceTile {
 	public MultifactoryTile() {
 		super(F.T.MULTIFACTORY);
 	}
 
 	@Override
+	protected void serverTick(World w) {
+
+	}
+
+	@Override
 	protected ITextComponent getDefaultName() {
-		return null;
+		return new TranslationTextComponent("container.flux.multifactory");
 	}
 
 	@Override
@@ -51,11 +56,6 @@ public class MultifactoryTile extends LockableTileEntity {
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
 
-	}
-
-	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return false;
 	}
 
 	@Override

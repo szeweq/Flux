@@ -18,21 +18,18 @@ import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import szewek.fl.energy.IEnergyReceiver;
 import szewek.fl.recipe.RecipeCompat;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
@@ -46,9 +43,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMachineTile extends LockableTileEntity implements IEnergyReceiver, ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
+public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
 	private final int inputSize, outputSize;
-	protected int energy, process, processTotal, energyUse, processSpeed = 100;
+	protected int process, processTotal, energyUse, processSpeed = 100;
 	protected boolean isDirty;
 	protected final NonNullList<ItemStack> items;
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
@@ -138,47 +135,36 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		return compound;
 	}
 
-	private boolean isPowered() {
-		return energy >= energyUse;
-	}
-
 	@Override
-	public void tick() {
+	protected void serverTick(World w) {
 		boolean workState = isWorking();
-		assert world != null;
-		if (!world.isRemote) {
-			boolean inputEmpty = true;
-			for (ItemStack inputStack : getInputs()) {
-				if (!inputStack.isEmpty()) {
-					inputEmpty = false;
-					break;
-				}
+		boolean inputEmpty = true;
+		for (ItemStack inputStack : getInputs()) {
+			if (!inputStack.isEmpty()) {
+				inputEmpty = false;
+				break;
 			}
-			if (isPowered() && !inputEmpty) {
-				if (cachedRecipe == null) {
-					cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
-				}
-				if (canProcess()) {
-					energy -= energyUse;
-					if (process >= processTotal) {
-						process = 0;
-						processTotal = getProcessTime() * 100;
-						produceResult();
-						isDirty = true;
-					} else {
-						process += processSpeed;
-					}
-				} else {
+		}
+		if (energy >= energyUse && !inputEmpty) {
+			if (cachedRecipe == null) {
+				cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, w, this).orElse(null);
+			}
+			if (canProcess()) {
+				energy -= energyUse;
+				if (process >= processTotal) {
 					process = 0;
+					processTotal = getProcessTime() * 100;
+					produceResult();
+					isDirty = true;
+				} else {
+					process += processSpeed;
 				}
+			} else {
+				process = 0;
 			}
 		}
 		if (workState != isWorking()) {
-			world.setBlockState(pos, world.getBlockState(pos).with(MachineBlock.LIT, isWorking()), 3);
-		}
-		if (isDirty) {
-			markDirty();
-			isDirty = false;
+			w.setBlockState(pos, w.getBlockState(pos).with(MachineBlock.LIT, isWorking()), 3);
 		}
 	}
 
@@ -225,46 +211,20 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 		}
 	}
 
-	private final LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> this);
 	private final LazyOptional<? extends IItemHandler>[] sideHandlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed) {
-			if (cap == CapabilityEnergy.ENERGY)
-				return energyHandler.cast();
-			if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-				if (side == Direction.UP) {
-					return sideHandlers[0].cast();
-				} else if (side == Direction.DOWN) {
-					return sideHandlers[1].cast();
-				} else {
-					return sideHandlers[2].cast();
-				}
+		if (!removed && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			if (side == Direction.UP) {
+				return sideHandlers[0].cast();
+			} else if (side == Direction.DOWN) {
+				return sideHandlers[1].cast();
+			} else {
+				return sideHandlers[2].cast();
+			}
 		}
 		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public int receiveEnergy(int maxReceive, boolean simulate) {
-		if (maxReceive <= 0) return 0;
-		int r = maxReceive;
-		if (r > 1000000 - energy) r = 1000000 - energy;
-		if (!simulate) {
-			energy += r;
-			isDirty = true;
-		}
-		return r;
-	}
-
-	@Override
-	public int getEnergyStored() {
-		return energy;
-	}
-
-	@Override
-	public int getMaxEnergyStored() {
-		return 1000000;
 	}
 
 	@Override
@@ -331,11 +291,6 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 			process = 0;
 			markDirty();
 		}
-	}
-
-	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return player.world.getTileEntity(pos) == this && pos.distanceSq(player.getPositionVec(), true) <= 64.0;
 	}
 
 	@Override
@@ -435,7 +390,6 @@ public abstract class AbstractMachineTile extends LockableTileEntity implements 
 	@Override
 	public void remove() {
 		super.remove();
-		energyHandler.invalidate();
 		FluxCfg.removeListener(this);
 	}
 }
