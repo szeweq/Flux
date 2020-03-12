@@ -43,7 +43,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 	public static final int fluidCap = 4000;
 	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
-	private final FluidStack[] fluids = new FluidStack[] {FluidStack.EMPTY, FluidStack.EMPTY};
+	private final FluidStack[] fluids = {FluidStack.EMPTY, FluidStack.EMPTY};
 	private int tickCount, energy, workTicks, maxWork, energyGen, workSpeed;
 	private boolean isReady, isDirty;
 	public boolean receivedRedstone;
@@ -112,8 +112,9 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		ItemStackHelper.loadAllItems(compound, items);
 		List<FluidStack> fluidList = NonNullList.withSize(fluids.length, FluidStack.EMPTY);
 		FluidsUtil.loadAllFluids(compound, fluidList);
-		for (int i = 0; i < fluids.length; i++)
+		for (int i = 0; i < fluids.length; i++) {
 			fluids[i] = fluidList.get(i);
+		}
 	}
 
 	@Override
@@ -269,7 +270,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 	@Override
 	public ItemStack getStackInSlot(int i) {
 		if (i < 0 || i >= items.size())
-			throw new RuntimeException("Getting slot " + i + " outside range [0," + items.size() + ")");
+			throw new IndexOutOfBoundsException("Getting slot " + i + " outside range [0," + items.size() + ")");
 		return items.get(i);
 	}
 
@@ -314,14 +315,14 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		if (slot < 0 || slot >= items.size())
-			throw new RuntimeException("Getting slot " + slot + " outside range [0," + items.size() + ")");
+			throw new IndexOutOfBoundsException("Getting slot " + slot + " outside range [0," + items.size() + ")");
 		if (stack.isEmpty()) return ItemStack.EMPTY;
 		if ((slot == 0 && ForgeHooks.getBurnTime(stack) == 0) || (slot == 1 && !FluxGenRecipes.isCatalyst(stack.getItem()))) {
 			return stack;
 		}
-		int l = Math.min(stack.getMaxStackSize(), 64);
 		int stackCount = stack.getCount();
 		ItemStack xis = items.get(slot);
+		int l = Math.min(stack.getMaxStackSize(), 64);
 		if (!xis.isEmpty()) {
 			if (!ItemHandlerHelper.canItemStacksStack(stack, xis)) return stack;
 			l -= xis.getCount();
@@ -376,7 +377,9 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
-		if (resource.getAmount() <= 0) return 0;
+		if (resource.getAmount() <= 0) {
+			return 0;
+		}
 		int s;
 		if (FluxGenRecipes.isHotFluid(resource.getFluid())) {
 			s = 0;

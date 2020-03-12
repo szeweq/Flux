@@ -21,23 +21,15 @@ import java.util.List;
 public final class ItemsUtil {
 	private static final Direction[] DIRS = Direction.values();
 
-	public static void trySendingItems(Iterable<ItemStack> items, World world, BlockPos pos) {
-		List<IItemHandler> inv = new ArrayList<>();
+	public static void trySendingItems(final Iterable<ItemStack> items, World world, BlockPos pos) {
+		final List<IItemHandler> inv = new ArrayList<>(6);
 		for (Direction dir : DIRS) {
 			TileEntity te = world.getTileEntity(pos.offset(dir));
 			if (te != null) {
-				IItemHandler iih;
-				LazyOptional<IItemHandler> il = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
-				if (il.isPresent()) {
-					//noinspection ConstantConditions
-					iih = il.orElse(null);
-				} else {
-					if (!(te instanceof IInventory)) {
-						continue;
-					}
-					iih = new InvWrapper((IInventory)te);
+				IItemHandler iih = getItemHandlerCompat(te, dir.getOpposite());
+				if (iih != null) {
+					inv.add(iih);
 				}
-				inv.add(iih);
 			}
 		}
 
@@ -56,6 +48,18 @@ public final class ItemsUtil {
 			}
 			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), tempStack);
 		}
+	}
+
+	public static IItemHandler getItemHandlerCompat(TileEntity tile, Direction dir) {
+		final LazyOptional<IItemHandler> il = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
+		IItemHandler iih = null;
+		if (il.isPresent()) {
+			//noinspection ConstantConditions
+			iih = il.orElse(null);
+		} else if (tile instanceof IInventory) {
+			iih = new InvWrapper((IInventory) tile);
+		}
+		return iih;
 	}
 
 	private ItemsUtil() {}

@@ -85,16 +85,7 @@ public class FluxDataManager implements IFutureReloadListener {
 								LOGGER.warn("Factor and usage must be bigger than 0. Skipping {}", key);
 								continue;
 							}
-							FluxGenRecipes.EntryType type;
-							ResourceLocation entryLoc;
-							if (key.startsWith("#")) {
-								type = FluxGenRecipes.EntryType.TAG;
-								entryLoc = new ResourceLocation(key.substring(1));
-							} else {
-								type = FluxGenRecipes.EntryType.SINGLE;
-								entryLoc = new ResourceLocation(key);
-							}
-							vals.add(new FluxGenRecipes.Entry(entryLoc, type, usage, factor));
+							vals.add(FluxGenRecipes.Entry.from(key, usage, factor));
 						}
 					} catch (RuntimeException | IOException e) {
 						LOGGER.error("Couldn't load values from {} in data pack {}", loc, res.getPackName(), e);

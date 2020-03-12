@@ -54,7 +54,7 @@ public class FluxGenContainer extends Container {
 	}
 
 	public float getWorkFill() {
-		int maxWork = data.get(3);
+		final int maxWork = data.get(3);
 		return maxWork == 0 ? 0 : (float) data.get(2) / (float) maxWork;
 	}
 

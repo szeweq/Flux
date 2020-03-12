@@ -283,7 +283,9 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		ItemStack inputStack = items.get(index);
 		boolean same = !stack.isEmpty() && stack.isItemEqual(inputStack) && ItemStack.areItemStackTagsEqual(stack, inputStack);
 		items.set(index, stack);
-		if (stack.getCount() > 64) stack.setCount(64);
+		if (stack.getCount() > 64) {
+			stack.setCount(64);
+		}
 		if (index < inputSize && !same) {
 			assert world != null;
 			cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);

@@ -63,7 +63,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 		super.clear();
 	}
 
-	protected final void consume(int amount, IntList intList) {
+	protected void consume(int amount, IntList intList) {
 		IntIterator iterator = intList.iterator();
 		byte i = 0;
 		while(iterator.hasNext() && i < inputSize) {

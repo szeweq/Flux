@@ -31,7 +31,6 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 	@Nullable
 	@Override
 	public T read(ResourceLocation recipeId, JsonObject json) {
-		String group = JSONUtils.getString(json, "group", "");
 		if (!json.has(RESULT)) {
 			throw new JsonSyntaxException("Missing result, expected to find a string or object");
 		}
@@ -77,6 +76,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
 		b.process = JSONUtils.getInt(json, "processtime", this.defaultProcess);
 
+		String group = JSONUtils.getString(json, "group", "");
 		return factory.create(recipeId, group, b);
 	}
 

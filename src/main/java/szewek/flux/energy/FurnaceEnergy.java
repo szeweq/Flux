@@ -32,7 +32,9 @@ public final class FurnaceEnergy extends EnergyCapable {
 					}
 					if (!simulate && r / USE > 0) {
 						int maxBurnTime = data.get(1) * USE;
-						if (maxBurnTime < CAP) data.set(1, CAP / USE);
+						if (maxBurnTime < CAP) {
+							data.set(1, CAP / USE);
+						}
 						data.set(0, (burnTime + r) / USE);
 						if (burnTime == 0) {
 							BlockPos pos = furnace.getPos();

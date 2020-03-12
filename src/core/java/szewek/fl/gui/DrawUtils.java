@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
  * Utility class with drawing methods
  */
 @OnlyIn(Dist.CLIENT)
-public class DrawUtils {
+public final class DrawUtils {
 	private DrawUtils() {}
 
 	/**

@@ -88,23 +88,20 @@ public final class FluxGenRecipes {
 
 		private <T> Collection<T> resolve(ResourceLocation loc, Function<ResourceLocation, T> reg, Function<ResourceLocation, Tag<T>> tags) {
 			Collection<T> col = Collections.emptySet();
-			switch (this) {
-				case TAG:
-					Tag<T> tag = tags.apply(loc);
-					if (tag == null) {
-						LOGGER.error("Couldn't find tag with name: {}", loc);
-					} else {
-						col = tag.getAllElements();
-					}
-					break;
-				case SINGLE:
-					T t = reg.apply(loc);
-					if (t == null) {
-						LOGGER.error("Couldn't find resource with name: {}", loc);
-					} else {
-						col = Collections.singleton(t);
-					}
-					break;
+			if (this == TAG) {
+				Tag<T> tag = tags.apply(loc);
+				if (tag == null) {
+					LOGGER.error("Couldn't find tag with name: {}", loc);
+				} else {
+					col = tag.getAllElements();
+				}
+			} else {
+				T t = reg.apply(loc);
+				if (t == null) {
+					LOGGER.error("Couldn't find resource with name: {}", loc);
+				} else {
+					col = Collections.singleton(t);
+				}
 			}
 			return col;
 		}
@@ -119,6 +116,19 @@ public final class FluxGenRecipes {
 			this.loc = loc;
 			this.type = type;
 			this.values = IntPair.of(factor, usage);
+		}
+
+		public static Entry from(String key, int usage, int factor) {
+			EntryType type;
+			ResourceLocation loc;
+			if (key.charAt(0) == '#') {
+				type = EntryType.TAG;
+				loc = new ResourceLocation(key.substring(1));
+			} else {
+				type = EntryType.SINGLE;
+				loc = new ResourceLocation(key);
+			}
+			return new Entry(loc, type, usage, factor);
 		}
 	}
 }

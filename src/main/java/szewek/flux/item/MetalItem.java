@@ -10,7 +10,7 @@ public final class MetalItem extends Item {
 		super(properties);
 	}
 
-	public final MetalItem withMetal(Metal metal) {
+	public MetalItem withMetal(Metal metal) {
 		if (this.metal == null) {
 			this.metal = metal;
 		}

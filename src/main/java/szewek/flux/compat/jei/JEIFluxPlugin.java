@@ -99,7 +99,7 @@ public class JEIFluxPlugin implements IModPlugin {
 	}
 
 	private static List<Object> getFluxRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory) {
-		final Toolset[] toolsets = new Toolset[]{F.I.BRONZE_TOOLS, F.I.STEEL_TOOLS};
+		final Toolset[] toolsets = {F.I.BRONZE_TOOLS, F.I.STEEL_TOOLS};
 		final List<Object> recipes = new ArrayList<>();
 		for (Toolset tools : toolsets) {
 			List<ItemStack> repairItems = tools.tier.repairMaterialTag.getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());

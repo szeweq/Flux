@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Utility class for interacting with fluids.
  */
-public class FluidsUtil {
+public final class FluidsUtil {
 	private FluidsUtil() {}
 
 	public static void saveAllFluids(CompoundNBT tag, List<FluidStack> fluids, boolean saveEmpty) {

@@ -95,7 +95,9 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 		ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
 		for (ItemStack stack : stacks) {
-			if (!stack.isEmpty()) filledInputs.add(stack);
+			if (!stack.isEmpty()) {
+				filledInputs.add(stack);
+			}
 		}
 
 		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);

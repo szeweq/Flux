@@ -5,8 +5,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import szewek.fl.type.FluxTileType;
 import szewek.fl.type.FluxContainerType;
+import szewek.fl.type.FluxTileType;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
@@ -14,9 +14,9 @@ import java.util.function.Function;
 
 public final class Machine2For1Tile extends AbstractMachineTile {
 	private final String titleId;
-	private static final int[] SLOTS_UP = new int[]{0};
-	private static final int[] SLOTS_SIDE = new int[]{1};
-	private static final int[] SLOTS_DOWN = new int[]{2};
+	private static final int[] SLOTS_UP = {0};
+	private static final int[] SLOTS_SIDE = {1};
+	private static final int[] SLOTS_DOWN = {2};
 
 	public Machine2For1Tile(TileEntityType<?> typeIn, IRecipeType<? extends AbstractMachineRecipe> recipeTypeIn, MenuFactory factory, String titleId) {
 		super(typeIn, recipeTypeIn, factory, 2, 1);

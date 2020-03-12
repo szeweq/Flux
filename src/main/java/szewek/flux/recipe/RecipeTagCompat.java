@@ -30,7 +30,9 @@ public final class RecipeTagCompat {
 
 	@Nullable
 	public static Item itemFromTagCompat(Collection<Item> items) {
-		if (items.isEmpty()) return null;
+		if (items.isEmpty()) {
+			return null;
+		}
 		//noinspection unchecked
 		final List<String> modCompat = (List<String>) FluxCfg.COMMON.preferModCompat.get();
 		if (modCompat.contains("jaopca")) {
@@ -49,9 +51,13 @@ public final class RecipeTagCompat {
 				foundItem = item;
 				compatIndex = n;
 			}
-			if (compatIndex == 0) break;
+			if (compatIndex == 0) {
+				break;
+			}
 		}
-		if (foundItem == null) foundItem = items.iterator().next();
+		if (foundItem == null) {
+			foundItem = items.iterator().next();
+		}
 		return foundItem;
 	}
 

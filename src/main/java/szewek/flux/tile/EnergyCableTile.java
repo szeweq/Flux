@@ -98,7 +98,9 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	public void remove() {
 		super.remove();
 		energyCache.clear();
-		for (Side s : sides) s.lazy.invalidate();
+		for (Side s : sides) {
+			s.lazy.invalidate();
+		}
 	}
 
 	public final class Side implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
