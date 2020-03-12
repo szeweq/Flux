@@ -2,9 +2,9 @@ package szewek.flux.tile;
 
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import szewek.fl.util.ItemsUtil;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
-import szewek.fl.util.ItemsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,9 @@ public class ItemAbsorberTile extends EntityInteractingTile {
 				list.add(item);
 				itemDrop.remove();
 				energy -= usage;
-				if (energy < usage) break;
+				if (energy < usage) {
+					break;
+				}
 			}
 			ItemsUtil.trySendingItems(list, world, pos);
 		}

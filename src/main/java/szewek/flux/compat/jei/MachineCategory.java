@@ -31,13 +31,13 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 	private final ResourceLocation uid;
 	private final Class<T> cl;
 
-	public MachineCategory(IGuiHelper guiHelper, String resUid, String guiId, Class<T> tClass, Block icon, int regularProcessTime) {
+	public MachineCategory(IGuiHelper guiHelper, String resUid, String guiId, Class<T> tClass, Block icon, int processTime) {
 		uid = FluxMod.location(resUid);
 		cl = tClass;
 		background = guiHelper.createDrawable(FluxMod.location("textures/gui/" + guiId + ".png"), 55, 25, 82, 36);
 		this.icon = guiHelper.createDrawableIngredient(new ItemStack(icon));
 		localizedName = I18n.format("gui.flux.jei.category." + resUid);
-		arrow = guiHelper.drawableBuilder(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 82, 128, 24, 17).buildAnimated(regularProcessTime, IDrawableAnimated.StartDirection.LEFT, false);
+		arrow = guiHelper.drawableBuilder(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 82, 128, 24, 17).buildAnimated(processTime, IDrawableAnimated.StartDirection.LEFT, false);
 	}
 
 	@Override

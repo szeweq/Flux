@@ -49,13 +49,11 @@ public class JEIFluxPlugin implements IModPlugin {
 	public void registerCategories(IRecipeCategoryRegistration reg) {
 		IJeiHelpers jeiHelpers = reg.getJeiHelpers();
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
-		MachineCategory<GrindingRecipe> grindingCategory = new MachineCategory<>(guiHelper, "grinding", "grinding_mill", GrindingRecipe.class, B.GRINDING_MILL, 200);
-		MachineCategory<AlloyingRecipe> alloyingCategory = new MachineCategory<>(guiHelper, "alloying", "alloy_caster", AlloyingRecipe.class, B.ALLOY_CASTER, 200);
-		MachineCategory<WashingRecipe> washingCategory = new MachineCategory<>(guiHelper, "washing", "washer", WashingRecipe.class, B.WASHER, 200);
-		MachineCategory<CompactingRecipe> compactingCategory = new MachineCategory<>(guiHelper, "compacting", "compactor", CompactingRecipe.class, B.COMPACTOR, 200);
-		reg.addRecipeCategories(
-				grindingCategory, alloyingCategory, washingCategory, compactingCategory
-		);
+		MachineCategory<GrindingRecipe> grinding = new MachineCategory<>(guiHelper, "grinding", "grinding_mill", GrindingRecipe.class, B.GRINDING_MILL, 200);
+		MachineCategory<AlloyingRecipe> alloying = new MachineCategory<>(guiHelper, "alloying", "alloy_caster", AlloyingRecipe.class, B.ALLOY_CASTER, 200);
+		MachineCategory<WashingRecipe> washing = new MachineCategory<>(guiHelper, "washing", "washer", WashingRecipe.class, B.WASHER, 200);
+		MachineCategory<CompactingRecipe> compacting = new MachineCategory<>(guiHelper, "compacting", "compactor", CompactingRecipe.class, B.COMPACTOR, 200);
+		reg.addRecipeCategories(grinding, alloying, washing, compacting);
 	}
 
 	@Override

@@ -29,8 +29,12 @@ public class ChipUpgradeTrade implements VillagerTrades.ITrade {
 		int speed = MathHelper.nextInt(rand, min, max);
 		ItemStack stack = new ItemStack(F.I.CHIP);
 		CompoundNBT tag = stack.getOrCreateTag();
-		if (energy != 0) tag.putByte("energy", (byte) energy);
-		if (speed != 0) tag.putByte("speed", (byte) speed);
+		if (energy != 0) {
+			tag.putByte("energy", (byte) energy);
+		}
+		if (speed != 0) {
+			tag.putByte("speed", (byte) speed);
+		}
 		return new MerchantOffer(new ItemStack(Items.EMERALD, Math.max(1, (max-min)/2)), new ItemStack(F.I.CHIP), stack, 12, max-min, 0.2f);
 	}
 }

@@ -36,12 +36,12 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	private final int inputSize;
 	private final int outputSize;
 
-	protected AbstractMachineContainer(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
-		this(containerTypeIn, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(6));
+	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
+		this(containerType, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(6));
 	}
 
-	protected AbstractMachineContainer(ContainerType containerTypeIn, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
-		super(containerTypeIn, id);
+	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
+		super(containerType, id);
 		this.recipeType = recipeType;
 		this.inputSize = inputSize;
 		this.outputSize = outputSize;

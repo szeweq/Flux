@@ -14,6 +14,8 @@ import java.util.Set;
 
 public class FluxCfg {
 	private static final Set<IConfigChangeListener> listeners = new HashSet<>();
+	static final ForgeConfigSpec commonSpec;
+	public static final Common COMMON;
 
 	public static class Common {
 		public final IntValue
@@ -63,9 +65,6 @@ public class FluxCfg {
 	public interface IConfigChangeListener {
 		void onConfigChanged();
 	}
-
-	static final ForgeConfigSpec commonSpec;
-	public static final Common COMMON;
 
 	static {
 		final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);

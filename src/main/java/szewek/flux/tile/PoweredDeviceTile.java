@@ -40,8 +40,7 @@ public abstract class PoweredDeviceTile extends LockableTileEntity implements IE
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		if (maxReceive <= 0) return 0;
-		int r = maxReceive;
-		if (r > 1000000 - energy) r = 1000000 - energy;
+		int r = Math.min(maxReceive, 1_000_000 - energy);
 		if (!simulate) {
 			energy += r;
 			isDirty = true;
@@ -56,7 +55,7 @@ public abstract class PoweredDeviceTile extends LockableTileEntity implements IE
 
 	@Override
 	public int getMaxEnergyStored() {
-		return 1000000;
+		return 1_000_000;
 	}
 
 	@Nullable

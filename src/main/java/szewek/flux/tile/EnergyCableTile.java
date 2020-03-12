@@ -66,7 +66,9 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 							}
 						} else if (ie.canReceive()) {
 							r = 10000;
-							if (r >= energy) r = energy;
+							if (r >= energy) {
+								r = energy;
+							}
 							r = ie.receiveEnergy(r, true);
 							if (r > 0) {
 								energy = energy - r;

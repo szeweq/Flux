@@ -78,13 +78,17 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 					fluids[0] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
 					break;
 				case 7:
-					if (!fluids[0].isEmpty()) fluids[0].setAmount(v);
+					if (!fluids[0].isEmpty()) {
+						fluids[0].setAmount(v);
+					}
 					break;
 				case 8:
 					fluids[1] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
 					break;
 				case 9:
-					if (!fluids[1].isEmpty()) fluids[0].setAmount(v);
+					if (!fluids[1].isEmpty()) {
+						fluids[0].setAmount(v);
+					}
 					break;
 				default:
 			}
@@ -316,7 +320,9 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		if (slot < 0 || slot >= items.size())
 			throw new IndexOutOfBoundsException("Getting slot " + slot + " outside range [0," + items.size() + ")");
-		if (stack.isEmpty()) return ItemStack.EMPTY;
+		if (stack.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
 		if ((slot == 0 && ForgeHooks.getBurnTime(stack) == 0) || (slot == 1 && !FluxGenRecipes.isCatalyst(stack.getItem()))) {
 			return stack;
 		}
@@ -324,10 +330,14 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		ItemStack xis = items.get(slot);
 		int l = Math.min(stack.getMaxStackSize(), 64);
 		if (!xis.isEmpty()) {
-			if (!ItemHandlerHelper.canItemStacksStack(stack, xis)) return stack;
+			if (!ItemHandlerHelper.canItemStacksStack(stack, xis)) {
+				return stack;
+			}
 			l -= xis.getCount();
 		}
-		if (0 >= l) return stack;
+		if (0 >= l) {
+			return stack;
+		}
 		boolean rl = stackCount > l;
 		if (!simulate) {
 			if (xis.isEmpty()) {

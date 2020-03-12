@@ -22,7 +22,9 @@ public class MobPounderTile extends EntityInteractingTile {
 			for (MonsterEntity monster : monsters) {
 				monster.attackEntityFrom(DamageSource.GENERIC, 100);
 				energy -= usage;
-				if (energy < usage) break;
+				if (energy < usage) {
+					break;
+				}
 			}
 		}
 	}

@@ -84,6 +84,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			return 6;
 		}
 	};
+	private final LazyOptional<? extends IItemHandler>[] sideHandlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
 	protected AbstractMachineTile(TileEntityType<?> typeIn, final IRecipeType<? extends AbstractMachineRecipe> recipeTypeIn, MenuFactory factory, int inSize, int outSize) {
 		super(typeIn);
@@ -210,8 +211,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			cachedRecipe = null;
 		}
 	}
-
-	private final LazyOptional<? extends IItemHandler>[] sideHandlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {

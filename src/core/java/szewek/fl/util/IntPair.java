@@ -21,10 +21,7 @@ public final class IntPair implements Comparable<IntPair> {
 
 	@Override
 	public int compareTo(IntPair o) {
-		if (l == o.l) {
-			return Integer.compare(r, o.r);
-		}
-		return Integer.compare(l, o.l);
+		return l == o.l ? Integer.compare(r, o.r) : Integer.compare(l, o.l);
 	}
 
 	@Override
@@ -36,8 +33,7 @@ public final class IntPair implements Comparable<IntPair> {
 			return false;
 		}
 		IntPair intPair = (IntPair) o;
-		return l == intPair.l &&
-				r == intPair.r;
+		return l == intPair.l && r == intPair.r;
 	}
 
 	@Override

@@ -40,13 +40,13 @@ public class FluxDataManager implements IFutureReloadListener {
 			COLD_FLUIDS = FluxMod.location("values/fluxgen/cold.json");
 
 	@Override
-	public CompletableFuture<Void> reload(IStage stage, IResourceManager rm, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-		CompletableFuture<Collection<FluxGenRecipes.Entry>> catalystVals = parseFluxGenValues(rm, CATALYSTS, backgroundExecutor);
-		CompletableFuture<Collection<FluxGenRecipes.Entry>> hotVals = parseFluxGenValues(rm, HOT_FLUIDS, backgroundExecutor);
-		CompletableFuture<Collection<FluxGenRecipes.Entry>> coldVals = parseFluxGenValues(rm, COLD_FLUIDS, backgroundExecutor);
+	public CompletableFuture<Void> reload(IStage stage, IResourceManager rm, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor bgExec, Executor gameExec) {
+		CompletableFuture<Collection<FluxGenRecipes.Entry>> catalystVals = parseFluxGenValues(rm, CATALYSTS, bgExec);
+		CompletableFuture<Collection<FluxGenRecipes.Entry>> hotVals = parseFluxGenValues(rm, HOT_FLUIDS, bgExec);
+		CompletableFuture<Collection<FluxGenRecipes.Entry>> coldVals = parseFluxGenValues(rm, COLD_FLUIDS, bgExec);
 		return catalystVals.thenCombine(hotVals.thenCombine(coldVals, Pair::of), (m, p) -> Triple.of(m, p.getLeft(), p.getRight()))
 				.thenCompose(stage::markCompleteAwaitingOthers)
-				.thenAcceptAsync(FluxGenRecipes::collectValues, gameExecutor);
+				.thenAcceptAsync(FluxGenRecipes::collectValues, gameExec);
 	}
 
 	private <T extends IForgeRegistryEntry<T>> CompletableFuture<Collection<FluxGenRecipes.Entry>> parseFluxGenValues(

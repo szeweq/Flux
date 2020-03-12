@@ -335,7 +335,7 @@ public final class F {
 
 	private static BlockItem fromBlock(Block b, String name) {
 		BlockItem item = new BlockItem(b, new Item.Properties().group(FLUX_GROUP));
-		item.setRegistryName(FluxMod.MODID, name);
+		item.setRegistryName(MODID, name);
 		return item;
 	}
 
