@@ -1,4 +1,4 @@
-# Flux Library (Version 3.1.1)
+# Flux Library (Version 3.1.2)
 
-### Fixes
-- Store an item as a repair material in tool tier if item tag won't work. Fix was already applied in Flux.
+### Changes
+- Optimized sending items to neighbor tiles
