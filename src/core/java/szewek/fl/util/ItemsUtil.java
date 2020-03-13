@@ -12,42 +12,44 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Utility class for interacting with items.
  */
 public final class ItemsUtil {
 	private static final Direction[] DIRS = Direction.values();
+	private static final LogTimer timSI = new LogTimer("trySendingItems");
 
 	public static void trySendingItems(final Iterable<ItemStack> items, World world, BlockPos pos) {
-		final List<IItemHandler> inv = new ArrayList<>(6);
+		final long t = timSI.start();
+		final IItemHandler[] inv = new IItemHandler[6];
+		int size = 0;
 		for (Direction dir : DIRS) {
 			TileEntity te = world.getTileEntity(pos.offset(dir));
 			if (te != null) {
 				IItemHandler iih = getItemHandlerCompat(te, dir.getOpposite());
 				if (iih != null) {
-					inv.add(iih);
+					inv[size++] = iih;
 				}
 			}
 		}
 
 		itemloop: for (ItemStack stack : items) {
 			ItemStack tempStack = stack;
-			for (IItemHandler iih : inv) {
+			for (int z = 0; z < size; z++) {
+				IItemHandler iih = inv[z];
 				int l = iih.getSlots();
 				for(int i = 0; i < l; ++i) {
 					if (iih.isItemValid(i, tempStack)) {
 						tempStack = iih.insertItem(i, tempStack, false);
+						if (tempStack.isEmpty()) {
+							continue itemloop;
+						}
 					}
-				}
-				if (tempStack.isEmpty()) {
-					continue itemloop;
 				}
 			}
 			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), tempStack);
 		}
+		timSI.stop(t);
 	}
 
 	public static IItemHandler getItemHandlerCompat(TileEntity tile, Direction dir) {
