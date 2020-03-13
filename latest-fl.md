@@ -1,6 +1,4 @@
-# Flux Library (Version 3.1.0)
+# Flux Library (Version 3.1.1)
 
-### New GUI Methods
-- Rendering gradient bars
-- Rendering fluid tank slots
-- Setting rectangle area for displaying tooltips
+### Fixes
+- Store an item as a repair material in tool tier if item tag won't work. Fix was already applied in Flux.
