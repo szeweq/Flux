@@ -229,9 +229,10 @@ public final class F {
 		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());
 		public static final ChipItem CHIP = item(ChipItem::new, "chip", new Item.Properties());
-		public static final FluxAdhesiveItem SEAL = item(FluxAdhesiveItem::new, "seal", new Item.Properties());
-		public static final FluxAdhesiveItem GLUE = item(FluxAdhesiveItem::new, "glue", new Item.Properties());
-		public static final FluxAdhesiveItem PASTE = item(FluxAdhesiveItem::new, "paste", new Item.Properties());
+		public static final FluxAdhesiveItem
+				SEAL = item(FluxAdhesiveItem::new, "seal", new Item.Properties()),
+				GLUE = item(FluxAdhesiveItem::new, "glue", new Item.Properties()),
+				PASTE = item(FluxAdhesiveItem::new, "paste", new Item.Properties());
 
 		public static final FluxItemTier
 				BRONZE_TIER = new FluxItemTier(2, 500, 7f, 2.5f, 20, "ingots/bronze", INGOTS.get(Metals.BRONZE)),
