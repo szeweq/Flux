@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#flux:machines_with_weird_faces",
+    "flux:fluxgen"
+  ]
+}

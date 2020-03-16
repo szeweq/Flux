@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "flux:grinding_mill",
+    "flux:alloy_caster",
+    "flux:washer",
+    "flux:compactor",
+    "flux:digger",
+    "flux:farmer",
+    "flux:butcher",
+    "flux:mob_pounder",
+    "flux:rrtable",
+    "flux:online_market"
+  ]
+}

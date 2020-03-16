@@ -1,65 +1,147 @@
 package szewek.flux.tile;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.merchant.IMerchant;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.MerchantContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.LockableTileEntity;
+import net.minecraft.item.MerchantOffer;
+import net.minecraft.item.MerchantOffers;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.F;
 
-public class OnlineMarketTile extends LockableTileEntity {
+import javax.annotation.Nullable;
+
+public class OnlineMarketTile extends PoweredTile implements IMerchant, INamedContainerProvider {
+	private AxisAlignedBB scanAABB;
+	private PlayerEntity customer;
+	private MerchantOffers offers;
+
 	public OnlineMarketTile() {
 		super(F.T.ONLINE_MARKET);
 	}
 
-	@Override
-	protected ITextComponent getDefaultName() {
-		return null;
+	private void updateBox() {
+		int x = pos.getX();
+		int y = pos.getY();
+		int z = pos.getZ();
+		scanAABB = new AxisAlignedBB(x - 32, y - 32, z - 32, x + 32, y + 32, z + 32);
 	}
 
 	@Override
-	protected Container createMenu(int id, PlayerInventory player) {
-		return null;
+	public void setWorldAndPos(World p_226984_1_, BlockPos p_226984_2_) {
+		super.setWorldAndPos(p_226984_1_, p_226984_2_);
+		updateBox();
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public void setPos(BlockPos posIn) {
+		super.setPos(posIn);
+		updateBox();
+	}
+
+	@Override
+	public Container createMenu(int id, PlayerInventory pi, PlayerEntity player) {
+		setCustomer(pi.player);
+		return new MerchantContainer(id, pi, this);
+	}
+
+	@Override
+	public void setCustomer(@Nullable PlayerEntity customer) {
+		this.customer = customer;
+	}
+
+	@Nullable
+	@Override
+	public PlayerEntity getCustomer() {
+		return customer;
+	}
+
+	@Override
+	public MerchantOffers getOffers() {
+		if (offers == null) {
+			MerchantOffers mo = new MerchantOffers();
+			assert world != null;
+			for (VillagerEntity v : world.getEntitiesWithinAABB(EntityType.VILLAGER, scanAABB, EntityPredicates.NOT_SPECTATING)) {
+				MerchantOffers vmo = v.getOffers();
+				for (MerchantOffer offer : vmo) {
+					ItemStack first = offer.getBuyingStackFirst();
+					ItemStack second = offer.getBuyingStackSecond();
+					ItemStack result = offer.getSellingStack();
+					if (mo.stream().noneMatch(xmo -> xmo.getBuyingStackFirst().equals(first, false)
+							&& xmo.getBuyingStackSecond().equals(second, false)
+							&& xmo.getSellingStack().equals(result, false)
+					)) {
+						mo.add(offer);
+					}
+				}
+			}
+			offers = mo;
+		}
+		return offers;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void setClientSideOffers(@Nullable MerchantOffers offers) {
+
+	}
+
+	@Override
+	public void onTrade(MerchantOffer offer) {
+		offer.increaseUses();
+	}
+
+	@Override
+	public void verifySellingItem(ItemStack stack) {
+
+	}
+
+	@Override
+	public int getXp() {
 		return 0;
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public void setXP(int xpIn) {
+
+	}
+
+	@Override
+	public boolean func_213705_dZ() {
 		return false;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int index) {
-		return null;
+	public SoundEvent getYesSound() {
+		return SoundEvents.ENTITY_VILLAGER_YES;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		return null;
+	public boolean func_223340_ej() {
+		return true;
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
+	public void tick() {
 
 	}
 
 	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return false;
-	}
-
-	@Override
-	public void clear() {
-
+	public ITextComponent getDisplayName() {
+		return new TranslationTextComponent("container.flux.online_market");
 	}
 }

@@ -15,5 +15,7 @@
   "farmer",
   "butcher",
   "mob_pounder",
-  "item_absorber"
+  "item_absorber",
+  "rrtable",
+  "online_market"
 ]

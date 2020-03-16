@@ -14,6 +14,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -300,8 +302,13 @@ public final class F {
 	}
 
 	public static final class V {
-		public static final PointOfInterestType FLUX_ENGINEER_POI = poi("flux_engineer", B.FLUXGEN);
+		public static final PointOfInterestType
+				FLUX_ENGINEER_POI = poi("flux_engineer", B.FLUXGEN), MARKET_POI = poi("online_market", B.ONLINE_MARKET);
 		public static final VillagerProfession FLUX_ENGINEER = new VillagerProfession("flux:flux_engineer", FLUX_ENGINEER_POI, ImmutableSet.of(), ImmutableSet.of(), null);
+	}
+
+	public static final class Tags {
+		public static final Tag<Block> DIGGER_SKIP = blockTag("digger_skip");
 	}
 
 	private static Map<Metal, FluxOreBlock> makeOres() {
@@ -390,6 +397,10 @@ public final class F {
 
 	private static void recipeCompat(IRecipeType<?> rtype, Predicate<String> filter, String... compats) {
 		RecipeCompat.registerCompatRecipeTypes(rtype, Arrays.stream(compats).filter(filter).collect(Collectors.toSet()));
+	}
+
+	private static Tag<Block> blockTag(String name) {
+		return new BlockTags.Wrapper(FluxMod.location(name));
 	}
 
 	private F() {}

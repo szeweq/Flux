@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ERE",
+    "E E",
+    "SBS"
+  ],
+  "key": {
+    "E": {"tag": "forge:gems/emerald"},
+    "R": {"item": "minecraft:redstone"},
+    "B": {"item": "minecraft:book"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:online_market",
+    "count": 1
+  }
+}

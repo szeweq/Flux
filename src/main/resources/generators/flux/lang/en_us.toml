@@ -87,6 +87,7 @@
  alloy_caster = "Alloy Caster"
  washer = "Washer"
  compactor = "Compactor"
+ online_market = "Online Market"
 
 [gui.flux.recipebook.toggleRecipes]
  grindable = "Showing grindable only"

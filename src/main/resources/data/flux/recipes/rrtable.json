@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CDC",
+    "C C",
+    "SSS"
+  ],
+  "key": {
+    "D": {"tag": "forge:gems/diamond"},
+    "C": {"item": "minecraft:bookshelf"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:rrtable",
+    "count": 1
+  }
+}
