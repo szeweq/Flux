@@ -19,7 +19,7 @@ import szewek.flux.tile.OnlineMarketTile;
 import javax.annotation.Nullable;
 import java.util.OptionalInt;
 
-public class OnlineMarketBlock extends Block {
+public final class OnlineMarketBlock extends Block {
 	public OnlineMarketBlock() {
 		super(Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL).lightValue(13));
 	}
@@ -38,11 +38,11 @@ public class OnlineMarketBlock extends Block {
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
 		if (!world.isRemote()) {
-			TileEntity te = world.getTileEntity(pos);
-			if (te != null && F.T.ONLINE_MARKET == te.getType()) {
-				OptionalInt oint = player.openContainer((INamedContainerProvider) te);
+			final TileEntity tile = world.getTileEntity(pos);
+			if (tile != null && F.T.ONLINE_MARKET == tile.getType()) {
+				final OptionalInt oint = player.openContainer((INamedContainerProvider) tile);
 				if (oint.isPresent()) {
-					OnlineMarketTile omt = (OnlineMarketTile) te;
+					final OnlineMarketTile omt = (OnlineMarketTile) tile;
 					player.openMerchantContainer(oint.getAsInt(), omt.getOffers(), 1, omt.getXp(), omt.func_213705_dZ(), omt.func_223340_ej());
 				}
 			}

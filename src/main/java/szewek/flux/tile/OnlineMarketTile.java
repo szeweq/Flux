@@ -25,7 +25,7 @@ import szewek.flux.F;
 
 import javax.annotation.Nullable;
 
-public class OnlineMarketTile extends PoweredTile implements IMerchant, INamedContainerProvider {
+public final class OnlineMarketTile extends PoweredTile implements IMerchant, INamedContainerProvider {
 	private AxisAlignedBB scanAABB;
 	private PlayerEntity customer;
 	private MerchantOffers offers;
@@ -35,15 +35,15 @@ public class OnlineMarketTile extends PoweredTile implements IMerchant, INamedCo
 	}
 
 	private void updateBox() {
-		int x = pos.getX();
-		int y = pos.getY();
-		int z = pos.getZ();
+		final int x = pos.getX();
+		final int y = pos.getY();
+		final int z = pos.getZ();
 		scanAABB = new AxisAlignedBB(x - 32, y - 32, z - 32, x + 32, y + 32, z + 32);
 	}
 
 	@Override
-	public void setWorldAndPos(World p_226984_1_, BlockPos p_226984_2_) {
-		super.setWorldAndPos(p_226984_1_, p_226984_2_);
+	public void setWorldAndPos(World world, BlockPos pos) {
+		super.setWorldAndPos(world, pos);
 		updateBox();
 	}
 
@@ -73,7 +73,7 @@ public class OnlineMarketTile extends PoweredTile implements IMerchant, INamedCo
 	@Override
 	public MerchantOffers getOffers() {
 		if (offers == null) {
-			MerchantOffers mo = new MerchantOffers();
+			final MerchantOffers mo = new MerchantOffers();
 			assert world != null;
 			for (VillagerEntity v : world.getEntitiesWithinAABB(EntityType.VILLAGER, scanAABB, EntityPredicates.NOT_SPECTATING)) {
 				MerchantOffers vmo = v.getOffers();

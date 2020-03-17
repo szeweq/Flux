@@ -39,8 +39,8 @@ public class RRTableBlock extends Block {
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		if (!worldIn.isRemote && player instanceof ServerPlayerEntity) {
-			ServerPlayerEntity sp = (ServerPlayerEntity) player;
-			RecipeBook rb = sp.getRecipeBook();
+			final ServerPlayerEntity sp = (ServerPlayerEntity) player;
+			final RecipeBook rb = sp.getRecipeBook();
 			for (IRecipe<?> recipe : worldIn.getRecipeManager().getRecipes()) {
 				if (!rb.isUnlocked(recipe)) {
 					player.unlockRecipes(Collections.singleton(recipe));
