@@ -22,13 +22,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.F;
+import szewek.flux.FluxCfg;
 
 import javax.annotation.Nullable;
 
 public final class OnlineMarketTile extends PoweredTile implements IMerchant, INamedContainerProvider {
 	private AxisAlignedBB scanAABB;
 	private PlayerEntity customer;
-	private MerchantOffers offers;
+	private MerchantOffers offers = new MerchantOffers();
+	private int countdown;
 
 	public OnlineMarketTile() {
 		super(F.T.ONLINE_MARKET);
@@ -72,26 +74,25 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 
 	@Override
 	public MerchantOffers getOffers() {
-		if (offers == null) {
-			final MerchantOffers mo = new MerchantOffers();
-			assert world != null;
-			for (VillagerEntity v : world.getEntitiesWithinAABB(EntityType.VILLAGER, scanAABB, EntityPredicates.NOT_SPECTATING)) {
-				MerchantOffers vmo = v.getOffers();
-				for (MerchantOffer offer : vmo) {
-					ItemStack first = offer.getBuyingStackFirst();
-					ItemStack second = offer.getBuyingStackSecond();
-					ItemStack result = offer.getSellingStack();
-					if (mo.stream().noneMatch(xmo -> xmo.getBuyingStackFirst().equals(first, false)
-							&& xmo.getBuyingStackSecond().equals(second, false)
-							&& xmo.getSellingStack().equals(result, false)
-					)) {
-						mo.add(offer);
-					}
+		return offers;
+	}
+
+	private void updateOffers() {
+		offers.clear();
+		for (VillagerEntity v : world.getEntitiesWithinAABB(EntityType.VILLAGER, scanAABB, EntityPredicates.NOT_SPECTATING)) {
+			MerchantOffers vmo = v.getOffers();
+			for (MerchantOffer offer : vmo) {
+				ItemStack first = offer.getBuyingStackFirst();
+				ItemStack second = offer.getBuyingStackSecond();
+				ItemStack result = offer.getSellingStack();
+				if (offers.stream().noneMatch(xmo -> xmo.getBuyingStackFirst().equals(first, false)
+						&& xmo.getBuyingStackSecond().equals(second, false)
+						&& xmo.getSellingStack().equals(result, false)
+				)) {
+					offers.add(offer);
 				}
 			}
-			offers = mo;
 		}
-		return offers;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -137,7 +138,17 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 
 	@Override
 	public void tick() {
-
+		if (countdown == 0) {
+			countdown = 5;
+			final int usage = FluxCfg.COMMON.onlineMarketEU.get();
+			if (energy >= usage) {
+				updateOffers();
+			} else {
+				offers.clear();
+			}
+		} else {
+			--countdown;
+		}
 	}
 
 	@Override

@@ -25,7 +25,8 @@ public class FluxCfg {
 				farmerEU,
 				butcherEU,
 				mobPounderEU,
-				itemAbsorberEU;
+				itemAbsorberEU,
+				onlineMarketEU;
 		public final ForgeConfigSpec.BooleanValue disableOres;
 		public final ForgeConfigSpec.ConfigValue<List<? extends String>> preferModCompat, blacklistCompatRecipes;
 
@@ -40,6 +41,7 @@ public class FluxCfg {
 			butcherEU = energyUsage(bld, "Butcher", "butcher", 700);
 			mobPounderEU = energyUsage(bld, "Mob Pounder", "mobPounder", 1000);
 			itemAbsorberEU = energyUsage(bld, "Item Absorber", "itemAbsorber", 100);
+			onlineMarketEU = energyUsage(bld, "Online Market", "onlineMarket", 200);
 			preferModCompat = translate(bld, "preferModCompat", "Order of preferred mod names for item recipe results.",
 					"Empty list means that first item available from specific tag is chosen.",
 					"First mod name has the highest priority.",
