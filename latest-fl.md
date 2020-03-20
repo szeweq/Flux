@@ -1,4 +1,4 @@
-# Flux Library (Version 3.1.2)
+# Flux Library (Version 3.1.3)
 
 ### Changes
-- Optimized sending items to neighbor tiles
+- Optimized recipe compatibility
