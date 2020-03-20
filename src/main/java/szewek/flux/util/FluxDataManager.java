@@ -18,10 +18,7 @@ import szewek.flux.recipe.FluxGenRecipes;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -37,16 +34,19 @@ public class FluxDataManager implements IFutureReloadListener {
 	private static final ResourceLocation
 			CATALYSTS = new ResourceLocation(MODID, "values/fluxgen/catalyst.json"),
 			HOT_FLUIDS = new ResourceLocation(MODID, "values/fluxgen/hot.json"),
-			COLD_FLUIDS = new ResourceLocation(MODID, "values/fluxgen/cold.json");
+			COLD_FLUIDS = new ResourceLocation(MODID, "values/fluxgen/cold.json"),
+			GIFTS_LIST = new ResourceLocation(MODID, "gifts/global_list.json");
 
 	@Override
 	public CompletableFuture<Void> reload(IStage stage, IResourceManager rm, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor bgExec, Executor gameExec) {
 		CompletableFuture<Collection<FluxGenRecipes.Entry>> catalystVals = parseFluxGenValues(rm, CATALYSTS, bgExec);
 		CompletableFuture<Collection<FluxGenRecipes.Entry>> hotVals = parseFluxGenValues(rm, HOT_FLUIDS, bgExec);
 		CompletableFuture<Collection<FluxGenRecipes.Entry>> coldVals = parseFluxGenValues(rm, COLD_FLUIDS, bgExec);
-		return catalystVals.thenCombine(hotVals.thenCombine(coldVals, Pair::of), (m, p) -> Triple.of(m, p.getLeft(), p.getRight()))
+		CompletableFuture<Void> allValues = catalystVals.thenCombine(hotVals.thenCombine(coldVals, Pair::of), (m, p) -> Triple.of(m, p.getLeft(), p.getRight()))
 				.thenCompose(stage::markCompleteAwaitingOthers)
 				.thenAcceptAsync(FluxGenRecipes::collectValues, gameExec);
+		CompletableFuture<Void> allGifts = collectGiftLootTables(rm, bgExec).thenAcceptAsync(set -> {}, gameExec);
+		return CompletableFuture.allOf(allValues, allGifts);
 	}
 
 	private <T extends IForgeRegistryEntry<T>> CompletableFuture<Collection<FluxGenRecipes.Entry>> parseFluxGenValues(
@@ -98,6 +98,11 @@ public class FluxDataManager implements IFutureReloadListener {
 			}
 			return vals;
 		}, ex);
+	}
+
+	private CompletableFuture<Set<ResourceLocation>> collectGiftLootTables(IResourceManager rm, Executor exec) {
+		// Collecting loot table IDs to generate gifts
+		return CompletableFuture.supplyAsync(Collections::emptySet, exec);
 	}
 
 }
