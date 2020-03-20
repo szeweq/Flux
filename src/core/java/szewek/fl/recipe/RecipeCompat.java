@@ -25,11 +25,15 @@ public final class RecipeCompat {
 	@SuppressWarnings("unchecked")
 	public static <C extends IInventory, T extends IRecipe<C>> Optional<IRecipe<C>> getCompatRecipe(IRecipeType<?> rtype, World w, IInventory inv) {
 		RecipeManager rm = w.getRecipeManager();
-		return compatMap.getOrDefault(rtype, Collections.emptySet())
-				.stream().map(rt -> (IRecipeType<? extends T>) rt)
-				.flatMap(rt -> rm.getRecipes(rt).values().stream())
-				.filter(r -> ((IRecipe<IInventory>) r).matches(inv, w))
-				.findFirst();
+		for (IRecipeType<?> rt : compatMap.getOrDefault(rtype, Collections.emptySet())) {
+			IRecipeType<? extends T> recipeType = (IRecipeType<? extends T>) rt;
+			for (IRecipe<C> r : rm.getRecipes(recipeType).values()) {
+				if (((IRecipe<IInventory>) r).matches(inv, w)) {
+					return Optional.of(r);
+				}
+			}
+		}
+		return Optional.empty();
 	}
 
 	public static void registerCompatRecipeTypes(IRecipeType<?> rtype, Set<String> compats) {
