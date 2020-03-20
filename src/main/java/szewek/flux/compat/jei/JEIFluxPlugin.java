@@ -20,7 +20,6 @@ import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
 import szewek.flux.F.B;
 import szewek.flux.F.R;
-import szewek.flux.FluxMod;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.MachineScreen;
 import szewek.flux.recipe.AlloyingRecipe;
@@ -32,17 +31,19 @@ import szewek.flux.util.Toolset;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static szewek.flux.FluxMod.MODID;
+
 @JeiPlugin
 public class JEIFluxPlugin implements IModPlugin {
 	private static final ResourceLocation
-			GRINDING = FluxMod.location("grinding"),
-			ALLOYING = FluxMod.location("alloying"),
-			WASHING = FluxMod.location("washing"),
-			COMPACTING = FluxMod.location("compacting");
+			GRINDING = new ResourceLocation(MODID, "grinding"),
+			ALLOYING = new ResourceLocation(MODID, "alloying"),
+			WASHING = new ResourceLocation(MODID, "washing"),
+			COMPACTING = new ResourceLocation(MODID, "compacting");
 
 	@Override
 	public ResourceLocation getPluginUid() {
-		return FluxMod.location("jei");
+		return new ResourceLocation(MODID, "jei");
 	}
 
 	@Override
@@ -126,7 +127,7 @@ public class JEIFluxPlugin implements IModPlugin {
 	private static class MachineScreenHandler implements IGuiContainerHandler<MachineScreen> {
 		@Override
 		public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen) {
-			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, FluxMod.location(((MachineScreen<?>) containerScreen).getContainer().recipeType.toString()));
+			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, new ResourceLocation(MODID, ((MachineScreen<?>) containerScreen).getContainer().recipeType.toString()));
 			return Collections.singleton(area);
 		}
 	}

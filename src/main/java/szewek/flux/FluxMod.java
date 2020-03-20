@@ -1,10 +1,6 @@
 package szewek.flux;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
@@ -44,11 +40,6 @@ import java.util.Calendar;
 @Mod(FluxMod.MODID)
 public final class FluxMod {
 	public static final String MODID = "flux";
-	public static final ItemGroup FLUX_GROUP = new ItemGroup("flux.items") {
-		@Override public ItemStack createIcon() {
-			return new ItemStack(F.B.FLUXGEN);
-		}
-	};
 	private static IModInfo modInfo;
 
 	public FluxMod() {
@@ -94,15 +85,7 @@ public final class FluxMod {
 	final static class ClientEvents {
 		@SubscribeEvent
 		public static void setupClient(final FMLClientSetupEvent e) {
-			Minecraft mc = e.getMinecraftSupplier().get();
-			ItemColors ic = mc.getItemColors();
-			ic.register(Gifts::colorByGift, F.I.GIFT);
-			ic.register(Metals::gritColors, F.I.GRITS.values().toArray(new Item[0]));
-			ic.register(Metals::itemColors, F.I.DUSTS.values().toArray(new Item[0]));
-			ic.register(Metals::ingotColors, F.I.INGOTS.values().toArray(new Item[0]));
-			F.I.BRONZE_TOOLS.registerToolColors(Metals.BRONZE, ic);
-			F.I.STEEL_TOOLS.registerToolColors(Metals.STEEL, ic);
-			F.screens();
+			F.client(e.getMinecraftSupplier().get());
 		}
 	}
 
@@ -155,9 +138,4 @@ public final class FluxMod {
 			e.getServer().getResourceManager().addReloadListener(new FluxDataManager());
 		}
 	}
-
-	public static ResourceLocation location(String path) {
-		return new ResourceLocation(MODID, path);
-	}
-
 }

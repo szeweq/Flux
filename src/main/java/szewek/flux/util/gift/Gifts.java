@@ -13,8 +13,8 @@ import java.util.List;
 public final class Gifts {
 	private static final Int2ObjectMap<GiftData> GIFT_MAP = new Int2ObjectOpenHashMap<>();
 
-	private static void add(int day, int month, String name, int boxColor, int ribbonColor, List<ItemStack> stacks) {
-		GIFT_MAP.put(month * 32 + day, new GiftData(name, boxColor, ribbonColor, stacks));
+	private static void add(int day, int month, int boxColor, int ribbonColor, List<ItemStack> stacks) {
+		GIFT_MAP.put(month * 32 + day, new GiftData(boxColor, ribbonColor, stacks));
 	}
 
 	public static GiftData get(int xday) {
@@ -37,17 +37,17 @@ public final class Gifts {
 	}
 
 	static {
-		add(1, 1, "newyear", 0x2020F0, 0xF0F020, Arrays.asList(
+		add(1, 1, 0x2020F0, 0xF0F020, Arrays.asList(
 			new ItemStack(Items.NETHER_STAR),
 			new ItemStack(Items.FIREWORK_ROCKET, 16)
 		));
-		add(14, 2, "valentine", 0xF01010, 0xF88080, Collections.singletonList(
+		add(14, 2, 0xF01010, 0xF88080, Collections.singletonList(
 				new ItemStack(Items.HEART_OF_THE_SEA, 2)
 		));
-		add(14, 3, "pi", 0x808080, 0x2020DF, Collections.singletonList(
+		add(14, 3, 0x808080, 0x2020DF, Collections.singletonList(
 				new ItemStack(Items.PUMPKIN_PIE)
 		));
-		add(22, 3, "water", 0x0808F8, 0x3232F0, Collections.singletonList(
+		add(22, 3, 0x0808F8, 0x3232F0, Collections.singletonList(
 				new ItemStack(Items.WATER_BUCKET)
 		));
 	}

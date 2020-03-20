@@ -14,7 +14,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import szewek.flux.FluxMod;
 import szewek.flux.recipe.FluxGenRecipes;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static szewek.flux.FluxMod.MODID;
 
 // EXPERIMENTAL
 @ParametersAreNonnullByDefault
@@ -35,9 +35,9 @@ public class FluxDataManager implements IFutureReloadListener {
 	private static final Gson GSON = new GsonBuilder().setLenient().create();
 	private static final Logger LOGGER = LogManager.getLogger("FluxDataManager");
 	private static final ResourceLocation
-			CATALYSTS = FluxMod.location("values/fluxgen/catalyst.json"),
-			HOT_FLUIDS = FluxMod.location("values/fluxgen/hot.json"),
-			COLD_FLUIDS = FluxMod.location("values/fluxgen/cold.json");
+			CATALYSTS = new ResourceLocation(MODID, "values/fluxgen/catalyst.json"),
+			HOT_FLUIDS = new ResourceLocation(MODID, "values/fluxgen/hot.json"),
+			COLD_FLUIDS = new ResourceLocation(MODID, "values/fluxgen/cold.json");
 
 	@Override
 	public CompletableFuture<Void> reload(IStage stage, IResourceManager rm, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor bgExec, Executor gameExec) {

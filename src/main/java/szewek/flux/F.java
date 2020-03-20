@@ -4,13 +4,17 @@ import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -43,6 +47,7 @@ import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.ChipUpgradeTrade;
 import szewek.flux.util.Toolset;
+import szewek.flux.util.gift.Gifts;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
@@ -52,10 +57,15 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static szewek.flux.FluxMod.FLUX_GROUP;
 import static szewek.flux.FluxMod.MODID;
 
 public final class F {
+	public static final ItemGroup FLUX_GROUP = new ItemGroup("flux.items") {
+		@Override public ItemStack createIcon() {
+			return new ItemStack(B.FLUXGEN);
+		}
+	};
+
 	@SubscribeEvent
 	public static void blocks(final RegistryEvent.Register<Block> re) {
 		final IForgeRegistry<Block> reg = re.getRegistry();
@@ -193,7 +203,15 @@ public final class F {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	static void screens() {
+	static void client(final Minecraft mc) {
+		final ItemColors ic = mc.getItemColors();
+		ic.register(Gifts::colorByGift, I.GIFT);
+		ic.register(Metals::gritColors, I.GRITS.values().toArray(new Item[0]));
+		ic.register(Metals::itemColors, I.DUSTS.values().toArray(new Item[0]));
+		ic.register(Metals::ingotColors, I.INGOTS.values().toArray(new Item[0]));
+		I.BRONZE_TOOLS.registerToolColors(Metals.BRONZE, ic);
+		I.STEEL_TOOLS.registerToolColors(Metals.STEEL, ic);
+
 		ScreenManager.registerFactory(C.FLUXGEN, FluxGenScreen::new);
 		ScreenManager.registerFactory(C.GRINDING_MILL, MachineScreen.make("grindable", "grinding_mill"));
 		ScreenManager.registerFactory(C.ALLOY_CASTER, MachineScreen.make("alloyable", "alloy_caster"));
@@ -352,19 +370,21 @@ public final class F {
 		Item.Properties props = new Item.Properties();
 		for (Metal met : Metals.all()) {
 			if (filter == null || filter.test(met)) {
-				m.put(met, item(MetalItem::new, met.metalName + '_' + type, props).withMetal(met));
+				m.put(met, item(p -> new MetalItem(p, met), met.metalName + '_' + type, props));
 			}
 		}
 		return m;
 	}
 
 	private static <T extends TileEntity> TileEntityType<T> tile(Supplier<T> f, String name, Block b) {
+		//noinspection ConstantConditions
 		TileEntityType<T> type = new TileEntityType<>(f, Collections.singleton(b), null);
 		type.setRegistryName(MODID, name);
 		return type;
 	}
 
 	private static <T extends TileEntity> FluxTileType<T> tile(Function<FluxTileType<T>, T> f, String name, Block b) {
+		//noinspection ConstantConditions
 		FluxTileType<T> type = new FluxTileType<>(f, Collections.singleton(b), null);
 		type.setRegistryName(MODID, name);
 		return type;
@@ -400,7 +420,7 @@ public final class F {
 	}
 
 	private static Tag<Block> blockTag(String name) {
-		return new BlockTags.Wrapper(FluxMod.location(name));
+		return new BlockTags.Wrapper(new ResourceLocation(MODID, name));
 	}
 
 	private F() {}

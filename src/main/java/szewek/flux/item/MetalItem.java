@@ -6,15 +6,8 @@ import szewek.flux.util.metals.Metal;
 public final class MetalItem extends Item {
 	public Metal metal;
 
-	public MetalItem(Properties properties) {
+	public MetalItem(Properties properties, Metal metal) {
 		super(properties);
+		this.metal = metal;
 	}
-
-	public MetalItem withMetal(Metal metal) {
-		if (this.metal == null) {
-			this.metal = metal;
-		}
-		return this;
-	}
-
 }

@@ -60,8 +60,6 @@ public final class GiftItem extends Item {
 			for (ItemStack giftStack : stacks) {
 				ItemHandlerHelper.giveItemToPlayer(player, giftStack, -1);
 			}
-
-			player.sendMessage(gd.getText());
 			stack.grow(-1);
 		}
 

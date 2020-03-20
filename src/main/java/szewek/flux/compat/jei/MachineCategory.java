@@ -15,10 +15,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import szewek.flux.FluxMod;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static szewek.flux.FluxMod.MODID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -32,9 +33,9 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 	private final Class<T> cl;
 
 	public MachineCategory(IGuiHelper guiHelper, String resUid, String guiId, Class<T> tClass, Block icon, int processTime) {
-		uid = FluxMod.location(resUid);
+		uid = new ResourceLocation(MODID, resUid);
 		cl = tClass;
-		background = guiHelper.createDrawable(FluxMod.location("textures/gui/" + guiId + ".png"), 55, 25, 82, 36);
+		background = guiHelper.createDrawable(new ResourceLocation(MODID, "textures/gui/" + guiId + ".png"), 55, 25, 82, 36);
 		this.icon = guiHelper.createDrawableIngredient(new ItemStack(icon));
 		localizedName = I18n.format("gui.flux.jei.category." + resUid);
 		arrow = guiHelper.drawableBuilder(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 82, 128, 24, 17).buildAnimated(processTime, IDrawableAnimated.StartDirection.LEFT, false);
