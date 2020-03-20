@@ -18,6 +18,7 @@ public class FluxContainerType<T extends Container> extends ContainerType<T> {
 	private final IContainerBuilder<T> builder;
 
 	public FluxContainerType(IContainerBuilder<T> builder) {
+		//noinspection ConstantConditions
 		super(null);
 		this.builder = builder;
 	}

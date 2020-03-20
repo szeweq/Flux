@@ -17,6 +17,7 @@ public class FluxTileType<T extends TileEntity> extends TileEntityType<T> {
 	private final Function<FluxTileType<T>, T> builder;
 
 	public FluxTileType(Function<FluxTileType<T>, T> builder, Set<Block> validBlocksIn, Type<?> dataFixerType) {
+		//noinspection ConstantConditions
 		super(null, validBlocksIn, dataFixerType);
 		this.builder = builder;
 	}
