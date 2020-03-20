@@ -21,7 +21,7 @@ import java.util.OptionalInt;
 
 public final class OnlineMarketBlock extends Block {
 	public OnlineMarketBlock() {
-		super(Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL).lightValue(13));
+		super(Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL));
 	}
 
 	@Override
