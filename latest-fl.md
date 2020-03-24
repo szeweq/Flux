@@ -1,4 +1,4 @@
-# Flux Library (Version 3.1.3)
+# Flux Library (Version 3.1.4)
 
 ### Changes
-- Optimized recipe compatibility
+- Added reinforced checks for recipe compatibility to avoid crashes.
