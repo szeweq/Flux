@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
+import szewek.fl.network.FluxPlus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,8 +29,12 @@ public final class RecipeCompat {
 		for (IRecipeType<?> rt : compatMap.getOrDefault(rtype, Collections.emptySet())) {
 			IRecipeType<? extends T> recipeType = (IRecipeType<? extends T>) rt;
 			for (IRecipe<C> r : rm.getRecipes(recipeType).values()) {
-				if (((IRecipe<IInventory>) r).matches(inv, w)) {
-					return Optional.of(r);
+				try {
+					if (((IRecipe<IInventory>) r).matches(inv, w)) {
+						return Optional.of(r);
+					}
+				} catch (RuntimeException e) {
+					FluxPlus.reportRecipeCompatError(recipeType.toString(), r.getClass().getName(), e.getMessage());
 				}
 			}
 		}

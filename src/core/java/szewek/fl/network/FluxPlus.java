@@ -1,5 +1,6 @@
 package szewek.fl.network;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +47,18 @@ public final class FluxPlus {
 				}
 			} catch (Exception e) {
 				LOGGER.error("Exception while registering an action", e);
+			}
+		});
+	}
+
+	public static void reportRecipeCompatError(final String recipeType, final String className, final String msg) {
+		EXEC.execute(() -> {
+			try {
+				Map<String, String> m = ImmutableMap.of("recipeType", recipeType, "class", className, "msg", msg);
+				boolean b = connect("/report/recipeCompat").post(m).response(Boolean.TYPE);
+			} catch (IOException e) {
+				LOGGER.error("Exception while sending recipe compat error", e);
+				e.printStackTrace();
 			}
 		});
 	}
