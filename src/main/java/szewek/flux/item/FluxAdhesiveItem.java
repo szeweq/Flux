@@ -11,12 +11,14 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class FluxAdhesiveItem extends Item {
+	private static final ITextComponent WORKS_UNDERWATER = new TranslationTextComponent("flux.works_underwater");
+
 	public FluxAdhesiveItem(Properties properties) {
 		super(properties);
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent("flux.works_underwater"));
+		tooltip.add(WORKS_UNDERWATER);
 	}
 }

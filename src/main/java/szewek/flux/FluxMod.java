@@ -1,8 +1,7 @@
 package szewek.flux;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -27,15 +26,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import szewek.flux.energy.FurnaceEnergy;
-import szewek.flux.util.FluxDataManager;
-import szewek.flux.util.gift.GiftData;
-import szewek.flux.util.gift.Gifts;
+import szewek.flux.util.FluxData;
+import szewek.flux.util.Gifts;
 import szewek.flux.util.metals.Metals;
-
-import java.util.Calendar;
 
 @Mod(FluxMod.MODID)
 public final class FluxMod {
@@ -109,33 +104,13 @@ public final class FluxMod {
 				if (ver.target != null && (ver.status == VersionChecker.Status.OUTDATED || ver.status == VersionChecker.Status.BETA_OUTDATED)) {
 					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()));
 				}
-				CompoundNBT data = player.getPersistentData();
-				int lastXDay = data.getInt("lastXDay");
-				int lastXYear = data.getInt("lastXYear");
-				Calendar calendar = Calendar.getInstance();
-				int xday = (1 + calendar.get(Calendar.MONTH)) * 32 + calendar.get(Calendar.DAY_OF_MONTH);
-				int xyear = calendar.get(Calendar.YEAR);
-				if (lastXYear < xyear) {
-					lastXDay = 0;
-				}
-				if (lastXDay < xday) {
-					GiftData gd = Gifts.get(xday);
-					if (gd != null) {
-						data.putInt("lastXDay", xday);
-						data.putInt("lastXYear", xyear);
-						CompoundNBT itemTag = new CompoundNBT();
-						itemTag.putInt("xDay", xday);
-						ItemStack giftStack = new ItemStack(F.I.GIFT, 1);
-						giftStack.setTag(itemTag);
-						ItemHandlerHelper.giveItemToPlayer(player, giftStack, -1);
-					}
-				}
+				Gifts.makeGiftsForPlayer((ServerPlayerEntity) player);
 			}
 		}
 
 		@SubscribeEvent
 		public static void serverAboutToStart(final FMLServerAboutToStartEvent e) {
-			e.getServer().getResourceManager().addReloadListener(new FluxDataManager());
+			FluxData.addReloadListeners(e.getServer().getResourceManager());
 		}
 	}
 }

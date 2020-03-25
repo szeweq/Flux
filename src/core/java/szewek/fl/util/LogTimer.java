@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public final class LogTimer {
-	private static final Logger LOGGER = LogManager.getLogger("LogTimer");
+	private static final Logger LOGGER = LogManager.getLogger();
 	private final String name;
 	private int count;
 	private long sum;

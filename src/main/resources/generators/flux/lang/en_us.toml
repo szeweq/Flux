@@ -8,6 +8,7 @@
 
 [flux.gift]
  invalid = "Invalid Gift!"
+ received = "You just received a Flux Gift!"
 
 [flux.chip]
  speed = "Speed"

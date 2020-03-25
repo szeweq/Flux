@@ -1,3 +1,14 @@
 {
-  "type": "minecraft:gift"
+  "type": "minecraft:gift",
+  "pools": [{
+    "rolls": 1,
+    "entries": [{
+      "type": "minecraft:item",
+      "name": "flux:gift",
+      "functions": [{
+        "function": "minecraft:set_nbt",
+        "tag": "{\"Box\": 9177610, \"Ribbon\": 14438420, \"LootTable\": \"minecraft:gameplay/cat_morning_gift\"}"
+      }]
+    }]
+  }]
 }

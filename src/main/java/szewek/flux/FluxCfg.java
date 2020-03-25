@@ -6,6 +6,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 public class FluxCfg {
+	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Set<IConfigChangeListener> listeners = new HashSet<>();
 	static final ForgeConfigSpec commonSpec;
 	public static final Common COMMON;
@@ -76,12 +78,12 @@ public class FluxCfg {
 
 	@SubscribeEvent
 	public static void onLoad(final ModConfig.Loading configEvent) {
-		LogManager.getLogger().debug("Loaded flux config file: {}", configEvent.getConfig().getFileName());
+		LOGGER.debug("Loaded flux config file: {}", configEvent.getConfig().getFileName());
 	}
 
 	@SubscribeEvent
 	public static void onFileChange(final ModConfig.Reloading configEvent) {
-		LogManager.getLogger().fatal("Flux config just got changed on the file system!");
+		LOGGER.warn("Flux config just got changed on the file system!");
 		for (IConfigChangeListener l : listeners) {
 			l.onConfigChanged();
 		}

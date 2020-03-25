@@ -46,8 +46,8 @@ import szewek.flux.item.*;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.ChipUpgradeTrade;
+import szewek.flux.util.Gifts;
 import szewek.flux.util.Toolset;
-import szewek.flux.util.gift.Gifts;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 

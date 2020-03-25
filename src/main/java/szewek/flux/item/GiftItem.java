@@ -10,15 +10,19 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.items.ItemHandlerHelper;
-import szewek.flux.util.gift.GiftData;
-import szewek.flux.util.gift.Gifts;
-
-import java.util.List;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameterSets;
+import net.minecraft.world.storage.loot.LootParameters;
+import szewek.flux.util.Gifts;
 
 public final class GiftItem extends Item {
+	private static final ITextComponent GIFT_INVALID = new TranslationTextComponent("flux.gift.invalid");
+
 	public GiftItem(Properties properties) {
 		super(properties);
 	}
@@ -41,25 +45,25 @@ public final class GiftItem extends Item {
 
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		if (!worldIn.isRemote() && entityLiving instanceof ServerPlayerEntity && stack.getItem() == this) {
+		if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity && stack.getItem() == this) {
 			CompoundNBT tag = stack.getTag();
-			if (tag == null || tag.isEmpty()) {
-				entityLiving.sendMessage(new TranslationTextComponent("flux.gift.invalid"));
+			if (tag == null || tag.isEmpty() || !tag.contains("LootTable")) {
+				entityLiving.sendMessage(GIFT_INVALID);
 				return ItemStack.EMPTY;
 			}
 
-			int xday = tag.getInt("xDay");
-			GiftData gd = Gifts.get(xday);
-			if (gd == null) {
-				entityLiving.sendMessage(new TranslationTextComponent("flux.gift.invalid"));
+			String lt = tag.getString("LootTable");
+			ResourceLocation loc = ResourceLocation.tryCreate(lt);
+			if (loc == null) {
+				entityLiving.sendMessage(GIFT_INVALID);
 				return ItemStack.EMPTY;
 			}
+			LootContext lootCtx = new LootContext.Builder((ServerWorld) worldIn)
+					.withParameter(LootParameters.POSITION, entityLiving.getPosition())
+					.withParameter(LootParameters.THIS_ENTITY, entityLiving)
+					.build(LootParameterSets.GIFT);
+			Gifts.produceGifts((ServerPlayerEntity) entityLiving, lootCtx, loc);
 
-			List<ItemStack> stacks = gd.getStacks();
-			PlayerEntity player = (PlayerEntity)entityLiving;
-			for (ItemStack giftStack : stacks) {
-				ItemHandlerHelper.giveItemToPlayer(player, giftStack, -1);
-			}
 			stack.grow(-1);
 		}
 

@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public final class FluxGenRecipes {
-	private static final Logger LOGGER = LogManager.getLogger("FluxGenRecipes");
+	private static final Logger LOGGER = LogManager.getLogger();
 	/* IntPair values: l = factor; r = usage */
 	public static final IntPair DEFAULT = IntPair.of(1, 0);
 	private static final Map<Item, IntPair> catalysts = new ConcurrentHashMap<>();
