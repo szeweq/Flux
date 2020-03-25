@@ -27,10 +27,8 @@ public final class Gifts {
 		if (tag == null) {
 			return 0x808080;
 		}
-		if (pass == 0) {
-			return tag.contains("Box") ? tag.getInt("Box") : 0x404040;
-		}
-		return tag.contains("Ribbon") ? tag.getInt("Ribbon") : 0x404040;
+		String name = pass == 0 ? "Box" : "Ribbon";
+		return tag.contains(name) ? tag.getInt(name) : 0x404040;
 	}
 
 	public static void saveGiftLootTables(Set<ResourceLocation> locSet) {
