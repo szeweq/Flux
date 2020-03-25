@@ -162,12 +162,11 @@ public final class F {
 
 		recipeCompat(R.GRINDING, filterBlacklist,
 				"pattysmorestuff:crushing",
-				//"silents_mechanisms:crushing",
+				"silents_mechanisms:crushing",
 				"usefulmachinery:crushing"
 		);
 		recipeCompat(R.ALLOYING, filterBlacklist,
 				"blue_power:alloy_smelting"
-				//"silents_mechanisms:alloy_smelting"
 		);
 		recipeCompat(R.WASHING, filterBlacklist);
 		recipeCompat(R.COMPACTING, filterBlacklist, "wtbw_machines:compressing");
