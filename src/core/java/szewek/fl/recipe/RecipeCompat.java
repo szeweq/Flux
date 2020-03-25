@@ -11,8 +11,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import szewek.fl.network.FluxPlus;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -21,6 +25,7 @@ import java.util.function.Consumer;
  * Utility class for modded recipes
  */
 public final class RecipeCompat {
+	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<IRecipeType<?>, Set<IRecipeType<?>>> compatMap = new ConcurrentHashMap<>();
 
 	@SuppressWarnings("unchecked")
@@ -34,6 +39,7 @@ public final class RecipeCompat {
 						return Optional.of(r);
 					}
 				} catch (RuntimeException e) {
+					LOGGER.warn("An exception occurred while checking recipe ({}). Sending report!", r.getId());
 					FluxPlus.reportRecipeCompatError(recipeType.toString(), r.getClass().getName(), e.getMessage());
 				}
 			}
@@ -56,11 +62,11 @@ public final class RecipeCompat {
 		compatMap.put(rtype, result);
 	}
 
-	public static Consumer<List<ItemStack>> getRecipeItemsConsumer(final IRecipe<?> recipe) {
-		Consumer<List<ItemStack>> consumer;
+	public static Consumer<Iterable<ItemStack>> getRecipeItemsConsumer(final IRecipe<?> recipe) {
+		Consumer<Iterable<ItemStack>> consumer;
 		if (recipe instanceof Consumer<?>) {
 			//noinspection unchecked
-			consumer = (Consumer<List<ItemStack>>) recipe;
+			consumer = (Consumer<Iterable<ItemStack>>) recipe;
 		} else {
 			final NonNullList<Ingredient> ingredients = recipe.getIngredients();
 			consumer = stacks -> {
@@ -81,6 +87,34 @@ public final class RecipeCompat {
 			};
 		}
 		return consumer;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <C extends IInventory> boolean inventoryProxyMatch(IRecipe<C> recipe, IInventory inv, World w) {
+		Class<?> cl = null;
+		for (Method method : recipe.getClass().getMethods()) {
+			if (method.getName().equals("matches") && method.getParameterCount() == 2) {
+				cl = method.getParameterTypes()[0];
+				break;
+			}
+		}
+		if (cl != null) {
+			C c;
+			if (cl.isInstance(inv)) {
+				c = (C) inv;
+			} else {
+				c = (C) Proxy.newProxyInstance(RecipeCompat.class.getClassLoader(), new Class[]{cl}, (proxy, method, args) -> {
+					if (method.getDeclaringClass().equals(IInventory.class)) {
+						method.invoke(inv, args);
+					}
+					// Log methods (may break stuff)
+					LOGGER.debug("Proxy method: {} ({})", method.getName(), method.getParameterTypes());
+					return null;
+				});
+			}
+			return recipe.matches(c, w);
+		}
+		return false;
 	}
 
 	private RecipeCompat() {}

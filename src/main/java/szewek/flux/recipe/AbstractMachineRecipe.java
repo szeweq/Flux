@@ -14,10 +14,9 @@ import szewek.fl.type.FluxRecipeType;
 import szewek.flux.util.IInventoryIO;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Consumer<List<ItemStack>> {
+public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Consumer<Iterable<ItemStack>> {
 	public final NonNullList<Ingredient> ingredients;
 	public final ItemStack result;
 	public final float experience;
@@ -91,7 +90,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 	}
 
 	@Override
-	public final void accept(List<ItemStack> stacks) {
+	public final void accept(Iterable<ItemStack> stacks) {
 		ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
 		for (ItemStack stack : stacks) {
