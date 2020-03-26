@@ -5,31 +5,39 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.AbstractCopyTask
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.TaskContainer
 import szewek.mcgen.task.*
 import java.io.File
 
+@Suppress("UnstableApiUsage")
 class MCGenPlugin : Plugin<Project> {
 
     override fun apply(p: Project) {
-        val genResourcesDir = File(p.buildDir, "genResources")
-
         val jpc = p.convention.getPlugin(JavaPluginConvention::class.java)
-        val srcSet = jpc.sourceSets.getByName("main")
 
-        val confSources = Action<AbstractProcessTask> { it.configureSources(srcSet.resources) }
+        jpc.sourceSets.configureEach {
+            configureSourceSet(it, p.buildDir, p.tasks)
+        }
+    }
 
-        val recipeTask = p.tasks.create("genRecipesFromBatch", GenTypeRecipes::class.java, confSources)
-        val langTask = p.tasks.create("processLangFiles", ProcessLangFiles::class.java, confSources)
-        val itemModelTask = p.tasks.create("genItemDefaultModels", GenDefaultModels::class.java, confSources)
-        val itemBlockModelTask = p.tasks.create("genItemBlockModels", GenItemBlockModels::class.java, confSources)
-        val tmplRecipes = p.tasks.create("processTemplateRecipes", TemplateRecipes::class.java, confSources)
-        val tmplTags = p.tasks.create("processTemplateTags", TemplateTags::class.java, confSources)
-        val tmplLootTables = p.tasks.create("processLootTables", TemplateLootTables::class.java, confSources)
-        val tmplBlockStates = p.tasks.create("processBlockStates", TemplateBlockStates::class.java, confSources)
-        val tmplModels = p.tasks.create("processModels", TemplateModels::class.java, confSources)
+    private fun configureSourceSet(srcSet: SourceSet, buildDir: File, tasks: TaskContainer) {
+        val genResourcesDir = File(buildDir, "genResources/" + srcSet.name)
+        val subName = if (srcSet.name == "main") "" else srcSet.name.capitalize()
+        val confSources = Action<AbstractProcessTask> { it.configureSources(srcSet.resources, srcSet.name) }
+
+        val recipeTask = tasks.create("gen${subName}RecipesFromBatch", GenTypeRecipes::class.java, confSources)
+        val langTask = tasks.create("process${subName}LangFiles", ProcessLangFiles::class.java, confSources)
+        val itemModelTask = tasks.create("gen${subName}ItemDefaultModels", GenDefaultModels::class.java, confSources)
+        val itemBlockModelTask = tasks.create("gen${subName}ItemBlockModels", GenItemBlockModels::class.java, confSources)
+        val tmplRecipes = tasks.create("process${subName}Recipes", TemplateRecipes::class.java, confSources)
+        val tmplTags = tasks.create("process${subName}Tags", TemplateTags::class.java, confSources)
+        val tmplLootTables = tasks.create("process${subName}LootTables", TemplateLootTables::class.java, confSources)
+        val tmplBlockStates = tasks.create("process${subName}BlockStates", TemplateBlockStates::class.java, confSources)
+        val tmplModels = tasks.create("process${subName}Models", TemplateModels::class.java, confSources)
 
         srcSet.resources.srcDir(genResourcesDir)
-        val processResources = p.tasks.getByName("processResources") as AbstractCopyTask
+        val processResources = tasks.getByName("process${subName}Resources") as AbstractCopyTask
         processResources.doFirst {
             processResources.exclude("generators")
             processResources.exclude("templates")

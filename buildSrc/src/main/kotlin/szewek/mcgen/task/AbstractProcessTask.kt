@@ -14,15 +14,12 @@ abstract class AbstractProcessTask : DefaultTask() {
     lateinit var files: FileTree
         @InputFiles get
 
-    val genResourcesDir: File
+    lateinit var genResourcesDir: File
         @OutputDirectory get
 
-    init {
-        genResourcesDir = File(project.buildDir, "genResources")
-    }
-
-    fun configureSources(srcs: SourceDirectorySet) {
+    fun configureSources(srcs: SourceDirectorySet, name: String) {
         files = srcs.matching(this::filter)
+        genResourcesDir = File(project.buildDir, "genResources/$name")
     }
 
     @TaskAction
