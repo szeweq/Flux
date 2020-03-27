@@ -105,8 +105,25 @@ public final class F {
 		for (MetalItem ingot : I.INGOTS.values()) {
 			reg.register(ingot);
 		}
-		B.ORES.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_ore")));
-		B.METAL_BLOCKS.forEach((name, b) -> reg.register(fromBlock(b, name.metalName + "_block")));
+		for (MetalItem nugget : I.NUGGETS.values()) {
+			reg.register(nugget);
+		}
+		for (MetalItem gear : I.GEARS.values()) {
+			reg.register(gear);
+		}
+		for (MetalItem plate : I.PLATES.values()) {
+			reg.register(plate);
+		}
+		for (Map.Entry<Metal, FluxOreBlock> e : B.ORES.entrySet()) {
+			Metal key = e.getKey();
+			FluxOreBlock value = e.getValue();
+			reg.register(fromBlock(value, key.metalName + "_ore"));
+		}
+		for (Map.Entry<Metal, MetalBlock> e : B.METAL_BLOCKS.entrySet()) {
+			Metal name = e.getKey();
+			MetalBlock b = e.getValue();
+			reg.register(fromBlock(b, name.metalName + "_block"));
+		}
 		reg.registerAll(
 				I.FLUXTOOL, I.GIFT, I.MACHINE_BASE, I.CHIP,
 				I.SEAL, I.GLUE, I.PASTE,
@@ -203,11 +220,15 @@ public final class F {
 
 	@OnlyIn(Dist.CLIENT)
 	static void client(final Minecraft mc) {
+		final Item[] arr = new Item[0];
 		final ItemColors ic = mc.getItemColors();
 		ic.register(Gifts::colorByGift, I.GIFT);
-		ic.register(Metals::gritColors, I.GRITS.values().toArray(new Item[0]));
-		ic.register(Metals::itemColors, I.DUSTS.values().toArray(new Item[0]));
-		ic.register(Metals::ingotColors, I.INGOTS.values().toArray(new Item[0]));
+		ic.register(Metals::gritColors, I.GRITS.values().toArray(arr));
+		ic.register(Metals::itemColors, I.DUSTS.values().toArray(arr));
+		ic.register(Metals::ingotColors, I.INGOTS.values().toArray(arr));
+		ic.register(Metals::itemColors, I.NUGGETS.values().toArray(arr));
+		ic.register(Metals::itemColors, I.GEARS.values().toArray(arr));
+		ic.register(Metals::itemColors, I.PLATES.values().toArray(arr));
 		I.BRONZE_TOOLS.registerToolColors(Metals.BRONZE, ic);
 		I.STEEL_TOOLS.registerToolColors(Metals.STEEL, ic);
 
@@ -243,7 +264,10 @@ public final class F {
 		public static final Map<Metal, MetalItem>
 				GRITS = metalMap("grit", Metal::nonAlloy),
 				DUSTS = metalMap("dust", null),
-				INGOTS = metalMap("ingot", Metal::nonVanilla);
+				INGOTS = metalMap("ingot", Metal::nonVanilla),
+				NUGGETS = metalMap("nugget", Metal::nonVanilla),
+				GEARS = metalMap("gear", null),
+				PLATES = metalMap("plate", null);
 		public static final FluxToolItem FLUXTOOL = item(FluxToolItem::new, "mftool", new Item.Properties().maxStackSize(1));
 		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());

@@ -2,8 +2,11 @@
   "name": "typeTags",
   "args": [
     {"tag": "ingots", "items": ["copper", "tin", "bronze", "steel"], "blocks": false},
+    {"tag": "nuggets", "items": ["copper", "tin", "bronze", "steel"], "blocks": false},
     {"tag": "dusts", "items": ["iron", "gold", "copper", "tin", "bronze", "steel"], "blocks": false},
     {"tag": "grits", "items": ["iron", "gold", "copper", "tin"], "blocks": false},
+    {"tag": "gears", "items": ["iron", "gold", "copper", "tin", "bronze", "steel"], "blocks": false},
+    {"tag": "plates", "items": ["iron", "gold", "copper", "tin", "bronze", "steel"], "blocks": false},
     {"tag": "ores", "items": ["copper", "tin"], "blocks": true},
     {"tag": "storage_blocks", "items": ["copper", "tin", "bronze", "steel"], "blocks": true}
   ]
