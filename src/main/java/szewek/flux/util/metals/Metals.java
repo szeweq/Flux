@@ -11,10 +11,10 @@ import java.util.Set;
 public final class Metals {
 	static final Set<Metal> allMetals = new HashSet<>();
 	public static final Metal
-			IRON = new VanillaMetal(0xE2C0BA, "iron", 1),
-			GOLD = new VanillaMetal(0xFFD700, "gold", 2),
+			IRON = new VanillaMetal(0xC0C0C0, "iron", 1),
+			GOLD = new VanillaMetal(0xFFD84A, "gold", 2),
 			COPPER = new SimpleMetal(0xE99868, "copper", 1),
-			TIN = new SimpleMetal(0xD0D3D6, "tin", 1),
+			TIN = new SimpleMetal(0xCAD6DC, "tin", 1),
 			BRONZE = new AlloyMetal(0xCCA168, "bronze", 2),
 			STEEL = new AlloyMetal(0xA0A0A0, "steel", 3);
 
