@@ -1,13 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IBI",
+    "GBG",
     "I I",
     "SBS"
   ],
   "key": {
     "B": {"tag": "forge:storage_blocks/iron"},
-    "I": {"tag": "forge:ingots/iron"},
+    "G": {"tag": "forge:gears/tin"},
+    "I": {"tag": "forge:plates/iron"},
     "S": {"item": "flux:machine_base"}
   },
   "result": {

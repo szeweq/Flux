@@ -2,10 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "ERE",
-    "E E",
+    "I I",
     "SBS"
   ],
   "key": {
+    "I": {"tag": "forge:plates/iron"},
     "E": {"tag": "forge:gems/emerald"},
     "R": {"item": "minecraft:redstone"},
     "B": {"item": "minecraft:book"},

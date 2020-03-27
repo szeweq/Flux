@@ -3,10 +3,11 @@
   "pattern": [
     "I I",
     "IHI",
-    "SSS"
+    "SGS"
   ],
   "key": {
-    "I": {"tag": "forge:ingots/iron"},
+    "I": {"tag": "forge:plates/iron"},
+    "G": {"tag": "forge:plates/gold"},
     "H": {"item": "minecraft:hopper"},
     "S": {"item": "flux:machine_base"}
   },

@@ -1,12 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "III",
     "IFI",
+    "FGF",
     "SFS"
   ],
   "key": {
-    "I": {"tag": "forge:ingots/iron"},
+    "I": {"tag": "forge:plates/iron"},
+    "G": {"tag": "forge:gears/iron"},
     "F": {"item": "minecraft:flint"},
     "S": {"item": "flux:machine_base"}
   },

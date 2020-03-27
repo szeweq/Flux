@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "pattern": ["TCT", "I I"],
   "key": {
-    "T": {"tag": "forge:ingots/tin"},
-    "C": {"tag": "forge:ingots/copper"},
-    "I": {"tag": "forge:ingots/iron"}
+    "T": {"tag": "forge:plates/tin"},
+    "C": {"tag": "forge:gears/copper"},
+    "I": {"tag": "forge:plates/iron"}
   },
   "result": {
     "item": "flux:machine_base",

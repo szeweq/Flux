@@ -1,12 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IHI",
+    "GHG",
     "IWI",
     "SSS"
   ],
   "key": {
-    "I": {"tag": "forge:ingots/iron"},
+    "I": {"tag": "forge:plates/iron"},
+    "G": {"tag": "forge:gears/bronze"},
     "H": {"item": "minecraft:iron_hoe"},
     "W": {"item": "minecraft:water_bucket"},
     "S": {"item": "flux:machine_base"}

@@ -2,10 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "CDC",
-    "C C",
+    "I I",
     "SSS"
   ],
   "key": {
+    "I": {"tag": "forge:plates/iron"},
     "D": {"tag": "forge:gems/diamond"},
     "C": {"item": "minecraft:bookshelf"},
     "S": {"item": "flux:machine_base"}

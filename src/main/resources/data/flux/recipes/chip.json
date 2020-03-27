@@ -3,11 +3,12 @@
   "pattern": [
     "N N",
     "NMN",
-    "N N"
+    "NCN"
   ],
   "key": {
     "M": {"item": "flux:machine_base"},
-    "N": {"item": "minecraft:gold_nugget"}
+    "N": {"item": "minecraft:gold_nugget"},
+    "C": {"tag": "forge:plates/copper"}
   },
   "result": {
     "item": "flux:chip",

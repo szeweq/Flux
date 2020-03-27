@@ -6,7 +6,7 @@
     "SSS"
   ],
   "key": {
-    "I": {"tag": "forge:ingots/iron"},
+    "I": {"tag": "forge:plates/iron"},
     "A": {"item": "minecraft:iron_axe"},
     "S": {"item": "flux:machine_base"}
   },

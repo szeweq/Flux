@@ -2,11 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "III",
-    "I I",
+    "IGI",
     "SPS"
   ],
   "key": {
     "P": {"item": "minecraft:diamond_pickaxe"},
+    "G": {"tag": "forge:gears/steel"},
     "I": {"tag": "forge:ingots/iron"},
     "S": {"item": "flux:machine_base"}
   },

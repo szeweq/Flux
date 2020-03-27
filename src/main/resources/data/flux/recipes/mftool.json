@@ -6,9 +6,9 @@
 	"A A"
   ],
   "key": {
-	"A": {"item": "minecraft:gold_nugget"},
+	"A": {"tag": "forge:nuggets/copper"},
 	"B": {"item": "minecraft:redstone_block"},
-	"C": {"item": "minecraft:iron_nugget"}
+	"C": {"tag": "forge:plates/iron"}
   },
   "result": {
 	"item": "flux:mftool",

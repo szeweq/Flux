@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "pattern": ["CT ", "TRT", " TC"],
   "key": {
-    "T": {"tag": "forge:ingots/tin"},
-    "C": {"tag": "forge:ingots/copper"},
+    "T": {"tag": "forge:plates/tin"},
+    "C": {"tag": "forge:nuggets/copper"},
     "R": {"item": "minecraft:redstone_block"}
   },
   "result": {

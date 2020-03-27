@@ -3,10 +3,11 @@
   "pattern": [
     "III",
     "IWI",
-    "SSS"
+    "SGS"
   ],
   "key": {
-    "I": {"tag": "forge:ingots/iron"},
+    "I": {"tag": "forge:plates/iron"},
+    "G": {"tag": "forge:gears/steel"},
     "W": {"item": "minecraft:water_bucket"},
     "S": {"item": "flux:machine_base"}
   },

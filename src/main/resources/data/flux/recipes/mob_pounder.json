@@ -1,12 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "WWW",
-    "III",
+    "WGW",
+    "IGI",
     "SSS"
   ],
   "key": {
-    "I": {"tag": "forge:ingots/iron"},
+    "I": {"tag": "forge:plates/iron"},
+    "G": {"tag": "forge:gears/gold"},
     "W": {"item": "minecraft:iron_sword"},
     "S": {"item": "flux:machine_base"}
   },

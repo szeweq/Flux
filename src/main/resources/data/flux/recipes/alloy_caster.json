@@ -6,7 +6,7 @@
     "SBS"
   ],
   "key": {
-    "I": {"tag": "forge:ingots/iron"},
+    "I": {"tag": "forge:plates/iron"},
     "R": {"item": "minecraft:redstone"},
     "B": {"item": "minecraft:brick"},
     "S": {"item": "flux:machine_base"}
