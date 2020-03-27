@@ -14,16 +14,16 @@ abstract class AbstractTemplateTask(private val type: String) : AbstractProcessT
 
     override fun outputDirName(namespace: String) = "data/$namespace/$type"
 
-    override fun doProcessTask(namespace: String, files: Set<File>, outputDir: File) {
-        files.forEach {
-            val fr = FileReader(it)
-            val obj = JsonParser.parseReader(fr).asJsonObject
-            fr.close()
-            val tname = obj["name"].asString
-            val arg = obj["args"].asJsonArray
-            val tmpl = Templates.byName(tname)
-            val jfw = JsonFileWriter(outputDir, namespace)
-            arg.forEach { x -> tmpl(x, jfw) }
+    override fun doProcessFile(namespace: String, file: File, outputDir: File) {
+        val fr = FileReader(file)
+        val obj = JsonParser.parseReader(fr).asJsonObject
+        fr.close()
+        val tname = obj["name"].asString
+        val arg = obj["args"].asJsonArray
+        val tmpl = Templates.byName(tname)
+        val jfw = JsonFileWriter(outputDir, namespace)
+        for (it in arg) {
+            tmpl(it, jfw)
         }
     }
 }

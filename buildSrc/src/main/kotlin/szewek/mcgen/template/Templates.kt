@@ -4,6 +4,8 @@ import com.google.gson.JsonElement
 import szewek.mcgen.util.JsonCreator
 import szewek.mcgen.util.JsonFileWriter
 
+typealias TemplateFunc = (o: JsonElement, out: JsonFileWriter) -> Unit
+
 object Templates {
     private val nameMap = HashMap<String, TemplateFunc>()
 
@@ -28,6 +30,7 @@ object Templates {
         add("machineBlockStates", ::machineBlockStates)
         add("activeBlockStates", ::activeBlockStates)
         add("defaultBlockStates", ::defaultBlockStates)
+        add("fluxGifts", ::fluxGifts)
     }
 
     private fun machineBlockStates(v: JsonElement, out: JsonFileWriter) {
@@ -329,6 +332,34 @@ object Templates {
                         }
                         "conditions" arr {
                             obj { "condition" to "minecraft:survives_explosion" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fluxGifts(v: JsonElement, out: JsonFileWriter) {
+        val o = v.asJsonObject
+        val name = o["name"].asString
+        val table = o["table"].asString
+        val box = o["box"].asString.toInt(16)
+        val ribbon = o["ribbon"].asString.toInt(16)
+        out("gifts/$name") {
+            typed("minecraft:gift") {
+                "pools" arr {
+                    obj {
+                        "rolls" to 1
+                        "entries" arr {
+                            typed("minecraft:item") {
+                                "name" to "flux:gift"
+                                "functions" arr {
+                                    obj {
+                                        "function" to "minecraft:set_nbt"
+                                        "tag" to "{\"Box\":${box},\"Ribbon\":${ribbon},\"LootTable\":\"${table}\"}"
+                                    }
+                                }
+                            }
                         }
                     }
                 }

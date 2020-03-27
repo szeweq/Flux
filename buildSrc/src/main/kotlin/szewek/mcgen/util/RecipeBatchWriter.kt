@@ -11,7 +11,6 @@ class RecipeBatchWriter(
         private val namespace: String,
         private val outputDir: File
 ) {
-    private val writtenFiles = ArrayList<String>()
 
     @Throws(IOException::class)
     fun save(name: String, item: String, v: JsonObject, i: Int) {
@@ -37,13 +36,5 @@ class RecipeBatchWriter(
         jsonWriter.setIndent(" ")
         Streams.write(recipe, jsonWriter)
         writer.close()
-        writtenFiles.add(checkedName)
-    }
-
-    fun clear() {
-        val fnames = outputDir.list() ?: return
-        for (f in fnames) {
-            if (!writtenFiles.contains(f)) File(outputDir, f).delete()
-        }
     }
 }

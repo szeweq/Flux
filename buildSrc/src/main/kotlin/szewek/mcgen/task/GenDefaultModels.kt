@@ -14,21 +14,20 @@ open class GenDefaultModels : AbstractProcessTask() {
 
     override fun outputDirName(namespace: String) = "assets/$namespace/models/item"
 
-    override fun doProcessTask(namespace: String, files: Set<File>, outputDir: File) {
-        files.forEach {
-            val modelJson = JsonParser.parseReader(FileReader(it)).asJsonObject
-            modelJson.entrySet().forEach { (k, v) ->
-                val outObj = JsonObject()
-                outObj.addProperty("parent", "$namespace:item/default_$k")
-                val out = outObj.toString()
-                v.asJsonArray.forEach { n ->
-                    val file = File(outputDir, "${n.asString}_$k.json")
-                    val fw = FileWriter(file)
-                    fw.write(out)
-                    fw.close()
-                }
+    override fun doProcessFile(namespace: String, file: File, outputDir: File) {
+        val reader = FileReader(file)
+        val modelJson = JsonParser.parseReader(reader).asJsonObject
+        for ((k, v) in modelJson.entrySet()) {
+            val outObj = JsonObject()
+            outObj.addProperty("parent", "$namespace:item/default_$k")
+            val out = outObj.toString()
+            for (n in v.asJsonArray) {
+                val f = File(outputDir, "${n.asString}_$k.json")
+                val fw = FileWriter(f)
+                fw.write(out)
+                fw.close()
             }
         }
+        reader.close()
     }
-
 }

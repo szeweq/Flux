@@ -16,20 +16,20 @@ open class GenItemBlockModels : AbstractProcessTask() {
 
     override fun outputDirName(namespace: String) = "assets/$namespace/models/item"
 
-    override fun doProcessTask(namespace: String, files: Set<File>, outputDir: File) {
-        files.forEach {
-            val modelJson = JsonParser.parseReader(FileReader(it)).asJsonArray
-            val outObj = JsonObject()
-            modelJson.forEach { e ->
-                val v = e.asString
-                outObj.addProperty("parent", "$namespace:block/$v")
-                val file = File(outputDir, "$v.json")
-                val fw = FileWriter(file)
-                val jw = JsonWriter(fw)
-                jw.isLenient = true
-                Streams.write(outObj, jw)
-                fw.close()
-            }
+    override fun doProcessFile(namespace: String, file: File, outputDir: File) {
+        val reader = FileReader(file)
+        val modelJson = JsonParser.parseReader(reader).asJsonArray
+        val outObj = JsonObject()
+        for (e in modelJson) {
+            val v = e.asString
+            outObj.addProperty("parent", "$namespace:block/$v")
+            val f = File(outputDir, "$v.json")
+            val fw = FileWriter(f)
+            val jw = JsonWriter(fw)
+            jw.isLenient = true
+            Streams.write(outObj, jw)
+            fw.close()
         }
+        reader.close()
     }
 }

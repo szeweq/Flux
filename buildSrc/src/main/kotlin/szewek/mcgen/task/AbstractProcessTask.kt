@@ -2,45 +2,47 @@ package szewek.mcgen.task
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileTree
+import org.gradle.api.file.FileVisitDetails
+import org.gradle.api.file.FileVisitor
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
+import szewek.mcgen.util.logNanoTime
 import java.io.File
 import java.io.IOException
 
-abstract class AbstractProcessTask : DefaultTask() {
+abstract class AbstractProcessTask : DefaultTask(), FileVisitor {
     lateinit var files: FileTree
-        @InputFiles get
+        @InputFiles @SkipWhenEmpty get
 
     lateinit var genResourcesDir: File
         @OutputDirectory get
 
     fun configureSources(srcs: SourceDirectorySet, name: String) {
-        files = srcs.matching(this::filter)
+        files = srcs.matching { filter(it) }
         genResourcesDir = File(project.buildDir, "genResources/$name")
     }
 
     @TaskAction
     @Throws(IOException::class)
-    fun process() {
-        val nsMap = HashMap<String, MutableSet<File>>()
-        files.forEach {
-            val ns = it.parentFile.parentFile.name
-            val fs = nsMap[ns] ?: HashSet()
-            fs.add(it)
-            nsMap[ns] = fs
-        }
-        nsMap.forEach { (k, v) ->
-            val outputDir = File(genResourcesDir, outputDirName(k))
-            if (!outputDir.isDirectory && !outputDir.mkdirs())
-                throw IOException("Could not create a directory: $outputDir")
-            doProcessTask(k, v, outputDir)
-        }
+    fun processFiles() = logNanoTime(name) {
+        files.visit(this)
+    }
+
+    override fun visitDir(dirDetails: FileVisitDetails?) {}
+
+    override fun visitFile(fvd: FileVisitDetails) {
+        val namespace = fvd.relativePath.split("/", limit = 3)[1]
+        val outputDir = File(genResourcesDir, outputDirName(namespace))
+        if (!outputDir.isDirectory && !outputDir.mkdirs())
+            throw IOException("Could not create a directory: $outputDir")
+        doProcessFile(namespace, fvd.file, outputDir)
     }
 
     abstract fun filter(pf: PatternFilterable)
     abstract fun outputDirName(namespace: String): String
-    abstract fun doProcessTask(namespace: String, files: Set<File>, outputDir: File)
+    abstract fun doProcessFile(namespace: String, file: File, outputDir: File)
 }
