@@ -42,8 +42,8 @@ object Templates {
             variants {
                 for (i in lit.indices) for (j in dirs.indices) {
                     "facing=${dirs[j]},lit=${lit[i]}" obj {
-                        "model" to (if (i == 0) "$ns:block/$item" else "$ns:block/${item}_on")
-                        if (j > 0) "y" to (90*j)
+                        "model" set (if (i == 0) "$ns:block/$item" else "$ns:block/${item}_on")
+                        if (j > 0) "y" set (90*j)
                     }
                 }
             }
@@ -54,8 +54,8 @@ object Templates {
         val ns = out.namespace
         out(item) {
             variants {
-                "lit=false" obj { "model" to "$ns:block/$item" }
-                "lit=true" obj { "model" to "$ns:block/${item}_on" }
+                "lit=false" obj { "model" set "$ns:block/$item" }
+                "lit=true" obj { "model" set "$ns:block/${item}_on" }
             }
         }
     }
@@ -63,7 +63,7 @@ object Templates {
         val item = v.asString
         val ns = out.namespace
         out(item) {
-            variants { "" obj { "model" to "$ns:block/$item" } }
+            variants { "" obj { "model" set "$ns:block/$item" } }
         }
     }
 
@@ -74,9 +74,21 @@ object Templates {
             out("${item}_block") {
                 craftingShaped(arrayOf("###", "###", "###"), mapOf(Pair("#", "$ns:${item}_ingot")), "$ns:${item}_block")
             }
+            out("${item}_ingot") {
+                craftingShaped(arrayOf("###", "###", "###"), mapOf(Pair("#", "$ns:${item}_nugget")), "$ns:${item}_ingot")
+            }
+            out("${item}_nugget") {
+                typed("minecraft:crafting_shapeless") {
+                    "group" set "${item}_nugget"
+                    ingredients {
+                        item("$ns:${item}_ingot")
+                    }
+                    result("$ns:${item}_nugget", 9)
+                }
+            }
             out("${item}_ingot_from_${item}_block") {
                 typed("minecraft:crafting_shapeless") {
-                    "group" to "${item}_ingot"
+                    "group" set "${item}_ingot"
                     ingredients {
                         item("$ns:${item}_block")
                     }
@@ -85,7 +97,7 @@ object Templates {
             }
             if (!isAlloy(item)) out("${item}_ingot_smelting_ore") {
                 typed("minecraft:smelting") {
-                    "group" to "${item}_ingot"
+                    "group" set "${item}_ingot"
                     key("ingredient").tag("forge:ores/${item}")
                     result("$ns:${item}_ingot")
                 }
@@ -127,10 +139,24 @@ object Templates {
         }
         out("${item}_ingot_smelting_dust") {
             typed("minecraft:smelting") {
-                "group" to "${item}_ingot"
+                "group" set "${item}_ingot"
                 key("ingredient").tag("forge:dusts/${item}")
                 result((if (isVanilla(item)) "minecraft" else ns) + ":${item}_ingot")
             }
+        }
+        out("${item}_gear") {
+            craftingShaped(
+                    arrayOf("X#X", "# #", "X#X"),
+                    mapOf("#" to "#forge:ingots/$item", "X" to "#forge:nuggets/$item"),
+                    "$ns:${item}_gear", 2
+            )
+        }
+        out("${item}_plate") {
+            craftingShaped(
+                    arrayOf("##", "##"),
+                    mapOf("#" to "#forge:ingots/$item"),
+                    "$ns:${item}_plate", 2
+            )
         }
     }
 
@@ -186,7 +212,7 @@ object Templates {
             typed("${out.namespace}:$type") {
                 ingredients { item("${col}_$from") }
                 result("${col}_$into")
-                for ((k, je) in o.entrySet()) k to je
+                for ((k, je) in o.entrySet()) k set je
             }
         }
     }
@@ -219,21 +245,30 @@ object Templates {
                     tagList("$ns:${item}_ore")
                 }
             }
-            out("items/ingots/${item}") {
+            out("items/ingots/$item") {
                 tagList("$ns:${item}_ingot")
             }
-            out("items/storage_blocks/${item}") {
+            out("items/nuggets/$item") {
+                tagList("$ns:${item}_nugget")
+            }
+            out("items/storage_blocks/$item") {
                 tagList("$ns:${item}_block")
             }
-            out("blocks/storage_blocks/${item}") {
+            out("blocks/storage_blocks/$item") {
                 tagList("$ns:${item}_block")
             }
         }
-        out("items/dusts/${item}") {
+        out("items/dusts/$item") {
             tagList("$ns:${item}_dust")
         }
-        if (!isAlloy(item)) out("items/grits/${item}") {
+        if (!isAlloy(item)) out("items/grits/$item") {
             tagList("$ns:${item}_grit")
+        }
+        out("items/gears/$item") {
+            tagList("$ns:${item}_gear")
+        }
+        out("items/plates/$item") {
+            tagList("$ns:${item}_plate")
         }
     }
 
@@ -275,20 +310,20 @@ object Templates {
             typed("minecraft:block") {
                 "pools" arr {
                     obj {
-                        "rolls" to 1
+                        "rolls" set 1
                         "entries" arr {
                             typed("minecraft:item") {
                                 "functions" arr {
                                     obj {
-                                        "function" to "minecraft:copy_name"
-                                        "source" to "block_entity"
+                                        "function" set "minecraft:copy_name"
+                                        "source" set "block_entity"
                                     }
                                 }
-                                "name" to "${out.namespace}:${item}"
+                                "name" set "${out.namespace}:${item}"
                             }
                         }
                         "conditions" arr {
-                            obj { "condition" to "minecraft:survives_explosion" }
+                            obj { "condition" set "minecraft:survives_explosion" }
                         }
                     }
                 }
@@ -303,14 +338,14 @@ object Templates {
             typed("minecraft:block") {
                 "pools" arr {
                     obj {
-                        "rolls" to 1
+                        "rolls" set 1
                         "entries" arr {
                             typed("minecraft:item") {
-                                "name" to "${out.namespace}:${item}_$typ"
+                                "name" set "${out.namespace}:${item}_$typ"
                             }
                         }
                         "conditions" arr {
-                            obj { "condition" to "minecraft:survives_explosion" }
+                            obj { "condition" set "minecraft:survives_explosion" }
                         }
                     }
                 }
@@ -324,14 +359,14 @@ object Templates {
             typed("minecraft:block") {
                 "pools" arr {
                     obj {
-                        "rolls" to 1
+                        "rolls" set 1
                         "entries" arr {
                             typed("minecraft:item") {
-                                "name" to "${out.namespace}:$item"
+                                "name" set "${out.namespace}:$item"
                             }
                         }
                         "conditions" arr {
-                            obj { "condition" to "minecraft:survives_explosion" }
+                            obj { "condition" set "minecraft:survives_explosion" }
                         }
                     }
                 }
@@ -349,14 +384,14 @@ object Templates {
             typed("minecraft:gift") {
                 "pools" arr {
                     obj {
-                        "rolls" to 1
+                        "rolls" set 1
                         "entries" arr {
                             typed("minecraft:item") {
-                                "name" to "flux:gift"
+                                "name" set "flux:gift"
                                 "functions" arr {
                                     obj {
-                                        "function" to "minecraft:set_nbt"
-                                        "tag" to "{\"Box\":${box},\"Ribbon\":${ribbon},\"LootTable\":\"${table}\"}"
+                                        "function" set "minecraft:set_nbt"
+                                        "tag" set "{\"Box\":${box},\"Ribbon\":${ribbon},\"LootTable\":\"${table}\"}"
                                     }
                                 }
                             }
@@ -371,22 +406,22 @@ object Templates {
     private fun isAlloy(name: String) = name == "bronze" || name == "steel"
 
     private inline fun JsonCreator.typed(type: String, fn: JsonCreator.() -> Unit) = obj {
-        "type" to type
+        "type" set type
         fn()
     }
     private inline fun JsonCreator.ingredients(fn: JsonCreator.() -> Unit) = "ingredients" arr fn
     private fun JsonCreator.result(item: String, count: Int = 1) = "result" obj {
-        "item" to item
-        if (count > 1) "count" to count
+        "item" set item
+        if (count > 1) "count" set count
     }
     private fun JsonCreator.resultTag(tag: String, count: Int = 1) = "result" obj {
-        "tag" to tag
-        if (count > 1) "count" to count
+        "tag" set tag
+        if (count > 1) "count" set count
     }
-    private fun JsonCreator.item(name: String) = obj { "item" to name }
-    private fun JsonCreator.tag(name: String) = obj { "tag" to name }
+    private fun JsonCreator.item(name: String) = obj { "item" set name }
+    private fun JsonCreator.tag(name: String) = obj { "tag" set name }
     private fun JsonCreator.tagList(vararg names: String) = obj {
-        "replace" to false
+        "replace" set false
         "values" arr {
             for(name in names) add(name)
         }
@@ -396,9 +431,12 @@ object Templates {
     }
     private fun JsonCreator.craftingShaped(pattern: Array<String>, keys: Map<String, String>, result: String, count: Int = 1) =
             typed("minecraft:crafting_shaped") {
-                "pattern" to pattern
+                "pattern" set pattern
                 "key" obj {
-                    for ((t, u) in keys) key(t).item(u)
+                    for ((t, u) in keys) {
+                        key(t)
+                        if (u[0] == '#') tag(u.substring(1)) else item(u)
+                    }
                 }
                 result(result, count)
             }

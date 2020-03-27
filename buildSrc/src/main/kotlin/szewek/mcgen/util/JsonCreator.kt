@@ -33,21 +33,21 @@ inline class JsonCreator(val jw: JsonWriter) {
         this@JsonCreator.arr(fn)
     }
 
-    infix fun String.to(v: String) {
+    infix fun String.set(v: String) {
         jw.name(this).value(v)
     }
-    infix fun String.to(v: Number) {
+    infix fun String.set(v: Number) {
         jw.name(this).value(v)
     }
-    infix fun String.to(v: Boolean) {
+    infix fun String.set(v: Boolean) {
         jw.name(this).value(v)
     }
-    infix fun String.to(v: Array<String>) {
+    infix fun String.set(v: Array<String>) {
         jw.name(this).beginArray()
         for (s in v) jw.value(s)
         jw.endArray()
     }
-    infix fun String.to(v: JsonElement) {
+    infix fun String.set(v: JsonElement) {
         jw.name(this)
         Streams.write(v, jw)
     }
