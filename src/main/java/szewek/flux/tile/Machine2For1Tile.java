@@ -14,9 +14,8 @@ import java.util.function.Function;
 
 public final class Machine2For1Tile extends AbstractMachineTile {
 	private final String titleId;
-	private static final int[] SLOTS_UP = {0};
-	private static final int[] SLOTS_SIDE = {1};
-	private static final int[] SLOTS_DOWN = {2};
+	private static final int[] SLOTS_TOP_BOTTOM = {0, 2};
+	private static final int[] SLOTS_SIDE = {1, 2};
 
 	public Machine2For1Tile(TileEntityType<?> typeIn, IRecipeType<? extends AbstractMachineRecipe> recipeTypeIn, MenuFactory factory, String titleId) {
 		super(typeIn, recipeTypeIn, factory, 2, 1);
@@ -27,9 +26,8 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 	public int[] getSlotsForFace(Direction side) {
 		switch (side) {
 			case UP:
-				return SLOTS_UP;
 			case DOWN:
-				return SLOTS_DOWN;
+				return SLOTS_TOP_BOTTOM;
 			default:
 				return SLOTS_SIDE;
 		}

@@ -385,7 +385,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	protected Container createMenu(int id, PlayerInventory player) {
-		return menuFactory.create(id, player, this, this.machineData);
+		return menuFactory.create(id, player, this, machineData);
 	}
 
 	@Override
