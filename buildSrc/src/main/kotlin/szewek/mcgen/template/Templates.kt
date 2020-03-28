@@ -153,10 +153,18 @@ object Templates {
         }
         out("${item}_plate") {
             craftingShaped(
-                    arrayOf("##", "##"),
+                    arrayOf("#", "#"),
                     mapOf("#" to "#forge:ingots/$item"),
-                    "$ns:${item}_plate", 2
+                    "$ns:${item}_plate"
             )
+        }
+        out("${item}_plate_compacting_ingot") {
+            typed("flux:compacting") {
+                ingredients {
+                    tag("forge:ingots/${item}")
+                }
+                result("$ns:${item}_plate")
+            }
         }
     }
 
