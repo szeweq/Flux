@@ -19,7 +19,7 @@ It comes with useful machines that make item processing even more interesting.
 [[dependencies.flux]]
  modId="forge"
  mandatory=true
- versionRange="[31,)"
+ versionRange="[31.1,)"
  ordering="NONE"
  side="BOTH"
 

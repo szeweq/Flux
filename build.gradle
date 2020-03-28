@@ -136,6 +136,9 @@ repositories {
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
+    flatDir {
+        dirs "libs"
+    }
 }
 
 dependencies {
@@ -143,6 +146,9 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+
+    // Jar from "libs" folder
+    runtimeOnly fg.deobf("mekanism:Mekanism-1.15.2:9.9.17.409")
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
