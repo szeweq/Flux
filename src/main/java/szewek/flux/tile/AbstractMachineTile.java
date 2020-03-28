@@ -45,8 +45,8 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
 	private final int inputSize, outputSize;
-	protected int process, processTotal, energyUse, processSpeed = 100;
-	protected boolean isDirty;
+	protected int process = -1, processTotal, energyUse, processSpeed = 100;
+	protected boolean isDirty, lazyCheck, wasLit;
 	protected final NonNullList<ItemStack> items;
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
@@ -138,7 +138,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	protected void serverTick(World w) {
-		boolean workState = isWorking();
 		boolean inputEmpty = true;
 		for (ItemStack inputStack : getInputs()) {
 			if (!inputStack.isEmpty()) {
@@ -146,34 +145,40 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 				break;
 			}
 		}
-		if (energy >= energyUse && !inputEmpty) {
-			if (cachedRecipe == null) {
-				cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, w, this).orElse(null);
-			}
-			if (canProcess()) {
-				energy -= energyUse;
-				if (process >= processTotal) {
-					process = 0;
-					processTotal = getProcessTime() * 100;
-					produceResult();
-					isDirty = true;
-				} else {
-					process += processSpeed;
-				}
-			} else {
+		boolean workState = process > 0;
+		if (energy >= energyUse && !inputEmpty && canProcess()) {
+			energy -= energyUse;
+			if (process >= processTotal) {
 				process = 0;
+				processTotal = getProcessTime() * 100;
+				produceResult();
+				isDirty = true;
+			} else {
+				process += processSpeed;
 			}
+		} else {
+			process = 0;
 		}
-		if (workState != isWorking()) {
-			w.setBlockState(pos, w.getBlockState(pos).with(MachineBlock.LIT, isWorking()), 3);
+		boolean currState = process > 0;
+		if (lazyCheck) {
+			if (workState == currState && wasLit != currState) {
+				w.setBlockState(pos, w.getBlockState(pos).with(MachineBlock.LIT, currState), 3);
+			}
+			lazyCheck = false;
+		} else if (workState != currState) {
+			lazyCheck = true;
+			wasLit = getBlockState().get(MachineBlock.LIT);
 		}
-	}
-
-	protected boolean isWorking() {
-		return process > 0;
+		if (isDirty) {
+			markDirty();
+		}
 	}
 
 	protected boolean canProcess() {
+		if (cachedRecipe == null) {
+			//noinspection ConstantConditions
+			cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
+		}
 		if (cachedRecipe != null) {
 			ItemStack result = cachedRecipe.getRecipeOutput();
 			for (ItemStack outputStack : getOutputs()) {
@@ -279,6 +284,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
+		System.out.println("SET SLOT" + index + "TO: " + stack);
 		ItemStack inputStack = items.get(index);
 		boolean same = !stack.isEmpty() && stack.isItemEqual(inputStack) && ItemStack.areItemStackTagsEqual(stack, inputStack);
 		items.set(index, stack);
@@ -290,6 +296,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
 			processTotal = getProcessTime() * 100;
 			process = 0;
+			System.out.println("PROCESS SET TO " + process);
 			markDirty();
 		}
 	}
