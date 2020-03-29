@@ -36,6 +36,11 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 		super(F.T.ONLINE_MARKET);
 	}
 
+	//MANUAL OVERRIDE
+	public World func_190670_t_() {
+		return world;
+	}
+
 	private void updateBox() {
 		final int x = pos.getX();
 		final int y = pos.getY();
