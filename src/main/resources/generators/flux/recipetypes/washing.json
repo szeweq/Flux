@@ -1,3 +1,5 @@
 {
-
+  "minecraft:flint": {
+    "ingredients": [{"item": "minecraft:gravel"}]
+  }
 }
