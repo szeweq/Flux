@@ -62,6 +62,14 @@ public final class RecipeCompat {
 		compatMap.put(rtype, result);
 	}
 
+	public static ItemStack getCompatOutput(final IRecipe<?> recipe, IInventory inv) {
+		ItemStack stack = recipe.getRecipeOutput();
+		if (stack.isEmpty()) {
+			FluxPlus.reportRecipeCompatError(recipe.getType().toString(), recipe.getClass().getName(), "ItemStack is EMPTY");
+		}
+		return stack;
+	}
+
 	public static Consumer<Iterable<ItemStack>> getRecipeItemsConsumer(final IRecipe<?> recipe) {
 		Consumer<Iterable<ItemStack>> consumer;
 		if (recipe instanceof Consumer<?>) {
