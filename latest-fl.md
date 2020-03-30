@@ -1,4 +1,4 @@
-# Flux Library (Version 3.1.4)
+# Flux Library (Version 3.1.5)
 
 ### Changes
-- Added reinforced checks for recipe compatibility to avoid crashes.
+- Add method to check if compatible recipe has a result (if item stack is not empty).

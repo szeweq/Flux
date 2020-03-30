@@ -1,6 +1,8 @@
-# Flux (Version 4.12.2)
-Requires Flux Library 3.1.4 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux (Version 4.12.3)
+Requires Flux Library 3.1.5 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+
+### Changes
+- Added warning on machine GUI appearing when it is using compatible recipes.
 
 ### Fixes
-Fixed conflict with Online Market where `getWorld` method collides with `IMerchant` implementation.
-This fix may not work completely on different environments (like development).
+- Fixed missing Online Market and Recipe Research Table loot tables.
