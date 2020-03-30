@@ -45,8 +45,8 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
 	private final int inputSize, outputSize;
-	protected int process = -1, processTotal, energyUse, processSpeed = 100;
-	protected boolean isDirty, lazyCheck, wasLit;
+	protected int process = -1, processTotal, energyUse, processSpeed = 100, compatState;
+	protected boolean lazyCheck, wasLit;
 	protected final NonNullList<ItemStack> items;
 	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
@@ -62,6 +62,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 				case 3: return processTotal;
 				case 4: return energyUse;
 				case 5: return processSpeed;
+				case 6: return compatState;
 				default: return 0;
 			}
 		}
@@ -75,13 +76,14 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 				case 3: processTotal = value; break;
 				case 4: energyUse = value; break;
 				case 5: processSpeed = value; break;
+				case 6: compatState = value; break;
 				default:
 			}
 		}
 
 		@Override
 		public int size() {
-			return 6;
+			return 7;
 		}
 	};
 	private final LazyOptional<? extends IItemHandler>[] sideHandlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
@@ -138,13 +140,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	protected void serverTick(World w) {
-		boolean inputEmpty = true;
-		for (ItemStack inputStack : getInputs()) {
-			if (!inputStack.isEmpty()) {
-				inputEmpty = false;
-				break;
-			}
-		}
+		boolean inputEmpty = isInputEmpty();
 		boolean workState = process > 0;
 		if (energy >= energyUse && !inputEmpty && canProcess()) {
 			energy -= energyUse;
@@ -169,23 +165,29 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			lazyCheck = true;
 			wasLit = getBlockState().get(MachineBlock.LIT);
 		}
-		if (isDirty) {
-			markDirty();
-		}
 	}
 
 	protected boolean canProcess() {
 		if (cachedRecipe == null) {
 			//noinspection ConstantConditions
-			cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
+			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null));
 		}
 		if (cachedRecipe != null) {
-			ItemStack result = cachedRecipe.getRecipeOutput();
+			ItemStack result = RecipeCompat.getCompatOutput(cachedRecipe, this);
+			if (result.isEmpty()) {
+				return false;
+			}
 			for (ItemStack outputStack : getOutputs()) {
-				if (outputStack.isEmpty()) return true;
-				if (!outputStack.isItemEqual(result)) return false;
+				if (outputStack.isEmpty()) {
+					return true;
+				}
+				if (!outputStack.isItemEqual(result)) {
+					return false;
+				}
 				int minStackSize = Math.min(Math.min(64, outputStack.getMaxStackSize()), result.getMaxStackSize());
-				if (outputStack.getCount() + result.getCount() <= minStackSize) return true;
+				if (outputStack.getCount() + result.getCount() <= minStackSize) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -197,24 +199,40 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	protected void produceResult() {
 		if (canProcess()) {
-			ItemStack result = cachedRecipe.getRecipeOutput();
-			List<ItemStack> outputs = getOutputs();
-			for (int i = 0; i < outputs.size(); i++) {
-				ItemStack outputStack = outputs.get(i);
-				if (outputStack.isEmpty()) {
-					ItemStack copyResult = result.copy();
-					outputs.set(i, copyResult);
-					break;
-				} else if (outputStack.getItem() == result.getItem()) {
-					outputStack.grow(result.getCount());
-					break;
+			ItemStack result = RecipeCompat.getCompatOutput(cachedRecipe, this);
+			if (!result.isEmpty()) {
+				List<ItemStack> outputs = getOutputs();
+				for (int i = 0; i < outputs.size(); i++) {
+					ItemStack outputStack = outputs.get(i);
+					if (outputStack.isEmpty()) {
+						ItemStack copyResult = result.copy();
+						outputs.set(i, copyResult);
+						break;
+					} else if (outputStack.getItem() == result.getItem()) {
+						outputStack.grow(result.getCount());
+						break;
+					}
 				}
+				List<ItemStack> inputs = getInputs();
+				RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(inputs);
+				setRecipeUsed(cachedRecipe);
+				setCachedRecipe(null);
 			}
-			List<ItemStack> inputs = getInputs();
-			RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(inputs);
-			setRecipeUsed(cachedRecipe);
-			cachedRecipe = null;
 		}
+	}
+
+	private void setCachedRecipe(@Nullable final IRecipe<?> recipe) {
+		cachedRecipe = recipe;
+		compatState = recipe != null && recipe.getType() != recipeType ? 1 : 0;
+	}
+
+	private boolean isInputEmpty() {
+		for (ItemStack inputStack : getInputs()) {
+			if (!inputStack.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -284,7 +302,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		System.out.println("SET SLOT" + index + "TO: " + stack);
 		ItemStack inputStack = items.get(index);
 		boolean same = !stack.isEmpty() && stack.isItemEqual(inputStack) && ItemStack.areItemStackTagsEqual(stack, inputStack);
 		items.set(index, stack);
@@ -293,10 +310,10 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		}
 		if (index < inputSize && !same) {
 			assert world != null;
-			cachedRecipe = RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null);
+			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null));
 			processTotal = getProcessTime() * 100;
 			process = 0;
-			System.out.println("PROCESS SET TO " + process);
+			lazyCheck = true;
 			markDirty();
 		}
 	}

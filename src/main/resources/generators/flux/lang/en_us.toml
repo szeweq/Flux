@@ -5,6 +5,7 @@
  usage = "Using %s F/t"
  update = "Flux has a newer version: %s"
  works_underwater = "It even works underwater!"
+ recipe_compat = "Using compatible recipe! It may be unstable!"
 
 [flux.gift]
  invalid = "Invalid Gift!"

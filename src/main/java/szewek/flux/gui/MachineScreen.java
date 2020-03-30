@@ -12,6 +12,7 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.container.AbstractMachineContainer;
@@ -22,6 +23,7 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 	private boolean recipeBookShown;
 	private final ResourceLocation guiTexture;
 	private static final ResourceLocation recipeTex = new ResourceLocation("textures/gui/recipe_button.png");
+	private static final ITextComponent compatInfo = new TranslationTextComponent("flux.recipe_compat");
 
 	public MachineScreen(T screenContainer, String filterName, PlayerInventory inv, ITextComponent titleIn, ResourceLocation guiTexture) {
 		super(screenContainer, inv, titleIn);
@@ -68,15 +70,20 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		String s = title.getFormattedText();
-		font.drawString(s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6.0F, 0x404040);
+		font.drawString(s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6F, 0x404040);
 		ITextComponent var8 = playerInventory.getDisplayName();
-		font.drawString(var8.getFormattedText(), 8.0F, (float)(ySize - 96 + 2), 0x404040);
+		font.drawString(var8.getFormattedText(), 8F, (float)(ySize - 96 + 2), 0x404040);
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
 		if (151 <= mx && 168 >= mx && 16 <= my && 69 >= my) {
 			renderTooltip(container.energyText(), mx, my);
 		}
-
+		if (container.isCompatRecipe()) {
+			font.drawString("!", 82F, 24F, 0xFF0000);
+			if (80 <= mx && 84 >= mx && 24 <= my && 32 >= my) {
+				renderTooltip(compatInfo.getFormattedText(), mx, my);
+			}
+		}
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	private final int outputSize;
 
 	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
-		this(containerType, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(6));
+		this(containerType, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(7));
 	}
 
 	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
@@ -46,7 +46,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		this.inputSize = inputSize;
 		this.outputSize = outputSize;
 		Container.assertInventorySize(machineInventoryIn, inputSize + outputSize + 1);
-		Container.assertIntArraySize(dataIn, 6);
+		Container.assertIntArraySize(dataIn, 7);
 		machineInventory = machineInventoryIn;
 		data = dataIn;
 		world = playerInventoryIn.player.world;
@@ -178,6 +178,10 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		int i = data.get(2);
 		int j = data.get(3);
 		return j == 0 || i == 0 ? 0 : i * 24 / j;
+	}
+
+	public final boolean isCompatRecipe() {
+		return data.get(6) > 0;
 	}
 
 	@OnlyIn(Dist.CLIENT)
