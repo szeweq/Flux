@@ -13,7 +13,7 @@
   "minecraft:redstone": {
     "ingredients": [{"tag": "forge:ores/redstone"}],
     "count": 12
-  },,
+  },
   "minecraft:lapis_lazuli": {
     "ingredients": [{"tag": "forge:ores/lapis"}],
     "count": 12
