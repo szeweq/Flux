@@ -1,0 +1,16 @@
+{
+  "name": "Item Absorber",
+  "icon": "flux:item_absorber",
+  "category": "machines",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:item_absorber",
+      "text": "A vacuum hopper"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:item_absorber"
+    }
+  ]
+}

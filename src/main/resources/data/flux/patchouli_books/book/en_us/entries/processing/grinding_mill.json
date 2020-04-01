@@ -1,0 +1,16 @@
+{
+  "name": "Grinding Mill",
+  "icon": "flux:grinding_mill",
+  "category": "processing",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:grinding_mill",
+      "text": "Machine for crushing items (like ores) into smaller pieces"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:grinding_mill"
+    }
+  ]
+}

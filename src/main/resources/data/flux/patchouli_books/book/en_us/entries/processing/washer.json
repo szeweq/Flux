@@ -1,0 +1,16 @@
+{
+  "name": "Washer",
+  "icon": "flux:washer",
+  "category": "processing",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:washer",
+      "text": "Washing items and making grits from ores"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:washer"
+    }
+  ]
+}

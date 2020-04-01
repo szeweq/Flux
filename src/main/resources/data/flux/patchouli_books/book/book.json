@@ -1,0 +1,10 @@
+{
+  "name": "flux.book.name",
+  "landing_text": "flux.book.landing_text",
+  "version": 1,
+  "model": "flux:book",
+  "book_texture": "flux:textures/gui/book.png",
+  "nameplate_color": "FFFFFF",
+  "creative_tab": "flux.items",
+  "show_progress": false
+}

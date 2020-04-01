@@ -1,0 +1,16 @@
+{
+  "name": "Flux Generator",
+  "icon": "flux:fluxgen",
+  "category": "energy",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:fluxgen",
+      "text": "Extensible energy generator"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:fluxgen"
+    }
+  ]
+}

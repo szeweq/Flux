@@ -1,0 +1,16 @@
+{
+  "name": "Digger",
+  "icon": "flux:digger",
+  "category": "machines",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:digger",
+      "text": "Your D-Word Pass. Digs ores and non-common blocks in 5x5 area under it. Place a chest next to it to collect drops."
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:digger"
+    }
+  ]
+}

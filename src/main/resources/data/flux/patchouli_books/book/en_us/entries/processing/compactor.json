@@ -1,0 +1,16 @@
+{
+  "name": "Compactor",
+  "icon": "flux:compactor",
+  "category": "processing",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:compactor",
+      "text": "Machine for compacting (compressing) items"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:compactor"
+    }
+  ]
+}

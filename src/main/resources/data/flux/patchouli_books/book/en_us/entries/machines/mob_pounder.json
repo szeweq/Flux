@@ -1,0 +1,16 @@
+{
+  "name": "Mob Pounder",
+  "icon": "flux:mob_pounder",
+  "category": "machines",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:mob_pounder",
+      "text": "Any hostile mob gets killed in 5x5 area. Place a chest next to it to store drops."
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:mob_pounder"
+    }
+  ]
+}

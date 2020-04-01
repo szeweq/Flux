@@ -1,0 +1,16 @@
+{
+  "name": "Farmer",
+  "icon": "flux:farmer",
+  "category": "machines",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:farmer",
+      "text": "That's a crop spitting monster. Place a chest next to it to store crops."
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:farmer"
+    }
+  ]
+}

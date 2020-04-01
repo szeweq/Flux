@@ -1,0 +1,16 @@
+{
+  "name": "Butcher",
+  "icon": "flux:butcher",
+  "category": "machines",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:butcher",
+      "text": "PETA is coming for you. Place a chest next to it to gather drops."
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:butcher"
+    }
+  ]
+}

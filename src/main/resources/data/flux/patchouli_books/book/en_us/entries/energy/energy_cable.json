@@ -1,0 +1,16 @@
+{
+  "name": "Energy Cable",
+  "icon": "flux:energy_cable",
+  "category": "energy",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:energy_cable",
+      "text": "Energy transfer"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:energy_cable"
+    }
+  ]
+}

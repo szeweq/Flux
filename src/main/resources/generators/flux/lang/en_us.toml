@@ -7,6 +7,10 @@
  works_underwater = "It even works underwater!"
  recipe_compat = "Using compatible recipe! It may be unstable!"
 
+[flux.book]
+ name = "Flux Book"
+ landing_text = "A manual for Flux."
+
 [flux.gift]
  invalid = "Invalid Gift!"
  received = "You just received a Flux Gift!"

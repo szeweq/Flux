@@ -1,0 +1,16 @@
+{
+  "name": "Alloy Caster",
+  "icon": "flux:alloy_caster",
+  "category": "processing",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:alloy_caster",
+      "text": "Making alloys"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:alloy_caster"
+    }
+  ]
+}

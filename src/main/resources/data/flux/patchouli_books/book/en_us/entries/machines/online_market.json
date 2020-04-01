@@ -1,0 +1,16 @@
+{
+  "name": "Online Market",
+  "icon": "flux:online_market",
+  "category": "machines",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:online_market",
+      "text": "Looks for nearby trades. Works best in villages."
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:online_market"
+    }
+  ]
+}
