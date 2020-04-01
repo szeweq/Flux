@@ -1,5 +1,25 @@
 {
   "minecraft:flint": {
     "ingredients": [{"item": "minecraft:gravel"}]
+  },
+  "minecraft:coal": {
+    "ingredients": [{"tag": "forge:ores/coal"}],
+    "count": 3
+  },
+  "minecraft:quartz": {
+    "ingredients": [{"tag": "forge:ores/quartz"}],
+    "count": 6
+  },
+  "minecraft:redstone": {
+    "ingredients": [{"tag": "forge:ores/redstone"}],
+    "count": 12
+  },,
+  "minecraft:lapis_lazuli": {
+    "ingredients": [{"tag": "forge:ores/lapis"}],
+    "count": 12
+  },
+  "minecraft:diamond": {
+    "ingredients": [{"tag": "forge:ores/diamond"}],
+    "count": 3
   }
 }
