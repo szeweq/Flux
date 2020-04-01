@@ -1,8 +1,13 @@
-# Flux (Version 4.12.3)
+# Flux (Version 4.12.4)
 Requires Flux Library 3.1.5 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
-### Changes
-- Added warning on machine GUI appearing when it is using compatible recipes.
+### Flux Book
+Available if Patchouli is loaded.
 
-### Fixes
-- Fixed missing Online Market and Recipe Research Table loot tables.
+This manual will contain information about all Flux machines and their recipes.
+It's not complete and most of its contents may change.
+
+Craft it using book and machine base.
+
+### New washing recipes
+Coal, redstone, quartz, lapis and diamond ore can be processed in Washer.
