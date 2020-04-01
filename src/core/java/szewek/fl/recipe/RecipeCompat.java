@@ -77,22 +77,33 @@ public final class RecipeCompat {
 			consumer = (Consumer<Iterable<ItemStack>>) recipe;
 		} else {
 			final NonNullList<Ingredient> ingredients = recipe.getIngredients();
-			consumer = stacks -> {
-				ArrayList<ItemStack> filledInputs = new ArrayList<>();
-
-				for (ItemStack stack : stacks) {
-					if (!stack.isEmpty()) {
-						filledInputs.add(stack);
+			if (ingredients.isEmpty()) {
+				consumer = stacks -> {
+					for (ItemStack stack : stacks) {
+						if (!stack.isEmpty()) {
+							stack.grow(-1);
+						}
 					}
-				}
+				};
+			} else {
+				consumer = stacks -> {
+					ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
-				int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
-				if (match != null) {
-					for(int i = 0; i < match.length; ++i) {
-						filledInputs.get(i).grow(-1);
+					for (ItemStack stack : stacks) {
+						if (!stack.isEmpty()) {
+							filledInputs.add(stack);
+						}
 					}
-				}
-			};
+
+					int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
+					if (match != null) {
+						for(int i = 0; i < match.length; ++i) {
+							filledInputs.get(i).grow(-1);
+						}
+					}
+				};
+			}
+
 		}
 		return consumer;
 	}
