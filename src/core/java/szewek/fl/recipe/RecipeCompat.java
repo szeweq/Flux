@@ -15,8 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import szewek.fl.network.FluxPlus;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -106,34 +104,6 @@ public final class RecipeCompat {
 
 		}
 		return consumer;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <C extends IInventory> boolean inventoryProxyMatch(IRecipe<C> recipe, IInventory inv, World w) {
-		Class<?> cl = null;
-		for (Method method : recipe.getClass().getMethods()) {
-			if (method.getName().equals("matches") && method.getParameterCount() == 2) {
-				cl = method.getParameterTypes()[0];
-				break;
-			}
-		}
-		if (cl != null) {
-			C c;
-			if (cl.isInstance(inv)) {
-				c = (C) inv;
-			} else {
-				c = (C) Proxy.newProxyInstance(RecipeCompat.class.getClassLoader(), new Class[]{cl}, (proxy, method, args) -> {
-					if (method.getDeclaringClass().equals(IInventory.class)) {
-						method.invoke(inv, args);
-					}
-					// Log methods (may break stuff)
-					LOGGER.debug("Proxy method: {} ({})", method.getName(), method.getParameterTypes());
-					return null;
-				});
-			}
-			return recipe.matches(c, w);
-		}
-		return false;
 	}
 
 	private RecipeCompat() {}
