@@ -18,7 +18,7 @@ public abstract class EnergyCapable implements IEnergyReceiver, ICapabilityProvi
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		return cap == CapabilityEnergy.ENERGY ? handler.cast() : LazyOptional.empty();
 	}
 }

@@ -38,7 +38,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		this.renderBackground(0);
+		renderBackground(0);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		assert minecraft != null;
 		minecraft.getTextureManager().bindTexture(BG_TEX);
@@ -53,7 +53,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		String s = title.getFormattedText();
-		this.font.drawString(s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 5.0F, 0x404040);
+		font.drawString(s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
 		font.drawString(playerInventory.getDisplayName().getFormattedText(), 8.0F, ySize - 96 + 2, 0x404040);
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
