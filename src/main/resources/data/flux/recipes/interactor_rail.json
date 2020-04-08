@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XSX",
+    "X#X",
+    "XSX"
+  ],
+  "key": {
+    "#": {"tag": "forge:gears/bronze"},
+    "S": {"tag": "forge:rods/wooden"},
+    "X": {"tag": "forge:ingots/iron"}
+  },
+  "result": {
+    "item": "flux:interactor_rail",
+    "count": 6
+  }
+}

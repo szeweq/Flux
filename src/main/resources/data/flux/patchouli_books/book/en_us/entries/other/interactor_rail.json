@@ -1,0 +1,16 @@
+{
+  "name": "Interactor Rail",
+  "icon": "flux:interactor_rail",
+  "category": "other",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:interactor_rail",
+      "text": "Read any capability (energy, inventory, SIGNALS) from minecarts"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:interactor_rail"
+    }
+  ]
+}
