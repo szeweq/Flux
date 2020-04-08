@@ -38,7 +38,7 @@ public final class FluxGenBlock extends Block {
 
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
-		if (!world.isRemote()) {
+		if (!world.isRemote) {
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile instanceof FluxGenTile) {
 				FluidActionResult far = FluidUtil.tryEmptyContainerAndStow(player.getHeldItem(hand), (FluxGenTile) tile, new InvWrapper(player.inventory), 4000, player, true);
