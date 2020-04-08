@@ -96,6 +96,8 @@
  multifactory = "Multifactory"
  rrtable = "Recipe Research Table"
  online_market = "Online Market"
+ interactor_rail = "Interactor Rail"
+ signal_controller = "Signal Controller"
 
 [container.flux]
  fluxgen = "Flux Generator"
@@ -104,6 +106,17 @@
  washer = "Washer"
  compactor = "Compactor"
  online_market = "Online Market"
+ signal_controller = "Signal Controller"
+
+[gui.flux]
+ type_channel = "Type channel number"
+
+[gui.flux.signal_controller]
+ mode0 = "Emit to Redstone"
+ mode1 = "Set signal"
+ mode2 = "Clear signal"
+ mode3 = "Set from Redstone"
+
 
 [gui.flux.recipebook.toggleRecipes]
  grindable = "Showing grindable only"

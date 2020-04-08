@@ -1,0 +1,6 @@
+{
+  "parent": "flux:block/signal_controller",
+  "textures": {
+    "bottom": "minecraft:block/observer_back_on"
+  }
+}

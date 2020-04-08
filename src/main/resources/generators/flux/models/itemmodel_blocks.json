@@ -18,5 +18,6 @@
   "item_absorber",
   "multifactory",
   "rrtable",
-  "online_market"
+  "online_market",
+  "signal_controller"
 ]
