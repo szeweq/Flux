@@ -1,0 +1,16 @@
+{
+  "name": "Signal Controller",
+  "icon": "flux:signal_controller",
+  "category": "other",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:signal_controller",
+      "text": "Read and modify signals from blocks and MINECARTS (if Interactor Rail is used)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:signal_controller"
+    }
+  ]
+}

@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.VillagerTrades;
@@ -40,8 +42,10 @@ import szewek.flux.block.*;
 import szewek.flux.container.AbstractMachineContainer;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.container.Machine2For1Container;
+import szewek.flux.container.SignalControllerContainer;
 import szewek.flux.gui.FluxGenScreen;
 import szewek.flux.gui.MachineScreen;
+import szewek.flux.gui.SignalControllerScreen;
 import szewek.flux.item.*;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
@@ -89,7 +93,9 @@ public final class F {
 				B.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
 				B.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
 				B.WASHER.setRegistryName(MODID, "washer"),
-				B.COMPACTOR.setRegistryName(MODID, "compactor")
+				B.COMPACTOR.setRegistryName(MODID, "compactor"),
+				B.INTERACTOR_RAIL.setRegistryName(MODID, "interactor_rail"),
+				B.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller")
 		);
 	}
 
@@ -140,7 +146,9 @@ public final class F {
 				fromBlock(B.ITEM_ABSORBER, "item_absorber"),
 				fromBlock(B.MULTIFACTORY, "multifactory"),
 				fromBlock(B.RR_TABLE, "rrtable"),
-				fromBlock(B.ONLINE_MARKET, "online_market")
+				fromBlock(B.ONLINE_MARKET, "online_market"),
+				fromBlock(B.INTERACTOR_RAIL, "interactor_rail"),
+				fromBlock(B.SIGNAL_CONTROLLER, "signal_controller")
 		);
 		I.BRONZE_TOOLS.registerTools(reg);
 		I.STEEL_TOOLS.registerTools(reg);
@@ -150,7 +158,8 @@ public final class F {
 	public static void tiles(final RegistryEvent.Register<TileEntityType<?>> re) {
 		re.getRegistry().registerAll(
 				T.FLUXGEN, T.ENERGY_CABLE, T.DIGGER, T.FARMER, T.BUTCHER, T.MOB_POUNDER, T.ITEM_ABSORBER,
-				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR, T.MULTIFACTORY, T.RR_TABLE, T.ONLINE_MARKET
+				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR, T.MULTIFACTORY, T.RR_TABLE, T.ONLINE_MARKET,
+				T.INTERACTOR_RAIL, T.SIGNAL_CONTROLLER
 		);
 	}
 
@@ -161,7 +170,8 @@ public final class F {
 				C.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
 				C.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
 				C.WASHER.setRegistryName(MODID, "washer"),
-				C.COMPACTOR.setRegistryName(MODID, "compactor")
+				C.COMPACTOR.setRegistryName(MODID, "compactor"),
+				C.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller")
 		);
 	}
 
@@ -232,7 +242,10 @@ public final class F {
 		I.BRONZE_TOOLS.registerToolColors(Metals.BRONZE, ic);
 		I.STEEL_TOOLS.registerToolColors(Metals.STEEL, ic);
 
+		RenderTypeLookup.setRenderLayer(B.INTERACTOR_RAIL, RenderType.getCutout());
+
 		ScreenManager.registerFactory(C.FLUXGEN, FluxGenScreen::new);
+		ScreenManager.registerFactory(C.SIGNAL_CONTROLLER, SignalControllerScreen::new);
 		ScreenManager.registerFactory(C.GRINDING_MILL, MachineScreen.make("grindable", "grinding_mill"));
 		ScreenManager.registerFactory(C.ALLOY_CASTER, MachineScreen.make("alloyable", "alloy_caster"));
 		ScreenManager.registerFactory(C.WASHER, MachineScreen.make("washable", "washer"));
@@ -247,6 +260,8 @@ public final class F {
 		public static final MultifactoryBlock MULTIFACTORY = new MultifactoryBlock();
 		public static final RRTableBlock RR_TABLE = new RRTableBlock();
 		public static final OnlineMarketBlock ONLINE_MARKET = new OnlineMarketBlock();
+		public static final InteractorRailBlock INTERACTOR_RAIL = new InteractorRailBlock();
+		public static final SignalControllerBlock SIGNAL_CONTROLLER = new SignalControllerBlock();
 		public static final ActiveTileBlock
 				DIGGER = new ActiveTileBlock(),
 				FARMER = new ActiveTileBlock(),
@@ -297,6 +312,8 @@ public final class F {
 		public static final TileEntityType<MultifactoryTile> MULTIFACTORY;
 		public static final TileEntityType<RRTableTile> RR_TABLE;
 		public static final TileEntityType<OnlineMarketTile> ONLINE_MARKET;
+		public static final TileEntityType<InteractorRailTile> INTERACTOR_RAIL;
+		public static final TileEntityType<SignalControllerTile> SIGNAL_CONTROLLER;
 		public static final FluxTileType<?>
 				GRINDING_MILL,
 				ALLOY_CASTER,
@@ -314,6 +331,8 @@ public final class F {
 			MULTIFACTORY = tile(MultifactoryTile::new, "multifactory", B.MULTIFACTORY);
 			RR_TABLE = tile(RRTableTile::new, "rrtable", B.RR_TABLE);
 			ONLINE_MARKET = tile(OnlineMarketTile::new, "online_market", B.ONLINE_MARKET);
+			INTERACTOR_RAIL = tile(InteractorRailTile::new, "interactor_rail", B.INTERACTOR_RAIL);
+			SIGNAL_CONTROLLER = tile(SignalControllerTile::new, "signal_controller", B.SIGNAL_CONTROLLER);
 			GRINDING_MILL = tile(Machine2For1Tile.make(R.GRINDING, C.GRINDING_MILL, "grinding_mill"), "grinding_mill", B.GRINDING_MILL);
 			ALLOY_CASTER = tile(Machine2For1Tile.make(R.ALLOYING, C.ALLOY_CASTER, "alloy_caster"), "alloy_caster", B.ALLOY_CASTER);
 			WASHER = tile(Machine2For1Tile.make(R.WASHING, C.WASHER, "washer"), "washer", B.WASHER);
@@ -323,11 +342,13 @@ public final class F {
 
 	public static final class C {
 		public static final ContainerType<FluxGenContainer> FLUXGEN;
+		public static final ContainerType<SignalControllerContainer> SIGNAL_CONTROLLER;
 		public static final FluxContainerType<Machine2For1Container>
 				GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
 
 		static {
 			FLUXGEN = container(FluxGenContainer::new);
+			SIGNAL_CONTROLLER = container(SignalControllerContainer::new);
 			GRINDING_MILL = containerFlux(Machine2For1Container.make(R.GRINDING));
 			ALLOY_CASTER = containerFlux(Machine2For1Container.make(R.ALLOYING));
 			WASHER = containerFlux(Machine2For1Container.make(R.WASHING));

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "BQR",
+    "CCC"
+  ],
+  "key": {
+    "C": {"tag": "forge:cobblestone"},
+    "B": {"tag": "forge:plates/bronze"},
+    "Q": {"tag": "forge:gems/quartz"},
+    "R": {"tag": "forge:dusts/redstone"}
+  },
+  "result": {
+    "item": "flux:signal_controller",
+    "count": 1
+  }
+}
