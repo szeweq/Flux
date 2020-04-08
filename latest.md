@@ -1,13 +1,11 @@
-# Flux (Version 4.12.4)
-Requires Flux Library 3.1.5 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux (Version 4.13.0)
+Requires Flux Library 3.2.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
-### Flux Book
-Available if Patchouli is loaded.
+### New block: Interactor Rail
+This rail can be used to interact with minecarts by getting its capabilities
+(like inventory, energy, and signals from Flux Library).
+It can be also activated with redstone. Interactor Rail does not power itself.
 
-This manual will contain information about all Flux machines and their recipes.
-It's not complete and most of its contents may change.
-
-Craft it using book and machine base.
-
-### New washing recipes
-Coal, redstone, quartz, lapis and diamond ore can be processed in Washer.
+### New block: Signal Controller
+This block can read, set or clear a signal on specific channel on faced block.
+Signal Controller with Interactor Rail can read or write signals from minecarts.

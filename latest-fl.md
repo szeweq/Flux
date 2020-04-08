@@ -1,5 +1,6 @@
-# Flux Library (Version 3.1.6)
+# Flux Library (Version 3.2.0)
 
-### Changes
-- Prevent making infinite items if compatible recipe returns empty ingredient list
-- Remove unused methods
+### New capability: Signals
+Blocks and entities can accept and send signals from 256 different channels.
+
+`SignalCapability.SIGNAL_CAP` is used to get a `ISignalHandler` instance.
