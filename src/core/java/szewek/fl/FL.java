@@ -10,6 +10,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import szewek.fl.network.FluxPlus;
 import szewek.fl.recipe.CountedIngredient;
+import szewek.fl.signal.SignalCapability;
 
 /**
  * Main mod class
@@ -27,6 +28,7 @@ public final class FL {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			FluxPlus.putAction("start");
+			SignalCapability.register();
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
 		}
 	}
