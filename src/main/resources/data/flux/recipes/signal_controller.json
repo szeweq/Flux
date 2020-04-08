@@ -6,7 +6,7 @@
     "CCC"
   ],
   "key": {
-    "C": {"tag": "forge:cobblestone"},
+    "C": {"item": "minecraft:cobblestone"},
     "B": {"tag": "forge:plates/bronze"},
     "Q": {"tag": "forge:gems/quartz"},
     "R": {"tag": "forge:dusts/redstone"}
