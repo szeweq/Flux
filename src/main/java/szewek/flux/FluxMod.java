@@ -1,5 +1,7 @@
 package szewek.flux;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
@@ -28,6 +30,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
 import szewek.flux.energy.FurnaceEnergy;
+import szewek.flux.network.FluxPackets;
+import szewek.flux.signal.MinecartSignals;
 import szewek.flux.util.FluxData;
 import szewek.flux.util.Gifts;
 import szewek.flux.util.metals.Metals;
@@ -49,6 +53,7 @@ public final class FluxMod {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
+			FluxPackets.init();
 
 			if (!FluxCfg.COMMON.disableOres.get()) {
 				ForgeRegistries.BIOMES.getValues().forEach(biome -> {
@@ -87,12 +92,23 @@ public final class FluxMod {
 	@Mod.EventBusSubscriber
 	final static class Events {
 		private static final ResourceLocation FURNACE_CAP = new ResourceLocation(MODID, "furnace_energy");
+		private static final ResourceLocation CART_CAP = new ResourceLocation(MODID, "minecart_signal");
 
 		@SubscribeEvent
 		public static void wrapTile(final AttachCapabilitiesEvent<TileEntity> e) {
 			TileEntity te = e.getObject();
 			if (te instanceof AbstractFurnaceTileEntity) {
 				e.addCapability(FURNACE_CAP, new FurnaceEnergy((AbstractFurnaceTileEntity) te));
+			}
+		}
+
+		@SubscribeEvent
+		public static void wrapEntity(final AttachCapabilitiesEvent<Entity> e) {
+			Entity ent = e.getObject();
+			if (ent instanceof AbstractMinecartEntity) {
+				MinecartSignals minecartSignals = new MinecartSignals();
+				e.addCapability(CART_CAP, minecartSignals);
+				e.addListener(minecartSignals::invalidate);
 			}
 		}
 
