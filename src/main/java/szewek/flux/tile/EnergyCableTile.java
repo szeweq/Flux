@@ -55,26 +55,32 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 			final Direction[] dirs = Direction.values();
 			while (i < 6 && sf != 0) {
 				if ((sf & 1) != 0) {
-					IEnergyStorage ie = energyCache.getCached(dirs[i]);
-					if (ie != null) {
-						int r;
-						if (ie instanceof Side) {
-							r = (energy - ie.getEnergyStored()) / 2;
-							if (r != 0) {
-								energy -= r;
-								((Side) ie).syncEnergy(r);
-							}
-						} else if (ie.canReceive()) {
-							r = 10000;
-							if (r >= energy) {
-								r = energy;
-							}
-							r = ie.receiveEnergy(r, true);
-							if (r > 0) {
-								energy = energy - r;
-								ie.receiveEnergy(r, false);
+					try {
+						IEnergyStorage ie = energyCache.getCached(dirs[i]);
+						if (ie != null) {
+							int r;
+							if (ie instanceof Side) {
+								r = (energy - ie.getEnergyStored()) / 2;
+								if (r != 0) {
+									energy -= r;
+									((Side) ie).syncEnergy(r);
+								}
+							} else if (ie.canReceive()) {
+								r = 10000;
+								if (r >= energy) {
+									r = energy;
+								}
+								r = ie.receiveEnergy(r, true);
+								if (r > 0) {
+									energy = energy - r;
+									ie.receiveEnergy(r, false);
+								}
 							}
 						}
+					} catch (Exception ignored) {
+						// Keep garbage "integrations" away from my precious Energy Cable!
+						energyCache.clear();
+						// A good mod developer ALWAYS invalidates LazyOptional instances!
 					}
 				}
 				sf >>= 1;

@@ -161,15 +161,21 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		if (tickCount > 3 && energy > 0) {
 			tickCount = 0;
 			for (Direction d : Direction.values()) {
-				IEnergyStorage ie = energyCache.getCached(d);
-				if (ie != null && ie.canReceive()) {
-					int r = 40000;
-					if (r >= energy) r = energy;
-					r = ie.receiveEnergy(r, true);
-					if (r > 0) {
-						energy -= r;
-						ie.receiveEnergy(r, false);
+				try {
+					IEnergyStorage ie = energyCache.getCached(d);
+					if (ie != null && ie.canReceive()) {
+						int r = 40000;
+						if (r >= energy) r = energy;
+						r = ie.receiveEnergy(r, true);
+						if (r > 0) {
+							energy -= r;
+							ie.receiveEnergy(r, false);
+						}
 					}
+				} catch (Exception ignored) {
+					// Keep garbage "integrations" away from my precious Flux Generator!
+					energyCache.clear();
+					// A good mod developer ALWAYS invalidates LazyOptional instances!
 				}
 			}
 		}
