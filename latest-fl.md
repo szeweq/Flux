@@ -1,6 +1,4 @@
-# Flux Library (Version 3.2.0)
+# Flux Library (Version 3.2.1)
 
-### New capability: Signals
-Blocks and entities can accept and send signals from 256 different channels.
-
-`SignalCapability.SIGNAL_CAP` is used to get a `ISignalHandler` instance.
+### Fixes
+- Machines can get recipes via RecipeCompat even if a recipe type has no compatible types registered.
