@@ -16,8 +16,8 @@
   "butcher",
   "mob_pounder",
   "item_absorber",
-  "multifactory",
   "rrtable",
   "online_market",
-  "signal_controller"
+  "signal_controller",
+  "copier"
 ]

@@ -93,11 +93,11 @@
  butcher = "Butcher"
  mob_pounder = "Mob Pounder"
  item_absorber = "Item Absorber"
- multifactory = "Multifactory"
  rrtable = "Recipe Research Table"
  online_market = "Online Market"
  interactor_rail = "Interactor Rail"
  signal_controller = "Signal Controller"
+ copier = "Copier"
 
 [container.flux]
  fluxgen = "Flux Generator"
@@ -107,6 +107,7 @@
  compactor = "Compactor"
  online_market = "Online Market"
  signal_controller = "Signal Controller"
+ copier = "Copier"
 
 [gui.flux]
  type_channel = "Type channel number"
@@ -123,12 +124,14 @@
  alloyable = "Showing alloyable only"
  washable = "Showing washable only"
  compactable = "Showing compactable only"
+ copyable = "Showing copyable only"
 
 [gui.flux.jei.category]
  grinding = "Grinding"
  alloying = "Alloying"
  washing = "Washing"
  compacting = "Compacting"
+ copying = "Copying"
 
 [entity.minecraft.villager.flux]
  flux_engineer = "Flux Engineer"

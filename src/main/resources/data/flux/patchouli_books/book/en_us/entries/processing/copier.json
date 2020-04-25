@@ -1,0 +1,16 @@
+{
+  "name": "Copier",
+  "icon": "flux:copier",
+  "category": "processing",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "flux:copier",
+      "text": "Creates a new copy of specified item (like a written book)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "flux:copier"
+    }
+  ]
+}

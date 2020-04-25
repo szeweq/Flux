@@ -1,0 +1,5 @@
+{
+  "type": "flux:copying",
+  "source": {"item": "minecraft:written_book"},
+  "material": {"item": "minecraft:book"}
+}

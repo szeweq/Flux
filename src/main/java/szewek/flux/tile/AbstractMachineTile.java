@@ -25,11 +25,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import szewek.fl.recipe.RecipeCompat;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
@@ -48,10 +43,10 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	protected int process = -1, processTotal, energyUse, processSpeed = 100, compatState;
 	protected boolean lazyCheck, wasLit;
 	protected final NonNullList<ItemStack> items;
-	protected final IRecipeType<? extends AbstractMachineRecipe> recipeType;
+	protected final IRecipeType<?> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
 	private final MenuFactory menuFactory;
-	private IRecipe<?> cachedRecipe;
+	protected IRecipe<?> cachedRecipe;
 	protected final IIntArray machineData = new IIntArray() {
 		@Override
 		public int get(int index) {
@@ -86,9 +81,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			return 7;
 		}
 	};
-	private final LazyOptional<? extends IItemHandler>[] sideHandlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
-	protected AbstractMachineTile(TileEntityType<?> typeIn, final IRecipeType<? extends AbstractMachineRecipe> recipeTypeIn, MenuFactory factory, int inSize, int outSize) {
+	protected AbstractMachineTile(TileEntityType<?> typeIn, final IRecipeType<?> recipeTypeIn, MenuFactory factory, int inSize, int outSize) {
 		super(typeIn);
 		recipeType = recipeTypeIn;
 		menuFactory = factory;
@@ -221,7 +215,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		}
 	}
 
-	private void setCachedRecipe(@Nullable final IRecipe<?> recipe) {
+	protected void setCachedRecipe(@Nullable final IRecipe<?> recipe) {
 		cachedRecipe = recipe;
 		compatState = recipe != null && recipe.getType() != recipeType ? 1 : 0;
 	}
@@ -233,20 +227,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			if (side == Direction.UP) {
-				return sideHandlers[0].cast();
-			} else if (side == Direction.DOWN) {
-				return sideHandlers[1].cast();
-			} else {
-				return sideHandlers[2].cast();
-			}
-		}
-		return super.getCapability(cap, side);
 	}
 
 	@Override

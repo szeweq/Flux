@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
 import szewek.flux.F.B;
 import szewek.flux.F.R;
+import szewek.flux.container.CopierContainer;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.MachineScreen;
 import szewek.flux.recipe.AlloyingRecipe;
@@ -39,7 +40,8 @@ public class JEIFluxPlugin implements IModPlugin {
 			GRINDING = new ResourceLocation(MODID, "grinding"),
 			ALLOYING = new ResourceLocation(MODID, "alloying"),
 			WASHING = new ResourceLocation(MODID, "washing"),
-			COMPACTING = new ResourceLocation(MODID, "compacting");
+			COMPACTING = new ResourceLocation(MODID, "compacting"),
+			COPYING = new ResourceLocation(MODID, "copying");
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -54,7 +56,8 @@ public class JEIFluxPlugin implements IModPlugin {
 		MachineCategory<AlloyingRecipe> alloying = new MachineCategory<>(guiHelper, "alloying", "alloy_caster", AlloyingRecipe.class, B.ALLOY_CASTER, 200);
 		MachineCategory<WashingRecipe> washing = new MachineCategory<>(guiHelper, "washing", "washer", WashingRecipe.class, B.WASHER, 200);
 		MachineCategory<CompactingRecipe> compacting = new MachineCategory<>(guiHelper, "compacting", "compactor", CompactingRecipe.class, B.COMPACTOR, 200);
-		reg.addRecipeCategories(grinding, alloying, washing, compacting);
+		CopierCategory copying = new CopierCategory(guiHelper, B.COPIER, 200);
+		reg.addRecipeCategories(grinding, alloying, washing, compacting, copying);
 	}
 
 	@Override
@@ -63,6 +66,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		reg.addRecipes(getRecipes(R.ALLOYING), ALLOYING);
 		reg.addRecipes(getRecipes(R.WASHING), WASHING);
 		reg.addRecipes(getRecipes(R.COMPACTING), COMPACTING);
+		reg.addRecipes(getRecipes(R.COPYING), COPYING);
 
 		IVanillaRecipeFactory vanillaRecipeFactory = reg.getVanillaRecipeFactory();
 		reg.addRecipes(getFluxRepairRecipes(vanillaRecipeFactory), VanillaRecipeCategoryUid.ANVIL);
@@ -75,10 +79,11 @@ public class JEIFluxPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-		registration.addRecipeTransferHandler(Machine2For1Container.class, GRINDING, 0, 2, 3, 36);
-		registration.addRecipeTransferHandler(Machine2For1Container.class, ALLOYING, 0, 2, 3, 36);
-		registration.addRecipeTransferHandler(Machine2For1Container.class, WASHING, 0, 2, 3, 36);
-		registration.addRecipeTransferHandler(Machine2For1Container.class, COMPACTING, 0, 2, 3, 36);
+		registration.addRecipeTransferHandler(Machine2For1Container.class, GRINDING, 0, 2, 4, 36);
+		registration.addRecipeTransferHandler(Machine2For1Container.class, ALLOYING, 0, 2, 4, 36);
+		registration.addRecipeTransferHandler(Machine2For1Container.class, WASHING, 0, 2, 4, 36);
+		registration.addRecipeTransferHandler(Machine2For1Container.class, COMPACTING, 0, 2, 4, 36);
+		registration.addRecipeTransferHandler(CopierContainer.class, COPYING, 0, 2, 4, 36);
 	}
 
 	@Override
@@ -87,6 +92,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		reg.addRecipeCatalyst(new ItemStack(B.ALLOY_CASTER), ALLOYING);
 		reg.addRecipeCatalyst(new ItemStack(B.WASHER), WASHING);
 		reg.addRecipeCatalyst(new ItemStack(B.COMPACTOR), COMPACTING);
+		reg.addRecipeCatalyst(new ItemStack(B.COPIER), COPYING);
 	}
 
 	@SuppressWarnings({"ConstantConditions", "unchecked"})

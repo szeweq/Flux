@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.item.ChipItem;
-import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.util.ServerRecipePlacerMachine;
 
 import java.util.Arrays;
@@ -32,15 +31,15 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	protected final IInventory machineInventory;
 	private final IIntArray data;
 	protected final World world;
-	public final IRecipeType<? extends AbstractMachineRecipe> recipeType;
+	public final IRecipeType<?> recipeType;
 	private final int inputSize;
 	private final int outputSize;
 
-	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
+	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
 		this(containerType, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(7));
 	}
 
-	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
+	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
 		super(containerType, id);
 		this.recipeType = recipeType;
 		this.inputSize = inputSize;
@@ -54,7 +53,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		trackIntArray(data);
 	}
 
-	protected abstract void initSlots(PlayerInventory var1);
+	protected abstract void initSlots(PlayerInventory playerInventory);
 
 	protected final void initPlayerSlotsAt(PlayerInventory playerInventory, int x, int y) {
 		int xBase = x;

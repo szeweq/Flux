@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GIG",
+    "IKI",
+    "SGS"
+  ],
+  "key": {
+    "K": {"tag": "forge:dyes/black"},
+    "G": {"tag": "forge:gears/tin"},
+    "I": {"tag": "forge:plates/iron"},
+    "S": {"item": "flux:machine_base"}
+  },
+  "result": {
+    "item": "flux:copier",
+    "count": 1
+  }
+}

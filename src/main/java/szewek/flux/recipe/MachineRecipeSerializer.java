@@ -74,7 +74,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		}
 
 		b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
-		b.process = JSONUtils.getInt(json, "processtime", this.defaultProcess);
+		b.process = JSONUtils.getInt(json, "processtime", defaultProcess);
 
 		String group = JSONUtils.getString(json, "group", "");
 		return factory.create(recipeId, group, b);

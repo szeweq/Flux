@@ -39,10 +39,7 @@ import szewek.fl.type.FluxRecipeType;
 import szewek.fl.type.FluxTileType;
 import szewek.fl.util.FluxItemTier;
 import szewek.flux.block.*;
-import szewek.flux.container.AbstractMachineContainer;
-import szewek.flux.container.FluxGenContainer;
-import szewek.flux.container.Machine2For1Container;
-import szewek.flux.container.SignalControllerContainer;
+import szewek.flux.container.*;
 import szewek.flux.gui.FluxGenScreen;
 import szewek.flux.gui.MachineScreen;
 import szewek.flux.gui.SignalControllerScreen;
@@ -87,7 +84,6 @@ public final class F {
 				B.BUTCHER.setRegistryName(MODID, "butcher"),
 				B.MOB_POUNDER.setRegistryName(MODID, "mob_pounder"),
 				B.ITEM_ABSORBER.setRegistryName(MODID, "item_absorber"),
-				B.MULTIFACTORY.setRegistryName(MODID, "multifactory"),
 				B.RR_TABLE.setRegistryName(MODID, "rrtable"),
 				B.ONLINE_MARKET.setRegistryName(MODID, "online_market"),
 				B.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
@@ -95,7 +91,8 @@ public final class F {
 				B.WASHER.setRegistryName(MODID, "washer"),
 				B.COMPACTOR.setRegistryName(MODID, "compactor"),
 				B.INTERACTOR_RAIL.setRegistryName(MODID, "interactor_rail"),
-				B.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller")
+				B.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller"),
+				B.COPIER.setRegistryName(MODID, "copier")
 		);
 	}
 
@@ -144,11 +141,11 @@ public final class F {
 				fromBlock(B.BUTCHER, "butcher"),
 				fromBlock(B.MOB_POUNDER, "mob_pounder"),
 				fromBlock(B.ITEM_ABSORBER, "item_absorber"),
-				fromBlock(B.MULTIFACTORY, "multifactory"),
 				fromBlock(B.RR_TABLE, "rrtable"),
 				fromBlock(B.ONLINE_MARKET, "online_market"),
 				fromBlock(B.INTERACTOR_RAIL, "interactor_rail"),
-				fromBlock(B.SIGNAL_CONTROLLER, "signal_controller")
+				fromBlock(B.SIGNAL_CONTROLLER, "signal_controller"),
+				fromBlock(B.COPIER, "copier")
 		);
 		I.BRONZE_TOOLS.registerTools(reg);
 		I.STEEL_TOOLS.registerTools(reg);
@@ -158,8 +155,8 @@ public final class F {
 	public static void tiles(final RegistryEvent.Register<TileEntityType<?>> re) {
 		re.getRegistry().registerAll(
 				T.FLUXGEN, T.ENERGY_CABLE, T.DIGGER, T.FARMER, T.BUTCHER, T.MOB_POUNDER, T.ITEM_ABSORBER,
-				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR, T.MULTIFACTORY, T.RR_TABLE, T.ONLINE_MARKET,
-				T.INTERACTOR_RAIL, T.SIGNAL_CONTROLLER
+				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR, T.RR_TABLE, T.ONLINE_MARKET,
+				T.INTERACTOR_RAIL, T.SIGNAL_CONTROLLER, T.COPIER
 		);
 	}
 
@@ -171,7 +168,8 @@ public final class F {
 				C.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
 				C.WASHER.setRegistryName(MODID, "washer"),
 				C.COMPACTOR.setRegistryName(MODID, "compactor"),
-				C.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller")
+				C.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller"),
+				C.COPIER.setRegistryName(MODID, "copier")
 		);
 	}
 
@@ -181,7 +179,8 @@ public final class F {
 				R.GRINDING.serializer,
 				R.ALLOYING.serializer,
 				R.WASHING.serializer,
-				R.COMPACTING.serializer
+				R.COMPACTING.serializer,
+				CopyingRecipe.SERIALIZER
 		);
 		@SuppressWarnings("unchecked")
 		final List<String> blacklist = (List<String>) FluxCfg.COMMON.blacklistCompatRecipes.get();
@@ -195,7 +194,6 @@ public final class F {
 		recipeCompat(R.ALLOYING, filterBlacklist,
 				"blue_power:alloy_smelting"
 		);
-		recipeCompat(R.WASHING, filterBlacklist);
 		recipeCompat(R.COMPACTING, filterBlacklist, "wtbw_machines:compressing");
 	}
 
@@ -250,6 +248,7 @@ public final class F {
 		ScreenManager.registerFactory(C.ALLOY_CASTER, MachineScreen.make("alloyable", "alloy_caster"));
 		ScreenManager.registerFactory(C.WASHER, MachineScreen.make("washable", "washer"));
 		ScreenManager.registerFactory(C.COMPACTOR, MachineScreen.make("compactable", "compactor"));
+		ScreenManager.registerFactory(C.COPIER, MachineScreen.make("copyable", "copier"));
 	}
 
 	public static final class B {
@@ -257,7 +256,6 @@ public final class F {
 		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeBlocks();
 		public static final FluxGenBlock FLUXGEN = new FluxGenBlock();
 		public static final EnergyCableBlock ENERGY_CABLE = new EnergyCableBlock();
-		public static final MultifactoryBlock MULTIFACTORY = new MultifactoryBlock();
 		public static final RRTableBlock RR_TABLE = new RRTableBlock();
 		public static final OnlineMarketBlock ONLINE_MARKET = new OnlineMarketBlock();
 		public static final InteractorRailBlock INTERACTOR_RAIL = new InteractorRailBlock();
@@ -272,7 +270,8 @@ public final class F {
 				GRINDING_MILL = new MachineBlock(),
 				ALLOY_CASTER = new MachineBlock(),
 				WASHER = new MachineBlock(),
-				COMPACTOR = new MachineBlock();
+				COMPACTOR = new MachineBlock(),
+				COPIER = new MachineBlock();
 	}
 
 	public static final class I {
@@ -309,11 +308,11 @@ public final class F {
 		public static final TileEntityType<ButcherTile> BUTCHER;
 		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
 		public static final TileEntityType<ItemAbsorberTile> ITEM_ABSORBER;
-		public static final TileEntityType<MultifactoryTile> MULTIFACTORY;
 		public static final TileEntityType<RRTableTile> RR_TABLE;
 		public static final TileEntityType<OnlineMarketTile> ONLINE_MARKET;
 		public static final TileEntityType<InteractorRailTile> INTERACTOR_RAIL;
 		public static final TileEntityType<SignalControllerTile> SIGNAL_CONTROLLER;
+		public static final TileEntityType<CopierTile> COPIER;
 		public static final FluxTileType<?>
 				GRINDING_MILL,
 				ALLOY_CASTER,
@@ -328,11 +327,11 @@ public final class F {
 			BUTCHER = tile(ButcherTile::new, "butcher", B.BUTCHER);
 			MOB_POUNDER = tile(MobPounderTile::new, "mob_pounder", B.MOB_POUNDER);
 			ITEM_ABSORBER = tile(ItemAbsorberTile::new, "item_absorber", B.ITEM_ABSORBER);
-			MULTIFACTORY = tile(MultifactoryTile::new, "multifactory", B.MULTIFACTORY);
 			RR_TABLE = tile(RRTableTile::new, "rrtable", B.RR_TABLE);
 			ONLINE_MARKET = tile(OnlineMarketTile::new, "online_market", B.ONLINE_MARKET);
 			INTERACTOR_RAIL = tile(InteractorRailTile::new, "interactor_rail", B.INTERACTOR_RAIL);
 			SIGNAL_CONTROLLER = tile(SignalControllerTile::new, "signal_controller", B.SIGNAL_CONTROLLER);
+			COPIER = tile(CopierTile::new, "copier", B.COPIER);
 			GRINDING_MILL = tile(Machine2For1Tile.make(R.GRINDING, C.GRINDING_MILL, "grinding_mill"), "grinding_mill", B.GRINDING_MILL);
 			ALLOY_CASTER = tile(Machine2For1Tile.make(R.ALLOYING, C.ALLOY_CASTER, "alloy_caster"), "alloy_caster", B.ALLOY_CASTER);
 			WASHER = tile(Machine2For1Tile.make(R.WASHING, C.WASHER, "washer"), "washer", B.WASHER);
@@ -343,12 +342,14 @@ public final class F {
 	public static final class C {
 		public static final ContainerType<FluxGenContainer> FLUXGEN;
 		public static final ContainerType<SignalControllerContainer> SIGNAL_CONTROLLER;
+		public static final ContainerType<CopierContainer> COPIER;
 		public static final FluxContainerType<Machine2For1Container>
 				GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
 
 		static {
 			FLUXGEN = container(FluxGenContainer::new);
 			SIGNAL_CONTROLLER = container(SignalControllerContainer::new);
+			COPIER = container(CopierContainer::new);
 			GRINDING_MILL = containerFlux(Machine2For1Container.make(R.GRINDING));
 			ALLOY_CASTER = containerFlux(Machine2For1Container.make(R.ALLOYING));
 			WASHER = containerFlux(Machine2For1Container.make(R.WASHING));
@@ -361,11 +362,12 @@ public final class F {
 		public static final FluxRecipeType<AlloyingRecipe> ALLOYING = recipe("alloying", serializer(AlloyingRecipe::new, "alloying"));
 		public static final FluxRecipeType<WashingRecipe> WASHING = recipe("washing", serializer(WashingRecipe::new, "washing"));
 		public static final FluxRecipeType<CompactingRecipe> COMPACTING = recipe("compacting", serializer(CompactingRecipe::new, "compacting"));
+		public static final FluxRecipeType<CopyingRecipe> COPYING = recipe("copying", CopyingRecipe.SERIALIZER);
 	}
 
 	public static final class V {
 		public static final PointOfInterestType
-				FLUX_ENGINEER_POI = poi("flux_engineer", B.FLUXGEN), MARKET_POI = poi("online_market", B.ONLINE_MARKET);
+				FLUX_ENGINEER_POI = poi("flux_engineer", B.FLUXGEN);
 		public static final VillagerProfession FLUX_ENGINEER = new VillagerProfession("flux:flux_engineer", FLUX_ENGINEER_POI, ImmutableSet.of(), ImmutableSet.of(), null);
 	}
 
