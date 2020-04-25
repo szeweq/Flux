@@ -1,0 +1,6 @@
+{
+  "name": "colorCopyingRecipes",
+  "args": [
+    {"from": "banner", "into": "banner", "processtime": 400}
+  ]
+}

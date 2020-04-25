@@ -7,6 +7,11 @@ import szewek.mcgen.util.JsonFileWriter
 typealias TemplateFunc = (o: JsonElement, out: JsonFileWriter) -> Unit
 
 object Templates {
+    private val colors = arrayOf(
+            "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
+            "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
+    )
+
     private val nameMap = HashMap<String, TemplateFunc>()
 
     fun byName(name: String): TemplateFunc {
@@ -21,6 +26,7 @@ object Templates {
         add("metalRecipes", ::metalRecipes)
         add("metalRecipesTagged", ::metalRecipesTagged)
         add("colorRecipes", ::colorRecipes)
+        add("colorCopyingRecipes", ::colorCopyingRecipes)
         add("toolRecipes", ::toolRecipes)
         add("metalTags", ::metalTags)
         add("typeTags", ::typeTags)
@@ -212,14 +218,26 @@ object Templates {
         o.remove("into")
         val type = o["type"].asString
         o.remove("type")
-        val colors = arrayOf(
-                "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
-                "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
-        )
         for(col in colors) out("${col}_${into}_$type") {
             typed("${out.namespace}:$type") {
                 ingredients { item("${col}_$from") }
                 result("${col}_$into")
+                for ((k, je) in o.entrySet()) k set je
+            }
+        }
+    }
+    private fun colorCopyingRecipes(v: JsonElement, out: JsonFileWriter) {
+        val o = v.asJsonObject
+        val from = o["from"].asString
+        o.remove("from")
+        val into = o["into"].asString
+        o.remove("into")
+        for(col in colors) out("copying_${col}_$into") {
+            typed("flux:copying") {
+                key("source")
+                id("${col}_$into")
+                key("material")
+                id("${col}_$from")
                 for ((k, je) in o.entrySet()) k set je
             }
         }
@@ -426,6 +444,7 @@ object Templates {
         "tag" set tag
         if (count > 1) "count" set count
     }
+    private fun JsonCreator.id(x: String) = if (x[0] == '#') tag(x.substring(1)) else item(x)
     private fun JsonCreator.item(name: String) = obj { "item" set name }
     private fun JsonCreator.tag(name: String) = obj { "tag" set name }
     private fun JsonCreator.tagList(vararg names: String) = obj {
