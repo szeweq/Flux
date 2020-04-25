@@ -29,7 +29,7 @@ public final class RecipeCompat {
 	@SuppressWarnings("unchecked")
 	public static <C extends IInventory, T extends IRecipe<C>> Optional<IRecipe<C>> getCompatRecipe(IRecipeType<?> rtype, World w, IInventory inv) {
 		RecipeManager rm = w.getRecipeManager();
-		for (IRecipeType<?> rt : compatMap.getOrDefault(rtype, Collections.emptySet())) {
+		for (IRecipeType<?> rt : compatMap.getOrDefault(rtype, Collections.singleton(rtype))) {
 			IRecipeType<? extends T> recipeType = (IRecipeType<? extends T>) rt;
 			for (IRecipe<C> r : rm.getRecipes(recipeType).values()) {
 				try {
