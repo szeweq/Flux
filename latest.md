@@ -1,7 +1,9 @@
-# Flux (Version 4.13.1)
-Requires Flux Library 3.2.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux (Version 4.14.0)
+Requires Flux Library 3.2.1 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
-Have you played with Signal Controller and Interactor Rail?
+### NEW BLOCK: Copier
+A new machine that copies books and banners. It uses energy for processing.
 
-### Fixes
-No more crashes where Mekanism machines are destroyed next to Energy Cable or Flux Generator.
+### Other changes
+- Removed Multifactory (it didn't have any use)
+- Removed washing recipe type from RecipeCompat

@@ -6,7 +6,7 @@
     {
       "type": "spotlight",
       "item": "flux:copier",
-      "text": "Creates a new copy of specified item (like a written book)"
+      "text": "Creates a new copy of specified item (like a written book). First slot is for a material and second – for source item."
     },
     {
       "type": "crafting",
