@@ -27,7 +27,7 @@ String metals_version = "1.0.0"
 
 String mc_version = "1.15.2"
 String jei_version = "6.0.0.2"
-String patchouli_version = "1.15.2-1.2-28.146"
+String patchouli_version = "1.15.2-1.2-32.160"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
