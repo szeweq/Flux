@@ -13,7 +13,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class interacting with Flux+ API.
@@ -22,7 +24,7 @@ public final class FluxPlus {
 	private static final String HOST = "https://fluxplus.herokuapp.com/api";
 	private static final Logger LOGGER = LogManager.getLogger("Flux+");
 	static final Gson GSON = new GsonBuilder().setLenient().create();
-	private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+	private static final ExecutorService EXEC = new ThreadPoolExecutor(0, 2, 30L, TimeUnit.SECONDS, new SynchronousQueue<>());
 	private static final Set<String> ACTIONS = new HashSet<>();
 
 	private FluxPlus() {}
@@ -62,4 +64,6 @@ public final class FluxPlus {
 			}
 		});
 	}
+
+
 }

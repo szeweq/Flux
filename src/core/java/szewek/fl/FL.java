@@ -7,7 +7,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import szewek.fl.network.FluxPlus;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.signal.SignalCapability;
@@ -37,11 +36,6 @@ public final class FL {
 		@SubscribeEvent
 		public static void playerLogin(final PlayerEvent.PlayerLoggedInEvent e) {
 			FluxPlus.putAction("login");
-		}
-
-		@SubscribeEvent
-		public static void stop(final FMLServerStoppedEvent e) {
-			FluxPlus.putAction("exit");
 		}
 	}
 }
