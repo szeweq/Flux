@@ -19,6 +19,7 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 	private final IRecipeType<?> recipeType;
 
 	public MachineRecipeGui(IRecipeType<?> recipeType, String name) {
+		super();
 		this.recipeType = recipeType;
 		filterName = "gui.flux.recipebook.toggleRecipes." + name;
 	}

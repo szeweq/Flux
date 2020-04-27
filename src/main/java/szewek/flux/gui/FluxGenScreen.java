@@ -52,7 +52,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		String s = title.getFormattedText();
+		final String s = title.getFormattedText();
 		font.drawString(s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
 		font.drawString(playerInventory.getDisplayName().getFormattedText(), 8.0F, ySize - 96 + 2, 0x404040);
 		int mx = mouseX - guiLeft;

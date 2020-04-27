@@ -108,7 +108,7 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		return recipeGui.mouseClicked(mouseX, mouseY, mouseButton) || (recipeBookShown && recipeGui.isVisible() || super.mouseClicked(mouseX, mouseY, mouseButton));
+		return recipeGui.mouseClicked(mouseX, mouseY, mouseButton) || recipeBookShown && recipeGui.isVisible() || super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
 	@Override
