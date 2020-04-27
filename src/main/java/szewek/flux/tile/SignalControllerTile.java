@@ -47,7 +47,6 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 				case 1:
 					currentChannel = (short) MathHelper.clamp(value, 0, 256);
 			}
-			System.out.println("SCT RECEIVED [" + index + "] = " + value);
 		}
 
 		@Override
