@@ -127,7 +127,7 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 			return false;
 		}
 		try {
-			short st = Short.parseShort(txt);
+			int st = Integer.parseInt(txt);
 			if (st < 0 || st > 255) {
 				return false;
 			}
