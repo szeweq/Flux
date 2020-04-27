@@ -1,4 +1,4 @@
-# Flux Library (Version 3.2.1)
+# Flux Library (Version 3.2.2)
 
 ### Fixes
-- Machines can get recipes via RecipeCompat even if a recipe type has no compatible types registered.
+- Dedicated servers should be stopped without long hang-ups
