@@ -34,6 +34,7 @@ import szewek.flux.network.FluxPackets;
 import szewek.flux.signal.MinecartSignals;
 import szewek.flux.util.FluxData;
 import szewek.flux.util.Gifts;
+import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
 @Mod(FluxMod.MODID)
@@ -45,38 +46,21 @@ public final class FluxMod {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FluxCfg.commonSpec);
 		modEventBus.register(FluxCfg.class);
-		modEventBus.register(CommonEvents.class);
+		modEventBus.addListener(FluxMod::setup);
 		modEventBus.register(F.class);
 	}
 
-	final static class CommonEvents {
-		@SubscribeEvent
-		public static void setup(final FMLCommonSetupEvent e) {
-			modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
-			FluxPackets.init();
+	private static void setup(final FMLCommonSetupEvent e) {
+		modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
+		FluxPackets.init();
 
-			if (!FluxCfg.COMMON.disableOres.get()) {
-				ForgeRegistries.BIOMES.getValues().forEach(biome -> {
-					Biome.Category cat = biome.getCategory();
-					if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
-						biome.addFeature(
-								GenerationStage.Decoration.UNDERGROUND_ORES,
-								Feature.ORE.withConfiguration(new OreFeatureConfig(
-										OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-										F.B.ORES.get(Metals.COPPER).getDefaultState(),
-								7
-	                            )).withPlacement(Placement.COUNT_RANGE.configure(new CountRangeConfig(20, 0, 0, 96)))
-	                    );
-						biome.addFeature(
-								GenerationStage.Decoration.UNDERGROUND_ORES,
-								Feature.ORE.withConfiguration(new OreFeatureConfig(
-										OreFeatureConfig.FillerBlockType.NATURAL_STONE,
-										F.B.ORES.get(Metals.TIN).getDefaultState(),
-								7
-	                            )).withPlacement(Placement.COUNT_RANGE.configure(new CountRangeConfig(20, 0, 0, 72)))
-	                    );
-					}
-				});
+		if (!FluxCfg.COMMON.disableOres.get()) {
+			for (Biome biome : ForgeRegistries.BIOMES.getValues()) {
+				Biome.Category cat = biome.getCategory();
+				if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
+					addOreGen(biome, Metals.COPPER, new CountRangeConfig(20, 0, 0, 96));
+					addOreGen(biome, Metals.TIN, new CountRangeConfig(20, 0, 0, 72));
+				}
 			}
 		}
 	}
@@ -128,5 +112,16 @@ public final class FluxMod {
 		public static void serverAboutToStart(final FMLServerAboutToStartEvent e) {
 			FluxData.addReloadListeners(e.getServer().getResourceManager());
 		}
+	}
+
+	private static void addOreGen(Biome biome, Metal metal, CountRangeConfig cfg) {
+		biome.addFeature(
+				GenerationStage.Decoration.UNDERGROUND_ORES,
+				Feature.ORE.withConfiguration(new OreFeatureConfig(
+						OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+						F.B.ORES.get(metal).getDefaultState(),
+						7
+				)).withPlacement(Placement.COUNT_RANGE.configure(cfg))
+		);
 	}
 }
