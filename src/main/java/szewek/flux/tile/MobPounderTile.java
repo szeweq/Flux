@@ -1,6 +1,7 @@
 package szewek.flux.tile;
 
-import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.util.DamageSource;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
@@ -18,9 +19,9 @@ public class MobPounderTile extends EntityInteractingTile {
 		final int usage = FluxCfg.COMMON.mobPounderEU.get();
 		if (aabb != null && energy >= usage) {
 			assert world != null;
-			List<MonsterEntity> monsters = world.getEntitiesWithinAABB(MonsterEntity.class, aabb);
-			for (MonsterEntity monster : monsters) {
-				monster.attackEntityFrom(DamageSource.GENERIC, 100);
+			List<LivingEntity> badMobs = world.getEntitiesWithinAABB(LivingEntity.class, aabb, m -> m instanceof IMob);
+			for (LivingEntity mob : badMobs) {
+				mob.attackEntityFrom(DamageSource.GENERIC, 100);
 				energy -= usage;
 				if (energy < usage) {
 					break;
