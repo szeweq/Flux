@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraftforge.common.Tags;
 import szewek.fl.util.ItemsUtil;
 import szewek.fl.util.SpatialWalker;
 import szewek.fl.util.SpatialWalker.Action;
@@ -83,6 +84,16 @@ public class FarmerTile extends BlockInteractingTile {
 				world.removeBlock(bp, false);
 			} else {
 				world.setBlockState(bp, nbs);
+			}
+			for (int i = 0; i < drops.size(); i++) {
+				ItemStack stack = drops.get(i);
+				if (Tags.Items.SEEDS.contains(stack.getItem())) {
+					stack.grow(-1);
+					if (stack.isEmpty()) {
+						drops.remove(i);
+					}
+					break;
+				}
 			}
 			ItemsUtil.trySendingItems(drops, world, pos);
 		}
