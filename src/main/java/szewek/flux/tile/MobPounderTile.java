@@ -19,8 +19,8 @@ public class MobPounderTile extends EntityInteractingTile {
 		final int usage = FluxCfg.COMMON.mobPounderEU.get();
 		if (aabb != null && energy >= usage) {
 			assert world != null;
-			List<LivingEntity> badMobs = world.getEntitiesWithinAABB(LivingEntity.class, aabb, m -> m instanceof IMob);
-			for (LivingEntity mob : badMobs) {
+			List<LivingEntity> mobs = world.getEntitiesWithinAABB(LivingEntity.class, aabb, m -> m instanceof IMob);
+			for (LivingEntity mob : mobs) {
 				mob.attackEntityFrom(DamageSource.GENERIC, 100);
 				energy -= usage;
 				if (energy < usage) {
