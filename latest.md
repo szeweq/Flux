@@ -1,9 +1,8 @@
-# Flux (Version 4.14.0)
+# Flux (Version 4.14.1)
 Requires Flux Library 3.2.1 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
-### NEW BLOCK: Copier
-A new machine that copies books and banners. It uses energy for processing.
+### Fixes
 
-### Other changes
-- Removed Multifactory (it didn't have any use)
-- Removed washing recipe type from RecipeCompat
+- **Farmer** - one seed is properly removed from items gathered from crops. A seed must be registered in `forge:seeds` item tag.
+
+- **Mob Pounder** - now kills every mob, including slimes, magma cubes and ghasts.
