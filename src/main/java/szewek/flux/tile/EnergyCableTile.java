@@ -14,9 +14,8 @@ import szewek.flux.energy.EnergyCache;
 import javax.annotation.Nullable;
 
 public final class EnergyCableTile extends AbstractCableTile {
-	private int energy, cooldown;
+	private int energy;
 	private final Side[] sides = new Side[6];
-	private byte sideFlag;
 	private final EnergyCache energyCache = new EnergyCache(this);
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
@@ -109,7 +108,6 @@ public final class EnergyCableTile extends AbstractCableTile {
 				}
 				if (!simulate) {
 					energy += r;
-					sideFlag |= bit;
 				}
 			}
 			return r;
@@ -124,7 +122,6 @@ public final class EnergyCableTile extends AbstractCableTile {
 				}
 				if (!simulate) {
 					energy -= r;
-					sideFlag |= bit;
 				}
 			}
 			return r;
@@ -132,7 +129,6 @@ public final class EnergyCableTile extends AbstractCableTile {
 
 		private void syncEnergy(int diff) {
 			energy += diff;
-			sideFlag |= bit;
 		}
 
 		@Override

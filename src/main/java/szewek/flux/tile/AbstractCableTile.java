@@ -7,7 +7,7 @@ import net.minecraft.util.Direction;
 
 public abstract class AbstractCableTile extends TileEntity implements ITickableTileEntity {
 	private int cooldown;
-	private byte sideFlag;
+	protected byte sideFlag;
 
 	public AbstractCableTile(TileEntityType<?> type) {
 		super(type);

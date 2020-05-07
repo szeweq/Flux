@@ -2,6 +2,7 @@ package szewek.flux.tile;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
 import szewek.fl.signal.ISignalHandler;
@@ -10,11 +11,10 @@ import szewek.fl.util.SideCached;
 import szewek.flux.F;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.BitSet;
 
 public class SignalCableTile extends AbstractCableTile {
-	private int cooldown;
-	private byte sideFlag;
 	private final Side[] sides = new Side[6];
 	private BitSet bits = new BitSet(256);
 	private final SideCached<ISignalHandler> signalCache = new SideCached<>(dir -> {
@@ -31,6 +31,9 @@ public class SignalCableTile extends AbstractCableTile {
 
 	public SignalCableTile() {
 		super(F.T.SIGNAL_CABLE);
+		for(int i = 0; i < 6; i++) {
+			sides[i] = new Side(i);
+		}
 	}
 
 	@Override
@@ -53,6 +56,24 @@ public class SignalCableTile extends AbstractCableTile {
 
 	public LazyOptional<ISignalHandler> getSide(Direction dir) {
 		return sides[dir.getIndex()].lazy;
+	}
+
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+		if (!removed && cap == SignalCapability.SIGNAL_CAP && side != null) {
+			return sides[side.getIndex()].lazy.cast();
+		} else {
+			return super.getCapability(cap, side);
+		}
+	}
+
+	@Override
+	public void remove() {
+		super.remove();
+		signalCache.clear();
+		for (Side s : sides) {
+			s.lazy.invalidate();
+		}
 	}
 
 	public final class Side implements ISignalHandler, NonNullSupplier<ISignalHandler> {
