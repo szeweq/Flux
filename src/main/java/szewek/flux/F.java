@@ -255,7 +255,9 @@ public final class F {
 		public static final Map<Metal, FluxOreBlock> ORES = makeOres();
 		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeBlocks();
 		public static final FluxGenBlock FLUXGEN = new FluxGenBlock();
-		public static final EnergyCableBlock ENERGY_CABLE = new EnergyCableBlock();
+		public static final AbstractCableBlock
+				ENERGY_CABLE = new EnergyCableBlock(),
+				SIGNAL_CABLE = new SignalCableBlock();
 		public static final RRTableBlock RR_TABLE = new RRTableBlock();
 		public static final OnlineMarketBlock ONLINE_MARKET = new OnlineMarketBlock();
 		public static final InteractorRailBlock INTERACTOR_RAIL = new InteractorRailBlock();
@@ -303,6 +305,7 @@ public final class F {
 	public static final class T {
 		public static final TileEntityType<FluxGenTile> FLUXGEN;
 		public static final TileEntityType<EnergyCableTile> ENERGY_CABLE;
+		public static final TileEntityType<SignalCableTile> SIGNAL_CABLE;
 		public static final TileEntityType<DiggerTile> DIGGER;
 		public static final TileEntityType<FarmerTile> FARMER;
 		public static final TileEntityType<ButcherTile> BUTCHER;
@@ -322,6 +325,7 @@ public final class F {
 		static {
 			FLUXGEN = tile(FluxGenTile::new, "fluxgen", B.FLUXGEN);
 			ENERGY_CABLE = tile(EnergyCableTile::new, "energy_cable", B.ENERGY_CABLE);
+			SIGNAL_CABLE = tile(SignalCableTile::new, "signal_cable", B.SIGNAL_CABLE);
 			DIGGER = tile(DiggerTile::new, "digger", B.DIGGER);
 			FARMER = tile(FarmerTile::new, "farmer", B.FARMER);
 			BUTCHER = tile(ButcherTile::new, "butcher", B.BUTCHER);

@@ -3,6 +3,7 @@ package szewek.flux.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SixWayBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
@@ -16,8 +17,9 @@ import net.minecraft.world.IWorld;
 import java.util.Map;
 
 public abstract class AbstractCableBlock extends SixWayBlock {
-	protected AbstractCableBlock(Properties properties) {
-		super(0.25F, properties);
+	protected AbstractCableBlock() {
+		super(0.25F, Block.Properties.create(Material.IRON)
+				.hardnessAndResistance(0.3f));
 		this.setDefaultState(stateContainer.getBaseState()
 				.with(SixWayBlock.NORTH, false)
 				.with(SixWayBlock.EAST, false)

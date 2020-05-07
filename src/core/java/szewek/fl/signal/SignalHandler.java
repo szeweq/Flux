@@ -26,5 +26,4 @@ public class SignalHandler implements ISignalHandler {
 	public void putSignal(short channel, boolean state) {
 		bits.set(channel, state);
 	}
-
 }
