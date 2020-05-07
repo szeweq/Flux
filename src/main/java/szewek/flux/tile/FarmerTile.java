@@ -3,6 +3,7 @@ package szewek.flux.tile;
 import net.minecraft.block.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootContext;
@@ -55,10 +56,10 @@ public class FarmerTile extends BlockInteractingTile {
 					harvestPillar(b, bp, 16);
 				} else if (b == Blocks.SEA_PICKLE && bs.get(SeaPickleBlock.PICKLES) > 1) {
 					tryHarvest(bs, bp, bs.with(SeaPickleBlock.PICKLES, 1));
-				} else if (b == Blocks.SWEET_BERRY_BUSH) {
-					int n = bs.get(SweetBerryBushBlock.AGE);
+				} else if (b == Blocks.SWEET_BERRY_BUSH || b == Blocks.NETHER_WART) {
+					int n = bs.get(BlockStateProperties.AGE_0_3);
 					if (n > 1) {
-						world.setBlockState(bp, bs.with(SweetBerryBushBlock.AGE, 1));
+						world.setBlockState(bp, bs.with(BlockStateProperties.AGE_0_3, 1));
 						ItemsUtil.trySendingItems(Collections.singleton(new ItemStack(Items.SWEET_BERRIES, n)), world, pos);
 					}
 				}
@@ -78,7 +79,10 @@ public class FarmerTile extends BlockInteractingTile {
 	}
 
 	private void tryHarvest(BlockState bs, BlockPos bp, @Nullable BlockState nbs) {
-		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld) world).withParameter(LootParameters.POSITION, bp).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
+		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld) world)
+				.withParameter(LootParameters.POSITION, bp)
+				.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
+		);
 		if (!drops.isEmpty()) {
 			if (nbs == null) {
 				world.removeBlock(bp, false);
