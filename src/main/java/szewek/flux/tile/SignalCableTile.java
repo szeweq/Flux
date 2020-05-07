@@ -1,6 +1,5 @@
 package szewek.flux.tile;
 
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.LazyOptional;
@@ -13,7 +12,7 @@ import szewek.flux.F;
 import javax.annotation.Nonnull;
 import java.util.BitSet;
 
-public class SignalCableTile extends TileEntity implements ITickableTileEntity {
+public class SignalCableTile extends AbstractCableTile {
 	private int cooldown;
 	private byte sideFlag;
 	private final Side[] sides = new Side[6];
@@ -34,38 +33,20 @@ public class SignalCableTile extends TileEntity implements ITickableTileEntity {
 		super(F.T.SIGNAL_CABLE);
 	}
 
-
 	@Override
-	public void tick() {
-		assert world != null;
-		if (!world.isRemote) {
-			if (--cooldown > 0) {
-				return;
-			}
-			cooldown = 4;
-			byte sf = (byte) (sideFlag ^ 63);
-			sideFlag = 0;
-			int i = 0;
-			final Direction[] dirs = Direction.values();
-			while (i < 6 && sf != 0) {
-				if ((sf & 1) != 0) {
-					ISignalHandler ish = signalCache.getCached(dirs[i]);
-					if (ish != null) {
-						if (ish instanceof Side) {
-							((Side) ish).addSignals(bits);
-						} else {
-							for (short ch = 0; ch < 256; ch++) {
-								if (ish.allowsSignalInput(ch)) {
-									ish.putSignal(ch, bits.get(ch));
-								} else if (ish.allowsSignalOutput(ch)) {
-									bits.set(ch, ish.getSignal(ch));
-								}
-							}
-						}
+	protected void updateSide(Direction dir) {
+		ISignalHandler ish = signalCache.getCached(dir);
+		if (ish != null) {
+			if (ish instanceof Side) {
+				((Side) ish).addSignals(bits);
+			} else {
+				for (short ch = 0; ch < 256; ch++) {
+					if (ish.allowsSignalInput(ch)) {
+						ish.putSignal(ch, bits.get(ch));
+					} else if (ish.allowsSignalOutput(ch)) {
+						bits.set(ch, ish.getSignal(ch));
 					}
 				}
-				sf >>= 1;
-				i++;
 			}
 		}
 	}

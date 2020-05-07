@@ -1,8 +1,6 @@
 package szewek.flux.tile;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -15,7 +13,7 @@ import szewek.flux.energy.EnergyCache;
 
 import javax.annotation.Nullable;
 
-public final class EnergyCableTile extends TileEntity implements ITickableTileEntity {
+public final class EnergyCableTile extends AbstractCableTile {
 	private int energy, cooldown;
 	private final Side[] sides = new Side[6];
 	private byte sideFlag;
@@ -42,50 +40,33 @@ public final class EnergyCableTile extends TileEntity implements ITickableTileEn
 	}
 
 	@Override
-	public void tick() {
-		assert world != null;
-		if (!world.isRemote) {
-			if (--cooldown > 0) {
-				return;
-			}
-			cooldown = 4;
-			byte sf = (byte) (sideFlag ^ 63);
-			sideFlag = 0;
-			int i = 0;
-			final Direction[] dirs = Direction.values();
-			while (i < 6 && sf != 0) {
-				if ((sf & 1) != 0) {
-					try {
-						IEnergyStorage ie = energyCache.getCached(dirs[i]);
-						if (ie != null) {
-							int r;
-							if (ie instanceof Side) {
-								r = (energy - ie.getEnergyStored()) / 2;
-								if (r != 0) {
-									energy -= r;
-									((Side) ie).syncEnergy(r);
-								}
-							} else if (ie.canReceive()) {
-								r = 10000;
-								if (r >= energy) {
-									r = energy;
-								}
-								r = ie.receiveEnergy(r, true);
-								if (r > 0) {
-									energy = energy - r;
-									ie.receiveEnergy(r, false);
-								}
-							}
-						}
-					} catch (Exception ignored) {
-						// Keep garbage "integrations" away from my precious Energy Cable!
-						energyCache.clear();
-						// A good mod developer ALWAYS invalidates LazyOptional instances!
+	protected void updateSide(Direction dir) {
+		try {
+			IEnergyStorage ie = energyCache.getCached(dir);
+			if (ie != null) {
+				int r;
+				if (ie instanceof Side) {
+					r = (energy - ie.getEnergyStored()) / 2;
+					if (r != 0) {
+						energy -= r;
+						((Side) ie).syncEnergy(r);
+					}
+				} else if (ie.canReceive()) {
+					r = 10000;
+					if (r >= energy) {
+						r = energy;
+					}
+					r = ie.receiveEnergy(r, true);
+					if (r > 0) {
+						energy = energy - r;
+						ie.receiveEnergy(r, false);
 					}
 				}
-				sf >>= 1;
-				i++;
 			}
+		} catch (Exception ignored) {
+			// Keep garbage "integrations" away from my precious Energy Cable!
+			energyCache.clear();
+			// A good mod developer ALWAYS invalidates LazyOptional instances!
 		}
 	}
 
