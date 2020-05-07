@@ -22,7 +22,7 @@ public final class FurnaceEnergy extends EnergyCapable {
 		int r = 0;
 		if (!furnace.isRemoved() && maxReceive > 0) {
 			World w = furnace.getWorld();
-			if (w != null && canBePowered(w)) {
+			if (canBePowered(w)) {
 				IIntArray data = furnace.furnaceData;
 				int burnTime = data.get(0) * USE;
 				if (burnTime < CAP) {
@@ -63,11 +63,10 @@ public final class FurnaceEnergy extends EnergyCapable {
 		if (furnace.isRemoved()) {
 			return false;
 		}
-		World w = furnace.getWorld();
-		return w != null && canBePowered(w);
+		return canBePowered(furnace.getWorld());
 	}
 
 	private boolean canBePowered(World w) {
-		return w.getRecipeManager().getRecipe(furnace.recipeType, furnace, w).map(furnace::canSmelt).orElse(false);
+		return w != null && w.getRecipeManager().getRecipe(furnace.recipeType, furnace, w).map(furnace::canSmelt).orElse(false);
 	}
 }
