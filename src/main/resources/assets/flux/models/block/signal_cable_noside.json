@@ -1,0 +1,7 @@
+{
+  "parent": "flux:block/cable_noside",
+  "textures": {
+    "texture": "flux:block/signal_cable",
+    "particle": "flux:block/signal_cable"
+  }
+}

@@ -1,19 +1,7 @@
 {
-  "ambientocclusion": false,
+  "parent": "flux:block/cable_side",
   "textures": {
     "texture": "flux:block/energy_cable",
     "particle": "flux:block/energy_cable"
-  },
-  "elements": [
-    {   "from": [ 4, 4, 0 ],
-      "to": [ 12, 12, 4 ],
-      "faces": {
-        "down":  { "texture": "#texture" },
-        "up":    { "texture": "#texture" },
-        "north": { "texture": "#texture", "cullface":"north" },
-        "west":  { "texture": "#texture" },
-        "east":  { "texture": "#texture" }
-      }
-    }
-  ]
+  }
 }

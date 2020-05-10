@@ -88,6 +88,7 @@
  bronze_block = "Block of Bronze"
  steel_block = "Block of Steel"
  energy_cable = "Energy Cable"
+ signal_cable = "Signal Cable [WIP]"
  digger = "Digger"
  farmer = "Farmer"
  butcher = "Butcher"
