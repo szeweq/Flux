@@ -43,7 +43,7 @@ public abstract class AbstractCableBlock extends SixWayBlock {
 	}
 
 	private BlockState makeConnections(IBlockReader w, BlockPos pos) {
-		BlockState bs = this.getDefaultState();
+		BlockState bs = getDefaultState();
 		boolean x;
 		for(Map.Entry<Direction, BooleanProperty> e : FACING_TO_PROPERTY_MAP.entrySet()) {
 			Direction dir = e.getKey();

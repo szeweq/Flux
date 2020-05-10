@@ -79,6 +79,7 @@ public final class F {
 		reg.registerAll(
 				B.FLUXGEN.setRegistryName(MODID, "fluxgen"),
 				B.ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
+				B.SIGNAL_CABLE.setRegistryName(MODID, "signal_cable"),
 				B.DIGGER.setRegistryName(MODID, "digger"),
 				B.FARMER.setRegistryName(MODID, "farmer"),
 				B.BUTCHER.setRegistryName(MODID, "butcher"),
@@ -136,6 +137,7 @@ public final class F {
 				fromBlock(B.WASHER, "washer"),
 				fromBlock(B.COMPACTOR, "compactor"),
 				fromBlock(B.ENERGY_CABLE, "energy_cable"),
+				fromBlock(B.SIGNAL_CABLE, "signal_cable"),
 				fromBlock(B.DIGGER, "digger"),
 				fromBlock(B.FARMER, "farmer"),
 				fromBlock(B.BUTCHER, "butcher"),
@@ -154,7 +156,7 @@ public final class F {
 	@SubscribeEvent
 	public static void tiles(final RegistryEvent.Register<TileEntityType<?>> re) {
 		re.getRegistry().registerAll(
-				T.FLUXGEN, T.ENERGY_CABLE, T.DIGGER, T.FARMER, T.BUTCHER, T.MOB_POUNDER, T.ITEM_ABSORBER,
+				T.FLUXGEN, T.ENERGY_CABLE, T.SIGNAL_CABLE, T.DIGGER, T.FARMER, T.BUTCHER, T.MOB_POUNDER, T.ITEM_ABSORBER,
 				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR, T.RR_TABLE, T.ONLINE_MARKET,
 				T.INTERACTOR_RAIL, T.SIGNAL_CONTROLLER, T.COPIER
 		);
