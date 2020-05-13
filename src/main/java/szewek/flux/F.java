@@ -44,7 +44,10 @@ import szewek.flux.container.*;
 import szewek.flux.gui.FluxGenScreen;
 import szewek.flux.gui.MachineScreen;
 import szewek.flux.gui.SignalControllerScreen;
-import szewek.flux.item.*;
+import szewek.flux.item.ChipItem;
+import szewek.flux.item.FluxAdhesiveItem;
+import szewek.flux.item.GiftItem;
+import szewek.flux.item.MetalItem;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.ChipUpgradeTrade;
@@ -110,7 +113,7 @@ public final class F {
 			reg.register(fromBlock(e.getValue(), e.getKey().metalName + "_block"));
 		}
 		reg.registerAll(
-				I.FLUXTOOL, I.GIFT, I.MACHINE_BASE, I.CHIP,
+				I.GIFT, I.MACHINE_BASE, I.CHIP,
 				I.SEAL, I.GLUE, I.PASTE,
 				fromBlock(B.FLUXGEN, "fluxgen"),
 				fromBlock(B.GRINDING_MILL, "grinding_mill"),
@@ -267,7 +270,6 @@ public final class F {
 				NUGGETS = metalMap("nugget", Metal::nonVanilla),
 				GEARS = metalMap("gear", null),
 				PLATES = metalMap("plate", null);
-		public static final FluxToolItem FLUXTOOL = item(FluxToolItem::new, "mftool", new Item.Properties().maxStackSize(1));
 		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
 		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());
 		public static final ChipItem CHIP = item(ChipItem::new, "chip", new Item.Properties());

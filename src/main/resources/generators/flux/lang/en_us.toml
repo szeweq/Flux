@@ -24,7 +24,6 @@
  basicMachineEU = "Energy usage for basic machines (Grinding Mill, Washer, etc.)"
 
 [item.flux]
- mftool = "Flux Tool"
  gift = "Flux Gift"
  machine_base = "Machine Base"
  chip = "Flux Chip"
