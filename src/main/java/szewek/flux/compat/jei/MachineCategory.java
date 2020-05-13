@@ -19,7 +19,7 @@ import szewek.flux.recipe.AbstractMachineRecipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

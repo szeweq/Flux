@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 import szewek.fl.recipe.RecipeCompat;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
+import szewek.flux.config.ConfigChangeListener;
 import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.util.IInventoryIO;
@@ -38,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, FluxCfg.IConfigChangeListener {
+public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, ConfigChangeListener {
 	private final int inputSize, outputSize;
 	protected int process = -1, processTotal, energyUse, processSpeed = 100, compatState;
 	protected boolean lazyCheck, wasLit;

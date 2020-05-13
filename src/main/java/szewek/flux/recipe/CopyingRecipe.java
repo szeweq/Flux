@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.flux.F;
-import szewek.flux.FluxMod;
+import szewek.flux.Flux;
 import szewek.flux.util.IInventoryIO;
 
 import javax.annotation.Nullable;
@@ -112,7 +112,7 @@ public class CopyingRecipe implements IRecipe<IInventoryIO>, Consumer<Iterable<I
 	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CopyingRecipe> {
 
 		private Serializer() {
-			setRegistryName(FluxMod.MODID, "copying");
+			setRegistryName(Flux.MODID, "copying");
 		}
 
 		@Override

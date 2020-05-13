@@ -32,7 +32,7 @@ import szewek.flux.util.Toolset;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 @JeiPlugin
 public class JEIFluxPlugin implements IModPlugin {

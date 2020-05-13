@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.*;
 import net.minecraftforge.registries.IForgeRegistry;
 import szewek.fl.util.FluxItemTier;
-import szewek.flux.FluxMod;
+import szewek.flux.Flux;
 import szewek.flux.util.metals.Metal;
 
 public class Toolset {
@@ -23,11 +23,11 @@ public class Toolset {
 		axe = new AxeItem(tier, 6, -3.1f, new Item.Properties().group(ItemGroup.TOOLS));
 		hoe = new HoeItem(tier, Math.max(tier.getHarvestLevel()-4, 0), new Item.Properties().group(ItemGroup.TOOLS));
 
-		sword.setRegistryName(FluxMod.MODID, name + "_sword");
-		shovel.setRegistryName(FluxMod.MODID, name + "_shovel");
-		pickaxe.setRegistryName(FluxMod.MODID, name + "_pickaxe");
-		axe.setRegistryName(FluxMod.MODID, name + "_axe");
-		hoe.setRegistryName(FluxMod.MODID, name + "_hoe");
+		sword.setRegistryName(Flux.MODID, name + "_sword");
+		shovel.setRegistryName(Flux.MODID, name + "_shovel");
+		pickaxe.setRegistryName(Flux.MODID, name + "_pickaxe");
+		axe.setRegistryName(Flux.MODID, name + "_axe");
+		hoe.setRegistryName(Flux.MODID, name + "_hoe");
 	}
 
 	public Item[] allTools() {

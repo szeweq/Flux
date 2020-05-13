@@ -37,16 +37,16 @@ import szewek.flux.util.Gifts;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
-@Mod(FluxMod.MODID)
-public final class FluxMod {
+@Mod(Flux.MODID)
+public final class Flux {
 	public static final String MODID = "flux";
 	private static IModInfo modInfo;
 
-	public FluxMod() {
+	public Flux() {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FluxCfg.commonSpec);
 		modEventBus.register(FluxCfg.class);
-		modEventBus.addListener(FluxMod::setup);
+		modEventBus.addListener(Flux::setup);
 		modEventBus.register(F.class);
 	}
 

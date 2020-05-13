@@ -33,6 +33,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import szewek.fl.recipe.RecipeCompat;
 import szewek.fl.type.FluxContainerType;
 import szewek.fl.type.FluxRecipeType;
@@ -58,7 +59,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 public final class F {
 	public static final ItemGroup FLUX_GROUP = new ItemGroup("flux.items") {
@@ -70,12 +71,8 @@ public final class F {
 	@SubscribeEvent
 	public static void blocks(final RegistryEvent.Register<Block> re) {
 		final IForgeRegistry<Block> reg = re.getRegistry();
-		for (FluxOreBlock ore : B.ORES.values()) {
-			reg.register(ore);
-		}
-		for (MetalBlock metalBlock : B.METAL_BLOCKS.values()) {
-			reg.register(metalBlock);
-		}
+		registerAll(reg, B.ORES.values());
+		registerAll(reg, B.METAL_BLOCKS.values());
 		reg.registerAll(
 				B.FLUXGEN.setRegistryName(MODID, "fluxgen"),
 				B.ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
@@ -100,33 +97,17 @@ public final class F {
 	@SubscribeEvent
 	public static void items(final RegistryEvent.Register<Item> re) {
 		final IForgeRegistry<Item> reg = re.getRegistry();
-		for (MetalItem grit : I.GRITS.values()) {
-			reg.register(grit);
-		}
-		for (MetalItem dust : I.DUSTS.values()) {
-			reg.register(dust);
-		}
-		for (MetalItem ingot : I.INGOTS.values()) {
-			reg.register(ingot);
-		}
-		for (MetalItem nugget : I.NUGGETS.values()) {
-			reg.register(nugget);
-		}
-		for (MetalItem gear : I.GEARS.values()) {
-			reg.register(gear);
-		}
-		for (MetalItem plate : I.PLATES.values()) {
-			reg.register(plate);
-		}
+		registerAll(reg, I.GRITS.values());
+		registerAll(reg, I.DUSTS.values());
+		registerAll(reg, I.INGOTS.values());
+		registerAll(reg, I.NUGGETS.values());
+		registerAll(reg, I.GEARS.values());
+		registerAll(reg, I.PLATES.values());
 		for (Map.Entry<Metal, FluxOreBlock> e : B.ORES.entrySet()) {
-			Metal key = e.getKey();
-			FluxOreBlock value = e.getValue();
-			reg.register(fromBlock(value, key.metalName + "_ore"));
+			reg.register(fromBlock(e.getValue(), e.getKey().metalName + "_ore"));
 		}
 		for (Map.Entry<Metal, MetalBlock> e : B.METAL_BLOCKS.entrySet()) {
-			Metal name = e.getKey();
-			MetalBlock b = e.getValue();
-			reg.register(fromBlock(b, name.metalName + "_block"));
+			reg.register(fromBlock(e.getValue(), e.getKey().metalName + "_block"));
 		}
 		reg.registerAll(
 				I.FLUXTOOL, I.GIFT, I.MACHINE_BASE, I.CHIP,
@@ -379,6 +360,12 @@ public final class F {
 
 	public static final class Tags {
 		public static final Tag<Block> DIGGER_SKIP = blockTag("digger_skip");
+	}
+
+	private static <T extends IForgeRegistryEntry<T>> void registerAll(IForgeRegistry<T> reg, Iterable<? extends T> iter) {
+		for (T t : iter) {
+			reg.register(t);
+		}
 	}
 
 	private static Map<Metal, FluxOreBlock> makeOres() {

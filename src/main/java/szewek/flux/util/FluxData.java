@@ -23,7 +23,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.container.SignalControllerContainer;
 
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 @OnlyIn(Dist.CLIENT)
 public class SignalControllerScreen extends ContainerScreen<SignalControllerContainer> implements Button.IPressable {

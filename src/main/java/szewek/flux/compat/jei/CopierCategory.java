@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

@@ -18,7 +18,7 @@ import szewek.flux.container.FluxGenContainer;
 import java.util.Arrays;
 import java.util.List;
 
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 @OnlyIn(Dist.CLIENT)
 public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> implements HoverSet.HoverListener {

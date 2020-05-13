@@ -13,7 +13,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.function.Supplier;
 
-import static szewek.flux.FluxMod.MODID;
+import static szewek.flux.Flux.MODID;
 
 public class FluxPackets {
 	private static final String PROTOCOL_VERSION = "1";
