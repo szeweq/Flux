@@ -44,10 +44,10 @@ public final class DrawUtils {
 			bottom = p;
 		}
 
-		float ya = (float)(c >> 24 & 255) / 255.0F;
-		float yr = (float)(c >> 16 & 255) / 255.0F;
-		float yg = (float)(c >> 8 & 255) / 255.0F;
-		float yb = (float)(c & 255) / 255.0F;
+		int ya = c >> 24 & 255;
+		int yr = c >> 16 & 255;
+		int yg = c >> 8 & 255;
+		int yb = c & 255;
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -70,14 +70,14 @@ public final class DrawUtils {
 	 * @param z Z position
 	 */
 	public static void drawGradientRectBatchOnly(double left, double top, double right, double bottom, int color1, int color2, double z) {
-		float ya = (float)(color1 >> 24 & 255) / 255.0F;
-		float yr = (float)(color1 >> 16 & 255) / 255.0F;
-		float yg = (float)(color1 >> 8 & 255) / 255.0F;
-		float yb = (float)(color1 & 255) / 255.0F;
-		float za = (float)(color2 >> 24 & 255) / 255.0F;
-		float zr = (float)(color2 >> 16 & 255) / 255.0F;
-		float zg = (float)(color2 >> 8 & 255) / 255.0F;
-		float zb = (float)(color2 & 255) / 255.0F;
+		int ya = color1 >> 24 & 255;
+		int yr = color1 >> 16 & 255;
+		int yg = color1 >> 8 & 255;
+		int yb = color1 & 255;
+		int za = color2 >> 24 & 255;
+		int zr = color2 >> 16 & 255;
+		int zg = color2 >> 8 & 255;
+		int zb = color2 & 255;
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
