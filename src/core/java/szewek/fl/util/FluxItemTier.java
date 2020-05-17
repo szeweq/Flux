@@ -20,18 +20,14 @@ public class FluxItemTier implements IItemTier {
 	public final Tag<Item> repairMaterialTag;
 	public final Item material;
 
-	public FluxItemTier(int harvestLevel, int maxUses, float efficiency, float attackDamage, int enchantability, String tagName, Item material) {
-		this(harvestLevel, maxUses, efficiency, attackDamage, enchantability, new ItemTags.Wrapper(new ResourceLocation("forge", tagName)), material);
-	}
-
-	public FluxItemTier(int harvestLevel, int maxUses, float efficiency, float attackDamage, int enchantability, Tag<Item> repairMaterialTag, Item material) {
-		this.harvestLevel = harvestLevel;
-		this.maxUses = maxUses;
-		this.efficiency = efficiency;
-		this.attackDamage = attackDamage;
-		this.enchantability = enchantability;
-		this.repairMaterialTag = repairMaterialTag;
-		this.material = material;
+	public FluxItemTier(Builder b) {
+		harvestLevel = b.harvestLevel;
+		maxUses = b.maxUses;
+		efficiency = b.efficiency;
+		attackDamage = b.attackDamage;
+		enchantability = b.enchantability;
+		repairMaterialTag = b.repairMaterialTag;
+		material = b.material;
 	}
 
 
@@ -63,5 +59,60 @@ public class FluxItemTier implements IItemTier {
 	@Override
 	public Ingredient getRepairMaterial() {
 		return Ingredient.fromTag(repairMaterialTag);
+	}
+
+	public static class Builder {
+		private int harvestLevel;
+		private int maxUses;
+		private float efficiency;
+		private float attackDamage;
+		private int enchantability;
+		private String tagName;
+		private Item material;
+		private Tag<Item> repairMaterialTag = new ItemTags.Wrapper(new ResourceLocation("forge", tagName));
+
+		public Builder setHarvestLevel(int harvestLevel) {
+			this.harvestLevel = harvestLevel;
+			return this;
+		}
+
+		public Builder setMaxUses(int maxUses) {
+			this.maxUses = maxUses;
+			return this;
+		}
+
+		public Builder setEfficiency(float efficiency) {
+			this.efficiency = efficiency;
+			return this;
+		}
+
+		public Builder setAttackDamage(float attackDamage) {
+			this.attackDamage = attackDamage;
+			return this;
+		}
+
+		public Builder setEnchantability(int enchantability) {
+			this.enchantability = enchantability;
+			return this;
+		}
+
+		public Builder setTagName(String tagName) {
+			this.tagName = tagName;
+			return this;
+		}
+
+		public Builder setMaterial(Item material) {
+			this.material = material;
+			return this;
+		}
+
+		public Builder setRepairMaterialTag(Tag<Item> repairMaterialTag) {
+			this.repairMaterialTag = repairMaterialTag;
+			return this;
+		}
+
+		public FluxItemTier build() {
+			return new FluxItemTier(this);
+		}
 	}
 }

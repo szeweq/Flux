@@ -280,12 +280,33 @@ public final class F {
 				PASTE = item(FluxAdhesiveItem::new, "paste", new Item.Properties());
 
 		public static final FluxItemTier
-				BRONZE_TIER = new FluxItemTier(2, 500, 7f, 2.5f, 20, "ingots/bronze", INGOTS.get(Metals.BRONZE)),
-				STEEL_TIER = new FluxItemTier(3, 1500, 8.5f, 3f, 22, "ingots/steel", INGOTS.get(Metals.STEEL));
+				BRONZE_TIER,
+				STEEL_TIER;
 		public static final Toolset
-				BRONZE_TOOLS = new Toolset(BRONZE_TIER, "bronze"),
-				STEEL_TOOLS = new Toolset(STEEL_TIER, "steel");
+				BRONZE_TOOLS,
+				STEEL_TOOLS;
 
+		static {
+			FluxItemTier.Builder b = new FluxItemTier.Builder();
+			BRONZE_TIER = b.setHarvestLevel(2)
+					.setMaxUses(500)
+					.setEfficiency(7f)
+					.setAttackDamage(2.5f)
+					.setEnchantability(20)
+					.setTagName("ingots/bronze")
+					.setMaterial(INGOTS.get(Metals.BRONZE))
+					.build();
+			STEEL_TIER = b.setHarvestLevel(3)
+					.setMaxUses(1500)
+					.setEfficiency(8.5f)
+					.setAttackDamage(3f)
+					.setEnchantability(22)
+					.setTagName("ingots/steel")
+					.setMaterial(INGOTS.get(Metals.STEEL))
+					.build();
+			BRONZE_TOOLS = new Toolset(BRONZE_TIER, "bronze");
+			STEEL_TOOLS = new Toolset(STEEL_TIER, "steel");
+		}
 	}
 
 	public static final class T {
