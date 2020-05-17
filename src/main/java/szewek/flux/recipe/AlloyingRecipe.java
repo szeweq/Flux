@@ -5,8 +5,8 @@ import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
 
 public final class AlloyingRecipe extends AbstractMachineRecipe {
-	public AlloyingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(F.R.ALLOYING, idIn, groupIn, builder);
+	public AlloyingRecipe(ResourceLocation idIn, MachineRecipeSerializer.Builder builder) {
+		super(F.R.ALLOYING, idIn, builder);
 	}
 
 	@Override

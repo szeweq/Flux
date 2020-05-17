@@ -5,8 +5,8 @@ import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
 
 public final class GrindingRecipe extends AbstractMachineRecipe {
-	public GrindingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(F.R.GRINDING, idIn, groupIn, builder);
+	public GrindingRecipe(ResourceLocation idIn, MachineRecipeSerializer.Builder builder) {
+		super(F.R.GRINDING, idIn, builder);
 	}
 
 	@Override

@@ -5,8 +5,8 @@ import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
 
 public final class WashingRecipe extends AbstractMachineRecipe {
-	public WashingRecipe(ResourceLocation idIn, String groupIn, MachineRecipeSerializer.Builder builder) {
-		super(F.R.WASHING, idIn, groupIn, builder);
+	public WashingRecipe(ResourceLocation idIn, MachineRecipeSerializer.Builder builder) {
+		super(F.R.WASHING, idIn, builder);
 	}
 
 	@Override

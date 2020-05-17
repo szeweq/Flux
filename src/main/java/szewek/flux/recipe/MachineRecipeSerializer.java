@@ -18,13 +18,14 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 	private static final String RESULT = "result";
-	private final MachineRecipeSerializer.IFactory<T> factory;
+	private final BiFunction<ResourceLocation, Builder, T> factory;
 	private final int defaultProcess;
 
-	public MachineRecipeSerializer(MachineRecipeSerializer.IFactory<T> factory, int defaultProcess) {
+	public MachineRecipeSerializer(BiFunction<ResourceLocation, Builder, T> factory, int defaultProcess) {
 		this.factory = factory;
 		this.defaultProcess = defaultProcess;
 	}
@@ -64,15 +65,15 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 
 		b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
 		b.process = JSONUtils.getInt(json, "processtime", defaultProcess);
+		b.group = JSONUtils.getString(json, "group", "");
 
-		String group = JSONUtils.getString(json, "group", "");
-		return factory.create(recipeId, group, b);
+		return factory.apply(recipeId, b);
 	}
 
 	@Override
 	public T read(ResourceLocation recipeId, PacketBuffer buffer) {
-		String s = buffer.readString(32767);
 		Builder b = new Builder();
+		b.group = buffer.readString(32767);
 		int size = buffer.readByte();
 
 		for(int i = 0; i < size; ++i) {
@@ -82,7 +83,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		b.result = buffer.readItemStack();
 		b.experience = buffer.readFloat();
 		b.process = buffer.readVarInt();
-		return factory.create(recipeId, s, b);
+		return factory.apply(recipeId, b);
 	}
 
 	@Override
@@ -120,13 +121,10 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		}
 	}
 
-	public interface IFactory<T extends AbstractMachineRecipe> {
-		T create(ResourceLocation var1, String var2, MachineRecipeSerializer.Builder var3);
-	}
-
 	public static final class Builder {
 		public final NonNullList<Ingredient> ingredients = NonNullList.create();
 		public ItemStack result = ItemStack.EMPTY;
+		public String group = "";
 		public float experience;
 		public int process;
 	}

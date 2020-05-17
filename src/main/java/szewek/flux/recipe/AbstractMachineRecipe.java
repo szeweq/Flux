@@ -25,10 +25,10 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 	private final ResourceLocation id;
 	private final String group;
 
-	public AbstractMachineRecipe(FluxRecipeType<?> type, ResourceLocation id, String group, MachineRecipeSerializer.Builder builder) {
+	public AbstractMachineRecipe(FluxRecipeType<?> type, ResourceLocation id, MachineRecipeSerializer.Builder builder) {
 		this.type = type;
 		this.id = id;
-		this.group = group;
+		group = builder.group;
 		ingredients = builder.ingredients;
 		result = builder.result;
 		experience = builder.experience;

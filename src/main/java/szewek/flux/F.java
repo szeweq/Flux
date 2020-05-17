@@ -57,6 +57,7 @@ import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -443,7 +444,7 @@ public final class F {
 		return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key, ser));
 	}
 
-	private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(MachineRecipeSerializer.IFactory<T> factory, String key) {
+	private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(BiFunction<ResourceLocation, MachineRecipeSerializer.Builder, T> factory, String key) {
 		MachineRecipeSerializer<T> mrs = new MachineRecipeSerializer<>(factory, 200);
 		mrs.setRegistryName(MODID, key);
 		return mrs;
