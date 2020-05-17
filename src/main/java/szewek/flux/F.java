@@ -305,7 +305,7 @@ public final class F {
 					.setEfficiency(7f)
 					.setAttackDamage(2.5f)
 					.setEnchantability(20)
-					.setTagName("ingots/bronze")
+					.setTag("ingots/bronze")
 					.setMaterial(INGOTS.get(Metals.BRONZE))
 					.build();
 			STEEL_TIER = b.setHarvestLevel(3)
@@ -313,7 +313,7 @@ public final class F {
 					.setEfficiency(8.5f)
 					.setAttackDamage(3f)
 					.setEnchantability(22)
-					.setTagName("ingots/steel")
+					.setTag("ingots/steel")
 					.setMaterial(INGOTS.get(Metals.STEEL))
 					.build();
 			BRONZE_TOOLS = new Toolset(BRONZE_TIER, "bronze");

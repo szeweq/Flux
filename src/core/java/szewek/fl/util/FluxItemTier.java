@@ -67,9 +67,8 @@ public class FluxItemTier implements IItemTier {
 		private float efficiency;
 		private float attackDamage;
 		private int enchantability;
-		private String tagName;
 		private Item material;
-		private Tag<Item> repairMaterialTag = new ItemTags.Wrapper(new ResourceLocation("forge", tagName));
+		private Tag<Item> repairMaterialTag;
 
 		public Builder setHarvestLevel(int harvestLevel) {
 			this.harvestLevel = harvestLevel;
@@ -96,18 +95,13 @@ public class FluxItemTier implements IItemTier {
 			return this;
 		}
 
-		public Builder setTagName(String tagName) {
-			this.tagName = tagName;
+		public Builder setTag(String tagName) {
+			repairMaterialTag = new ItemTags.Wrapper(new ResourceLocation("forge", tagName));
 			return this;
 		}
 
 		public Builder setMaterial(Item material) {
 			this.material = material;
-			return this;
-		}
-
-		public Builder setRepairMaterialTag(Tag<Item> repairMaterialTag) {
-			this.repairMaterialTag = repairMaterialTag;
 			return this;
 		}
 
