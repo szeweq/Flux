@@ -58,9 +58,8 @@ public final class FluxPlus {
 			try {
 				Map<String, String> m = ImmutableMap.of("recipeType", recipeType, "class", className, "msg", msg);
 				boolean b = connect("/report/recipeCompat").post(m).response(Boolean.TYPE);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOGGER.error("Exception while sending recipe compat error", e);
-				e.printStackTrace();
 			}
 		});
 	}
