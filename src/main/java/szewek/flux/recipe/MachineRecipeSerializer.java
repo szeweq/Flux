@@ -17,6 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
 	private static final String RESULT = "result";
@@ -35,16 +36,9 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 			throw new JsonSyntaxException("Missing result, expected to find a string or object");
 		}
 		boolean tagResult = false;
-		MachineRecipeSerializer.Builder b = new MachineRecipeSerializer.Builder();
+		Builder b = new Builder();
 		if (json.get(RESULT).isJsonObject()) {
-			JsonObject ro = JSONUtils.getJsonObject(json, RESULT);
-			if (ro.has("item")) {
-				b.result = ShapedRecipe.deserializeItem(ro);
-			}
-			if (ro.has("tag") && b.result == ItemStack.EMPTY) {
-				b.result = RecipeTagCompat.findItemTag(ro);
-				tagResult = true;
-			}
+			tagResult = readResultObject(json, b);
 			if (b.result == ItemStack.EMPTY) {
 				return null;
 			}
@@ -57,14 +51,9 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 			}
 			b.result = new ItemStack(item);
 		}
-		JsonArray arr = JSONUtils.getJsonArray(json, "ingredients");
+
 		try {
-			for (JsonElement jc : arr) {
-				Ingredient ingredient = Ingredient.deserialize(jc);
-				if (!ingredient.hasNoMatchingItems()) {
-					b.ingredients.add(ingredient);
-				}
-			}
+			readIngredients(json, b.ingredients);
 		} catch (JsonSyntaxException e) {
 			if (tagResult) {
 				return null;
@@ -83,7 +72,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 	@Override
 	public T read(ResourceLocation recipeId, PacketBuffer buffer) {
 		String s = buffer.readString(32767);
-		MachineRecipeSerializer.Builder b = new MachineRecipeSerializer.Builder();
+		Builder b = new Builder();
 		int size = buffer.readByte();
 
 		for(int i = 0; i < size; ++i) {
@@ -108,6 +97,27 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		buffer.writeItemStack(recipe.result);
 		buffer.writeFloat(recipe.experience);
 		buffer.writeVarInt(recipe.processTime);
+	}
+
+	private static boolean readResultObject(JsonObject json, Builder b) {
+		JsonObject ro = JSONUtils.getJsonObject(json, RESULT);
+		if (ro.has("item")) {
+			b.result = ShapedRecipe.deserializeItem(ro);
+		}
+		if (ro.has("tag") && b.result == ItemStack.EMPTY) {
+			b.result = RecipeTagCompat.findItemTag(ro);
+			return true;
+		}
+		return false;
+	}
+	private static void readIngredients(JsonObject json, List<Ingredient> ings) {
+		JsonArray arr = JSONUtils.getJsonArray(json, "ingredients");
+		for (JsonElement jc : arr) {
+			Ingredient ingredient = Ingredient.deserialize(jc);
+			if (!ingredient.hasNoMatchingItems()) {
+				ings.add(ingredient);
+			}
+		}
 	}
 
 	public interface IFactory<T extends AbstractMachineRecipe> {
