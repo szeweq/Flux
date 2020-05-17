@@ -1,5 +1,6 @@
 package szewek.flux;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -57,7 +58,10 @@ import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -245,6 +249,30 @@ public final class F {
 				WASHER = named(new MachineBlock(), "washer"),
 				COMPACTOR = named(new MachineBlock(), "compactor"),
 				COPIER = named(new MachineBlock(), "copier");
+
+		private static Map<Metal, FluxOreBlock> makeOres() {
+			ImmutableMap.Builder<Metal, FluxOreBlock> mb = new ImmutableMap.Builder<>();
+			for (Metal metal : Metals.all()) {
+				if (metal.notVanillaOrAlloy()) {
+					FluxOreBlock b = new FluxOreBlock(metal);
+					b.setRegistryName("flux", metal.metalName + "_ore");
+					mb.put(metal, b);
+				}
+			}
+			return mb.build();
+		}
+
+		private static Map<Metal, MetalBlock> makeBlocks() {
+			ImmutableMap.Builder<Metal, MetalBlock> mb = new ImmutableMap.Builder<>();
+			for (Metal metal : Metals.all()) {
+				if (metal.nonVanilla()) {
+					MetalBlock b = new MetalBlock(metal);
+					b.setRegistryName("flux", metal.metalName + "_block");
+					mb.put(metal, b);
+				}
+			}
+			return mb.build();
+		}
 	}
 
 	public static final class I {
@@ -255,13 +283,13 @@ public final class F {
 				NUGGETS = metalMap("nugget", Metal::nonVanilla),
 				GEARS = metalMap("gear", null),
 				PLATES = metalMap("plate", null);
-		public static final GiftItem GIFT = item(GiftItem::new, "gift", new Item.Properties().maxStackSize(1));
-		public static final Item MACHINE_BASE = item(Item::new, "machine_base", new Item.Properties());
-		public static final ChipItem CHIP = item(ChipItem::new, "chip", new Item.Properties());
+		public static final GiftItem GIFT = named(new GiftItem(new Item.Properties().maxStackSize(1)), "gift");
+		public static final Item MACHINE_BASE = named(new Item(new Item.Properties()), "machine_base");
+		public static final ChipItem CHIP = named(new ChipItem(new Item.Properties()), "chip");
 		public static final FluxAdhesiveItem
-				SEAL = item(FluxAdhesiveItem::new, "seal", new Item.Properties()),
-				GLUE = item(FluxAdhesiveItem::new, "glue", new Item.Properties()),
-				PASTE = item(FluxAdhesiveItem::new, "paste", new Item.Properties());
+				SEAL = named(new FluxAdhesiveItem(new Item.Properties()), "seal"),
+				GLUE = named(new FluxAdhesiveItem(new Item.Properties()), "glue"),
+				PASTE = named(new FluxAdhesiveItem(new Item.Properties()), "paste");
 
 		public static final FluxItemTier
 				BRONZE_TIER,
@@ -290,6 +318,17 @@ public final class F {
 					.build();
 			BRONZE_TOOLS = new Toolset(BRONZE_TIER, "bronze");
 			STEEL_TOOLS = new Toolset(STEEL_TIER, "steel");
+		}
+
+		private static Map<Metal, MetalItem> metalMap(String type, Predicate<Metal> filter) {
+			ImmutableMap.Builder<Metal, MetalItem> mb = new ImmutableMap.Builder<>();
+			Item.Properties props = new Item.Properties();
+			for (Metal met : Metals.all()) {
+				if (filter == null || filter.test(met)) {
+					mb.put(met, named(new MetalItem(props, met), met.metalName + '_' + type));
+				}
+			}
+			return mb.build();
 		}
 	}
 
@@ -332,6 +371,20 @@ public final class F {
 			WASHER = tile(Machine2For1Tile.make(R.WASHING, C.WASHER, "washer"), B.WASHER);
 			COMPACTOR = tile(Machine2For1Tile.make(R.COMPACTING, C.COMPACTOR, "compactor"), B.COMPACTOR);
 		}
+
+		@SuppressWarnings("ConstantConditions")
+		private static <T extends TileEntity> TileEntityType<T> tile(Supplier<T> f, Block b) {
+			TileEntityType<T> type = new TileEntityType<>(f, Collections.singleton(b), null);
+			type.setRegistryName(b.getRegistryName());
+			return type;
+		}
+
+		@SuppressWarnings("ConstantConditions")
+		private static <T extends TileEntity> FluxTileType<T> tile(Function<FluxTileType<T>, T> f, Block b) {
+			FluxTileType<T> type = new FluxTileType<>(f, Collections.singleton(b), null);
+			type.setRegistryName(b.getRegistryName());
+			return type;
+		}
 	}
 
 	public static final class C {
@@ -350,6 +403,18 @@ public final class F {
 			WASHER = containerFlux(Machine2For1Container.make(R.WASHING), "washer");
 			COMPACTOR = containerFlux(Machine2For1Container.make(R.COMPACTING), "compactor");
 		}
+
+		private static <C extends Container> ContainerType<C> container(IContainerFactory<C> factory, String name) {
+			ContainerType<C> ct = new ContainerType<>(factory);
+			ct.setRegistryName(MODID, name);
+			return ct;
+		}
+
+		private static <C extends AbstractMachineContainer> FluxContainerType<C> containerFlux(FluxContainerType.IContainerBuilder<C> cb, String name) {
+			FluxContainerType<C> ct = new FluxContainerType<>(cb);
+			ct.setRegistryName(MODID, name);
+			return ct;
+		}
 	}
 
 	public static final class R {
@@ -358,52 +423,39 @@ public final class F {
 		public static final FluxRecipeType<WashingRecipe> WASHING = recipe("washing", serializer(WashingRecipe::new, "washing"));
 		public static final FluxRecipeType<CompactingRecipe> COMPACTING = recipe("compacting", serializer(CompactingRecipe::new, "compacting"));
 		public static final FluxRecipeType<CopyingRecipe> COPYING = recipe("copying", CopyingRecipe.SERIALIZER);
+
+		private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key, IRecipeSerializer<T> ser) {
+			return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key, ser));
+		}
+
+		private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(BiFunction<ResourceLocation, MachineRecipeSerializer.Builder, T> factory, String key) {
+			MachineRecipeSerializer<T> mrs = new MachineRecipeSerializer<>(factory, 200);
+			mrs.setRegistryName(MODID, key);
+			return mrs;
+		}
 	}
 
 	public static final class V {
 		public static final PointOfInterestType
 				FLUX_ENGINEER_POI = poi("flux_engineer", B.FLUXGEN);
 		public static final VillagerProfession FLUX_ENGINEER = new VillagerProfession("flux:flux_engineer", FLUX_ENGINEER_POI, ImmutableSet.of(), ImmutableSet.of(), null);
+
+		private static PointOfInterestType poi(String name, Block b) {
+			return PointOfInterestType.func_221052_a(
+					new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1)
+							.setRegistryName(MODID, name)
+			);
+		}
 	}
 
 	public static final class Tags {
-		public static final Tag<Block> DIGGER_SKIP = blockTag("digger_skip");
+		public static final Tag<Block> DIGGER_SKIP = new BlockTags.Wrapper(new ResourceLocation(MODID, "digger_skip"));
 	}
 
 	private static <T extends IForgeRegistryEntry<T>> void registerAll(IForgeRegistry<T> reg, Iterable<? extends T> iter) {
 		for (T t : iter) {
 			reg.register(t);
 		}
-	}
-
-	private static Map<Metal, FluxOreBlock> makeOres() {
-		Map<Metal, FluxOreBlock> m = new HashMap<>();
-		for (Metal metal : Metals.all()) {
-			if (metal.notVanillaOrAlloy()) {
-				FluxOreBlock b = new FluxOreBlock(metal);
-				b.setRegistryName("flux", metal.metalName + "_ore");
-				m.put(metal, b);
-			}
-		}
-		return m;
-	}
-
-	private static Map<Metal, MetalBlock> makeBlocks() {
-		Map<Metal, MetalBlock> m = new HashMap<>();
-		for (Metal metal : Metals.all()) {
-			if (metal.nonVanilla()) {
-				MetalBlock b = new MetalBlock(metal);
-				b.setRegistryName("flux", metal.metalName + "_block");
-				m.put(metal, b);
-			}
-		}
-		return m;
-	}
-
-	private static <T extends Item> T item(Function<Item.Properties, T> f, String name, Item.Properties props) {
-		T item = f.apply(props.group(FLUX_GROUP));
-		item.setRegistryName(MODID, name);
-		return item;
 	}
 
 	@SuppressWarnings("ConstantConditions")
@@ -418,66 +470,8 @@ public final class F {
 		return t;
 	}
 
-	private static Map<Metal, MetalItem> metalMap(String type, Predicate<Metal> filter) {
-		Map<Metal, MetalItem> m = new HashMap<>();
-		Item.Properties props = new Item.Properties();
-		for (Metal met : Metals.all()) {
-			if (filter == null || filter.test(met)) {
-				m.put(met, item(p -> new MetalItem(p, met), met.metalName + '_' + type, props));
-			}
-		}
-		return m;
-	}
-
-	@SuppressWarnings("ConstantConditions")
-	private static <T extends TileEntity> TileEntityType<T> tile(Supplier<T> f, Block b) {
-		TileEntityType<T> type = new TileEntityType<>(f, Collections.singleton(b), null);
-		type.setRegistryName(b.getRegistryName());
-		return type;
-	}
-
-	@SuppressWarnings("ConstantConditions")
-	private static <T extends TileEntity> FluxTileType<T> tile(Function<FluxTileType<T>, T> f, Block b) {
-		FluxTileType<T> type = new FluxTileType<>(f, Collections.singleton(b), null);
-		type.setRegistryName(b.getRegistryName());
-		return type;
-	}
-
-	private static <C extends Container> ContainerType<C> container(IContainerFactory<C> factory, String name) {
-		ContainerType<C> ct = new ContainerType<>(factory);
-		ct.setRegistryName(MODID, name);
-		return ct;
-	}
-
-	private static <C extends AbstractMachineContainer> FluxContainerType<C> containerFlux(FluxContainerType.IContainerBuilder<C> cb, String name) {
-		FluxContainerType<C> ct = new FluxContainerType<>(cb);
-		ct.setRegistryName(MODID, name);
-		return ct;
-	}
-
-	private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key, IRecipeSerializer<T> ser) {
-		return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key, ser));
-	}
-
-	private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(BiFunction<ResourceLocation, MachineRecipeSerializer.Builder, T> factory, String key) {
-		MachineRecipeSerializer<T> mrs = new MachineRecipeSerializer<>(factory, 200);
-		mrs.setRegistryName(MODID, key);
-		return mrs;
-	}
-
-	private static PointOfInterestType poi(String name, Block b) {
-		return PointOfInterestType.func_221052_a(
-				new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1)
-				.setRegistryName(MODID, name)
-		);
-	}
-
 	private static void recipeCompat(IRecipeType<?> rtype, Predicate<String> filter, String... compats) {
 		RecipeCompat.registerCompatRecipeTypes(rtype, Arrays.stream(compats).filter(filter).collect(Collectors.toSet()));
-	}
-
-	private static Tag<Block> blockTag(String name) {
-		return new BlockTags.Wrapper(new ResourceLocation(MODID, name));
 	}
 
 	private F() {}
