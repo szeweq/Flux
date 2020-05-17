@@ -32,6 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import szewek.fl.recipe.RecipeCompat;
@@ -78,23 +79,11 @@ public final class F {
 		registerAll(reg, B.ORES.values());
 		registerAll(reg, B.METAL_BLOCKS.values());
 		reg.registerAll(
-				B.FLUXGEN.setRegistryName(MODID, "fluxgen"),
-				B.ENERGY_CABLE.setRegistryName(MODID, "energy_cable"),
-				B.SIGNAL_CABLE.setRegistryName(MODID, "signal_cable"),
-				B.DIGGER.setRegistryName(MODID, "digger"),
-				B.FARMER.setRegistryName(MODID, "farmer"),
-				B.BUTCHER.setRegistryName(MODID, "butcher"),
-				B.MOB_POUNDER.setRegistryName(MODID, "mob_pounder"),
-				B.ITEM_ABSORBER.setRegistryName(MODID, "item_absorber"),
-				B.RR_TABLE.setRegistryName(MODID, "rrtable"),
-				B.ONLINE_MARKET.setRegistryName(MODID, "online_market"),
-				B.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
-				B.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
-				B.WASHER.setRegistryName(MODID, "washer"),
-				B.COMPACTOR.setRegistryName(MODID, "compactor"),
-				B.INTERACTOR_RAIL.setRegistryName(MODID, "interactor_rail"),
-				B.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller"),
-				B.COPIER.setRegistryName(MODID, "copier")
+				B.FLUXGEN, B.ENERGY_CABLE, B.SIGNAL_CABLE,
+				B.DIGGER, B.FARMER, B.BUTCHER, B.MOB_POUNDER, B.ITEM_ABSORBER,
+				B.RR_TABLE, B.ONLINE_MARKET,
+				B.GRINDING_MILL, B.ALLOY_CASTER, B.WASHER, B.COMPACTOR,
+				B.INTERACTOR_RAIL, B.SIGNAL_CONTROLLER, B.COPIER
 		);
 	}
 
@@ -107,32 +96,32 @@ public final class F {
 		registerAll(reg, I.NUGGETS.values());
 		registerAll(reg, I.GEARS.values());
 		registerAll(reg, I.PLATES.values());
-		for (Map.Entry<Metal, FluxOreBlock> e : B.ORES.entrySet()) {
-			reg.register(fromBlock(e.getValue(), e.getKey().metalName + "_ore"));
+		for (FluxOreBlock ore : B.ORES.values()) {
+			reg.register(fromBlock(ore));
 		}
-		for (Map.Entry<Metal, MetalBlock> e : B.METAL_BLOCKS.entrySet()) {
-			reg.register(fromBlock(e.getValue(), e.getKey().metalName + "_block"));
+		for (MetalBlock mb : B.METAL_BLOCKS.values()) {
+			reg.register(fromBlock(mb));
 		}
 		reg.registerAll(
 				I.GIFT, I.MACHINE_BASE, I.CHIP,
 				I.SEAL, I.GLUE, I.PASTE,
-				fromBlock(B.FLUXGEN, "fluxgen"),
-				fromBlock(B.GRINDING_MILL, "grinding_mill"),
-				fromBlock(B.ALLOY_CASTER, "alloy_caster"),
-				fromBlock(B.WASHER, "washer"),
-				fromBlock(B.COMPACTOR, "compactor"),
-				fromBlock(B.ENERGY_CABLE, "energy_cable"),
-				fromBlock(B.SIGNAL_CABLE, "signal_cable"),
-				fromBlock(B.DIGGER, "digger"),
-				fromBlock(B.FARMER, "farmer"),
-				fromBlock(B.BUTCHER, "butcher"),
-				fromBlock(B.MOB_POUNDER, "mob_pounder"),
-				fromBlock(B.ITEM_ABSORBER, "item_absorber"),
-				fromBlock(B.RR_TABLE, "rrtable"),
-				fromBlock(B.ONLINE_MARKET, "online_market"),
-				fromBlock(B.INTERACTOR_RAIL, "interactor_rail"),
-				fromBlock(B.SIGNAL_CONTROLLER, "signal_controller"),
-				fromBlock(B.COPIER, "copier")
+				fromBlock(B.FLUXGEN),
+				fromBlock(B.GRINDING_MILL),
+				fromBlock(B.ALLOY_CASTER),
+				fromBlock(B.WASHER),
+				fromBlock(B.COMPACTOR),
+				fromBlock(B.ENERGY_CABLE),
+				fromBlock(B.SIGNAL_CABLE),
+				fromBlock(B.DIGGER),
+				fromBlock(B.FARMER),
+				fromBlock(B.BUTCHER),
+				fromBlock(B.MOB_POUNDER),
+				fromBlock(B.ITEM_ABSORBER),
+				fromBlock(B.RR_TABLE),
+				fromBlock(B.ONLINE_MARKET),
+				fromBlock(B.INTERACTOR_RAIL),
+				fromBlock(B.SIGNAL_CONTROLLER),
+				fromBlock(B.COPIER)
 		);
 		I.BRONZE_TOOLS.registerTools(reg);
 		I.STEEL_TOOLS.registerTools(reg);
@@ -150,13 +139,8 @@ public final class F {
 	@SubscribeEvent
 	public static void containers(final RegistryEvent.Register<ContainerType<?>> re) {
 		re.getRegistry().registerAll(
-				C.FLUXGEN.setRegistryName(MODID, "fluxgen"),
-				C.GRINDING_MILL.setRegistryName(MODID, "grinding_mill"),
-				C.ALLOY_CASTER.setRegistryName(MODID, "alloy_caster"),
-				C.WASHER.setRegistryName(MODID, "washer"),
-				C.COMPACTOR.setRegistryName(MODID, "compactor"),
-				C.SIGNAL_CONTROLLER.setRegistryName(MODID, "signal_controller"),
-				C.COPIER.setRegistryName(MODID, "copier")
+				C.FLUXGEN, C.GRINDING_MILL, C.ALLOY_CASTER, C.WASHER, C.COMPACTOR,
+				C.SIGNAL_CONTROLLER, C.COPIER
 		);
 	}
 
@@ -241,26 +225,26 @@ public final class F {
 	public static final class B {
 		public static final Map<Metal, FluxOreBlock> ORES = makeOres();
 		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeBlocks();
-		public static final FluxGenBlock FLUXGEN = new FluxGenBlock();
+		public static final FluxGenBlock FLUXGEN = named(new FluxGenBlock(), "fluxgen");
 		public static final AbstractCableBlock
-				ENERGY_CABLE = new EnergyCableBlock(),
-				SIGNAL_CABLE = new SignalCableBlock();
-		public static final RRTableBlock RR_TABLE = new RRTableBlock();
-		public static final OnlineMarketBlock ONLINE_MARKET = new OnlineMarketBlock();
-		public static final InteractorRailBlock INTERACTOR_RAIL = new InteractorRailBlock();
-		public static final SignalControllerBlock SIGNAL_CONTROLLER = new SignalControllerBlock();
+				ENERGY_CABLE = named(new EnergyCableBlock(), "energy_cable"),
+				SIGNAL_CABLE = named(new SignalCableBlock(), "signal_cable");
+		public static final RRTableBlock RR_TABLE = named(new RRTableBlock(), "rrtable");
+		public static final OnlineMarketBlock ONLINE_MARKET = named(new OnlineMarketBlock(), "online_market");
+		public static final InteractorRailBlock INTERACTOR_RAIL = named(new InteractorRailBlock(), "interactor_rail");
+		public static final SignalControllerBlock SIGNAL_CONTROLLER = named(new SignalControllerBlock(), "signal_controller");
 		public static final ActiveTileBlock
-				DIGGER = new ActiveTileBlock(),
-				FARMER = new ActiveTileBlock(),
-				BUTCHER = new ActiveTileBlock(),
-				MOB_POUNDER = new ActiveTileBlock(),
-				ITEM_ABSORBER = new ActiveTileBlock();
+				DIGGER = named(new ActiveTileBlock(), "digger"),
+				FARMER = named(new ActiveTileBlock(), "farmer"),
+				BUTCHER = named(new ActiveTileBlock(), "butcher"),
+				MOB_POUNDER = named(new ActiveTileBlock(), "mob_pounder"),
+				ITEM_ABSORBER = named(new ActiveTileBlock(), "item_absorber");
 		public static final MachineBlock
-				GRINDING_MILL = new MachineBlock(),
-				ALLOY_CASTER = new MachineBlock(),
-				WASHER = new MachineBlock(),
-				COMPACTOR = new MachineBlock(),
-				COPIER = new MachineBlock();
+				GRINDING_MILL = named(new MachineBlock(), "grinding_mill"),
+				ALLOY_CASTER = named(new MachineBlock(), "alloy_caster"),
+				WASHER = named(new MachineBlock(), "washer"),
+				COMPACTOR = named(new MachineBlock(), "compactor"),
+				COPIER = named(new MachineBlock(), "copier");
 	}
 
 	public static final class I {
@@ -330,23 +314,23 @@ public final class F {
 				COMPACTOR;
 
 		static {
-			FLUXGEN = tile(FluxGenTile::new, "fluxgen", B.FLUXGEN);
-			ENERGY_CABLE = tile(EnergyCableTile::new, "energy_cable", B.ENERGY_CABLE);
-			SIGNAL_CABLE = tile(SignalCableTile::new, "signal_cable", B.SIGNAL_CABLE);
-			DIGGER = tile(DiggerTile::new, "digger", B.DIGGER);
-			FARMER = tile(FarmerTile::new, "farmer", B.FARMER);
-			BUTCHER = tile(ButcherTile::new, "butcher", B.BUTCHER);
-			MOB_POUNDER = tile(MobPounderTile::new, "mob_pounder", B.MOB_POUNDER);
-			ITEM_ABSORBER = tile(ItemAbsorberTile::new, "item_absorber", B.ITEM_ABSORBER);
-			RR_TABLE = tile(RRTableTile::new, "rrtable", B.RR_TABLE);
-			ONLINE_MARKET = tile(OnlineMarketTile::new, "online_market", B.ONLINE_MARKET);
-			INTERACTOR_RAIL = tile(InteractorRailTile::new, "interactor_rail", B.INTERACTOR_RAIL);
-			SIGNAL_CONTROLLER = tile(SignalControllerTile::new, "signal_controller", B.SIGNAL_CONTROLLER);
-			COPIER = tile(CopierTile::new, "copier", B.COPIER);
-			GRINDING_MILL = tile(Machine2For1Tile.make(R.GRINDING, C.GRINDING_MILL, "grinding_mill"), "grinding_mill", B.GRINDING_MILL);
-			ALLOY_CASTER = tile(Machine2For1Tile.make(R.ALLOYING, C.ALLOY_CASTER, "alloy_caster"), "alloy_caster", B.ALLOY_CASTER);
-			WASHER = tile(Machine2For1Tile.make(R.WASHING, C.WASHER, "washer"), "washer", B.WASHER);
-			COMPACTOR = tile(Machine2For1Tile.make(R.COMPACTING, C.COMPACTOR, "compactor"), "compactor", B.COMPACTOR);
+			FLUXGEN = tile(FluxGenTile::new, B.FLUXGEN);
+			ENERGY_CABLE = tile(EnergyCableTile::new, B.ENERGY_CABLE);
+			SIGNAL_CABLE = tile(SignalCableTile::new, B.SIGNAL_CABLE);
+			DIGGER = tile(DiggerTile::new, B.DIGGER);
+			FARMER = tile(FarmerTile::new, B.FARMER);
+			BUTCHER = tile(ButcherTile::new, B.BUTCHER);
+			MOB_POUNDER = tile(MobPounderTile::new, B.MOB_POUNDER);
+			ITEM_ABSORBER = tile(ItemAbsorberTile::new, B.ITEM_ABSORBER);
+			RR_TABLE = tile(RRTableTile::new, B.RR_TABLE);
+			ONLINE_MARKET = tile(OnlineMarketTile::new, B.ONLINE_MARKET);
+			INTERACTOR_RAIL = tile(InteractorRailTile::new, B.INTERACTOR_RAIL);
+			SIGNAL_CONTROLLER = tile(SignalControllerTile::new, B.SIGNAL_CONTROLLER);
+			COPIER = tile(CopierTile::new, B.COPIER);
+			GRINDING_MILL = tile(Machine2For1Tile.make(R.GRINDING, C.GRINDING_MILL, "grinding_mill"), B.GRINDING_MILL);
+			ALLOY_CASTER = tile(Machine2For1Tile.make(R.ALLOYING, C.ALLOY_CASTER, "alloy_caster"), B.ALLOY_CASTER);
+			WASHER = tile(Machine2For1Tile.make(R.WASHING, C.WASHER, "washer"), B.WASHER);
+			COMPACTOR = tile(Machine2For1Tile.make(R.COMPACTING, C.COMPACTOR, "compactor"), B.COMPACTOR);
 		}
 	}
 
@@ -358,13 +342,13 @@ public final class F {
 				GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
 
 		static {
-			FLUXGEN = container(FluxGenContainer::new);
-			SIGNAL_CONTROLLER = container(SignalControllerContainer::new);
-			COPIER = container(CopierContainer::new);
-			GRINDING_MILL = containerFlux(Machine2For1Container.make(R.GRINDING));
-			ALLOY_CASTER = containerFlux(Machine2For1Container.make(R.ALLOYING));
-			WASHER = containerFlux(Machine2For1Container.make(R.WASHING));
-			COMPACTOR = containerFlux(Machine2For1Container.make(R.COMPACTING));
+			FLUXGEN = container(FluxGenContainer::new, "fluxgen");
+			SIGNAL_CONTROLLER = container(SignalControllerContainer::new, "signal_controller");
+			COPIER = container(CopierContainer::new, "copier");
+			GRINDING_MILL = containerFlux(Machine2For1Container.make(R.GRINDING), "grinding_mill");
+			ALLOY_CASTER = containerFlux(Machine2For1Container.make(R.ALLOYING), "alloy_caster");
+			WASHER = containerFlux(Machine2For1Container.make(R.WASHING), "washer");
+			COMPACTOR = containerFlux(Machine2For1Container.make(R.COMPACTING), "compactor");
 		}
 	}
 
@@ -422,10 +406,16 @@ public final class F {
 		return item;
 	}
 
-	private static BlockItem fromBlock(Block b, String name) {
+	@SuppressWarnings("ConstantConditions")
+	private static BlockItem fromBlock(Block b) {
 		BlockItem item = new BlockItem(b, new Item.Properties().group(FLUX_GROUP));
-		item.setRegistryName(MODID, name);
+		item.setRegistryName(b.getRegistryName());
 		return item;
+	}
+
+	private static <T extends ForgeRegistryEntry<? super T>> T named(T t, String name) {
+		t.setRegistryName(MODID, name);
+		return t;
 	}
 
 	private static Map<Metal, MetalItem> metalMap(String type, Predicate<Metal> filter) {
@@ -439,26 +429,30 @@ public final class F {
 		return m;
 	}
 
-	private static <T extends TileEntity> TileEntityType<T> tile(Supplier<T> f, String name, Block b) {
-		//noinspection ConstantConditions
+	@SuppressWarnings("ConstantConditions")
+	private static <T extends TileEntity> TileEntityType<T> tile(Supplier<T> f, Block b) {
 		TileEntityType<T> type = new TileEntityType<>(f, Collections.singleton(b), null);
-		type.setRegistryName(MODID, name);
+		type.setRegistryName(b.getRegistryName());
 		return type;
 	}
 
-	private static <T extends TileEntity> FluxTileType<T> tile(Function<FluxTileType<T>, T> f, String name, Block b) {
-		//noinspection ConstantConditions
+	@SuppressWarnings("ConstantConditions")
+	private static <T extends TileEntity> FluxTileType<T> tile(Function<FluxTileType<T>, T> f, Block b) {
 		FluxTileType<T> type = new FluxTileType<>(f, Collections.singleton(b), null);
-		type.setRegistryName(MODID, name);
+		type.setRegistryName(b.getRegistryName());
 		return type;
 	}
 
-	private static <C extends Container> ContainerType<C> container(IContainerFactory<C> factory) {
-		return new ContainerType<>(factory);
+	private static <C extends Container> ContainerType<C> container(IContainerFactory<C> factory, String name) {
+		ContainerType<C> ct = new ContainerType<>(factory);
+		ct.setRegistryName(MODID, name);
+		return ct;
 	}
 
-	private static <C extends AbstractMachineContainer> FluxContainerType<C> containerFlux(FluxContainerType.IContainerBuilder<C> cb) {
-		return new FluxContainerType<>(cb);
+	private static <C extends AbstractMachineContainer> FluxContainerType<C> containerFlux(FluxContainerType.IContainerBuilder<C> cb, String name) {
+		FluxContainerType<C> ct = new FluxContainerType<>(cb);
+		ct.setRegistryName(MODID, name);
+		return ct;
 	}
 
 	private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key, IRecipeSerializer<T> ser) {
