@@ -113,28 +113,19 @@ public final class DrawUtils {
 		if (fl == Fluids.EMPTY) {
 			return;
 		}
-		int am = fs.getAmount();
-		int ny = y;
-		int nh = h;
-		if (am < cap) {
-			nh = h * am / cap;
-			ny += h - nh;
-		}
-
 		ResourceLocation still = fl.getAttributes().getStillTexture();
-		int color = fl.getAttributes().getColor(fs);
 		Minecraft minecraft = Minecraft.getInstance();
 		TextureAtlasSprite tas = minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
 		minecraft.textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+		glColorInt(fl.getAttributes().getColor(fs));
 
-		glColorInt(color);
+		final int ny = y + h;
+		final int nh = Math.min(h * fs.getAmount() / cap, h);
 
-		final int xTileCount = w / 16;
-		final int xRemainder = w - (xTileCount * 16);
-		final int yTileCount = nh / 16;
-		final int yRemainder = nh - (yTileCount * 16);
-
-		final int yStart = ny + nh;
+		final int xTiles = w >> 4;
+		final int xRemainder = w & 15;
+		final int yTiles = nh >> 4;
+		final int yRemainder = nh & 15;
 
 		float uMin = tas.getMinU();
 		float uMax = tas.getMaxU();
@@ -145,12 +136,13 @@ public final class DrawUtils {
 
 		RenderSystem.enableBlend();
 		RenderSystem.enableAlphaTest();
-		for (int xt = 0; xt <= xTileCount; xt++) {
-			for (int yt = 0; yt <= yTileCount; yt++) {
-				int width = (xt == xTileCount) ? xRemainder : 16;
-				int height = (yt == yTileCount) ? yRemainder : 16;
-				int tx = x + (xt * 16);
-				int ty = yStart - ((yt + 1) * 16);
+		for (int xt = 0; xt <= xTiles; xt++) {
+			int width = (xt == xTiles) ? xRemainder : 16;
+			int tx = x + (xt * 16);
+
+			for (int yt = 0; yt <= yTiles; yt++) {
+				int height = (yt == yTiles) ? yRemainder : 16;
+				int ty = ny - ((yt + 1) * 16);
 				if (width > 0 && height > 0) {
 					int maskTop = 16 - height;
 					int maskRight = 16 - width;
