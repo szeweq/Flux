@@ -127,5 +127,10 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		public String group = "";
 		public float experience;
 		public int process;
+
+		public Builder withGroup(String group) {
+			this.group = group;
+			return this;
+		}
 	}
 }

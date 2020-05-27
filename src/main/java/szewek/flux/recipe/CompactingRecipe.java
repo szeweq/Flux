@@ -9,6 +9,11 @@ public final class CompactingRecipe extends AbstractMachineRecipe {
 		super(F.R.COMPACTING, idIn, builder);
 	}
 
+	@Deprecated
+	public CompactingRecipe(ResourceLocation idIn, String group, MachineRecipeSerializer.Builder builder) {
+		this(idIn, builder.withGroup(group));
+	}
+
 	@Override
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.COMPACTOR);

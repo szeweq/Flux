@@ -9,6 +9,11 @@ public final class AlloyingRecipe extends AbstractMachineRecipe {
 		super(F.R.ALLOYING, idIn, builder);
 	}
 
+	@Deprecated
+	public AlloyingRecipe(ResourceLocation idIn, String group, MachineRecipeSerializer.Builder builder) {
+		this(idIn, builder.withGroup(group));
+	}
+
 	@Override
 	public ItemStack getIcon() {
 		return new ItemStack(F.B.ALLOY_CASTER);
