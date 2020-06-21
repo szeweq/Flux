@@ -7,7 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.MerchantContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
@@ -23,13 +22,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
+import szewek.flux.container.OnlineMarketContainer;
+import szewek.flux.util.market.OnlineMarketMerchantOffers;
 
 import javax.annotation.Nullable;
 
 public final class OnlineMarketTile extends PoweredTile implements IMerchant, INamedContainerProvider {
 	private AxisAlignedBB scanAABB;
 	private PlayerEntity customer;
-	private MerchantOffers offers = new MerchantOffers();
+	private final MerchantOffers offers = new OnlineMarketMerchantOffers();
 	private int countdown;
 
 	public OnlineMarketTile() {
@@ -63,7 +64,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	@Override
 	public Container createMenu(int id, PlayerInventory pi, PlayerEntity player) {
 		setCustomer(pi.player);
-		return new MerchantContainer(id, pi, this);
+		return new OnlineMarketContainer(id, pi, this);
 	}
 
 	@Override

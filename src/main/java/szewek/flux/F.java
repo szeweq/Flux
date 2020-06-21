@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.inventory.MerchantScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.ItemColors;
@@ -22,6 +23,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -144,7 +146,7 @@ public final class F {
 	public static void containers(final RegistryEvent.Register<ContainerType<?>> re) {
 		re.getRegistry().registerAll(
 				C.FLUXGEN, C.GRINDING_MILL, C.ALLOY_CASTER, C.WASHER, C.COMPACTOR,
-				C.SIGNAL_CONTROLLER, C.COPIER
+				C.SIGNAL_CONTROLLER, C.COPIER, C.ONLINE_MARKET
 		);
 	}
 
@@ -224,6 +226,7 @@ public final class F {
 		ScreenManager.registerFactory(C.WASHER, MachineScreen.make("washable", "washer"));
 		ScreenManager.registerFactory(C.COMPACTOR, MachineScreen.make("compactable", "compactor"));
 		ScreenManager.registerFactory(C.COPIER, MachineScreen.make("copyable", "copier"));
+		ScreenManager.registerFactory(C.ONLINE_MARKET, MerchantScreen::new);
 	}
 
 	public static final class B {
@@ -391,6 +394,7 @@ public final class F {
 		public static final ContainerType<FluxGenContainer> FLUXGEN;
 		public static final ContainerType<SignalControllerContainer> SIGNAL_CONTROLLER;
 		public static final ContainerType<CopierContainer> COPIER;
+		public static final ContainerType<OnlineMarketContainer> ONLINE_MARKET;
 		public static final FluxContainerType<Machine2For1Container>
 				GRINDING_MILL, ALLOY_CASTER, WASHER, COMPACTOR;
 
@@ -398,6 +402,7 @@ public final class F {
 			FLUXGEN = container(FluxGenContainer::new, "fluxgen");
 			SIGNAL_CONTROLLER = container(SignalControllerContainer::new, "signal_controller");
 			COPIER = container(CopierContainer::new, "copier");
+			ONLINE_MARKET = container(OnlineMarketContainer::new, "online_market");
 			GRINDING_MILL = containerFlux(Machine2For1Container.make(R.GRINDING), "grinding_mill");
 			ALLOY_CASTER = containerFlux(Machine2For1Container.make(R.ALLOYING), "alloy_caster");
 			WASHER = containerFlux(Machine2For1Container.make(R.WASHING), "washer");
@@ -450,6 +455,7 @@ public final class F {
 
 	public static final class Tags {
 		public static final Tag<Block> DIGGER_SKIP = new BlockTags.Wrapper(new ResourceLocation(MODID, "digger_skip"));
+		public static final Tag<Item> MARKET_ACCEPT = new ItemTags.Wrapper(new ResourceLocation(MODID, "market_accept"));
 	}
 
 	private static <T extends IForgeRegistryEntry<T>> void registerAll(IForgeRegistry<T> reg, Iterable<? extends T> iter) {
