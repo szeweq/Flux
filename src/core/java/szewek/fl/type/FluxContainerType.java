@@ -35,6 +35,6 @@ public class FluxContainerType<T extends Container> extends ContainerType<T> {
 	}
 
 	public interface IContainerBuilder<T extends Container> {
-		T create(FluxContainerType<T> type, int windowId, PlayerInventory inv, @Nullable PacketBuffer data);
+		T create(ContainerType<T> type, int windowId, PlayerInventory inv, @Nullable PacketBuffer data);
 	}
 }
