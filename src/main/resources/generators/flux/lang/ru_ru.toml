@@ -1,0 +1,136 @@
+[flux]
+ energystat = "Энергия: %s / %s F"
+ gen = "Производит %s F/t"
+ usage = "Использует %s F/t"
+ update = "Вышло обновление Flux: %s"
+ works_underwater = "Работает даже под водой!"
+ recipe_compat = "Использование совмещенных рецептов. Может быть работать с ошибками!"
+
+[flux.book]
+ name = "Книга Flux"
+ landing_text = "Руководитель по Flux."
+
+[flux.gift]
+ invalid = "Фальшивый подарок!"
+ received = "Вы получили подарок от Flux!"
+
+[flux.chip]
+ speed = "Скорость"
+ energy = "Затраты энергии"
+
+[flux.configgui]
+ fluxGenBaseEnergyValue = "Базовая производительность Генератора флакса"
+ basicMachineEU = "Затраты флакса базовых механизмов (Дробитель, Промыватель, и т.д)"
+
+[item.flux]
+ gift = "Подарок от Flux"
+ machine_base = "Основа механизма"
+ chip = "Флаксовый чип"
+ seal = "Флаксовая вставка"
+ glue = "Флаксовый клей"
+ paste = "Флаксовая пломба"
+ iron_grit = "Железный щебень"
+ gold_grit = "Золотой щебень"
+ copper_grit = "Медный щебень"
+ tin_grit = "Оловянный щебень"
+ iron_dust = "Железная пыль"
+ gold_dust = "Золотая пыль"
+ copper_dust = "Медная пыль"
+ tin_dust = "Оловянная пыль"
+ bronze_dust = "Бронзовая пыль"
+ steel_dust = "Стальная пыль"
+ copper_ingot = "Медный слиток"
+ tin_ingot = "Оловянный слиток"
+ bronze_ingot = "Бронзовый слиток"
+ steel_ingot = "Стальной слиток"
+ copper_nugget = "Медная самородок"
+ tin_nugget = "Оловянный самородок"
+ bronze_nugget = "Бронзовый самородок"
+ steel_nugget = "Стальной самородок"
+ iron_gear = "Железная шестерня"
+ gold_gear = "Золотая шестерня"
+ copper_gear = "Медная шестерня"
+ tin_gear = "Оловянная шестерня"
+ bronze_gear = "Бронзовая шестерня"
+ steel_gear = "Стальная шестерня"
+ iron_plate = "Железная пластина"
+ gold_plate = "Золотая пластина"
+ copper_plate = "Медная пластина"
+ tin_plate = "Оловянная пластина"
+ bronze_plate = "Бронзовая пластина"
+ steel_plate = "Стальная пластина"
+ bronze_sword = "Бронзовый меч"
+ bronze_shovel = "Бронзовая лопата"
+ bronze_pickaxe = "Бронзовая кирка"
+ bronze_axe = "Бронзовый топор"
+ bronze_hoe = "Бронзовая мотыга"
+ steel_sword = "Стальной меч"
+ steel_shovel = "Стальная лопата"
+ steel_pickaxe = "Стальная кирка"
+ steel_axe = "Стальной топор"
+ steel_hoe = "Стальная мотыга"
+
+[itemGroup.flux]
+ items = "Flux Предметы"
+
+[block.flux]
+ fluxgen = "Генератор флакса"
+ grinding_mill = "Дробитель"
+ alloy_caster = "Выплавщик"
+ washer = "Промыватель"
+ compactor = "Упаковщик"
+ copper_ore = "Медная руда"
+ tin_ore = "Оловянная руда"
+ copper_block = "Блок меди"
+ tin_block = "Блок олова"
+ bronze_block = "Блок бронзы"
+ steel_block = "Блок стали"
+ energy_cable = "Кабель энергии"
+ signal_cable = "Кабель сигнала [WIP]"
+ digger = "Копатель"
+ farmer = "Фермер"
+ butcher = "Пожинатель"
+ mob_pounder = "Ликвидатор"
+ item_absorber = "Предметный поглотитель"
+ rrtable = "Recipe Research Table"
+ online_market = "Удаленый торговец"
+ interactor_rail = "Интерактивные рельсы"
+ signal_controller = "Контроллер сигнала"
+ copier = "Копировщик"
+
+[container.flux]
+ fluxgen = "Генератор флакса"
+ grinding_mill = "Дробитель"
+ alloy_caster = "Выплавщик"
+ washer = "Промыватель"
+ compactor = "Упаковщик"
+ online_market = "Удаленый торговец"
+ signal_controller = "Контроллер сигнала"
+ copier = "Копировщик"
+
+[gui.flux]
+ type_channel = "Идентификатор канала"
+
+[gui.flux.signal_controller]
+ mode0 = "Контроль редстоуна"
+ mode1 = "Установка сигнала"
+ mode2 = "Очистка сигнала"
+ mode3 = "Работа от редстоуна"
+
+
+[gui.flux.recipebook.toggleRecipes]
+ grindable = "Только поддающиеся дроблению"
+ alloyable = "Только поддающиеся сплавлению"
+ washable = "Только поддающиеся промыванию"
+ compactable = "Только поддающиеся уплотению"
+ copyable = "Только поддающиеся копированию"
+
+[gui.flux.jei.category]
+ grinding = "Дробление"
+ alloying = "Сплавление"
+ washing = "Провывание"
+ compacting = "Уплотнение"
+ copying = "Копирование"
+
+[entity.minecraft.villager.flux]
+ flux_engineer = "Специалист по флаксу"
