@@ -14,9 +14,9 @@ import java.util.function.Function;
  * @param <T>
  */
 public class FluxTileType<T extends TileEntity> extends TileEntityType<T> {
-	private final Function<FluxTileType<T>, T> builder;
+	private final Function<TileEntityType<T>, T> builder;
 
-	public FluxTileType(Function<FluxTileType<T>, T> builder, Set<Block> validBlocksIn, Type<?> dataFixerType) {
+	public FluxTileType(Function<TileEntityType<T>, T> builder, Set<Block> validBlocksIn, Type<?> dataFixerType) {
 		//noinspection ConstantConditions
 		super(null, validBlocksIn, dataFixerType);
 		this.builder = builder;
