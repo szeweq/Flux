@@ -200,7 +200,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 			if (genHot.r > 0) fluids[0].grow(-genHot.r);
 		}
 		if (genCold.r <= fluids[1].getAmount()) {
-			workSpeed = genCold.l < genCat.l ? genCold.l - genCat.l : 1;
+			workSpeed = genCold.l < genCat.l ? genCat.l - genCold.l : 1;
 			if (genCold.r > 0) fluids[1].grow(-genCold.r);
 		} else {
 			workSpeed = 1;
