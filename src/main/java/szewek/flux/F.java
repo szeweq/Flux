@@ -383,7 +383,7 @@ public final class F {
 		}
 
 		@SuppressWarnings("ConstantConditions")
-		private static <T extends TileEntity> FluxTileType<T> tile(Function<FluxTileType<T>, T> f, Block b) {
+		private static <T extends TileEntity> FluxTileType<T> tile(Function<TileEntityType<T>, T> f, Block b) {
 			FluxTileType<T> type = new FluxTileType<>(f, Collections.singleton(b), null);
 			type.setRegistryName(b.getRegistryName());
 			return type;

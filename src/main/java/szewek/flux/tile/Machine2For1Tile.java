@@ -11,7 +11,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import szewek.fl.type.FluxContainerType;
-import szewek.fl.type.FluxTileType;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
@@ -59,7 +58,7 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 		return super.getCapability(cap, side);
 	}
 
-	public static Function<FluxTileType<Machine2For1Tile>, Machine2For1Tile> make(final IRecipeType<? extends AbstractMachineRecipe> recipeType, final FluxContainerType<Machine2For1Container> ctype, String titleName) {
+	public static Function<TileEntityType<Machine2For1Tile>, Machine2For1Tile> make(final IRecipeType<? extends AbstractMachineRecipe> recipeType, final FluxContainerType<Machine2For1Container> ctype, String titleName) {
 		final String titleId = "container.flux." + titleName;
 		return type -> new Machine2For1Tile(type, recipeType, (id, player, inv, data) -> new Machine2For1Container(ctype, recipeType, id, player, inv, data), titleId);
 	}
