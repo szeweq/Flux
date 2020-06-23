@@ -9,9 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,7 +23,6 @@ public final class FluxPlus {
 	private static final Logger LOGGER = LogManager.getLogger("Flux+");
 	static final Gson GSON = new GsonBuilder().setLenient().create();
 	private static final ExecutorService EXEC = new ThreadPoolExecutor(0, 2, 30L, TimeUnit.SECONDS, new SynchronousQueue<>());
-	private static final Set<String> ACTIONS = new HashSet<>();
 
 	private FluxPlus() {}
 
@@ -35,16 +32,11 @@ public final class FluxPlus {
 	}
 
 	public static void putAction(final String type) {
-		if (ACTIONS.contains(type)) {
-			return;
-		}
 		EXEC.execute(() -> {
 			try {
 				boolean b = connect("/collect/action?type=" + type)
 						.response(Boolean.TYPE);
-				if (b) {
-					ACTIONS.add(type);
-				} else {
+				if (!b) {
 					LOGGER.warn("Action type {} is not acceptable", type);
 				}
 			} catch (Exception e) {
@@ -57,7 +49,7 @@ public final class FluxPlus {
 		EXEC.execute(() -> {
 			try {
 				Map<String, String> m = ImmutableMap.of("recipeType", recipeType, "class", className, "msg", msg);
-				boolean b = connect("/report/recipeCompat").post(m).response(Boolean.TYPE);
+				connect("/report/recipeCompat").post(m).response(Boolean.TYPE);
 			} catch (Exception e) {
 				LOGGER.error("Exception while sending recipe compat error", e);
 			}
