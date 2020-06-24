@@ -22,12 +22,8 @@ import java.util.List;
 public class FarmerTile extends BlockInteractingTile {
 
 	public FarmerTile() {
-		super(F.T.FARMER, new SpatialWalker(-5, 0, -5, 5, 0, 5) {
-			@Override
-			public boolean canWalk() {
-				return true;
-			}
-		});
+		super(F.T.FARMER, new SpatialWalker.NonStop(5, 0, 5));
+
 		walker.startFrom(true, true, true);
 		walker.putActions(Action.X_POS, Action.Z_POS, Action.LOOP);
 	}

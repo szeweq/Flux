@@ -20,12 +20,7 @@ public final class DiggerTile extends BlockInteractingTile {
 	private boolean lastFlag;
 
 	public DiggerTile() {
-		super(F.T.DIGGER, new SpatialWalker(-5, -256, -5, 5, -1, 5) {
-			@Override
-			public boolean canWalk() {
-				return true;
-			}
-		});
+		super(F.T.DIGGER, new SpatialWalker.NonStop(-5, -256, -5, 5, -1, 5));
 		walker.startFrom(true, false, true);
 		walker.putActions(Action.X_POS, Action.Z_POS, Action.Y_NEG);
 	}
