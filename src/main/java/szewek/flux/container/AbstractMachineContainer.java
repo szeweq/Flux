@@ -21,6 +21,7 @@ import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import szewek.fl.util.IntPair;
 import szewek.flux.item.ChipItem;
 import szewek.flux.util.ServerRecipePlacerMachine;
 
@@ -35,15 +36,15 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	private final int inputSize;
 	private final int outputSize;
 
-	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize) {
-		this(containerType, recipeType, id, playerInventoryIn, inputSize, outputSize, new Inventory(inputSize+outputSize+1), new IntArray(7));
+	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, IntPair ioSize) {
+		this(containerType, recipeType, id, playerInventoryIn, ioSize, new Inventory(ioSize.l+ioSize.r+1), new IntArray(7));
 	}
 
-	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, int inputSize, int outputSize, IInventory machineInventoryIn, IIntArray dataIn) {
+	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, IntPair ioSize, IInventory machineInventoryIn, IIntArray dataIn) {
 		super(containerType, id);
 		this.recipeType = recipeType;
-		this.inputSize = inputSize;
-		this.outputSize = outputSize;
+		inputSize = ioSize.l;
+		outputSize = ioSize.r;
 		Container.assertInventorySize(machineInventoryIn, inputSize + outputSize + 1);
 		Container.assertIntArraySize(dataIn, 7);
 		machineInventory = machineInventoryIn;
