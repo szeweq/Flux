@@ -5,15 +5,18 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IIntArray;
+import szewek.fl.util.IntPair;
 import szewek.flux.F;
 
 public final class CopierContainer extends AbstractMachineContainer {
+	private static final IntPair IO_SIZE = IntPair.of(2, 1);
+
 	public CopierContainer(int id, PlayerInventory playerInventoryIn, PacketBuffer data) {
-		super(F.C.COPIER, F.R.COPYING, id, playerInventoryIn, 2, 1);
+		super(F.C.COPIER, F.R.COPYING, id, playerInventoryIn, IO_SIZE);
 	}
 
 	public CopierContainer(int id, PlayerInventory playerInventoryIn, IInventory machineInventoryIn, IIntArray dataIn) {
-		super(F.C.COPIER, F.R.COPYING, id, playerInventoryIn, 2, 1, machineInventoryIn, dataIn);
+		super(F.C.COPIER, F.R.COPYING, id, playerInventoryIn, IO_SIZE, machineInventoryIn, dataIn);
 	}
 
 	@Override
