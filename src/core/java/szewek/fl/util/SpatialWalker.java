@@ -143,6 +143,21 @@ public abstract class SpatialWalker {
 		return StreamSupport.stream(spliterator(gf), parallel);
 	}
 
+	public static class NonStop extends SpatialWalker {
+		public NonStop(int x, int y, int z) {
+			super(-x, -y, -z, x, y, z);
+		}
+
+		public NonStop(int ax, int ay, int az, int zx, int zy, int zz) {
+			super(ax, ay, az, zx, zy, zz);
+		}
+
+		@Override
+		public boolean canWalk() {
+			return true;
+		}
+	}
+
 	public enum Action {
 		X_POS, X_NEG, Y_POS, Y_NEG, Z_POS, Z_NEG, LOOP
 	}
