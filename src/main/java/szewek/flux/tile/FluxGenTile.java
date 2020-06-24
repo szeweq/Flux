@@ -18,13 +18,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 import szewek.fl.util.FluidsUtil;
@@ -35,21 +34,26 @@ import szewek.flux.container.FluxGenContainer;
 import szewek.flux.energy.EnergyCache;
 import szewek.flux.recipe.FluxGenRecipes;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFluidHandler, ITickableTileEntity, IEnergyStorage {
+public class FluxGenTile extends LockableTileEntity implements ITickableTileEntity, IEnergyStorage {
 	public static final int fluidCap = 4000;
 	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
-	private final FluidStack[] fluids = {FluidStack.EMPTY, FluidStack.EMPTY};
+	private final Tank tank = new Tank();
+
 	private int tickCount, energy, workTicks, maxWork, energyGen, workSpeed;
 	private boolean isReady, isDirty;
 	public boolean receivedRedstone;
 	protected final IIntArray fluxGenData = new IIntArray() {
 		@Override
 		public int get(int i) {
+			if (i >= 6) {
+				return tank.getData(i - 6);
+			}
 			switch (i) {
 				case 0: return energy >> 16;
 				case 1: return energy & 0xFFFF;
@@ -57,16 +61,16 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 				case 3: return maxWork;
 				case 4: return energyGen;
 				case 5: return workSpeed;
-				case 6: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[0].getFluid());
-				case 7: return fluids[0].getAmount();
-				case 8: return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fluids[1].getFluid());
-				case 9: return fluids[1].getAmount();
 				default: return 0;
 			}
 		}
 
 		@Override
 		public void set(int i, int v) {
+			if (i >= 6) {
+				tank.setData(i - 6, v);
+				return;
+			}
 			switch (i) {
 				case 0: energy = (energy & 0xFFFF) + (v << 16); break;
 				case 1: energy = (energy & 0xFFFF0000) + v; break;
@@ -74,22 +78,6 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 				case 3: maxWork = v; break;
 				case 4: energyGen = v; break;
 				case 5: workSpeed = v; break;
-				case 6:
-					fluids[0] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
-					break;
-				case 7:
-					if (!fluids[0].isEmpty()) {
-						fluids[0].setAmount(v);
-					}
-					break;
-				case 8:
-					fluids[1] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fluids[0].getAmount());
-					break;
-				case 9:
-					if (!fluids[1].isEmpty()) {
-						fluids[0].setAmount(v);
-					}
-					break;
 				default:
 			}
 		}
@@ -114,10 +102,10 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		energyGen = compound.getInt("Gen");
 		workSpeed = compound.getInt("WorkSpeed");
 		ItemStackHelper.loadAllItems(compound, items);
-		List<FluidStack> fluidList = NonNullList.withSize(fluids.length, FluidStack.EMPTY);
+		List<FluidStack> fluidList = NonNullList.withSize(tank.fluids.length, FluidStack.EMPTY);
 		FluidsUtil.loadAllFluids(compound, fluidList);
-		for (int i = 0; i < fluids.length; i++) {
-			fluids[i] = fluidList.get(i);
+		for (int i = 0; i < tank.fluids.length; i++) {
+			tank.fluids[i] = fluidList.get(i);
 		}
 	}
 
@@ -130,7 +118,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		compound.putInt("Gen", energyGen);
 		compound.putInt("WorkSpeed", workSpeed);
 		ItemStackHelper.saveAllItems(compound, items);
-		FluidsUtil.saveAllFluids(compound, Arrays.asList(fluids), true);
+		FluidsUtil.saveAllFluids(compound, Arrays.asList(tank.fluids), true);
 
 		return compound;
 	}
@@ -160,24 +148,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		tickCount++;
 		if (tickCount > 3 && energy > 0) {
 			tickCount = 0;
-			for (Direction d : Direction.values()) {
-				try {
-					IEnergyStorage ie = energyCache.getCached(d);
-					if (ie != null && ie.canReceive()) {
-						int r = 40000;
-						if (r >= energy) r = energy;
-						r = ie.receiveEnergy(r, true);
-						if (r > 0) {
-							energy -= r;
-							ie.receiveEnergy(r, false);
-						}
-					}
-				} catch (Exception ignored) {
-					// Keep garbage "integrations" away from my precious Flux Generator!
-					energyCache.clear();
-					// A good mod developer ALWAYS invalidates LazyOptional instances!
-				}
-			}
+			shareEnergy();
 		}
 		if (isDirty) markDirty();
 	}
@@ -188,20 +159,20 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		if (f == 0) return 0;
 		ItemStack catalyst = items.get(1);
 		IntPair genCat = FluxGenRecipes.getCatalyst(catalyst.getItem());
-		IntPair genHot = FluxGenRecipes.getHotFluid(fluids[0].getFluid());
-		IntPair genCold = FluxGenRecipes.getColdFluid(fluids[1].getFluid());
+		IntPair genHot = FluxGenRecipes.getHotFluid(tank.fluids[0].getFluid());
+		IntPair genCold = FluxGenRecipes.getColdFluid(tank.fluids[1].getFluid());
 		energyGen = FluxCfg.COMMON.fluxGenBaseEnergy.get();
 		if (genCat.r <= catalyst.getCount()) {
 			energyGen *= genCat.l;
 			if (genCat.r > 0) catalyst.grow(-genCat.r);
 		}
-		if (genHot.r <= fluids[0].getAmount()) {
+		if (genHot.r <= tank.fluids[0].getAmount()) {
 			f *= genHot.l;
-			if (genHot.r > 0) fluids[0].grow(-genHot.r);
+			if (genHot.r > 0) tank.fluids[0].grow(-genHot.r);
 		}
-		if (genCold.r <= fluids[1].getAmount()) {
+		if (genCold.r <= tank.fluids[1].getAmount()) {
 			workSpeed = genCold.l < genCat.l ? genCat.l - genCold.l : 1;
-			if (genCold.r > 0) fluids[1].grow(-genCold.r);
+			if (genCold.r > 0) tank.fluids[1].grow(-genCold.r);
 		} else {
 			workSpeed = 1;
 		}
@@ -210,10 +181,35 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		return f;
 	}
 
+	private void shareEnergy() {
+		try {
+			for (Direction d : Direction.values()) {
+				IEnergyStorage ie = energyCache.getCached(d);
+				if (ie != null && ie.canReceive()) {
+					int r = 40000;
+					if (r >= energy) r = energy;
+					r = ie.receiveEnergy(r, true);
+					if (r > 0) {
+						energy -= r;
+						ie.receiveEnergy(r, false);
+					}
+				}
+			}
+		} catch (Exception ignored) {
+			// Keep garbage "integrations" away from my precious Flux Generator!
+			energyCache.clear();
+			// A good mod developer ALWAYS invalidates LazyOptional instances!
+		}
+	}
+
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction dir) {
-		if (!removed && (cap == CapabilityEnergy.ENERGY || cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
-			return selfHandler.cast();
+		if (!removed) {
+			if (cap == CapabilityEnergy.ENERGY) {
+				return selfHandler.cast();
+			} else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+				return tank.lazy.cast();
+			}
 		}
 		return super.getCapability(cap, dir);
 	}
@@ -223,6 +219,7 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 		super.remove();
 		energyCache.clear();
 		selfHandler.invalidate();
+		tank.lazy.invalidate();
 	}
 
 	@Override
@@ -260,11 +257,6 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 			}
 		}
 		return r;
-	}
-
-	@Override
-	public int getSlots() {
-		return 2;
 	}
 
 	@Override
@@ -323,117 +315,6 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 	}
 
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (slot < 0 || slot >= items.size())
-			throw new IndexOutOfBoundsException("Getting slot " + slot + " outside range [0," + items.size() + ")");
-		if (stack.isEmpty()) {
-			return ItemStack.EMPTY;
-		}
-		if ((slot == 0 && ForgeHooks.getBurnTime(stack) == 0) || (slot == 1 && !FluxGenRecipes.isCatalyst(stack.getItem()))) {
-			return stack;
-		}
-		int stackCount = stack.getCount();
-		ItemStack xis = items.get(slot);
-		int l = Math.min(stack.getMaxStackSize(), 64);
-		if (!xis.isEmpty()) {
-			if (!ItemHandlerHelper.canItemStacksStack(stack, xis)) {
-				return stack;
-			}
-			l -= xis.getCount();
-		}
-		if (0 >= l) {
-			return stack;
-		}
-		boolean rl = stackCount > l;
-		if (!simulate) {
-			if (xis.isEmpty()) {
-				items.set(slot, rl ? ItemHandlerHelper.copyStackWithSize(stack, l) : stack);
-			} else {
-				xis.grow(rl ? l : stackCount);
-			}
-			isDirty = true;
-		}
-		return rl ? ItemHandlerHelper.copyStackWithSize(stack, stackCount - l) : ItemStack.EMPTY;
-	}
-
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public int getSlotLimit(int slot) {
-		return 64;
-	}
-
-	@Override
-	public boolean isItemValid(int slot, ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public int getTanks() {
-		return 2;
-	}
-
-	@Override
-	public FluidStack getFluidInTank(int tank) {
-		return fluids[tank];
-	}
-
-	@Override
-	public int getTankCapacity(int tank) {
-		return fluidCap;
-	}
-
-	@Override
-	public boolean isFluidValid(int tank, FluidStack stack) {
-		return false;
-	}
-
-	@Override
-	public int fill(FluidStack resource, FluidAction action) {
-		if (resource.getAmount() <= 0) {
-			return 0;
-		}
-		int s;
-		if (FluxGenRecipes.isHotFluid(resource.getFluid())) {
-			s = 0;
-		} else if (FluxGenRecipes.isColdFluid(resource.getFluid())) {
-			s = 1;
-		} else {
-			return 0;
-		}
-		FluidStack fs = fluids[s];
-		if (!fs.isEmpty() && !fs.isFluidEqual(resource)) {
-			return 0;
-		}
-		int l = fluidCap - fs.getAmount();
-		if (l > resource.getAmount()) {
-			l = resource.getAmount();
-		}
-		if (l > 0 && action.execute()) {
-			if (fs.isEmpty()) {
-				fluids[s] = resource.copy();
-			} else {
-				fs.grow(l);
-			}
-			isDirty = true;
-		}
-		return l;
-	}
-
-	@Override
-	public FluidStack drain(FluidStack resource, FluidAction action) {
-		return FluidStack.EMPTY;
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, FluidAction action) {
-		return FluidStack.EMPTY;
-	}
-
-	@Override
 	protected ITextComponent getDefaultName() {
 		return new TranslationTextComponent("container.flux.fluxgen");
 	}
@@ -441,5 +322,98 @@ public class FluxGenTile extends LockableTileEntity implements IItemHandler, IFl
 	@Override
 	protected Container createMenu(int id, PlayerInventory playerInv) {
 		return new FluxGenContainer(id, playerInv, this, fluxGenData);
+	}
+
+	class Tank implements IFluidHandler, NonNullSupplier<IFluidHandler> {
+		private final FluidStack[] fluids = {FluidStack.EMPTY, FluidStack.EMPTY};
+		private final LazyOptional<IFluidHandler> lazy = LazyOptional.of(this);
+
+		private int getData(int i) {
+			if (i >= 4) return 0;
+			FluidStack fs = fluids[i >> 1];
+			if (i % 2 == 0) {
+				return ((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getID(fs.getFluid());
+			}
+			return fs.getAmount();
+		}
+		private void setData(int i, int v) {
+			if (i >= 4) return;
+			FluidStack fs = fluids[i >> 1];
+			if (i % 2 == 0) {
+				fluids[i >> 1] = new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(v), fs.getAmount());
+			} else {
+				if (!fs.isEmpty()) {
+					fs.setAmount(v);
+				}
+			}
+		}
+
+		@Override
+		public int getTanks() {
+			return 2;
+		}
+
+		@Override
+		public FluidStack getFluidInTank(int tank) {
+			return fluids[tank];
+		}
+
+		@Override
+		public int getTankCapacity(int tank) {
+			return fluidCap;
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, FluidStack stack) {
+			return false;
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction action) {
+			if (resource.getAmount() <= 0) {
+				return 0;
+			}
+			int s;
+			if (FluxGenRecipes.isHotFluid(resource.getFluid())) {
+				s = 0;
+			} else if (FluxGenRecipes.isColdFluid(resource.getFluid())) {
+				s = 1;
+			} else {
+				return 0;
+			}
+			FluidStack fs = fluids[s];
+			if (!fs.isEmpty() && !fs.isFluidEqual(resource)) {
+				return 0;
+			}
+			int l = fluidCap - fs.getAmount();
+			if (l > resource.getAmount()) {
+				l = resource.getAmount();
+			}
+			if (l > 0 && action.execute()) {
+				if (fs.isEmpty()) {
+					fluids[s] = resource.copy();
+				} else {
+					fs.grow(l);
+				}
+				isDirty = true;
+			}
+			return l;
+		}
+
+		@Override
+		public FluidStack drain(FluidStack resource, FluidAction action) {
+			return FluidStack.EMPTY;
+		}
+
+		@Override
+		public FluidStack drain(int maxDrain, FluidAction action) {
+			return FluidStack.EMPTY;
+		}
+
+		@Nonnull
+		@Override
+		public IFluidHandler get() {
+			return this;
+		}
 	}
 }
