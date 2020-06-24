@@ -35,31 +35,36 @@ public class FarmerTile extends BlockInteractingTile {
 		if (!world.isRemote() && energy >= usage) {
 			walker.walk();
 			BlockPos bp = walker.getPosOffset(pos);
-
 			BlockState bs = world.getBlockState(bp);
 			Block b = bs.getBlock();
 			if (b != F.B.FARMER) {
-				if (b instanceof CropsBlock) {
-					CropsBlock crop = (CropsBlock) b;
-					if (crop.isMaxAge(bs)) {
-						tryHarvest(bs, bp, crop.withAge(0));
-					}
-				} else if (b instanceof StemGrownBlock) {
-					tryHarvest(bs, bp, null);
-				} else if (b == Blocks.SUGAR_CANE || b == Blocks.CACTUS) {
-					harvestPillar(b, bp, 3);
-				} else if (b == Blocks.BAMBOO) {
-					harvestPillar(b, bp, 16);
-				} else if (b == Blocks.SEA_PICKLE && bs.get(SeaPickleBlock.PICKLES) > 1) {
-					tryHarvest(bs, bp, bs.with(SeaPickleBlock.PICKLES, 1));
-				} else if (b == Blocks.SWEET_BERRY_BUSH || b == Blocks.NETHER_WART) {
-					int n = bs.get(BlockStateProperties.AGE_0_3);
-					if (n > 1) {
-						world.setBlockState(bp, bs.with(BlockStateProperties.AGE_0_3, 1));
-						ItemsUtil.trySendingItems(Collections.singleton(new ItemStack(Items.SWEET_BERRIES, n)), world, pos);
-					}
-				}
+				checkBlockForHarvest(b, bs, bp);
 				energy -= usage;
+			}
+		}
+	}
+
+	private void checkBlockForHarvest(Block b, BlockState bs, BlockPos bp) {
+		if (b instanceof CropsBlock) {
+			CropsBlock crop = (CropsBlock) b;
+			if (crop.isMaxAge(bs)) {
+				tryHarvest(bs, bp, crop.withAge(0));
+			}
+		} else if (b instanceof StemGrownBlock) {
+			tryHarvest(bs, bp, null);
+		} else if (b == Blocks.SUGAR_CANE || b == Blocks.CACTUS) {
+			harvestPillar(b, bp, 3);
+		} else if (b == Blocks.BAMBOO) {
+			harvestPillar(b, bp, 16);
+		} else if (b == Blocks.SEA_PICKLE && bs.get(SeaPickleBlock.PICKLES) > 1) {
+			tryHarvest(bs, bp, bs.with(SeaPickleBlock.PICKLES, 1));
+		} else if (b == Blocks.NETHER_WART) {
+			tryHarvest(bs, bp, bs.with(BlockStateProperties.AGE_0_3, 1));
+		} else if (b == Blocks.SWEET_BERRY_BUSH) {
+			int n = bs.get(BlockStateProperties.AGE_0_3);
+			if (n > 1) {
+				world.setBlockState(bp, bs.with(BlockStateProperties.AGE_0_3, 1));
+				ItemsUtil.trySendingItems(Collections.singleton(new ItemStack(Items.SWEET_BERRIES, n)), world, pos);
 			}
 		}
 	}
