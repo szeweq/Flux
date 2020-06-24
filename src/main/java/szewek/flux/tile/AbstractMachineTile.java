@@ -4,12 +4,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IRecipeHelperPopulator;
 import net.minecraft.inventory.IRecipeHolder;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -26,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import szewek.fl.recipe.RecipeCompat;
+import szewek.fl.util.IntPair;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
 import szewek.flux.config.ConfigChangeListener;
@@ -46,7 +45,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	protected final NonNullList<ItemStack> items;
 	protected final IRecipeType<?> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
-	private final MenuFactory menuFactory;
 	protected IRecipe<?> cachedRecipe;
 	protected final IIntArray machineData = new IIntArray() {
 		@Override
@@ -83,13 +81,12 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		}
 	};
 
-	protected AbstractMachineTile(TileEntityType<?> typeIn, final IRecipeType<?> recipeTypeIn, MenuFactory factory, int inSize, int outSize) {
+	protected AbstractMachineTile(TileEntityType<?> typeIn, final IRecipeType<?> recipeTypeIn, IntPair ioSize) {
 		super(typeIn);
 		recipeType = recipeTypeIn;
-		menuFactory = factory;
-		items = NonNullList.withSize(inSize + outSize + 1, ItemStack.EMPTY);
-		inputSize = inSize;
-		outputSize = outSize;
+		inputSize = ioSize.l;
+		outputSize = ioSize.r;
+		items = NonNullList.withSize(inputSize + outputSize + 1, ItemStack.EMPTY);
 		energyUse = FluxCfg.COMMON.basicMachineEU.get();
 		FluxCfg.addListener(this);
 	}
@@ -237,8 +234,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	public List<ItemStack> getOutputs() {
-		int size = items.size() - 1;
-		return items.subList(size - outputSize, size);
+		return items.subList(inputSize, inputSize + outputSize);
 	}
 
 	@Override
@@ -386,11 +382,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 					x
 			));
 		}
-	}
-
-	@Override
-	protected Container createMenu(int id, PlayerInventory player) {
-		return menuFactory.create(id, player, this, machineData);
 	}
 
 	@Override

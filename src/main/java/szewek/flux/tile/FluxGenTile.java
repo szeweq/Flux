@@ -44,7 +44,6 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 	private final Tank tank = new Tank();
-
 	private int tickCount, energy, workTicks, maxWork, energyGen, workSpeed;
 	private boolean isReady, isDirty;
 	public boolean receivedRedstone;

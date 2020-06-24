@@ -1,21 +1,25 @@
 package szewek.flux.tile;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import szewek.fl.recipe.RecipeCompat;
+import szewek.fl.util.IntPair;
 import szewek.flux.F;
 import szewek.flux.container.CopierContainer;
 
 import javax.annotation.Nullable;
 
 public class CopierTile extends AbstractMachineTile {
+	private static final IntPair IO_SIZE = IntPair.of(2, 1);
 	private static final int[] SLOTS = new int[] {0, 2};
 
 	public CopierTile() {
-		super(F.T.COPIER, F.R.COPYING, CopierContainer::new, 2, 1);
+		super(F.T.COPIER, F.R.COPYING, IO_SIZE);
 	}
 
 	@Override
@@ -85,6 +89,10 @@ public class CopierTile extends AbstractMachineTile {
 
 	@Override
 	public void setRecipeUsed(@Nullable IRecipe<?> recipe) {
+	}
 
+	@Override
+	protected Container createMenu(int id, PlayerInventory player) {
+		return new CopierContainer(id, player, this, machineData);
 	}
 }

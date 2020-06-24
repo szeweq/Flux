@@ -1,5 +1,8 @@
 package szewek.flux.tile;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -11,6 +14,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import szewek.fl.type.FluxContainerType;
+import szewek.fl.util.IntPair;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
@@ -18,14 +22,17 @@ import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public final class Machine2For1Tile extends AbstractMachineTile {
+	private static final IntPair IO_SIZE = IntPair.of(2, 1);
 	private static final int[] SLOTS_TOP_BOTTOM = {0, 2};
 	private static final int[] SLOTS_SIDE = {1, 2};
 	private final String titleId;
+	private final ContainerType<Machine2For1Container> containerType;
 	private final LazyOptional<? extends IItemHandler>[] sideHandlers = SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
-	public Machine2For1Tile(TileEntityType<?> typeIn, IRecipeType<? extends AbstractMachineRecipe> recipeTypeIn, MenuFactory factory, String titleId) {
-		super(typeIn, recipeTypeIn, factory, 2, 1);
+	public Machine2For1Tile(TileEntityType<?> typeIn, IRecipeType<? extends AbstractMachineRecipe> recipeTypeIn, ContainerType<Machine2For1Container> ctype, String titleId) {
+		super(typeIn, recipeTypeIn, IO_SIZE);
 		this.titleId = titleId;
+		containerType = ctype;
 	}
 
 	@Override
@@ -37,6 +44,11 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 			default:
 				return SLOTS_SIDE;
 		}
+	}
+
+	@Override
+	protected Container createMenu(int id, PlayerInventory player) {
+		return new Machine2For1Container(containerType, recipeType, id, player, this, machineData);
 	}
 
 	@Override
@@ -60,6 +72,6 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 
 	public static Function<TileEntityType<Machine2For1Tile>, Machine2For1Tile> make(final IRecipeType<? extends AbstractMachineRecipe> recipeType, final FluxContainerType<Machine2For1Container> ctype, String titleName) {
 		final String titleId = "container.flux." + titleName;
-		return type -> new Machine2For1Tile(type, recipeType, (id, player, inv, data) -> new Machine2For1Container(ctype, recipeType, id, player, inv, data), titleId);
+		return type -> new Machine2For1Tile(type, recipeType, ctype, titleId);
 	}
 }
