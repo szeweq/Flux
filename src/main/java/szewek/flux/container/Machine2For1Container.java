@@ -10,11 +10,11 @@ import szewek.fl.type.FluxContainerType;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
 public class Machine2For1Container extends AbstractMachineContainer {
-	public Machine2For1Container(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventory) {
+	public Machine2For1Container(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventory) {
 		super(containerType, recipeType, id, playerInventory, 2, 1);
 	}
 
-	public Machine2For1Container(ContainerType containerType, IRecipeType<? extends AbstractMachineRecipe> recipeType, int id, PlayerInventory playerInventory, IInventory machineInventory, IIntArray data) {
+	public Machine2For1Container(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventory, IInventory machineInventory, IIntArray data) {
 		super(containerType, recipeType, id, playerInventory, 2, 1, machineInventory, data);
 	}
 
