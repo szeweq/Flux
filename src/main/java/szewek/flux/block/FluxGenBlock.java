@@ -41,7 +41,7 @@ public final class FluxGenBlock extends Block {
 		if (!world.isRemote) {
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile instanceof FluxGenTile) {
-				FluidActionResult far = FluidUtil.tryEmptyContainerAndStow(player.getHeldItem(hand), (FluxGenTile) tile, new InvWrapper(player.inventory), 4000, player, true);
+				FluidActionResult far = FluidUtil.tryEmptyContainerAndStow(player.getHeldItem(hand), ((FluxGenTile) tile).getTank(), new InvWrapper(player.inventory), 4000, player, true);
 				if (far.success) {
 					player.setHeldItem(hand, far.getResult());
 				} else {

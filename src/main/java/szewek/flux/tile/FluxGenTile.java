@@ -201,6 +201,10 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		}
 	}
 
+	public Tank getTank() {
+		return tank;
+	}
+
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction dir) {
 		if (!removed) {
