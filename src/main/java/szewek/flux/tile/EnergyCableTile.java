@@ -108,6 +108,7 @@ public final class EnergyCableTile extends AbstractCableTile {
 				}
 				if (!simulate) {
 					energy += r;
+					sideFlag |= 1 << bit;
 				}
 			}
 			return r;
@@ -122,6 +123,7 @@ public final class EnergyCableTile extends AbstractCableTile {
 				}
 				if (!simulate) {
 					energy -= r;
+					sideFlag |= 1 << bit;
 				}
 			}
 			return r;
@@ -129,6 +131,7 @@ public final class EnergyCableTile extends AbstractCableTile {
 
 		private void syncEnergy(int diff) {
 			energy += diff;
+			sideFlag |= 1 << bit;
 		}
 
 		@Override
