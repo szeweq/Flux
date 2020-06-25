@@ -23,7 +23,6 @@ archivesBaseName = 'flux'
 project.version = project.version + ((project.versionSub as int) > 0 ? "-${project.versionType}${project.versionSub}" : "")
 
 String core_version = project.core_version
-String metals_version = "1.0.0"
 
 String mc_version = "1.15.2"
 String jei_version = "6.0.0.2"
@@ -42,16 +41,12 @@ idea {
 }
 sourceSets {
     core { java { srcDir 'src/core/java' } }
-    metals {
-        java { srcDir 'src/metals/java' }
-        compileClasspath += sourceSets.core.output
-    }
     main { compileClasspath += sourceSets.core.output }
 }
 configurations {
-    def extendCompile = [coreCompile, metalsCompile]
-    def extendCompileOnly = [coreCompileOnly, metalsCompileOnly]
-    def extendRuntimeOnly = [coreRuntimeOnly, metalsRuntimeOnly]
+    def extendCompile = [coreCompile]
+    def extendCompileOnly = [coreCompileOnly]
+    def extendRuntimeOnly = [coreRuntimeOnly]
     for (def c : extendCompile) c.extendsFrom(compile)
     for (def co : extendCompileOnly) co.extendsFrom(compileOnly)
     for (def ro : extendRuntimeOnly) ro.extendsFrom(runtimeOnly)
@@ -188,10 +183,6 @@ task coreSourcesJar(type: Jar) {
     archiveName = "fl-${core_version}-sources.jar"
     from sourceSets.core.java.srcDirs
 }
-task metalsJar(type: Jar) {
-    archiveName = "fluxmetals-${metals_version}.jar"
-    from sourceSets.metals.output
-}
 
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
@@ -202,12 +193,10 @@ jar.finalizedBy('reobfJar')
 artifacts {
     archives coreJar
     archives coreSourcesJar
-    archives metalsJar
 }
 
 reobf {
     coreJar { classpath = sourceSets.core.compileClasspath }
-    metalsJar { classpath = sourceSets.metals.compileClasspath }
 }
 
 publishing {
