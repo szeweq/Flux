@@ -73,6 +73,7 @@
 
 [itemGroup.flux]
  items = "Flux Items"
+ blocks = "Flux Blocks"
 
 [block.flux]
  fluxgen = "Flux Generator"

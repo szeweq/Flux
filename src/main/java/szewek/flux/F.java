@@ -28,6 +28,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.PointOfInterestType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,6 +61,8 @@ import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -73,24 +76,25 @@ import java.util.stream.Collectors;
 import static szewek.flux.Flux.MODID;
 
 public final class F {
-	public static final ItemGroup FLUX_GROUP = new ItemGroup("flux.items") {
-		@Override public ItemStack createIcon() {
-			return new ItemStack(B.FLUXGEN);
-		}
-	};
+	public static final ItemGroup
+			FLUX_BLOCKS = new ItemGroup("flux.blocks") {
+				@Override
+				public ItemStack createIcon() {
+					return new ItemStack(B.FLUXGEN);
+				}
+			},
+			FLUX_ITEMS = new ItemGroup("flux.items") {
+				@Override public ItemStack createIcon() {
+					return new ItemStack(I.CHIP);
+				}
+			};
 
 	@SubscribeEvent
 	public static void blocks(final RegistryEvent.Register<Block> re) {
 		final IForgeRegistry<Block> reg = re.getRegistry();
 		registerAll(reg, B.ORES.values());
 		registerAll(reg, B.METAL_BLOCKS.values());
-		reg.registerAll(
-				B.FLUXGEN, B.ENERGY_CABLE, B.SIGNAL_CABLE,
-				B.DIGGER, B.FARMER, B.BUTCHER, B.MOB_POUNDER, B.ITEM_ABSORBER,
-				B.RR_TABLE, B.ONLINE_MARKET,
-				B.GRINDING_MILL, B.ALLOY_CASTER, B.WASHER, B.COMPACTOR,
-				B.INTERACTOR_RAIL, B.SIGNAL_CONTROLLER, B.COPIER
-		);
+		registerFromClass(reg, B.class);
 	}
 
 	@SubscribeEvent
@@ -135,19 +139,12 @@ public final class F {
 
 	@SubscribeEvent
 	public static void tiles(final RegistryEvent.Register<TileEntityType<?>> re) {
-		re.getRegistry().registerAll(
-				T.FLUXGEN, T.ENERGY_CABLE, T.SIGNAL_CABLE, T.DIGGER, T.FARMER, T.BUTCHER, T.MOB_POUNDER, T.ITEM_ABSORBER,
-				T.GRINDING_MILL, T.ALLOY_CASTER, T.WASHER, T.COMPACTOR, T.RR_TABLE, T.ONLINE_MARKET,
-				T.INTERACTOR_RAIL, T.SIGNAL_CONTROLLER, T.COPIER
-		);
+		registerFromClass(re.getRegistry(), T.class);
 	}
 
 	@SubscribeEvent
 	public static void containers(final RegistryEvent.Register<ContainerType<?>> re) {
-		re.getRegistry().registerAll(
-				C.FLUXGEN, C.GRINDING_MILL, C.ALLOY_CASTER, C.WASHER, C.COMPACTOR,
-				C.SIGNAL_CONTROLLER, C.COPIER, C.ONLINE_MARKET
-		);
+		registerFromClass(re.getRegistry(), C.class);
 	}
 
 	@SubscribeEvent
@@ -176,8 +173,8 @@ public final class F {
 
 	@SubscribeEvent
 	public static void professions(final RegistryEvent.Register<VillagerProfession> re) {
-		re.getRegistry().register(V.FLUX_ENGINEER.setRegistryName(MODID, "flux_engineer"));
-		Int2ObjectMap<VillagerTrades.ITrade[]> lvlTrades = new Int2ObjectOpenHashMap<>();
+		re.getRegistry().register(V.FLUX_ENGINEER);
+		Int2ObjectMap<VillagerTrades.ITrade[]> lvlTrades = new Int2ObjectOpenHashMap<>(5);
 		lvlTrades.put(1, new VillagerTrades.ITrade[]{
 				new VillagerTrades.EmeraldForItemsTrade(I.INGOTS.get(Metals.COPPER), 6, 10, 4),
 				new ChipUpgradeTrade(-1, 5)
@@ -207,6 +204,7 @@ public final class F {
 	static void client(final Minecraft mc) {
 		final Item[] arr = new Item[0];
 		final ItemColors ic = mc.getItemColors();
+
 		ic.register(Gifts::colorByGift, I.GIFT);
 		ic.register(Metals::gritColors, I.GRITS.values().toArray(arr));
 		ic.register(Metals::itemColors, I.DUSTS.values().toArray(arr));
@@ -286,13 +284,13 @@ public final class F {
 				NUGGETS = metalMap("nugget", Metal::nonVanilla),
 				GEARS = metalMap("gear", null),
 				PLATES = metalMap("plate", null);
-		public static final GiftItem GIFT = named(new GiftItem(new Item.Properties().maxStackSize(1)), "gift");
-		public static final Item MACHINE_BASE = named(new Item(new Item.Properties()), "machine_base");
-		public static final ChipItem CHIP = named(new ChipItem(new Item.Properties()), "chip");
+		public static final GiftItem GIFT = named(new GiftItem(props().maxStackSize(1)), "gift");
+		public static final Item MACHINE_BASE = named(new Item(props()), "machine_base");
+		public static final ChipItem CHIP = named(new ChipItem(props()), "chip");
 		public static final FluxAdhesiveItem
-				SEAL = named(new FluxAdhesiveItem(new Item.Properties()), "seal"),
-				GLUE = named(new FluxAdhesiveItem(new Item.Properties()), "glue"),
-				PASTE = named(new FluxAdhesiveItem(new Item.Properties()), "paste");
+				SEAL = named(new FluxAdhesiveItem(props()), "seal"),
+				GLUE = named(new FluxAdhesiveItem(props()), "glue"),
+				PASTE = named(new FluxAdhesiveItem(props()), "paste");
 
 		public static final FluxItemTier
 				BRONZE_TIER,
@@ -325,13 +323,17 @@ public final class F {
 
 		private static Map<Metal, MetalItem> metalMap(String type, Predicate<Metal> filter) {
 			ImmutableMap.Builder<Metal, MetalItem> mb = new ImmutableMap.Builder<>();
-			Item.Properties props = new Item.Properties();
+			Item.Properties p = props();
 			for (Metal met : Metals.all()) {
 				if (filter == null || filter.test(met)) {
-					mb.put(met, named(new MetalItem(props, met), met.metalName + '_' + type));
+					mb.put(met, named(new MetalItem(p, met), met.metalName + '_' + type));
 				}
 			}
 			return mb.build();
+		}
+
+		private static Item.Properties props() {
+			return new Item.Properties().group(FLUX_ITEMS);
 		}
 	}
 
@@ -443,13 +445,17 @@ public final class F {
 	public static final class V {
 		public static final PointOfInterestType
 				FLUX_ENGINEER_POI = poi("flux_engineer", B.FLUXGEN);
-		public static final VillagerProfession FLUX_ENGINEER = new VillagerProfession("flux:flux_engineer", FLUX_ENGINEER_POI, ImmutableSet.of(), ImmutableSet.of(), null);
+		public static final VillagerProfession FLUX_ENGINEER = job("flux_engineer", FLUX_ENGINEER_POI, null);
 
 		private static PointOfInterestType poi(String name, Block b) {
 			return PointOfInterestType.registerBlockStates(
 					new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1)
 							.setRegistryName(MODID, name)
 			);
+		}
+
+		private static VillagerProfession job(String name, PointOfInterestType poi, SoundEvent sound) {
+			return named(new VillagerProfession(MODID + ':' + name, poi, ImmutableSet.of(), ImmutableSet.of(), sound), name);
 		}
 	}
 
@@ -464,9 +470,22 @@ public final class F {
 		}
 	}
 
+	private static <T extends IForgeRegistryEntry<T>> void registerFromClass(IForgeRegistry<T> reg, Class<?> cl) {
+		Class<T> tcl = reg.getRegistrySuperType();
+		for (Field f : cl.getDeclaredFields()) {
+			if (tcl.isAssignableFrom(f.getType()) && Modifier.isStatic(f.getModifiers())) {
+				try {
+					reg.register(tcl.cast(f.get(null)));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	@SuppressWarnings("ConstantConditions")
 	private static BlockItem fromBlock(Block b) {
-		BlockItem item = new BlockItem(b, new Item.Properties().group(FLUX_GROUP));
+		BlockItem item = new BlockItem(b, new Item.Properties().group(FLUX_BLOCKS));
 		item.setRegistryName(b.getRegistryName());
 		return item;
 	}
