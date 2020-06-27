@@ -1,13 +1,11 @@
-# Flux (Version 4.17.1)
+# Flux (Version 4.17.2)
 Requires Flux Library 3.4.1 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
 ### Changes
-- Separated item groups for blocks and items
+- Added JEI support for Flux Generator usages
 
 ### Fixes
-- Fixed Nether Wart being turned into berries
-- Energy cables now respect syncing sides (less time to tick)
-- Fixed items not appearing in an item group
+- Fixed Online Market being desync with client, causing duping items
 
 ### Translations
 You can add your own native language to Flux.
