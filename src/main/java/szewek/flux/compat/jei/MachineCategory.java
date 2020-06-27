@@ -32,13 +32,13 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 	private final ResourceLocation uid;
 	private final Class<T> cl;
 
-	public MachineCategory(IGuiHelper guiHelper, String resUid, String guiId, Class<T> tClass, Block icon, int processTime) {
+	public MachineCategory(String resUid, Class<T> tClass, IDrawable bg, IDrawable icon, IDrawableAnimated arrow) {
 		uid = new ResourceLocation(MODID, resUid);
-		cl = tClass;
-		background = guiHelper.createDrawable(new ResourceLocation(MODID, "textures/gui/" + guiId + ".png"), 55, 25, 82, 36);
-		this.icon = guiHelper.createDrawableIngredient(new ItemStack(icon));
 		localizedName = I18n.format("gui.flux.jei.category." + resUid);
-		arrow = guiHelper.drawableBuilder(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 82, 128, 24, 17).buildAnimated(processTime, IDrawableAnimated.StartDirection.LEFT, false);
+		cl = tClass;
+		background = bg;
+		this.icon = icon;
+		this.arrow = arrow;
 	}
 
 	@Override
@@ -92,5 +92,21 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 	@Override
 	public Class<? extends T> getRecipeClass() {
 		return cl;
+	}
+
+	static final class Builder {
+		private final IGuiHelper guiHelper;
+		private final IDrawableAnimated arrow;
+
+		Builder(IGuiHelper guiHelper) {
+			this.guiHelper = guiHelper;
+			arrow = guiHelper.drawableBuilder(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 82, 128, 24, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
+		}
+
+		final <T extends AbstractMachineRecipe> MachineCategory<T> build(String resUid, String guiId, Class<T> tClass, Block block) {
+			IDrawable bg = guiHelper.createDrawable(new ResourceLocation(MODID, "textures/gui/" + guiId + ".png"), 55, 25, 82, 36);
+			IDrawable icon = guiHelper.createDrawableIngredient(new ItemStack(block));
+			return new MachineCategory<>(resUid, tClass, bg, icon, arrow);
+		}
 	}
 }
