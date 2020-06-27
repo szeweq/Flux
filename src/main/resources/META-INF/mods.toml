@@ -33,6 +33,6 @@ It comes with useful machines that make item processing even more interesting.
 [[dependencies.flux]]
  modId="fl"
  mandatory=true
- versionRange="[3.3.0,)"
+ versionRange="[3.4.1,)"
  ordering="BEFORE"
  side="BOTH"
