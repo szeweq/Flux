@@ -19,6 +19,11 @@
  speed = "Speed"
  energy = "Energy"
 
+[flux.fluxgen]
+ speed = "Speed"
+ time = "Time"
+ length = "Length"
+
 [flux.configgui]
  fluxGenBaseEnergyValue = "Base energy generation for Flux Generator"
  basicMachineEU = "Energy usage for basic machines (Grinding Mill, Washer, etc.)"

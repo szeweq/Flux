@@ -36,7 +36,8 @@ import static szewek.flux.Flux.MODID;
 
 @JeiPlugin
 public class JEIFluxPlugin implements IModPlugin {
-	private static final ResourceLocation
+	static final ResourceLocation
+			FLUXGEN = new ResourceLocation(MODID, "fluxgen"),
 			GRINDING = new ResourceLocation(MODID, "grinding"),
 			ALLOYING = new ResourceLocation(MODID, "alloying"),
 			WASHING = new ResourceLocation(MODID, "washing"),
@@ -60,6 +61,8 @@ public class JEIFluxPlugin implements IModPlugin {
 		MachineCategory<CompactingRecipe> compacting = mcb.build("compacting", "compactor", CompactingRecipe.class, B.COMPACTOR);
 		CopierCategory copying = new CopierCategory(guiHelper, B.COPIER, 200);
 		reg.addRecipeCategories(grinding, alloying, washing, compacting, copying);
+
+		reg.addRecipeCategories(new FluxGenCategory(guiHelper));
 	}
 
 	@Override
@@ -72,6 +75,7 @@ public class JEIFluxPlugin implements IModPlugin {
 
 		IVanillaRecipeFactory vanillaRecipeFactory = reg.getVanillaRecipeFactory();
 		reg.addRecipes(getFluxRepairRecipes(vanillaRecipeFactory), VanillaRecipeCategoryUid.ANVIL);
+		reg.addRecipes(FluxGenCategory.Product.getAll(), FLUXGEN);
 	}
 
 	@Override
@@ -95,6 +99,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		reg.addRecipeCatalyst(new ItemStack(B.WASHER), WASHING);
 		reg.addRecipeCatalyst(new ItemStack(B.COMPACTOR), COMPACTING);
 		reg.addRecipeCatalyst(new ItemStack(B.COPIER), COPYING);
+		reg.addRecipeCatalyst(new ItemStack(B.FLUXGEN), FLUXGEN);
 	}
 
 	@SuppressWarnings({"ConstantConditions", "unchecked"})

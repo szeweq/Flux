@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -38,6 +39,10 @@ public final class FluxGenRecipes {
 		return catalysts.getOrDefault(item, DEFAULT);
 	}
 
+	public static Set<Map.Entry<Item, IntPair>> allCatalysts() {
+		return Collections.unmodifiableSet(catalysts.entrySet());
+	}
+
 	public static boolean isHotFluid(Fluid fluid) {
 		return isFluid(fluid, hotFluids);
 	}
@@ -46,12 +51,20 @@ public final class FluxGenRecipes {
 		return getFluid(fluid, hotFluids);
 	}
 
+	public static Set<Map.Entry<Fluid, IntPair>> allHotFluids() {
+		return Collections.unmodifiableSet(hotFluids.entrySet());
+	}
+
 	public static boolean isColdFluid(Fluid fluid) {
 		return isFluid(fluid, coldFluids);
 	}
 
 	public static IntPair getColdFluid(Fluid fluid) {
 		return getFluid(fluid, coldFluids);
+	}
+
+	public static Set<Map.Entry<Fluid, IntPair>> allColdFluids() {
+		return Collections.unmodifiableSet(coldFluids.entrySet());
 	}
 
 	private static boolean isFluid(@Nullable Fluid fluid, Map<Fluid, IntPair> m) {
