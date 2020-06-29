@@ -55,6 +55,13 @@ public class MachineInventory extends AbstractList<ItemStack> {
 	}
 
 	@Override
+	public ItemStack set(int index, ItemStack element) {
+		ItemStack old = stacks[index];
+		stacks[index] = element;
+		return old;
+	}
+
+	@Override
 	public int size() {
 		return stacks.length;
 	}
