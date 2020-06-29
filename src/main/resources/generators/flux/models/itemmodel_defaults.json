@@ -1,10 +1,10 @@
 {
   "grit": ["gold", "iron", "copper", "tin"],
-  "dust": ["gold", "iron", "copper", "tin", "bronze", "steel"],
+  "dust": ["gold", "iron", "copper", "tin", "bronze", "steel", "netherite"],
   "ingot": ["copper", "tin", "bronze", "steel"],
   "nugget": ["copper", "tin", "bronze", "steel"],
-  "gear": ["gold", "iron", "copper", "tin", "bronze", "steel"],
-  "plate": ["gold", "iron", "copper", "tin", "bronze", "steel"],
+  "gear": ["gold", "iron", "copper", "tin", "bronze", "steel", "netherite"],
+  "plate": ["gold", "iron", "copper", "tin", "bronze", "steel", "netherite"],
   "sword": ["bronze", "steel"],
   "shovel": ["bronze", "steel"],
   "pickaxe": ["bronze", "steel"],

@@ -13,6 +13,7 @@ public final class Metals {
 	public static final Metal
 			IRON = new VanillaMetal(0xC0C0C0, "iron", 1),
 			GOLD = new VanillaMetal(0xFFD84A, "gold", 2),
+			NETHERITE = new VanillaMetal(0x6B686B, "netherite", 4),
 			COPPER = new SimpleMetal(0xE99868, "copper", 1),
 			TIN = new SimpleMetal(0xCAD6DC, "tin", 1),
 			BRONZE = new AlloyMetal(0xCCA168, "bronze", 2),

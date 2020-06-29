@@ -278,7 +278,7 @@ public final class F {
 
 	public static final class I {
 		public static final Map<Metal, MetalItem>
-				GRITS = metalMap("grit", Metal::nonAlloy),
+				GRITS = metalMap("grit", (m) -> m.nonAlloy() && m != Metals.NETHERITE),
 				DUSTS = metalMap("dust", null),
 				INGOTS = metalMap("ingot", Metal::nonVanilla),
 				NUGGETS = metalMap("nugget", Metal::nonVanilla),
