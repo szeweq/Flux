@@ -27,7 +27,6 @@ public class Machine2For1Container extends AbstractMachineContainer {
 		addSlot(new Slot(machineInventory, 1, 56, 44));
 		addSlot(new MachineResultSlot(playerInventory.player, machineInventory, 2, 116, 35));
 		addSlot(new UpgradeSlot(machineInventory, 3, 22, 53));
-		initPlayerSlotsAt(playerInventory, 8, 84);
 	}
 
 	public static FluxContainerType.IContainerBuilder<Machine2For1Container> make(final IRecipeType<? extends AbstractMachineRecipe> rtype) {

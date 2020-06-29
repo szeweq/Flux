@@ -51,6 +51,8 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		data = dataIn;
 		world = playerInventoryIn.player.world;
 		initSlots(playerInventoryIn);
+
+		initPlayerSlotsAt(playerInventoryIn, 8, 84);
 		trackIntArray(data);
 	}
 

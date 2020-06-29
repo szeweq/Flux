@@ -7,7 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IRecipeHelperPopulator;
 import net.minecraft.inventory.IRecipeHolder;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -19,7 +18,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -31,6 +29,7 @@ import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.util.inventory.IInventoryIO;
 import szewek.flux.util.inventory.IOSize;
+import szewek.flux.util.inventory.MachineInventory;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,7 +41,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	private final IOSize ioSize;
 	protected int process = -1, processTotal, energyUse, processSpeed = 100, compatState;
 	protected boolean lazyCheck, wasLit;
-	protected final NonNullList<ItemStack> items;
+	protected final MachineInventory inv;
 	protected final IRecipeType<?> recipeType;
 	private final Object2IntMap<ResourceLocation> recipesCount = new Object2IntOpenHashMap<>();
 	protected IRecipe<?> cachedRecipe;
@@ -85,7 +84,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		super(typeIn);
 		recipeType = recipeTypeIn;
 		this.ioSize = ioSize;
-		items = NonNullList.withSize(ioSize.in + ioSize.out + 1, ItemStack.EMPTY);
+		inv = new MachineInventory(ioSize, 1);
 		energyUse = FluxCfg.COMMON.basicMachineEU.get();
 		FluxCfg.addListener(this);
 	}
@@ -98,8 +97,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		items.clear();
-		ItemStackHelper.loadAllItems(compound, items);
+		inv.readNBT(compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		process = compound.getInt("Process");
 		processTotal = compound.getInt("Total");
@@ -118,7 +116,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		compound.putInt("E", energy);
 		compound.putInt("Process", process);
 		compound.putInt("Total", processTotal);
-		ItemStackHelper.saveAllItems(compound, items);
+		inv.writeNBT(compound, true);
 		compound.putShort("RSize", (short) recipesCount.size());
 		int i = 0;
 		for (Map.Entry<ResourceLocation, Integer> entry : recipesCount.object2IntEntrySet()) {
@@ -131,7 +129,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	protected void serverTick(World w) {
-		boolean inputEmpty = isInputEmpty();
+		boolean inputEmpty = inv.isInputEmpty();
 		boolean workState = process > 0;
 		if (energy >= energyUse && !inputEmpty && canProcess()) {
 			energy -= energyUse;
@@ -168,19 +166,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			if (result.isEmpty()) {
 				return false;
 			}
-			for (int i = ioSize.in; i < ioSize.in + ioSize.out; i++) {
-				ItemStack outputStack = items.get(i);
-				if (outputStack.isEmpty()) {
-					return true;
-				}
-				if (!outputStack.isItemEqual(result)) {
-					return false;
-				}
-				int minStackSize = Math.min(Math.min(64, outputStack.getMaxStackSize()), result.getMaxStackSize());
-				if (outputStack.getCount() + result.getCount() <= minStackSize) {
-					return true;
-				}
-			}
+			return inv.checkResult(result);
 		}
 		return false;
 	}
@@ -193,18 +179,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		if (canProcess()) {
 			ItemStack result = RecipeCompat.getCompatOutput(cachedRecipe, this);
 			if (!result.isEmpty()) {
-				for (int i = ioSize.in; i < ioSize.in + ioSize.out; i++) {
-					ItemStack outputStack = items.get(i);
-					if (outputStack.isEmpty()) {
-						ItemStack copyResult = result.copy();
-						items.set(i, copyResult);
-						break;
-					} else if (outputStack.getItem() == result.getItem()) {
-						outputStack.grow(result.getCount());
-						break;
-					}
-				}
-				RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(items.subList(0, ioSize.in));
+				inv.placeResult(result);
+				RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(inv.iterableInput());
 				setRecipeUsed(cachedRecipe);
 				setCachedRecipe(null);
 			}
@@ -216,15 +192,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		compatState = recipe != null && recipe.getType() != recipeType ? 1 : 0;
 	}
 
-	private boolean isInputEmpty() {
-		for (int i = 0; i < ioSize.in; i++) {
-			if (!items.get(i).isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@Override
 	public IOSize getIOSize() {
 		return ioSize;
@@ -232,7 +199,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	public int getSizeInventory() {
-		return items.size();
+		return inv.size();
 	}
 
 	@Override
@@ -247,34 +214,29 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	public boolean isEmpty() {
-		for (ItemStack item : items) {
-			if (!item.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
+		return inv.isEmpty();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int index) {
-		return items.get(index);
+		return inv.get(index);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		return ItemStackHelper.getAndSplit(items, index, count);
+		return inv.getAndSplit(index, count);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		return ItemStackHelper.getAndRemove(items, index);
+		return inv.getAndRemove(index);
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		ItemStack inputStack = items.get(index);
+		ItemStack inputStack = inv.get(index);
 		boolean same = !stack.isEmpty() && stack.isItemEqual(inputStack) && ItemStack.areItemStackTagsEqual(stack, inputStack);
-		items.set(index, stack);
+		inv.set(index, stack);
 		if (stack.getCount() > 64) {
 			stack.setCount(64);
 		}
@@ -295,7 +257,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	public void clear() {
-		items.clear();
+		inv.clear();
 	}
 
 	@Override
@@ -318,7 +280,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	public void fillStackedContents(RecipeItemHelper helper) {
-		for (ItemStack item : items) {
+		for (ItemStack item : inv) {
 			helper.accountStack(item);
 		}
 	}
@@ -342,7 +304,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	public void updateValues() {
 		energyUse = FluxCfg.COMMON.basicMachineEU.get();
 		processSpeed = 100;
-		ItemStack chipStack = items.get(ioSize.in + ioSize.out);
+		ItemStack chipStack = inv.get(ioSize.in + ioSize.out);
 		Item item = chipStack.getItem();
 		if (!chipStack.isEmpty() && item instanceof ChipItem) {
 			ChipItem ci = (ChipItem) item;

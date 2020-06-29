@@ -25,6 +25,5 @@ public final class CopierContainer extends AbstractMachineContainer {
 		addSlot(new Slot(machineInventory, 1, 56, 44));
 		addSlot(new MachineResultSlot(pinv.player, machineInventory, 2, 116, 35));
 		addSlot(new UpgradeSlot(machineInventory, 3, 22, 53));
-		initPlayerSlotsAt(pinv, 8, 84);
 	}
 }

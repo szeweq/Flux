@@ -29,23 +29,11 @@ public class CopierTile extends AbstractMachineTile {
 			setCachedRecipe(world.getRecipeManager().getRecipe(F.R.COPYING, this, world).orElse(null));
 		}
 		if (cachedRecipe != null) {
-			ItemStack result = items.get(1);
+			ItemStack result = inv.get(1);
 			if (result.isEmpty()) {
 				return false;
 			}
-			for (int i = IO_SIZE.in; i < IO_SIZE.in + IO_SIZE.out; i++) {
-				ItemStack outputStack = items.get(i);
-				if (outputStack.isEmpty()) {
-					return true;
-				}
-				if (!outputStack.isItemEqual(result)) {
-					return false;
-				}
-				int minStackSize = Math.min(Math.min(64, outputStack.getMaxStackSize()), result.getMaxStackSize());
-				if (outputStack.getCount() + result.getCount() <= minStackSize) {
-					return true;
-				}
-			}
+			return inv.checkResult(result);
 		}
 		return false;
 	}
@@ -53,16 +41,16 @@ public class CopierTile extends AbstractMachineTile {
 	@Override
 	protected void produceResult() {
 		if (canProcess()) {
-			ItemStack orig = items.get(1).copy();
+			ItemStack orig = inv.get(1).copy();
 			if (!orig.isEmpty()) {
 				ItemStack copied = orig.copy();
-				ItemStack output = items.get(2);
+				ItemStack output = inv.get(2);
 				if (output.isEmpty()) {
-					items.set(2, copied);
+					inv.set(2, copied);
 				} else if (ItemStack.areItemStacksEqual(copied, output)) {
 					output.grow(1);
 				}
-				RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(items.subList(0, 1));
+				RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(inv.subList(0, 1));
 				setCachedRecipe(null);
 			}
 		}
