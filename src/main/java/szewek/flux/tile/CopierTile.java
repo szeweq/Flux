@@ -8,14 +8,14 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import szewek.fl.recipe.RecipeCompat;
-import szewek.fl.util.IntPair;
 import szewek.flux.F;
 import szewek.flux.container.CopierContainer;
+import szewek.flux.util.IOSize;
 
 import javax.annotation.Nullable;
 
 public class CopierTile extends AbstractMachineTile {
-	private static final IntPair IO_SIZE = IntPair.of(2, 1);
+	private static final IOSize IO_SIZE = new IOSize(2, 1);
 	private static final int[] SLOTS = new int[] {0, 2};
 
 	public CopierTile() {
@@ -33,7 +33,8 @@ public class CopierTile extends AbstractMachineTile {
 			if (result.isEmpty()) {
 				return false;
 			}
-			for (ItemStack outputStack : getOutputs()) {
+			for (int i = IO_SIZE.in; i < IO_SIZE.in + IO_SIZE.out; i++) {
+				ItemStack outputStack = items.get(i);
 				if (outputStack.isEmpty()) {
 					return true;
 				}

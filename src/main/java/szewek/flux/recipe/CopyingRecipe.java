@@ -20,7 +20,6 @@ import szewek.flux.util.IInventoryIO;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class CopyingRecipe implements IRecipe<IInventoryIO>, Consumer<Iterable<ItemStack>> {
@@ -85,8 +84,7 @@ public class CopyingRecipe implements IRecipe<IInventoryIO>, Consumer<Iterable<I
 
 	@Override
 	public boolean matches(IInventoryIO inv, World worldIn) {
-		List<ItemStack> inputs = inv.getInputs();
-		return material.test(inputs.get(0)) && source.test(inputs.get(1));
+		return material.test(inv.getStackInSlot(0)) && source.test(inv.getStackInSlot(1));
 	}
 
 	@Override

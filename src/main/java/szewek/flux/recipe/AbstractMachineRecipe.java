@@ -69,7 +69,9 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 	public boolean matches(IInventoryIO inv, World worldIn) {
 		ArrayList<ItemStack> filledInputs = new ArrayList<>();
 
-		for (ItemStack stack : inv.getInputs()) {
+		int inputSize = inv.getIOSize().in;
+		for (int i = 0; i < inputSize; i++) {
+			ItemStack stack = inv.getStackInSlot(i);
 			if (!stack.isEmpty()) {
 				filledInputs.add(stack);
 			}

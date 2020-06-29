@@ -14,15 +14,15 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import szewek.fl.type.FluxContainerType;
-import szewek.fl.util.IntPair;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
+import szewek.flux.util.IOSize;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public final class Machine2For1Tile extends AbstractMachineTile {
-	private static final IntPair IO_SIZE = IntPair.of(2, 1);
+	private static final IOSize IO_SIZE = new IOSize(2, 1);
 	private static final int[] SLOTS_TOP_BOTTOM = {0, 2};
 	private static final int[] SLOTS_SIDE = {1, 2};
 	private final String titleId;
