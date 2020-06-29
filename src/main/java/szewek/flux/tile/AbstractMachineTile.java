@@ -29,8 +29,8 @@ import szewek.flux.block.MachineBlock;
 import szewek.flux.config.ConfigChangeListener;
 import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
-import szewek.flux.util.IInventoryIO;
-import szewek.flux.util.IOSize;
+import szewek.flux.util.inventory.IInventoryIO;
+import szewek.flux.util.inventory.IOSize;
 
 import javax.annotation.Nullable;
 import java.util.List;

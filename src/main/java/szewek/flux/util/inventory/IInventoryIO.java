@@ -1,4 +1,4 @@
-package szewek.flux.util;
+package szewek.flux.util.inventory;
 
 import net.minecraft.inventory.IInventory;
 

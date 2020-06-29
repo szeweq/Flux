@@ -16,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.flux.F;
 import szewek.flux.Flux;
-import szewek.flux.util.IInventoryIO;
+import szewek.flux.util.inventory.IInventoryIO;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;

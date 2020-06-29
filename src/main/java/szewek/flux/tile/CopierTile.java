@@ -10,7 +10,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import szewek.fl.recipe.RecipeCompat;
 import szewek.flux.F;
 import szewek.flux.container.CopierContainer;
-import szewek.flux.util.IOSize;
+import szewek.flux.util.inventory.IOSize;
 
 import javax.annotation.Nullable;
 

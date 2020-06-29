@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.type.FluxRecipeType;
-import szewek.flux.util.IInventoryIO;
+import szewek.flux.util.inventory.IInventoryIO;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;

@@ -16,7 +16,7 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import szewek.fl.type.FluxContainerType;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
-import szewek.flux.util.IOSize;
+import szewek.flux.util.inventory.IOSize;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
