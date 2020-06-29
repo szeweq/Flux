@@ -135,7 +135,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			energy -= energyUse;
 			if (process >= processTotal) {
 				process = 0;
-				processTotal = getProcessTime() * 100;
+				//processTotal = getProcessTime() * 100;
 				produceResult();
 				isDirty = true;
 			} else {
@@ -171,10 +171,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		return false;
 	}
 
-	protected int getProcessTime() {
-		return cachedRecipe instanceof AbstractMachineRecipe ? ((AbstractMachineRecipe) cachedRecipe).processTime : 200;
-	}
-
 	protected void produceResult() {
 		if (canProcess()) {
 			ItemStack result = RecipeCompat.getCompatOutput(cachedRecipe, this);
@@ -190,6 +186,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	protected void setCachedRecipe(@Nullable final IRecipe<?> recipe) {
 		cachedRecipe = recipe;
 		compatState = recipe != null && recipe.getType() != recipeType ? 1 : 0;
+		processTotal = recipe instanceof AbstractMachineRecipe ? ((AbstractMachineRecipe) cachedRecipe).processTime * 100 : 20000;
 	}
 
 	@Override
@@ -243,7 +240,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		if (index < ioSize.in && !same) {
 			assert world != null;
 			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null));
-			processTotal = getProcessTime() * 100;
+			//processTotal = getProcessTime() * 100;
 			process = 0;
 			lazyCheck = true;
 			markDirty();
