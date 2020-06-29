@@ -319,8 +319,9 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	private static void collectExperience(PlayerEntity player, int count, float xp) {
 		if (xp == 0) {
-			count = 0;
-		} else if (xp < 1) {
+			return;
+		}
+		if (xp < 1) {
 			float f = (float) count * xp;
 			int i = MathHelper.floor(f);
 			if (i < MathHelper.ceil(f) && Math.random() < (double)(f - (float) i)) {
