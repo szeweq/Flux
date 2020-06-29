@@ -4,37 +4,35 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import szewek.flux.energy.EnergyCache;
 
-import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public final class EnergyCableTile extends AbstractCableTile {
-	private int energy;
-	private final Side[] sides = new Side[6];
+import static szewek.flux.tile.EnergyCableTile.Side;
+
+public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage, Side> {
+	private final AtomicInteger energy = new AtomicInteger();
 	private final EnergyCache energyCache = new EnergyCache(this);
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
-		super(type);
+		super(type, CapabilityEnergy.ENERGY);
 		for(int i = 0; i < 6; i++) {
-			sides[i] = new Side(i);
+			sides[i] = new Side(i, sideFlag, energy);
 		}
 	}
 
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		energy = MathHelper.clamp(compound.getInt("E"), 0, 50000);
+		energy.set(MathHelper.clamp(compound.getInt("E"), 0, 50000));
 	}
 
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		compound.putInt("E", energy);
+		compound.putInt("E", energy.get());
 		return compound;
 	}
 
@@ -44,20 +42,21 @@ public final class EnergyCableTile extends AbstractCableTile {
 			IEnergyStorage ie = energyCache.getCached(dir);
 			if (ie != null) {
 				int r;
+				int n = energy.get();
 				if (ie instanceof Side) {
-					r = (energy - ie.getEnergyStored()) / 2;
+					r = (n - ie.getEnergyStored()) / 2;
 					if (r != 0) {
-						energy -= r;
+						energy.addAndGet(-r);
 						((Side) ie).syncEnergy(r);
 					}
 				} else if (ie.canReceive()) {
 					r = 10000;
-					if (r >= energy) {
-						r = energy;
+					if (r >= n) {
+						r = n;
 					}
 					r = ie.receiveEnergy(r, true);
 					if (r > 0) {
-						energy = energy - r;
+						energy.addAndGet(-r);
 						ie.receiveEnergy(r, false);
 					}
 				}
@@ -69,46 +68,31 @@ public final class EnergyCableTile extends AbstractCableTile {
 		}
 	}
 
-	public LazyOptional<IEnergyStorage> getSide(Direction dir) {
-		return sides[dir.getIndex()].lazy;
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed && cap == CapabilityEnergy.ENERGY && side != null) {
-			return sides[side.getIndex()].lazy.cast();
-		} else {
-			return super.getCapability(cap, side);
-		}
-	}
-
 	@Override
 	public void remove() {
 		super.remove();
 		energyCache.clear();
-		for (Side s : sides) {
-			s.lazy.invalidate();
-		}
 	}
 
-	public final class Side implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
-		private final byte bit;
-		private final LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
+	public static final class Side extends AbstractSide<IEnergyStorage> implements IEnergyStorage {
+		private final AtomicInteger energy;
 
-		private Side(int i) {
-			bit = (byte) (1 << i);
+		private Side(int i, AtomicInteger sf, AtomicInteger energy) {
+			super(i, sf);
+			this.energy = energy;
 		}
 
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int r = maxReceive;
 			if (r > 0) {
-				if (r > 50000 - energy) {
-					r = 50000 - energy;
+				int n = 50000 - energy.get();
+				if (r > n) {
+					r = n;
 				}
 				if (!simulate) {
-					energy += r;
-					sideFlag |= 1 << bit;
+					energy.addAndGet(r);
+					update();
 				}
 			}
 			return r;
@@ -118,25 +102,26 @@ public final class EnergyCableTile extends AbstractCableTile {
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			int r = maxExtract;
 			if (r > 0) {
-				if (r > energy) {
-					r = energy;
+				int n = energy.get();
+				if (r > n) {
+					r = n;
 				}
 				if (!simulate) {
-					energy -= r;
-					sideFlag |= 1 << bit;
+					energy.addAndGet(-r);
+					update();
 				}
 			}
 			return r;
 		}
 
 		private void syncEnergy(int diff) {
-			energy += diff;
-			sideFlag |= 1 << bit;
+			energy.addAndGet(diff);
+			update();
 		}
 
 		@Override
 		public int getEnergyStored() {
-			return energy;
+			return energy.get();
 		}
 
 		@Override

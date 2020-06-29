@@ -2,21 +2,20 @@ package szewek.flux.tile;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 import szewek.fl.signal.ISignalHandler;
 import szewek.fl.signal.SignalCapability;
 import szewek.fl.util.SideCached;
 import szewek.flux.F;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.BitSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class SignalCableTile extends AbstractCableTile {
-	private final Side[] sides = new Side[6];
-	private BitSet bits = new BitSet(256);
+import static szewek.flux.tile.SignalCableTile.Side;
+
+public final class SignalCableTile extends AbstractCableTile<ISignalHandler, Side> {
+	private final BitSet bits = new BitSet(256);
 	private final SideCached<ISignalHandler> signalCache = new SideCached<>(dir -> {
 		assert world != null;
 		TileEntity te = world.getTileEntity(pos.offset(dir));
@@ -30,9 +29,9 @@ public class SignalCableTile extends AbstractCableTile {
 	});
 
 	public SignalCableTile() {
-		super(F.T.SIGNAL_CABLE);
+		super(F.T.SIGNAL_CABLE, SignalCapability.SIGNAL_CAP);
 		for(int i = 0; i < 6; i++) {
-			sides[i] = new Side(i);
+			sides[i] = new Side(i, sideFlag, bits);
 		}
 	}
 
@@ -54,34 +53,18 @@ public class SignalCableTile extends AbstractCableTile {
 		}
 	}
 
-	public LazyOptional<ISignalHandler> getSide(Direction dir) {
-		return sides[dir.getIndex()].lazy;
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed && cap == SignalCapability.SIGNAL_CAP && side != null) {
-			return sides[side.getIndex()].lazy.cast();
-		} else {
-			return super.getCapability(cap, side);
-		}
-	}
-
 	@Override
 	public void remove() {
 		super.remove();
 		signalCache.clear();
-		for (Side s : sides) {
-			s.lazy.invalidate();
-		}
 	}
 
-	public final class Side implements ISignalHandler, NonNullSupplier<ISignalHandler> {
-		private final byte bit;
-		private final LazyOptional<ISignalHandler> lazy = LazyOptional.of(this);
+	public static final class Side extends AbstractSide<ISignalHandler> implements ISignalHandler {
+		private final BitSet bits;
 
-		private Side(int i) {
-			bit = (byte) (1 << i);
+		private Side(int i, AtomicInteger sf, BitSet bits) {
+			super(i, sf);
+			this.bits = bits;
 		}
 
 		@Override
@@ -101,14 +84,14 @@ public class SignalCableTile extends AbstractCableTile {
 
 		@Override
 		public void putSignal(short channel, boolean state) {
-			sideFlag |= bit;
 			bits.set(channel, state);
+			update();
 		}
 
 		private void addSignals(BitSet bitset) {
-			sideFlag |= bit;
 			bits.or(bitset);
 			bitset.or(bits);
+			update();
 		}
 
 		@Nonnull
