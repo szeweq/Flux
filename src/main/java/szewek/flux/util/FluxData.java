@@ -35,10 +35,13 @@ public final class FluxData {
 			HOT_FLUIDS = new ResourceLocation(MODID, "values/fluxgen/hot.json"),
 			COLD_FLUIDS = new ResourceLocation(MODID, "values/fluxgen/cold.json"),
 			GIFTS_LIST = new ResourceLocation(MODID, "gifts/global_list.json");
+	private static final IFutureReloadListener
+			FLUXGEN_VALUES = new FluxGenValues(),
+			FLUX_GIFTS = new FluxGifts();
 
 	public static void addReloadListeners(IReloadableResourceManager rm) {
-		rm.addReloadListener(new FluxGenValues());
-		rm.addReloadListener(new FluxGifts());
+		rm.addReloadListener(FLUXGEN_VALUES);
+		rm.addReloadListener(FLUX_GIFTS);
 	}
 
 	private static CompletableFuture<Collection<FluxGenRecipes.Entry>> parseFluxGenValues(
@@ -66,7 +69,7 @@ public final class FluxData {
 					LOGGER.warn("Factor and usage must be bigger than 0. Skipping {}", key);
 					continue;
 				}
-				vals.add(FluxGenRecipes.Entry.from(key, usage, factor));
+				vals.add(new FluxGenRecipes.Entry(key, usage, factor));
 			}
 		});
 	}

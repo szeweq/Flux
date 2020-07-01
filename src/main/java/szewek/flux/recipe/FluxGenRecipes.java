@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 public final class FluxGenRecipes {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -88,60 +87,38 @@ public final class FluxGenRecipes {
 	private FluxGenRecipes() {
 	}
 
-	private static <T extends IForgeRegistryEntry<T>> void convertMap(Map<T, IntPair> map, Collection<Entry> col, IForgeRegistry<T> reg, TagCollection<T> tags) {
-		for (Entry e : col) {
-			for (T c : e.type.resolve(e.loc, reg::getValue, tags::get)) {
-				map.put(c, e.values);
-			}
-		}
-	}
-
-	public enum EntryType {
-		TAG, SINGLE;
-
-		private <T> Collection<T> resolve(ResourceLocation loc, Function<ResourceLocation, T> reg, Function<ResourceLocation, Tag<T>> tags) {
-			Collection<T> col = Collections.emptySet();
-			if (this == TAG) {
-				Tag<T> tag = tags.apply(loc);
+	private static <T extends IForgeRegistryEntry<T>> void convertMap(Map<T, IntPair> map, Collection<Entry> entries, IForgeRegistry<T> reg, TagCollection<T> tags) {
+		map.clear();
+		for (Entry e : entries) {
+			if (e.tag) {
+				Tag<T> tag = tags.get(e.loc);
 				if (tag == null) {
-					LOGGER.error("Couldn't find tag with name: {}", loc);
+					LOGGER.error("Couldn't find tag with name: {}", e.loc);
 				} else {
-					col = tag.getAllElements();
+					for (T t : tag.getAllElements()) {
+						map.put(t, e.values);
+					}
 				}
 			} else {
-				T t = reg.apply(loc);
+				T t = reg.getValue(e.loc);
 				if (t == null) {
-					LOGGER.error("Couldn't find resource with name: {}", loc);
+					LOGGER.error("Couldn't find resource with name: {}", e.loc);
 				} else {
-					col = Collections.singleton(t);
+					map.put(t, e.values);
 				}
 			}
-			return col;
 		}
 	}
 
 	public static class Entry {
 		public final ResourceLocation loc;
-		public final EntryType type;
+		public final boolean tag;
 		public final IntPair values;
 
-		public Entry(ResourceLocation loc, EntryType type, int usage, int factor) {
-			this.loc = loc;
-			this.type = type;
+		public Entry(String key, int usage, int factor) {
+			tag = key.charAt(0) == '#';
+			loc = new ResourceLocation(tag ? key.substring(1): key);
 			this.values = IntPair.of(factor, usage);
-		}
-
-		public static Entry from(String key, int usage, int factor) {
-			EntryType type;
-			ResourceLocation loc;
-			if (key.charAt(0) == '#') {
-				type = EntryType.TAG;
-				loc = new ResourceLocation(key.substring(1));
-			} else {
-				type = EntryType.SINGLE;
-				loc = new ResourceLocation(key);
-			}
-			return new Entry(loc, type, usage, factor);
 		}
 	}
 }
