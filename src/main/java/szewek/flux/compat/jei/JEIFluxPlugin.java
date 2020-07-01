@@ -42,7 +42,8 @@ public class JEIFluxPlugin implements IModPlugin {
 			ALLOYING = new ResourceLocation(MODID, "alloying"),
 			WASHING = new ResourceLocation(MODID, "washing"),
 			COMPACTING = new ResourceLocation(MODID, "compacting"),
-			COPYING = new ResourceLocation(MODID, "copying");
+			COPYING = new ResourceLocation(MODID, "copying"),
+			GUI_VANILLA = new ResourceLocation("jei", "textures/gui/gui_vanilla.png");
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -59,7 +60,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		MachineCategory<AlloyingRecipe> alloying = mcb.build("alloying", "alloy_caster", AlloyingRecipe.class, B.ALLOY_CASTER);
 		MachineCategory<WashingRecipe> washing = mcb.build("washing", "washer", WashingRecipe.class, B.WASHER);
 		MachineCategory<CompactingRecipe> compacting = mcb.build("compacting", "compactor", CompactingRecipe.class, B.COMPACTOR);
-		CopierCategory copying = new CopierCategory(guiHelper, B.COPIER, 200);
+		CopierCategory copying = new CopierCategory(guiHelper, B.COPIER);
 		reg.addRecipeCategories(grinding, alloying, washing, compacting, copying);
 
 		reg.addRecipeCategories(new FluxGenCategory(guiHelper));

@@ -24,24 +24,23 @@ import static szewek.flux.Flux.MODID;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
+	private static final ResourceLocation TEX = new ResourceLocation(MODID, "textures/gui/copier.png");
 	private final IDrawable
 			background,
 			icon;
 	private final String localizedName;
 	protected final IDrawableAnimated arrow;
-	private final ResourceLocation uid;
 
-	public CopierCategory(IGuiHelper guiHelper, Block icon, int processTime) {
-		uid = new ResourceLocation(MODID, "copying");
-		background = guiHelper.createDrawable(new ResourceLocation(MODID, "textures/gui/copier.png"), 55, 25, 82, 36);
+	public CopierCategory(IGuiHelper guiHelper, Block icon) {
+		background = guiHelper.createDrawable(TEX, 55, 25, 82, 36);
 		this.icon = guiHelper.createDrawableIngredient(new ItemStack(icon));
 		localizedName = I18n.format("gui.flux.jei.category.copying");
-		arrow = guiHelper.drawableBuilder(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 82, 128, 24, 17).buildAnimated(processTime, IDrawableAnimated.StartDirection.LEFT, false);
+		arrow = guiHelper.drawableBuilder(JEIFluxPlugin.GUI_VANILLA, 82, 128, 24, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
 	}
 
 	@Override
 	public ResourceLocation getUid() {
-		return uid;
+		return JEIFluxPlugin.COPYING;
 	}
 
 	@Override

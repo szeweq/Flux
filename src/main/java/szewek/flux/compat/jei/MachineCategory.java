@@ -100,7 +100,7 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 
 		Builder(IGuiHelper guiHelper) {
 			this.guiHelper = guiHelper;
-			arrow = guiHelper.drawableBuilder(new ResourceLocation("jei", "textures/gui/gui_vanilla.png"), 82, 128, 24, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
+			arrow = guiHelper.drawableBuilder(JEIFluxPlugin.GUI_VANILLA, 82, 128, 24, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
 		}
 
 		final <T extends AbstractMachineRecipe> MachineCategory<T> build(String resUid, String guiId, Class<T> tClass, Block block) {

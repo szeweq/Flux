@@ -38,7 +38,7 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 	private final String localizedName = I18n.format("block.flux.fluxgen");
 
 	public FluxGenCategory(IGuiHelper guiHelper) {
-		background = guiHelper.createDrawable(BG_TEX, 46, 14, 130 - 46, 72 - 14);
+		background = guiHelper.createDrawable(BG_TEX, 46, 14, 84, 58);
 		icon = guiHelper.createDrawableIngredient(new ItemStack(F.B.FLUXGEN));
 	}
 
@@ -69,7 +69,7 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 	@Override
 	public void setIngredients(Product product, IIngredients ingredients) {
-		if (product.type == Type.CATALYST) {
+		if (product.type == 2) {
 			ingredients.setInput(VanillaTypes.ITEM, product.item);
 		} else {
 			ingredients.setInput(VanillaTypes.FLUID, product.fluid);
@@ -78,14 +78,14 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, Product product, IIngredients iIngredients) {
-		if (product.type == Type.CATALYST) {
+		if (product.type == 2) {
 			IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 			guiItemStacks.init(1, true, 46, 20);
 			guiItemStacks.set(1, product.item);
 		} else {
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 			int s, x;
-			if (product.type == Type.HOT_FLUID) {
+			if (product.type == 1) {
 				s = 0;
 				x = 1;
 			} else {
@@ -110,13 +110,13 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 	}
 
 	static class Product {
-		private final Type type;
+		private final int type;
 		private final ItemStack item;
 		private final FluidStack fluid;
 		private final String factorStr, typeStr;
 
 		public Product(Item item, IntPair val) {
-			type = Type.CATALYST;
+			type = 2;
 			typeStr = I18n.format("flux.fluxgen.speed");
 			this.item = new ItemStack(item, val.r);
 			fluid = FluidStack.EMPTY;
@@ -124,7 +124,7 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 		}
 
 		public Product(Fluid fluid, boolean hot, IntPair val) {
-			type = hot ? Type.HOT_FLUID : Type.COLD_FLUID;
+			type = hot ? 1 : 0;
 			typeStr = I18n.format("flux.fluxgen." + (hot ? "time" : "length"));
 			this.fluid = new FluidStack(fluid, val.r);
 			item = ItemStack.EMPTY;
@@ -144,8 +144,5 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 			}
 			return products;
 		}
-	}
-	enum Type {
-		CATALYST, HOT_FLUID, COLD_FLUID;
 	}
 }
