@@ -133,13 +133,13 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 		static Collection<Product> getAll() {
 			Collection<Product> products = new ArrayList<>();
-			for (Map.Entry<Item, IntPair> e : FluxGenRecipes.allCatalysts()) {
+			for (Map.Entry<Item, IntPair> e : FluxGenRecipes.CATALYSTS.all().entrySet()) {
 				products.add(new Product(e.getKey(), e.getValue()));
 			}
-			for (Map.Entry<Fluid, IntPair> e : FluxGenRecipes.allHotFluids()) {
+			for (Map.Entry<Fluid, IntPair> e : FluxGenRecipes.HOT_FLUIDS.all().entrySet()) {
 				products.add(new Product(e.getKey(), true, e.getValue()));
 			}
-			for (Map.Entry<Fluid, IntPair> e : FluxGenRecipes.allColdFluids()) {
+			for (Map.Entry<Fluid, IntPair> e : FluxGenRecipes.COLD_FLUIDS.all().entrySet()) {
 				products.add(new Product(e.getKey(), false, e.getValue()));
 			}
 			return products;

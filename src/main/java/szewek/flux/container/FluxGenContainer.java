@@ -99,7 +99,7 @@ public class FluxGenContainer extends Container {
 				if (ForgeHooks.getBurnTime(bis) > 0) {
 					s = 0;
 					e = 1;
-				} else if (FluxGenRecipes.isCatalyst(bis.getItem())) {
+				} else if (FluxGenRecipes.CATALYSTS.has(bis.getItem())) {
 					s = 1;
 					e = 2;
 				} else if (index < 29) {

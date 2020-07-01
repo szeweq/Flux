@@ -157,18 +157,18 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		int f = ForgeHooks.getBurnTime(fuel);
 		if (f == 0) return 0;
 		ItemStack catalyst = items.get(1);
-		IntPair genCat = FluxGenRecipes.getCatalyst(catalyst.getItem());
-		IntPair genHot = FluxGenRecipes.getHotFluid(tank.fluids[0].getFluid());
-		IntPair genCold = FluxGenRecipes.getColdFluid(tank.fluids[1].getFluid());
 		energyGen = FluxCfg.COMMON.fluxGenBaseEnergy.get();
+		IntPair genCat = FluxGenRecipes.CATALYSTS.get(catalyst.getItem());
 		if (genCat.r <= catalyst.getCount()) {
 			energyGen *= genCat.l;
 			if (genCat.r > 0) catalyst.grow(-genCat.r);
 		}
+		IntPair genHot = FluxGenRecipes.HOT_FLUIDS.get(tank.fluids[0].getFluid());
 		if (genHot.r <= tank.fluids[0].getAmount()) {
 			f *= genHot.l;
 			if (genHot.r > 0) tank.fluids[0].grow(-genHot.r);
 		}
+		IntPair genCold = FluxGenRecipes.COLD_FLUIDS.get(tank.fluids[1].getFluid());
 		if (genCold.r <= tank.fluids[1].getAmount()) {
 			workSpeed = genCold.l < genCat.l ? genCat.l - genCold.l : 1;
 			if (genCold.r > 0) tank.fluids[1].grow(-genCold.r);
@@ -377,9 +377,9 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 				return 0;
 			}
 			int s;
-			if (FluxGenRecipes.isHotFluid(resource.getFluid())) {
+			if (FluxGenRecipes.HOT_FLUIDS.has(resource.getFluid())) {
 				s = 0;
-			} else if (FluxGenRecipes.isColdFluid(resource.getFluid())) {
+			} else if (FluxGenRecipes.COLD_FLUIDS.has(resource.getFluid())) {
 				s = 1;
 			} else {
 				return 0;
