@@ -31,11 +31,11 @@ public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
 	private final String localizedName;
 	protected final IDrawableAnimated arrow;
 
-	public CopierCategory(IGuiHelper guiHelper, Block icon) {
+	public CopierCategory(IGuiHelper guiHelper, Block icon, IDrawableAnimated arrow) {
 		background = guiHelper.createDrawable(TEX, 55, 25, 82, 36);
 		this.icon = guiHelper.createDrawableIngredient(new ItemStack(icon));
 		localizedName = I18n.format("gui.flux.jei.category.copying");
-		arrow = guiHelper.drawableBuilder(JEIFluxPlugin.GUI_VANILLA, 82, 128, 24, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
+		this.arrow = arrow;
 	}
 
 	@Override

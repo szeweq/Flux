@@ -60,7 +60,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		MachineCategory<AlloyingRecipe> alloying = mcb.build("alloying", "alloy_caster", AlloyingRecipe.class, B.ALLOY_CASTER);
 		MachineCategory<WashingRecipe> washing = mcb.build("washing", "washer", WashingRecipe.class, B.WASHER);
 		MachineCategory<CompactingRecipe> compacting = mcb.build("compacting", "compactor", CompactingRecipe.class, B.COMPACTOR);
-		CopierCategory copying = new CopierCategory(guiHelper, B.COPIER);
+		CopierCategory copying = new CopierCategory(guiHelper, B.COPIER, mcb.arrow);
 		reg.addRecipeCategories(grinding, alloying, washing, compacting, copying);
 
 		reg.addRecipeCategories(new FluxGenCategory(guiHelper));

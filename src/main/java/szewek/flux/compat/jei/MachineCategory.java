@@ -96,7 +96,7 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 
 	static final class Builder {
 		private final IGuiHelper guiHelper;
-		private final IDrawableAnimated arrow;
+		final IDrawableAnimated arrow;
 
 		Builder(IGuiHelper guiHelper) {
 			this.guiHelper = guiHelper;
