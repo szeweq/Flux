@@ -74,7 +74,7 @@ public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage, Sid
 		energyCache.clear();
 	}
 
-	public static final class Side extends AbstractSide<IEnergyStorage> implements IEnergyStorage {
+	public static final class Side extends AbstractCableTile.AbstractSide<IEnergyStorage> implements IEnergyStorage {
 		private final AtomicInteger energy;
 
 		private Side(int i, AtomicInteger sf, AtomicInteger energy) {

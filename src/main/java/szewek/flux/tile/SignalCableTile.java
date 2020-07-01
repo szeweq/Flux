@@ -59,7 +59,7 @@ public final class SignalCableTile extends AbstractCableTile<ISignalHandler, Sid
 		signalCache.clear();
 	}
 
-	public static final class Side extends AbstractSide<ISignalHandler> implements ISignalHandler {
+	public static final class Side extends AbstractCableTile.AbstractSide<ISignalHandler> implements ISignalHandler {
 		private final BitSet bits;
 
 		private Side(int i, AtomicInteger sf, BitSet bits) {
