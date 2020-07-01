@@ -90,20 +90,20 @@ public final class FluxGenRecipes {
 	private static <T extends IForgeRegistryEntry<T>> void convertMap(Map<T, IntPair> map, Collection<Entry> entries, IForgeRegistry<T> reg, TagCollection<T> tags) {
 		map.clear();
 		for (Entry e : entries) {
-			if (e.tag) {
-				Tag<T> tag = tags.get(e.loc);
-				if (tag == null) {
-					LOGGER.error("Couldn't find tag with name: {}", e.loc);
-				} else {
-					for (T t : tag.getAllElements()) {
-						map.put(t, e.values);
-					}
-				}
-			} else {
+			if (!e.tag) {
 				T t = reg.getValue(e.loc);
 				if (t == null) {
 					LOGGER.error("Couldn't find resource with name: {}", e.loc);
 				} else {
+					map.put(t, e.values);
+				}
+				continue;
+			}
+			Tag<T> tag = tags.get(e.loc);
+			if (tag == null) {
+				LOGGER.error("Couldn't find tag with name: {}", e.loc);
+			} else {
+				for (T t : tag.getAllElements()) {
 					map.put(t, e.values);
 				}
 			}
