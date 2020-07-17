@@ -57,20 +57,16 @@ import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
 import szewek.flux.util.ChipUpgradeTrade;
 import szewek.flux.util.Gifts;
+import szewek.flux.util.JavaUtils;
 import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 import static szewek.flux.Flux.MODID;
@@ -92,59 +88,36 @@ public final class F {
 	@SubscribeEvent
 	public static void blocks(final RegistryEvent.Register<Block> re) {
 		final IForgeRegistry<Block> reg = re.getRegistry();
-		registerAll(reg, B.ORES.values());
-		registerAll(reg, B.METAL_BLOCKS.values());
-		registerFromClass(reg, B.class);
+		registerMapValues(B.ORES, reg);
+		registerMapValues(B.METAL_BLOCKS, reg);
+		registerFromClass(B.class, reg);
 	}
 
 	@SubscribeEvent
 	public static void items(final RegistryEvent.Register<Item> re) {
 		final IForgeRegistry<Item> reg = re.getRegistry();
-		registerAll(reg, I.GRITS.values());
-		registerAll(reg, I.DUSTS.values());
-		registerAll(reg, I.INGOTS.values());
-		registerAll(reg, I.NUGGETS.values());
-		registerAll(reg, I.GEARS.values());
-		registerAll(reg, I.PLATES.values());
-		for (FluxOreBlock ore : B.ORES.values()) {
-			reg.register(fromBlock(ore));
-		}
-		for (MetalBlock mb : B.METAL_BLOCKS.values()) {
-			reg.register(fromBlock(mb));
-		}
-		reg.registerAll(
-				I.GIFT, I.MACHINE_BASE, I.CHIP,
-				I.SEAL, I.GLUE, I.PASTE,
-				fromBlock(B.FLUXGEN),
-				fromBlock(B.GRINDING_MILL),
-				fromBlock(B.ALLOY_CASTER),
-				fromBlock(B.WASHER),
-				fromBlock(B.COMPACTOR),
-				fromBlock(B.ENERGY_CABLE),
-				fromBlock(B.SIGNAL_CABLE),
-				fromBlock(B.DIGGER),
-				fromBlock(B.FARMER),
-				fromBlock(B.BUTCHER),
-				fromBlock(B.MOB_POUNDER),
-				fromBlock(B.ITEM_ABSORBER),
-				fromBlock(B.RR_TABLE),
-				fromBlock(B.ONLINE_MARKET),
-				fromBlock(B.INTERACTOR_RAIL),
-				fromBlock(B.SIGNAL_CONTROLLER),
-				fromBlock(B.COPIER)
-		);
-		I.BRONZE_TOOLS.registerTools(reg);
-		I.STEEL_TOOLS.registerTools(reg);
+		final Consumer<Block> regFromBlock = b -> reg.register(fromBlock(b));
+		registerMapValues(I.GRITS, reg);
+		registerMapValues(I.DUSTS, reg);
+		registerMapValues(I.INGOTS, reg);
+		registerMapValues(I.NUGGETS, reg);
+		registerMapValues(I.GEARS, reg);
+		registerMapValues(I.PLATES, reg);
+		JavaUtils.forEachValue(B.ORES, regFromBlock);
+		JavaUtils.forEachValue(B.METAL_BLOCKS, regFromBlock);
+		registerFromClass(I.class, reg);
+		JavaUtils.forEachStaticField(B.class, Block.class, b -> reg.register(fromBlock(b)));
+		JavaUtils.forEachStaticField(I.class, Toolset.class, toolset -> toolset.registerTools(reg));
 	}
 
 	@SubscribeEvent
 	public static void tiles(final RegistryEvent.Register<TileEntityType<?>> re) {
-		registerFromClass(re.getRegistry(), T.class);
+		registerFromClass(T.class, re.getRegistry());
 	}
 
 	@SubscribeEvent
 	public static void containers(final RegistryEvent.Register<ContainerType<?>> re) {
-		registerFromClass(re.getRegistry(), C.class);
+		registerFromClass(C.class, re.getRegistry());
 	}
 
 	@SubscribeEvent
@@ -276,6 +249,7 @@ public final class F {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static final class I {
 		public static final Map<Metal, MetalItem>
 				GRITS = metalMap("grit", (m) -> m.nonAlloy() && m != Metals.NETHERITE),
@@ -414,7 +388,7 @@ public final class F {
 		private static <C extends Container> ContainerType<C> container(IContainerFactory<C> factory, String name) {
 			ContainerType<C> ct = new ContainerType<>(factory);
 			ct.setRegistryName(MODID, name);
-			return ct;
+			return new ContainerType<>(factory);
 		}
 
 		private static <C extends AbstractMachineContainer> FluxContainerType<C> containerFlux(FluxContainerType.IContainerBuilder<C> cb, String name) {
@@ -455,7 +429,8 @@ public final class F {
 		}
 
 		private static VillagerProfession job(String name, PointOfInterestType poi, SoundEvent sound) {
-			return named(new VillagerProfession(MODID + ':' + name, poi, ImmutableSet.of(), ImmutableSet.of(), sound), name);
+			return new VillagerProfession(MODID + ':' + name, poi, ImmutableSet.of(), ImmutableSet.of(), sound)
+					.setRegistryName(MODID, name);
 		}
 	}
 
@@ -464,23 +439,12 @@ public final class F {
 		public static final Tag<Item> MARKET_ACCEPT = new ItemTags.Wrapper(new ResourceLocation(MODID, "market_accept"));
 	}
 
-	private static <T extends IForgeRegistryEntry<T>> void registerAll(IForgeRegistry<T> reg, Iterable<? extends T> iter) {
-		for (T t : iter) {
-			reg.register(t);
-		}
+	private static <T extends IForgeRegistryEntry<T>> void registerMapValues(Map<?, ? extends T> map, IForgeRegistry<T> reg) {
+		JavaUtils.forEachValue(map, reg::register);
 	}
 
-	private static <T extends IForgeRegistryEntry<T>> void registerFromClass(IForgeRegistry<T> reg, Class<?> cl) {
-		Class<T> tcl = reg.getRegistrySuperType();
-		for (Field f : cl.getDeclaredFields()) {
-			if (tcl.isAssignableFrom(f.getType()) && Modifier.isStatic(f.getModifiers())) {
-				try {
-					reg.register(tcl.cast(f.get(null)));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
+	private static <T extends IForgeRegistryEntry<T>> void registerFromClass(Class<?> cl, IForgeRegistry<T> reg) {
+		JavaUtils.forEachStaticField(cl, reg.getRegistrySuperType(), reg::register);
 	}
 
 	@SuppressWarnings("ConstantConditions")
