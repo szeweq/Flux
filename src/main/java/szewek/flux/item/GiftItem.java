@@ -7,17 +7,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
 import szewek.flux.util.Gifts;
 
 public final class GiftItem extends Item {
@@ -48,14 +45,14 @@ public final class GiftItem extends Item {
 		if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity && stack.getItem() == this) {
 			CompoundNBT tag = stack.getTag();
 			if (tag == null || tag.isEmpty() || !tag.contains("LootTable")) {
-				entityLiving.sendMessage(GIFT_INVALID);
+				entityLiving.sendMessage(GIFT_INVALID, Util.DUMMY_UUID);
 				return ItemStack.EMPTY;
 			}
 
 			String lt = tag.getString("LootTable");
 			ResourceLocation loc = ResourceLocation.tryCreate(lt);
 			if (loc == null) {
-				entityLiving.sendMessage(GIFT_INVALID);
+				entityLiving.sendMessage(GIFT_INVALID, Util.DUMMY_UUID);
 				return ItemStack.EMPTY;
 			}
 			LootContext lootCtx = new LootContext.Builder((ServerWorld) worldIn)

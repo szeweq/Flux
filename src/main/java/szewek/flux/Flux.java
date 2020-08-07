@@ -7,6 +7,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
@@ -15,6 +16,7 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,7 +27,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -102,15 +103,15 @@ public final class Flux {
 			if (!player.world.isRemote) {
 				VersionChecker.CheckResult ver = VersionChecker.getResult(modInfo);
 				if (ver.target != null && (ver.status == VersionChecker.Status.OUTDATED || ver.status == VersionChecker.Status.BETA_OUTDATED)) {
-					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()));
+					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()), Util.DUMMY_UUID);
 				}
 				Gifts.makeGiftsForPlayer((ServerPlayerEntity) player);
 			}
 		}
 
 		@SubscribeEvent
-		public static void serverAboutToStart(final FMLServerAboutToStartEvent e) {
-			FluxData.addReloadListeners(e.getServer().getResourceManager());
+		public static void reloadData(final AddReloadListenerEvent e) {
+			FluxData.addReloadListeners(e);
 		}
 	}
 

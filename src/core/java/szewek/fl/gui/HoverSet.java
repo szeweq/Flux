@@ -1,5 +1,7 @@
 package szewek.fl.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,17 +21,17 @@ public class HoverSet {
 		Collections.addAll(rects, rect);
 	}
 
-	public void checkCoords(int x, int y) {
+	public void checkCoords(MatrixStack matrixStack, int x, int y) {
 		if (hoverListener != null) {
 			for (GuiRect r : rects) {
 				if (x >= r.x1 && x < r.x2 && y >= r.y1 && y < r.y2) {
-					hoverListener.onHover(r, x, y);
+					hoverListener.onHover(r, matrixStack, x, y);
 				}
 			}
 		}
 	}
 
 	public interface HoverListener {
-		void onHover(GuiRect rect, int mx, int my);
+		void onHover(GuiRect rect, MatrixStack matrixStack, int mx, int my);
 	}
 }

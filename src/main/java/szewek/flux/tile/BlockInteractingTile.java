@@ -1,5 +1,6 @@
 package szewek.flux.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import szewek.fl.util.SpatialWalker;
@@ -14,8 +15,8 @@ abstract class BlockInteractingTile extends PoweredTile {
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		walker.read(compound);
 		disabled = compound.getBoolean("Disabled");
 	}

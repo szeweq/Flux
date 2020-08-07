@@ -30,7 +30,11 @@ public final class MachineBlock extends Block {
 	public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
 	public MachineBlock() {
-		super(Properties.create(Material.IRON).hardnessAndResistance(1.0F).sound(SoundType.METAL).lightValue(13));
+		super(Properties.create(Material.IRON)
+				.hardnessAndResistance(1.0F)
+				.sound(SoundType.METAL)
+				.setLightLevel(state -> state.get(LIT) ? 13 : 0)
+		);
 		this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
 	}
 
@@ -44,11 +48,6 @@ public final class MachineBlock extends Block {
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		TileEntityType<?> tetype = ForgeRegistries.TILE_ENTITIES.getValue(getRegistryName());
 		return tetype == null ? null : tetype.create();
-	}
-
-	@Override
-	public int getLightValue(BlockState state) {
-		return state.get(LIT) ? super.getLightValue(state) : 0;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package szewek.flux.tile;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IRecipeHelperPopulator;
@@ -95,8 +96,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		inv.readNBT(compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		process = compound.getInt("Process");

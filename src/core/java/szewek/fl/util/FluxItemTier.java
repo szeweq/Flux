@@ -3,9 +3,8 @@ package szewek.fl.util;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * Custom item tier used in Flux mod(s).
@@ -17,7 +16,7 @@ public class FluxItemTier implements IItemTier {
 	private final float efficiency;
 	private final float attackDamage;
 	private final int enchantability;
-	public final Tag<Item> repairMaterialTag;
+	public final ITag<Item> repairMaterialTag;
 	public final Item material;
 
 	public FluxItemTier(Builder b) {
@@ -68,7 +67,7 @@ public class FluxItemTier implements IItemTier {
 		private float attackDamage;
 		private int enchantability;
 		private Item material;
-		private Tag<Item> repairMaterialTag;
+		private ITag<Item> repairMaterialTag;
 
 		public Builder setHarvestLevel(int harvestLevel) {
 			this.harvestLevel = harvestLevel;
@@ -96,7 +95,7 @@ public class FluxItemTier implements IItemTier {
 		}
 
 		public Builder setTag(String tagName) {
-			repairMaterialTag = new ItemTags.Wrapper(new ResourceLocation("forge", tagName));
+			repairMaterialTag = ItemTags.makeWrapperTag("forge:" + tagName);
 			return this;
 		}
 

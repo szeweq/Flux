@@ -70,8 +70,8 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		currentChannel = (short) MathHelper.clamp(compound.getShort("Channel"), 0, 255);
 		mode = compound.getByte("Mode");
 		keepPower = compound.getInt("KeepPower");

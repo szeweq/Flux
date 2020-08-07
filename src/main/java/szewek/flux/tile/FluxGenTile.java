@@ -1,5 +1,6 @@
 package szewek.flux.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
@@ -93,8 +94,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		workTicks = compound.getInt("WorkTicks");
 		maxWork = compound.getInt("MaxWork");

@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.RailShape;
@@ -78,16 +78,11 @@ public class InteractorRailBlock extends AbstractRailBlock {
 			}
 
 			if (newTrigger) {
-				world.getPendingBlockTicks().scheduleTick(pos, this, tickRate(world));
+				world.getPendingBlockTicks().scheduleTick(pos, this, 10);
 			}
 		} else {
 			world.setBlockState(pos, state.with(TRIGGERED, false));
 		}
-	}
-
-	@Override
-	public int tickRate(IWorldReader worldIn) {
-		return 20;
 	}
 
 	@Override
@@ -113,7 +108,7 @@ public class InteractorRailBlock extends AbstractRailBlock {
 	}
 
 	@Override
-	public IProperty<RailShape> getShapeProperty() {
+	public Property<RailShape> getShapeProperty() {
 		return SHAPE;
 	}
 

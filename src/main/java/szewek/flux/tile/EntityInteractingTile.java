@@ -1,5 +1,6 @@
 package szewek.flux.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -15,8 +16,8 @@ abstract class EntityInteractingTile extends PoweredTile {
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
 	}

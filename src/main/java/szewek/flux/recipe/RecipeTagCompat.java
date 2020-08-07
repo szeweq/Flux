@@ -3,6 +3,7 @@ package szewek.flux.recipe;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
@@ -18,7 +19,7 @@ public final class RecipeTagCompat {
 
 	public static ItemStack findItemTag(JsonObject json) {
 		String tagName = JSONUtils.getString(json, "tag");
-		Tag<Item> tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
+		ITag<Item> tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
 		if (tag != null && !tag.getAllElements().isEmpty()) {
 			Item foundItem = itemFromTagCompat(tag.getAllElements());
 			if (foundItem != null) {

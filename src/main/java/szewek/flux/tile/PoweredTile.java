@@ -1,5 +1,6 @@
 package szewek.flux.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -23,8 +24,8 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 500000);
 	}
 

@@ -1,6 +1,5 @@
 package szewek.flux.container;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
@@ -12,6 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -66,12 +68,12 @@ public class FluxGenContainer extends Container {
 		return (float) getEnergy() / (float) 1e6;
 	}
 
-	public String energyText() {
-		return getEnergy() + " / 1000000 F";
+	public ITextComponent energyText() {
+		return new StringTextComponent(getEnergy() + " / 1000000 F");
 	}
 
-	public String genText() {
-		return I18n.format("flux.gen", data.get(4));
+	public ITextComponent genText() {
+		return new TranslationTextComponent("flux.gen", data.get(4));
 	}
 
 	public FluidStack getHotFluid() {

@@ -1,5 +1,6 @@
 package szewek.flux.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -24,8 +25,8 @@ public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage, Sid
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		energy.set(MathHelper.clamp(compound.getInt("E"), 0, 50000));
 	}
 

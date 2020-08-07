@@ -1,11 +1,12 @@
 package szewek.flux.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,47 +38,52 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		renderBackground(0);
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		renderBackground(matrixStack, 0);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		assert minecraft != null;
 		minecraft.getTextureManager().bindTexture(BG_TEX);
-		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
-		RenderSystem.pushMatrix();
-		RenderSystem.translatef(guiLeft, guiTop, 0.0F);
+		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+		matrixStack.push();
+		matrixStack.translate(guiLeft, guiTop, 0.0F);
 		workFillBar.draw(container.getWorkFill(), getBlitOffset());
 		energyFillBar.draw(container.getEnergyFill(), getBlitOffset());
-		RenderSystem.popMatrix();
+		matrixStack.pop();
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		final String s = title.getFormattedText();
-		font.drawString(s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
-		font.drawString(playerInventory.getDisplayName().getFormattedText(), 8.0F, ySize - 96 + 2, 0x404040);
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+		final String s = title.getString();
+		font.drawString(matrixStack, s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
+		font.drawString(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
 		DrawUtils.drawFluidStack(47, 15, 16, 56, container.getHotFluid(), 4000, getBlitOffset());
 		DrawUtils.drawFluidStack(113, 15, 16, 56, container.getColdFluid(), 4000, getBlitOffset());
-		tooltips.checkCoords(mx, my);
-		renderHoveredToolTip(mx, my);
+		tooltips.checkCoords(matrixStack, mx, my);
+		func_230459_a_(matrixStack, mx, my);
 	}
 
 	@Override
-	public void onHover(GuiRect rect, int mx, int my) {
-		List<String> l;
+	public void onHover(GuiRect rect, MatrixStack matrixStack, int mx, int my) {
+		List<ITextComponent> l;
 		if (rect == energyFillBar) {
 			l = Arrays.asList(container.energyText(), container.genText());
-		} else if (rect == hoverHotFluid) {
-			FluidStack hot = container.getHotFluid();
-			l = Arrays.asList(I18n.format(hot.getTranslationKey()), hot.getAmount() + " mB");
-		} else if (rect == hoverColdFluid) {
-			FluidStack cold = container.getColdFluid();
-			l = Arrays.asList(I18n.format(cold.getTranslationKey()), cold.getAmount() + " mB");
 		} else {
-			return;
+			FluidStack fluid;
+			if (rect == hoverHotFluid) {
+				fluid = container.getHotFluid();
+			} else if (rect == hoverColdFluid) {
+				fluid = container.getColdFluid();
+			} else {
+				return;
+			}
+			l = Arrays.asList(
+					fluid.getDisplayName(),
+					new StringTextComponent(fluid.getAmount() + " mB")
+			);
 		}
-		renderTooltip(l, mx, my);
+		renderTooltip(matrixStack, l, mx, my);
 	}
 
 }

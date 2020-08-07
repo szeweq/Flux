@@ -1,5 +1,6 @@
 package szewek.flux.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -72,15 +73,15 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 	}
 
 	@Override
-	public void draw(T recipe, double mouseX, double mouseY) {
-		arrow.draw(24, 9);
+	public void draw(T recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+		arrow.draw(matrixStack, 24, 9);
 		float experience = recipe.experience;
 		if (experience > 0.0F) {
 			String experienceString = I18n.format("gui.jei.category.smelting.experience", experience);
 			Minecraft minecraft = Minecraft.getInstance();
 			FontRenderer fontRenderer = minecraft.fontRenderer;
 			int stringWidth = fontRenderer.getStringWidth(experienceString);
-			fontRenderer.drawString(experienceString, (float)(background.getWidth() - stringWidth), 0.0F, 0xff808080);
+			fontRenderer.drawString(matrixStack, experienceString, (float)(background.getWidth() - stringWidth), 0.0F, 0xff808080);
 		}
 	}
 

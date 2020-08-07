@@ -2,10 +2,7 @@ package szewek.flux.recipe;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -75,7 +72,7 @@ public final class FluxGenRecipes {
 					}
 					continue;
 				}
-				Tag<T> tag = tags.get(e.loc);
+				ITag<T> tag = tags.get(e.loc);
 				if (tag == null) {
 					LOGGER.error("Couldn't find tag with name: {}", e.loc);
 				} else {

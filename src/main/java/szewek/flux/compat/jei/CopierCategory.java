@@ -1,5 +1,6 @@
 package szewek.flux.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -64,8 +65,8 @@ public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
 	}
 
 	@Override
-	public void draw(CopyingRecipe recipe, double mouseX, double mouseY) {
-		arrow.draw(24, 9);
+	public void draw(CopyingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+		arrow.draw(matrixStack, 24, 9);
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package szewek.flux.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.recipebook.AbstractRecipeBookGui;
 import net.minecraft.client.gui.recipebook.IRecipeShownListener;
@@ -18,14 +20,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.container.AbstractMachineContainer;
 
 @OnlyIn(Dist.CLIENT)
-public final class MachineScreen<T extends AbstractMachineContainer> extends ContainerScreen<T> implements IRecipeShownListener {
+public class MachineScreen extends ContainerScreen<AbstractMachineContainer> implements IRecipeShownListener {
 	private final AbstractRecipeBookGui recipeGui;
 	private boolean recipeBookShown;
 	private final ResourceLocation guiTexture;
 	private static final ResourceLocation recipeTex = new ResourceLocation("textures/gui/recipe_button.png");
 	private static final ITextComponent compatInfo = new TranslationTextComponent("flux.recipe_compat");
 
-	public MachineScreen(T screenContainer, String filterName, PlayerInventory inv, ITextComponent titleIn, ResourceLocation guiTexture) {
+	public MachineScreen(AbstractMachineContainer screenContainer, String filterName, PlayerInventory inv, ITextComponent titleIn, ResourceLocation guiTexture) {
 		super(screenContainer, inv, titleIn);
 		this.guiTexture = guiTexture;
 		recipeGui = new MachineRecipeGui(screenContainer.recipeType, filterName);
@@ -52,56 +54,57 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		renderBackground();
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(matrixStack);
 		if (recipeGui.isVisible() && recipeBookShown) {
-			drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-			recipeGui.render(mouseX, mouseY, partialTicks);
+			drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+			recipeGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		} else {
-			recipeGui.render(mouseX, mouseY, partialTicks);
-			super.render(mouseX, mouseY, partialTicks);
-			recipeGui.renderGhostRecipe(guiLeft, guiTop, true, partialTicks);
+			recipeGui.render(matrixStack, mouseX, mouseY, partialTicks);
+			super.render(matrixStack, mouseX, mouseY, partialTicks);
+			// RENDER GHOST RECIPE
+			recipeGui.func_230477_a_(matrixStack, guiLeft, guiTop, true, partialTicks);
 		}
 
-		renderHoveredToolTip(mouseX, mouseY);
-		recipeGui.renderTooltip(guiLeft, guiTop, mouseX, mouseY);
+		func_230459_a_(matrixStack, mouseX, mouseY);
+		recipeGui.func_238924_c_(matrixStack, guiLeft, guiTop, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		String s = title.getFormattedText();
-		font.drawString(s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6F, 0x404040);
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+		String s = title.getString();
+		font.drawString(matrixStack, s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6F, 0x404040);
 		ITextComponent var8 = playerInventory.getDisplayName();
-		font.drawString(var8.getFormattedText(), 8F, (float)(ySize - 96 + 2), 0x404040);
+		font.drawString(matrixStack, var8.getString(), 8F, (float)(ySize - 96 + 2), 0x404040);
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
 		if (151 <= mx && 168 >= mx && 16 <= my && 69 >= my) {
-			renderTooltip(container.energyText(), mx, my);
+			renderTooltip(matrixStack, container.energyText(), mx, my);
 		}
 		if (container.isCompatRecipe()) {
-			font.drawString("!", 82F, 24F, 0xFF0000);
+			font.drawString(matrixStack, "!", 82F, 24F, 0xFF0000);
 			if (80 <= mx && 84 >= mx && 24 <= my && 32 >= my) {
-				renderTooltip(compatInfo.getFormattedText(), mx, my);
+				renderTooltip(matrixStack, compatInfo, mx, my);
 			}
 		}
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		minecraft.getTextureManager().bindTexture(guiTexture);
 		int i = guiLeft;
 		int j = guiTop;
-		blit(i, j, 0, 0, xSize, ySize);
+		blit(matrixStack, i, j, 0, 0, xSize, ySize);
 
 		int n = container.energyScaled();
 		if (n > 0) {
-			blit(i + 152, j + 71 - n, 176, 71 - n, 16, n - 1);
+			blit(matrixStack, i + 152, j + 71 - n, 176, 71 - n, 16, n - 1);
 		}
 
 		n = container.processScaled();
 		if (n > 0) {
-			blit(i + 79, j + 34, 176, 0, n + 1, 16);
+			blit(matrixStack, i + 79, j + 34, 176, 0, n + 1, 16);
 		}
 
 	}
@@ -144,13 +147,13 @@ public final class MachineScreen<T extends AbstractMachineContainer> extends Con
 	}
 
 	@Override
-	public void removed() {
+	public void onClose() {
 		recipeGui.removed();
-		super.removed();
+		super.onClose();
 	}
 
-	public static <T extends AbstractMachineContainer> ScreenManager.IScreenFactory<T, MachineScreen<T>> make(final String filterName, String guiName) {
+	public static ScreenManager.IScreenFactory<AbstractMachineContainer, MachineScreen> make(final String filterName, String guiName) {
 		final ResourceLocation texGui = new ResourceLocation("flux", "textures/gui/" + guiName + ".png");
-		return (container, inv, title) -> new MachineScreen<>(container, filterName, inv, title, texGui);
+		return (container, inv, title) -> new MachineScreen(container, filterName, inv, title, texGui);
 	}
 }

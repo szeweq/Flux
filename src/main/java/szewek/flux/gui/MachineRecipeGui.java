@@ -8,6 +8,8 @@ import net.minecraft.client.util.SearchTreeManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,13 +17,13 @@ import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public final class MachineRecipeGui extends AbstractRecipeBookGui {
-	private final String filterName;
+	private final ITextComponent filterName;
 	private final IRecipeType<?> recipeType;
 
 	public MachineRecipeGui(IRecipeType<?> recipeType, String name) {
 		super();
 		this.recipeType = recipeType;
-		filterName = "gui.flux.recipebook.toggleRecipes." + name;
+		filterName = new TranslationTextComponent("gui.flux.recipebook.toggleRecipes." + name);
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 	}
 
 	@Override
-	protected String func_212960_g() {
+	protected ITextComponent func_230479_g_() {
 		return filterName;
 	}
 

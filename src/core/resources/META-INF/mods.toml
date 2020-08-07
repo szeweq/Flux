@@ -14,13 +14,13 @@ issueTrackerURL="https://github.com/Szewek/Flux/issues"
 [[dependencies.fl]]
  modId="forge"
  mandatory=true
- versionRange="[31.1,)"
+ versionRange="[32,)"
  ordering="NONE"
  side="BOTH"
 
 [[dependencies.fl]]
  modId="minecraft"
  mandatory=true
- versionRange="[1.15.2]"
+ versionRange="[1.16.1]"
  ordering="NONE"
  side="BOTH"

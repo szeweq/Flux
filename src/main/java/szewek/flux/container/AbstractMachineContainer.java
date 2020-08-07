@@ -18,6 +18,9 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -172,7 +175,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@Override
 	public List<RecipeBookCategories> getRecipeBookCategories() {
-		return Arrays.asList(RecipeBookCategories.SEARCH, RecipeBookCategories.EQUIPMENT, RecipeBookCategories.BUILDING_BLOCKS, RecipeBookCategories.MISC, RecipeBookCategories.REDSTONE);
+		return Arrays.asList(RecipeBookCategories.SEARCH, RecipeBookCategories.CRAFTING_EQUIPMENT, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS, RecipeBookCategories.CRAFTING_MISC, RecipeBookCategories.CRAFTING_REDSTONE);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -192,8 +195,11 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public final List<String> energyText() {
-		return Arrays.asList(getEnergy() + " / " + 1000000 + " F", I18n.format("flux.usage", data.get(4)));
+	public final List<ITextComponent> energyText() {
+		return Arrays.asList(
+				new StringTextComponent(getEnergy() + " / " + 1000000 + " F"),
+				new TranslationTextComponent("flux.usage", data.get(4))
+		);
 	}
 
 	private int getEnergy() {

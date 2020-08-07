@@ -10,6 +10,7 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -20,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import szewek.flux.F;
 import szewek.flux.F.B;
 import szewek.flux.F.R;
+import szewek.flux.container.AbstractMachineContainer;
 import szewek.flux.container.CopierContainer;
 import szewek.flux.container.Machine2For1Container;
 import szewek.flux.gui.MachineScreen;
@@ -137,11 +139,10 @@ public class JEIFluxPlugin implements IModPlugin {
 		return recipes;
 	}
 
-	@SuppressWarnings("rawtypes")
 	private static class MachineScreenHandler implements IGuiContainerHandler<MachineScreen> {
 		@Override
-		public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen) {
-			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, new ResourceLocation(MODID, ((MachineScreen<?>) containerScreen).getContainer().recipeType.toString()));
+		public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen, double mouseX, double mouseY) {
+			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, new ResourceLocation(MODID, containerScreen.getContainer().recipeType.toString()));
 			return Collections.singleton(area);
 		}
 	}

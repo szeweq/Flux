@@ -23,6 +23,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
@@ -435,8 +436,8 @@ public final class F {
 	}
 
 	public static final class Tags {
-		public static final Tag<Block> DIGGER_SKIP = new BlockTags.Wrapper(new ResourceLocation(MODID, "digger_skip"));
-		public static final Tag<Item> MARKET_ACCEPT = new ItemTags.Wrapper(new ResourceLocation(MODID, "market_accept"));
+		public static final ITag.INamedTag<Block> DIGGER_SKIP = BlockTags.makeWrapperTag(MODID + ":digger_skip");
+		public static final ITag.INamedTag<Item> MARKET_ACCEPT = ItemTags.makeWrapperTag(MODID + ":market_accept");
 	}
 
 	private static <T extends IForgeRegistryEntry<T>> void registerMapValues(Map<?, ? extends T> map, IForgeRegistry<T> reg) {

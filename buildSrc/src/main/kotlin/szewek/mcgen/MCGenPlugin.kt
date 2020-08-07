@@ -26,15 +26,15 @@ class MCGenPlugin : Plugin<Project> {
         val subName = if (srcSet.name == "main") "" else srcSet.name.capitalize()
         val confSources = Action<AbstractProcessTask> { it.configureSources(srcSet.resources, srcSet.name) }
 
-        val recipeTask = tasks.make<GenTypeRecipes>("gen${subName}RecipesFromBatch", confSources)
-        val langTask = tasks.make<ProcessLangFiles>("process${subName}LangFiles", confSources)
-        val itemModelTask = tasks.make<GenDefaultModels>("gen${subName}ItemDefaultModels", confSources)
-        val itemBlockModelTask = tasks.make<GenItemBlockModels>("gen${subName}ItemBlockModels", confSources)
-        val tmplRecipes = tasks.make<TemplateRecipes>("process${subName}Recipes", confSources)
-        val tmplTags = tasks.make<TemplateTags>("process${subName}Tags", confSources)
-        val tmplLootTables = tasks.make<TemplateLootTables>("process${subName}LootTables", confSources)
-        val tmplBlockStates = tasks.make<TemplateBlockStates>("process${subName}BlockStates", confSources)
-        val tmplModels = tasks.make<TemplateModels>("process${subName}Models", confSources)
+        val recipeTask = tasks.make<GenTypeRecipes>("genRecipesFromBatch", subName, confSources)
+        val langTask = tasks.make<ProcessLangFiles>("processLangFiles", subName, confSources)
+        val itemModelTask = tasks.make<GenDefaultModels>("genItemDefaultModels", subName, confSources)
+        val itemBlockModelTask = tasks.make<GenItemBlockModels>("genItemBlockModels", subName, confSources)
+        val tmplRecipes = tasks.make<TemplateRecipes>("processRecipes", subName, confSources)
+        val tmplTags = tasks.make<TemplateTags>("processTags", subName, confSources)
+        val tmplLootTables = tasks.make<TemplateLootTables>("processLootTables", subName, confSources)
+        val tmplBlockStates = tasks.make<TemplateBlockStates>("processBlockStates", subName, confSources)
+        val tmplModels = tasks.make<TemplateModels>("processModels", subName, confSources)
 
         srcSet.resources.srcDir(genResourcesDir)
         val processResources = tasks.getByName("process${subName}Resources") as AbstractCopyTask
@@ -48,6 +48,6 @@ class MCGenPlugin : Plugin<Project> {
         )
     }
 
-    private inline fun <reified T: AbstractProcessTask> TaskContainer.make(name: String, action: Action<in T>) =
-            this.create(name, T::class.java, action)
+    private inline fun <reified T: AbstractProcessTask> TaskContainer.make(name: String, sub: String, action: Action<in T>) =
+            this.create(if (sub != "") "${name}_$sub" else name, T::class.java, action)
 }

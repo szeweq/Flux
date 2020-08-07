@@ -6,13 +6,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.LootTable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.HashSet;
@@ -53,7 +54,7 @@ public final class Gifts {
 			}
 		}
 		if (change) {
-			player.sendMessage(RECEIVED_GIFT);
+			player.sendMessage(RECEIVED_GIFT, Util.DUMMY_UUID);
 			data.put("receivedGifts", received);
 		}
 	}

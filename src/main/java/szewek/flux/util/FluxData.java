@@ -3,12 +3,10 @@ package szewek.flux.util;
 import com.google.gson.*;
 import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.*;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.logging.log4j.LogManager;
@@ -39,9 +37,9 @@ public final class FluxData {
 			FLUXGEN_VALUES = new FluxGenValues(),
 			FLUX_GIFTS = new FluxGifts();
 
-	public static void addReloadListeners(IReloadableResourceManager rm) {
-		rm.addReloadListener(FLUXGEN_VALUES);
-		rm.addReloadListener(FLUX_GIFTS);
+	public static void addReloadListeners(final AddReloadListenerEvent e) {
+		e.addListener(FLUXGEN_VALUES);
+		e.addListener(FLUX_GIFTS);
 	}
 
 	private static CompletableFuture<Collection<FluxGenRecipes.Entry>> parseFluxGenValues(

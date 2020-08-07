@@ -1,5 +1,6 @@
 package szewek.flux.compat.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcp.MethodsReturnNonnullByDefault;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -98,15 +99,15 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 	}
 
 	@Override
-	public void draw(Product product, double mouseX, double mouseY) {
+	public void draw(Product product, MatrixStack matrixStack, double mouseX, double mouseY) {
 		Minecraft minecraft = Minecraft.getInstance();
 		FontRenderer fontRenderer = minecraft.fontRenderer;
 
 		int strW = fontRenderer.getStringWidth(product.typeStr);
-		fontRenderer.drawString(product.typeStr, (float)(background.getWidth() - strW) / 2, 1, 0xff404040);
+		fontRenderer.drawString(matrixStack, product.typeStr, (float)(background.getWidth() - strW) / 2, 1, 0xff404040);
 
 		strW = fontRenderer.getStringWidth(product.factorStr);
-		fontRenderer.drawString(product.factorStr, (float)(background.getWidth() - strW) / 2, 51, 0xff404040);
+		fontRenderer.drawString(matrixStack, product.factorStr, (float)(background.getWidth() - strW) / 2, 51, 0xff404040);
 	}
 
 	static class Product {
