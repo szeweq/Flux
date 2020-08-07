@@ -11,16 +11,14 @@ import szewek.flux.energy.EnergyCache;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static szewek.flux.tile.EnergyCableTile.Side;
-
-public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage, Side> {
+public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage> {
 	private final AtomicInteger energy = new AtomicInteger();
 	private final EnergyCache energyCache = new EnergyCache(this);
 
 	public EnergyCableTile(TileEntityType<EnergyCableTile> type) {
 		super(type, CapabilityEnergy.ENERGY);
 		for(int i = 0; i < 6; i++) {
-			sides[i] = new Side(i, sideFlag, energy);
+			sides[i] = new EnergyCableTile.Side(i, sideFlag, energy);
 		}
 	}
 
@@ -75,7 +73,7 @@ public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage, Sid
 		energyCache.clear();
 	}
 
-	public static final class Side extends AbstractCableTile.AbstractSide<IEnergyStorage> implements IEnergyStorage {
+	public static final class Side extends AbstractSide<IEnergyStorage> implements IEnergyStorage {
 		private final AtomicInteger energy;
 
 		private Side(int i, AtomicInteger sf, AtomicInteger energy) {

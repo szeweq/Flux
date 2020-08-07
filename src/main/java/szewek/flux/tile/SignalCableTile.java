@@ -12,9 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static szewek.flux.tile.SignalCableTile.Side;
-
-public final class SignalCableTile extends AbstractCableTile<ISignalHandler, Side> {
+public final class SignalCableTile extends AbstractCableTile<ISignalHandler> {
 	private final BitSet bits = new BitSet(256);
 	private final SideCached<ISignalHandler> signalCache = new SideCached<>(dir -> {
 		assert world != null;
@@ -31,7 +29,7 @@ public final class SignalCableTile extends AbstractCableTile<ISignalHandler, Sid
 	public SignalCableTile() {
 		super(F.T.SIGNAL_CABLE, SignalCapability.SIGNAL_CAP);
 		for(int i = 0; i < 6; i++) {
-			sides[i] = new Side(i, sideFlag, bits);
+			sides[i] = new SignalCableTile.Side(i, sideFlag, bits);
 		}
 	}
 
@@ -59,7 +57,7 @@ public final class SignalCableTile extends AbstractCableTile<ISignalHandler, Sid
 		signalCache.clear();
 	}
 
-	public static final class Side extends AbstractCableTile.AbstractSide<ISignalHandler> implements ISignalHandler {
+	public static final class Side extends AbstractSide<ISignalHandler> implements ISignalHandler {
 		private final BitSet bits;
 
 		private Side(int i, AtomicInteger sf, BitSet bits) {
