@@ -24,9 +24,9 @@ project.version = project.version + ((project.versionSub as int) > 0 ? "-${proje
 
 String core_version = project.core_version
 
-String mc_version = "1.15.2"
-String jei_version = "6.0.0.2"
-String patchouli_version = "1.15.2-1.2-35.185"
+String mc_version = "1.16.1"
+String jei_version = "7.0.1.9"
+String patchouli_version = "1.16-39"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
@@ -58,7 +58,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20200525-1.15.1'
+    mappings channel: 'snapshot', version: '20200807-1.16.1'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -148,7 +148,7 @@ dependencies {
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
     // Jar from "libs" folder
-    runtimeOnly fg.deobf("mekanism:Mekanism-1.15.2:9.9.17.409")
+    runtimeOnly fg.deobf("mekanism:Mekanism-1.16.1:10.0.8.431")
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
