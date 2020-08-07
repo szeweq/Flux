@@ -389,7 +389,7 @@ public final class F {
 		private static <C extends Container> ContainerType<C> container(IContainerFactory<C> factory, String name) {
 			ContainerType<C> ct = new ContainerType<>(factory);
 			ct.setRegistryName(MODID, name);
-			return new ContainerType<>(factory);
+			return ct;
 		}
 
 		private static <C extends AbstractMachineContainer> FluxContainerType<C> containerFlux(FluxContainerType.IContainerBuilder<C> cb, String name) {
