@@ -10,6 +10,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -30,8 +31,8 @@ public final class DrawUtils {
 	 * @param c color
 	 * @param z Z position
 	 */
-	public static void drawRectBatchOnly(double left, double top, double right, double bottom, int c, double z) {
-		double p;
+	public static void drawRectBatchOnly(Matrix4f matrix, float left, float top, float right, float bottom, int c, float z) {
+		float p;
 		if (left < right) {
 			p = left;
 			left = right;
@@ -51,10 +52,10 @@ public final class DrawUtils {
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vb.pos(left, bottom, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(right, bottom, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(right, top, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(left, top, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, left, bottom, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, right, bottom, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, right, top, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, left, top, z).color(yr, yg, yb, ya).endVertex();
 		tes.draw();
 	}
 
@@ -69,7 +70,7 @@ public final class DrawUtils {
 	 * @param color2 gradient ending color
 	 * @param z Z position
 	 */
-	public static void drawGradientRectBatchOnly(double left, double top, double right, double bottom, int color1, int color2, double z) {
+	public static void drawGradientRectBatchOnly(Matrix4f matrix, float left, float top, float right, float bottom, int color1, int color2, float z) {
 		int ya = color1 >> 24 & 255;
 		int yr = color1 >> 16 & 255;
 		int yg = color1 >> 8 & 255;
@@ -82,15 +83,15 @@ public final class DrawUtils {
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		if (right - left > bottom - top) {
-			vb.pos(right, top, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(left, top, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(left, bottom, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(right, bottom, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(matrix, right, top, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(matrix, left, top, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, left, bottom, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, right, bottom, z).color(yr, yg, yb, ya).endVertex();
 		} else {
-			vb.pos(right, top, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(left, top, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(left, bottom, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(right, bottom, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, right, top, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(matrix, left, top, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(matrix, left, bottom, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, right, bottom, z).color(zr, zg, zb, za).endVertex();
 		}
 		tes.draw();
 	}
@@ -105,7 +106,7 @@ public final class DrawUtils {
 	 * @param cap internal capacity
 	 * @param z Z position
 	 */
-	public static void drawFluidStack(int x, int y, int w, int h, FluidStack fs, int cap, float z) {
+	public static void drawFluidStack(Matrix4f matrix, int x, int y, int w, int h, FluidStack fs, int cap, float z) {
 		if (fs.isEmpty()) {
 			return;
 		}
@@ -151,10 +152,10 @@ public final class DrawUtils {
 					vMax = vMax - (maskTop / 16.0f * (vMax - vMin));
 
 					buf.begin(7, DefaultVertexFormats.POSITION_TEX);
-					buf.pos(tx, ty + 16, z).tex(uMin, vMax).endVertex();
-					buf.pos(tx + 16 - maskRight, ty + 16, z).tex(uMax, vMax).endVertex();
-					buf.pos(tx + 16 - maskRight, ty + maskTop, z).tex(uMax, vMin).endVertex();
-					buf.pos(tx, ty + maskTop, z).tex(uMin, vMin).endVertex();
+					buf.pos(matrix, tx, ty + 16, z).tex(uMin, vMax).endVertex();
+					buf.pos(matrix, tx + 16 - maskRight, ty + 16, z).tex(uMax, vMax).endVertex();
+					buf.pos(matrix, tx + 16 - maskRight, ty + maskTop, z).tex(uMax, vMin).endVertex();
+					buf.pos(matrix, tx, ty + maskTop, z).tex(uMin, vMin).endVertex();
 					tes.draw();
 				}
 			}

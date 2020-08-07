@@ -1,7 +1,9 @@
 package szewek.fl.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,19 +22,20 @@ public class GuiBar extends GuiRect {
 		this.reverse = reverse;
 	}
 
-	public void draw(float fill, double z) {
+	public void draw(MatrixStack matrixStack, float fill, float z) {
+		final Matrix4f matrix = matrixStack.getLast().getMatrix();
 		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.disableAlphaTest();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.shadeModel(7425);
-		DrawUtils.drawRectBatchOnly(x1, y1, x2, y2, 0xff323232, z);
+		DrawUtils.drawRectBatchOnly(matrix, x1, y1, x2, y2, 0xff323232, z);
 		int x1 = this.x1 + 1;
 		int y1 = this.y1 + 1;
 		int x2 = this.x2 - 1;
 		int y2 = this.y2 - 1;
 		if (fill > 0F) {
-			DrawUtils.drawGradientRectBatchOnly(x1, y1, x2, y2, c1, c2, z);
+			DrawUtils.drawGradientRectBatchOnly(matrix, x1, y1, x2, y2, c1, c2, z);
 			int f;
 			if (x2 - x1 > y2 - y1) {
 				f = MathHelper.ceil((float)(x2 - x1) * fill);
@@ -51,7 +54,7 @@ public class GuiBar extends GuiRect {
 			}
 		}
 
-		DrawUtils.drawRectBatchOnly(x1, y1, x2, y2, 0xff151515, z);
+		DrawUtils.drawRectBatchOnly(matrix, x1, y1, x2, y2, 0xff151515, z);
 		RenderSystem.shadeModel(7424);
 		RenderSystem.disableBlend();
 		RenderSystem.enableAlphaTest();

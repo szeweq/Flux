@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,8 +47,8 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
 		matrixStack.push();
 		matrixStack.translate(guiLeft, guiTop, 0.0F);
-		workFillBar.draw(container.getWorkFill(), getBlitOffset());
-		energyFillBar.draw(container.getEnergyFill(), getBlitOffset());
+		workFillBar.draw(matrixStack, container.getWorkFill(), getBlitOffset());
+		energyFillBar.draw(matrixStack, container.getEnergyFill(), getBlitOffset());
 		matrixStack.pop();
 	}
 
@@ -58,8 +59,9 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 		font.drawString(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
-		DrawUtils.drawFluidStack(47, 15, 16, 56, container.getHotFluid(), 4000, getBlitOffset());
-		DrawUtils.drawFluidStack(113, 15, 16, 56, container.getColdFluid(), 4000, getBlitOffset());
+		final Matrix4f matrix = matrixStack.getLast().getMatrix();
+		DrawUtils.drawFluidStack(matrix, 47, 15, 16, 56, container.getHotFluid(), 4000, getBlitOffset());
+		DrawUtils.drawFluidStack(matrix, 113, 15, 16, 56, container.getColdFluid(), 4000, getBlitOffset());
 		tooltips.checkCoords(matrixStack, mx, my);
 		func_230459_a_(matrixStack, mx, my);
 	}
