@@ -1,11 +1,8 @@
-# Flux (Version 4.17.2)
-Requires Flux Library 3.4.1 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux (Version 5.0.0)
+Requires Flux Library 4.0.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
 ### Changes
-- Added JEI support for Flux Generator usages
-
-### Fixes
-- Fixed Online Market being desync with client, causing duping items
+- First release for Minecraft 1.16.1
 
 ### Translations
 You can add your own native language to Flux.

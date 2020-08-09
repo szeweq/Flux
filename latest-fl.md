@@ -1,5 +1,4 @@
-# Flux Library (Version 3.4.1)
-**NOT COMPATIBLE with Flux verions 4.16.x**
+# Flux Library (Version 4.0.0)
 
 ### Changes
-- Added non-stop running SpatialWalker
+- First release for Minecraft 1.16.1
