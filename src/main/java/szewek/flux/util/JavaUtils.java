@@ -11,12 +11,13 @@ public final class JavaUtils {
 
 	public static <T> void forEachStaticField(Class<?> cl, Class<T> typ, Consumer<T> fn) {
 		for (Field f : cl.getDeclaredFields()) {
-			if (typ.isAssignableFrom(f.getType()) && Modifier.isStatic(f.getModifiers())) {
-				try {
-					fn.accept(typ.cast(f.get(null)));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			if (!typ.isAssignableFrom(f.getType()) || !Modifier.isStatic(f.getModifiers())) {
+				continue;
+			}
+			try {
+				fn.accept(typ.cast(f.get(null)));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
