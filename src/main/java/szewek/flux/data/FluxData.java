@@ -13,7 +13,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -32,28 +34,37 @@ public final class FluxData {
 		e.addListener(FLUX_GIFTS);
 	}
 
+	@Nullable
+	public static <T> T readResourceJSON(IResource res, Class<T> cl) {
+		InputStream input = res.getInputStream();
+		Reader r = new BufferedReader(new InputStreamReader(input, UTF_8));
+		T t = JSONUtils.fromJson(GSON, r, cl, true);
+		IOUtils.closeQuietly(r);
+		IOUtils.closeQuietly(input);
+		return t;
+	}
+
 	static <T> CompletableFuture<T> collectFromResources(Supplier<T> sup, IResourceManager rm, ResourceLocation loc, Executor exec, JSONProcessor<T> jc) {
 		return CompletableFuture.supplyAsync(() -> {
 			T t = sup.get();
+			List<IResource> resources;
 			try {
-				for (IResource res : rm.getAllResources(loc)) {
-					try (
-							InputStream input = res.getInputStream();
-							Reader r = new BufferedReader(new InputStreamReader(input, UTF_8))
-					) {
-						JsonObject json = JSONUtils.fromJson(GSON, r, JsonObject.class, true);
-						if (json == null) {
-							continue;
-						}
-						jc.process(t, json);
-					} catch (RuntimeException | IOException e) {
-						LOGGER.error("Couldn't load values from {} in data pack {}", loc, res.getPackName(), e);
-					} finally {
-						IOUtils.closeQuietly(res);
-					}
-				}
-			}  catch (IOException e) {
+				resources = rm.getAllResources(loc);
+			} catch (IOException e) {
 				LOGGER.error("Couldn't load any data from {}", loc, e);
+				return t;
+			}
+			for (IResource res : resources) {
+				try {
+					JsonObject json = readResourceJSON(res, JsonObject.class);
+					if (json != null) {
+						jc.process(t, json);
+					}
+				} catch (RuntimeException | IOException e) {
+					LOGGER.error("Couldn't load values from {} in data pack {}", loc, res.getPackName(), e);
+				} finally {
+					IOUtils.closeQuietly(res);
+				}
 			}
 			return t;
 		}, exec);
