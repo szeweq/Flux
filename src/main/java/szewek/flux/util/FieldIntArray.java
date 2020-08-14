@@ -23,10 +23,11 @@ public class FieldIntArray implements IIntArray {
 		for (int i = 0; i < names.length; i++) {
 			Field f;
 			try {
-				f = cl.getField(names[i]);
+				f = cl.getDeclaredField(names[i]);
 			} catch (NoSuchFieldException e) {
 				throw new RuntimeException("Wrong fields list", e);
 			}
+			f.setAccessible(true);
 			fields[i] = f;
 		}
 		return ext != null ? new Hybrid(obj, fields, ext) : new FieldIntArray(obj, fields);
