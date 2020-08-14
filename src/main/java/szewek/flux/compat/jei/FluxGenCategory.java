@@ -20,7 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import szewek.fl.util.IntPair;
 import szewek.flux.F;
-import szewek.flux.recipe.FluxGenRecipes;
+import szewek.flux.data.FluxGenValues;
 import szewek.flux.tile.FluxGenTile;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -134,13 +134,13 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 		static Collection<Product> getAll() {
 			Collection<Product> products = new ArrayList<>();
-			for (Map.Entry<Item, IntPair> e : FluxGenRecipes.CATALYSTS.all().entrySet()) {
+			for (Map.Entry<Item, IntPair> e : FluxGenValues.CATALYSTS.all().entrySet()) {
 				products.add(new Product(e.getKey(), e.getValue()));
 			}
-			for (Map.Entry<Fluid, IntPair> e : FluxGenRecipes.HOT_FLUIDS.all().entrySet()) {
+			for (Map.Entry<Fluid, IntPair> e : FluxGenValues.HOT_FLUIDS.all().entrySet()) {
 				products.add(new Product(e.getKey(), true, e.getValue()));
 			}
-			for (Map.Entry<Fluid, IntPair> e : FluxGenRecipes.COLD_FLUIDS.all().entrySet()) {
+			for (Map.Entry<Fluid, IntPair> e : FluxGenValues.COLD_FLUIDS.all().entrySet()) {
 				products.add(new Product(e.getKey(), false, e.getValue()));
 			}
 			return products;

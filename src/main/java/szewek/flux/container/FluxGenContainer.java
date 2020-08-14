@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 import szewek.flux.F;
-import szewek.flux.recipe.FluxGenRecipes;
+import szewek.flux.data.FluxGenValues;
 
 public class FluxGenContainer extends Container {
 	private final IInventory fluxGenInv;
@@ -101,7 +101,7 @@ public class FluxGenContainer extends Container {
 				if (ForgeHooks.getBurnTime(bis) > 0) {
 					s = 0;
 					e = 1;
-				} else if (FluxGenRecipes.CATALYSTS.has(bis.getItem())) {
+				} else if (FluxGenValues.CATALYSTS.has(bis.getItem())) {
 					s = 1;
 					e = 2;
 				} else if (index < 29) {

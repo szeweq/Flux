@@ -32,8 +32,8 @@ import szewek.fl.util.IntPair;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.container.FluxGenContainer;
+import szewek.flux.data.FluxGenValues;
 import szewek.flux.energy.EnergyCache;
-import szewek.flux.recipe.FluxGenRecipes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -159,17 +159,17 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		if (f == 0) return 0;
 		ItemStack catalyst = items.get(1);
 		energyGen = FluxCfg.COMMON.fluxGenBaseEnergy.get();
-		IntPair genCat = FluxGenRecipes.CATALYSTS.get(catalyst.getItem());
+		IntPair genCat = FluxGenValues.CATALYSTS.get(catalyst.getItem());
 		if (genCat.r <= catalyst.getCount()) {
 			energyGen *= genCat.l;
 			if (genCat.r > 0) catalyst.grow(-genCat.r);
 		}
-		IntPair genHot = FluxGenRecipes.HOT_FLUIDS.get(tank.fluids[0].getFluid());
+		IntPair genHot = FluxGenValues.HOT_FLUIDS.get(tank.fluids[0].getFluid());
 		if (genHot.r <= tank.fluids[0].getAmount()) {
 			f *= genHot.l;
 			if (genHot.r > 0) tank.fluids[0].grow(-genHot.r);
 		}
-		IntPair genCold = FluxGenRecipes.COLD_FLUIDS.get(tank.fluids[1].getFluid());
+		IntPair genCold = FluxGenValues.COLD_FLUIDS.get(tank.fluids[1].getFluid());
 		if (genCold.r <= tank.fluids[1].getAmount()) {
 			workSpeed = genCold.l < genCat.l ? genCat.l - genCold.l : 1;
 			if (genCold.r > 0) tank.fluids[1].grow(-genCold.r);
@@ -378,9 +378,9 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 				return 0;
 			}
 			int s;
-			if (FluxGenRecipes.HOT_FLUIDS.has(resource.getFluid())) {
+			if (FluxGenValues.HOT_FLUIDS.has(resource.getFluid())) {
 				s = 0;
-			} else if (FluxGenRecipes.COLD_FLUIDS.has(resource.getFluid())) {
+			} else if (FluxGenValues.COLD_FLUIDS.has(resource.getFluid())) {
 				s = 1;
 			} else {
 				return 0;
