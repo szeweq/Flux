@@ -56,6 +56,8 @@ import szewek.flux.item.GiftItem;
 import szewek.flux.item.MetalItem;
 import szewek.flux.recipe.*;
 import szewek.flux.tile.*;
+import szewek.flux.tile.cable.EnergyCableTile;
+import szewek.flux.tile.cable.SignalCableTile;
 import szewek.flux.util.ChipUpgradeTrade;
 import szewek.flux.util.JavaUtils;
 import szewek.flux.util.Toolset;

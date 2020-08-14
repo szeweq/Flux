@@ -1,4 +1,4 @@
-package szewek.flux.tile;
+package szewek.flux.tile.cable;
 
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;

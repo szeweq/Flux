@@ -1,4 +1,4 @@
-package szewek.flux.tile;
+package szewek.flux.tile.cable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;

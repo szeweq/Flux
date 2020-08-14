@@ -1,4 +1,4 @@
-package szewek.flux.tile;
+package szewek.flux.tile.cable;
 
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;

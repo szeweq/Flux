@@ -34,7 +34,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	private int countdown;
 
 	public OnlineMarketTile() {
-		super(F.T.ONLINE_MARKET, energyUse);
+		super(F.T.ONLINE_MARKET, FluxCfg.COMMON.onlineMarketEU);
 	}
 
 	//MANUAL OVERRIDE
@@ -146,7 +146,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	public void tick() {
 		if (countdown == 0) {
 			countdown = 5;
-			final int usage = FluxCfg.COMMON.onlineMarketEU.get();
+			final int usage = energyUse.get();
 			if (energy >= usage) {
 				updateOffers();
 			} else {
