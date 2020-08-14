@@ -11,21 +11,18 @@ import java.util.List;
 public class MobPounderTile extends EntityInteractingTile {
 
 	public MobPounderTile() {
-		super(F.T.MOB_POUNDER);
+		super(F.T.MOB_POUNDER, FluxCfg.COMMON.mobPounderEU);
 	}
 
 	@Override
-	protected void interact() {
-		final int usage = FluxCfg.COMMON.mobPounderEU.get();
-		if (aabb != null && energy >= usage) {
-			assert world != null;
-			List<LivingEntity> mobs = world.getEntitiesWithinAABB(LivingEntity.class, aabb, m -> m instanceof IMob);
-			for (LivingEntity mob : mobs) {
-				mob.attackEntityFrom(DamageSource.GENERIC, 100);
-				energy -= usage;
-				if (energy < usage) {
-					break;
-				}
+	protected void interact(int usage) {
+		assert world != null;
+		List<LivingEntity> mobs = world.getEntitiesWithinAABB(LivingEntity.class, aabb, m -> m instanceof IMob);
+		for (LivingEntity mob : mobs) {
+			mob.attackEntityFrom(DamageSource.GENERIC, 100);
+			energy -= usage;
+			if (energy < usage) {
+				break;
 			}
 		}
 	}

@@ -34,7 +34,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	private int countdown;
 
 	public OnlineMarketTile() {
-		super(F.T.ONLINE_MARKET);
+		super(F.T.ONLINE_MARKET, energyUse);
 	}
 
 	//MANUAL OVERRIDE

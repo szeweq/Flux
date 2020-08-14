@@ -3,10 +3,10 @@ package szewek.flux.tile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import szewek.fl.util.ItemsUtil;
 import szewek.fl.util.SpatialWalker;
 import szewek.fl.util.SpatialWalker.Action;
@@ -20,7 +20,7 @@ public final class DiggerTile extends BlockInteractingTile {
 	private boolean lastFlag;
 
 	public DiggerTile() {
-		super(F.T.DIGGER, new SpatialWalker.NonStop(-5, -256, -5, 5, -1, 5));
+		super(F.T.DIGGER, new SpatialWalker.NonStop(-5, -256, -5, 5, -1, 5), FluxCfg.COMMON.diggerEU);
 		walker.startFrom(true, false, true);
 		walker.putActions(Action.X_POS, Action.Z_POS, Action.Y_NEG);
 	}
@@ -30,7 +30,7 @@ public final class DiggerTile extends BlockInteractingTile {
 		assert world != null;
 		if (!world.isRemote) {
 			boolean flag = !disabled;
-			final int usage = FluxCfg.COMMON.diggerEU.get();
+			final int usage = energyUse.get();
 			if (flag && energy >= usage) {
 				walker.walk();
 				BlockPos bp = walker.getPosOffset(pos);

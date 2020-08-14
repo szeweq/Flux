@@ -6,13 +6,14 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 abstract class EntityInteractingTile extends PoweredTile {
 	protected AxisAlignedBB aabb;
 	protected int cooldown;
 
-	public EntityInteractingTile(TileEntityType tileEntityTypeIn) {
-		super(tileEntityTypeIn);
+	public EntityInteractingTile(TileEntityType tileEntityTypeIn, ForgeConfigSpec.IntValue energyUse) {
+		super(tileEntityTypeIn, energyUse);
 	}
 
 	@Override
@@ -39,15 +40,19 @@ abstract class EntityInteractingTile extends PoweredTile {
 
 	@Override
 	public void tick() {
-		if (!world.isRemote) {
-			if (cooldown > 0) {
-				--cooldown;
-			} else {
-				cooldown = 20;
-				interact();
+		if (world == null || world.isRemote) {
+			return;
+		}
+		if (cooldown > 0) {
+			--cooldown;
+		} else if (aabb != null) {
+			cooldown = 20;
+			int usage = energyUse.get();
+			if (energy >= usage) {
+				interact(usage);
 			}
 		}
 	}
 
-	protected abstract void interact();
+	protected abstract void interact(int usage);
 }

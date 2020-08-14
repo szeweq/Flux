@@ -3,14 +3,15 @@ package szewek.flux.tile;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.ForgeConfigSpec;
 import szewek.fl.util.SpatialWalker;
 
 abstract class BlockInteractingTile extends PoweredTile {
 	protected final SpatialWalker walker;
 	protected boolean disabled;
 
-	public BlockInteractingTile(TileEntityType teType, SpatialWalker walker) {
-		super(teType);
+	public BlockInteractingTile(TileEntityType teType, SpatialWalker walker, ForgeConfigSpec.IntValue energyUse) {
+		super(teType, energyUse);
 		this.walker = walker;
 	}
 

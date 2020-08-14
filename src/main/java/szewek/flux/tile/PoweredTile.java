@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -17,10 +18,12 @@ import javax.annotation.Nullable;
 
 public abstract class PoweredTile extends TileEntity implements IEnergyReceiver, ITickableTileEntity {
 	protected int energy;
+	protected final ForgeConfigSpec.IntValue energyUse;
 	private final LazyOptional<IEnergyStorage> handler = LazyOptional.of(() -> this);
 
-	public PoweredTile(TileEntityType tileEntityTypeIn) {
+	public PoweredTile(TileEntityType tileEntityTypeIn, ForgeConfigSpec.IntValue energyUse) {
 		super(tileEntityTypeIn);
+		this.energyUse = energyUse;
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import java.util.List;
 public class FarmerTile extends BlockInteractingTile {
 
 	public FarmerTile() {
-		super(F.T.FARMER, new SpatialWalker.NonStop(5, 0, 5));
+		super(F.T.FARMER, new SpatialWalker.NonStop(5, 0, 5), FluxCfg.COMMON.farmerEU);
 
 		walker.startFrom(true, true, true);
 		walker.putActions(Action.X_POS, Action.Z_POS, Action.LOOP);
@@ -31,7 +31,7 @@ public class FarmerTile extends BlockInteractingTile {
 	@Override
 	public void tick() {
 		assert world != null;
-		final int usage = FluxCfg.COMMON.farmerEU.get();
+		final int usage = energyUse.get();
 		if (!world.isRemote() && energy >= usage) {
 			walker.walk();
 			BlockPos bp = walker.getPosOffset(pos);

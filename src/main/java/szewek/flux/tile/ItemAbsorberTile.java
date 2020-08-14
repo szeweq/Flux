@@ -12,26 +12,23 @@ import java.util.List;
 public class ItemAbsorberTile extends EntityInteractingTile {
 
 	public ItemAbsorberTile() {
-		super(F.T.ITEM_ABSORBER);
+		super(F.T.ITEM_ABSORBER, FluxCfg.COMMON.itemAbsorberEU);
 	}
 
 	@Override
-	protected void interact() {
-		final int usage = FluxCfg.COMMON.itemAbsorberEU.get();
-		if (aabb != null && energy >= usage) {
-			assert world != null;
-			List<ItemEntity> itemDrops = world.getEntitiesWithinAABB(ItemEntity.class, aabb);
-			List<ItemStack> list = new ArrayList<>();
-			for (ItemEntity itemDrop : itemDrops) {
-				ItemStack item = itemDrop.getItem();
-				list.add(item);
-				itemDrop.remove();
-				energy -= usage;
-				if (energy < usage) {
-					break;
-				}
+	protected void interact(int usage) {
+		assert world != null;
+		List<ItemEntity> itemDrops = world.getEntitiesWithinAABB(ItemEntity.class, aabb);
+		List<ItemStack> list = new ArrayList<>();
+		for (ItemEntity itemDrop : itemDrops) {
+			ItemStack item = itemDrop.getItem();
+			list.add(item);
+			itemDrop.remove();
+			energy -= usage;
+			if (energy < usage) {
+				break;
 			}
-			ItemsUtil.trySendingItems(list, world, pos);
 		}
+		ItemsUtil.trySendingItems(list, world, pos);
 	}
 }

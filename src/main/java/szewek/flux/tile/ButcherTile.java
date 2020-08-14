@@ -10,21 +10,18 @@ import java.util.List;
 public class ButcherTile extends EntityInteractingTile {
 
 	public ButcherTile() {
-		super(F.T.BUTCHER);
+		super(F.T.BUTCHER, FluxCfg.COMMON.butcherEU);
 	}
 
 	@Override
-	protected void interact() {
-		final int usage = FluxCfg.COMMON.butcherEU.get();
-		if (aabb != null && energy >= usage) {
-			assert world != null;
-			List<AnimalEntity> animals = world.getEntitiesWithinAABB(AnimalEntity.class, aabb, e -> !e.isChild());
-			for (AnimalEntity animal : animals) {
-				animal.attackEntityFrom(DamageSource.GENERIC, 100);
-				energy -= usage;
-				if (energy < usage) {
-					break;
-				}
+	protected void interact(int usage) {
+		assert world != null;
+		List<AnimalEntity> animals = world.getEntitiesWithinAABB(AnimalEntity.class, aabb, e -> !e.isChild());
+		for (AnimalEntity animal : animals) {
+			animal.attackEntityFrom(DamageSource.GENERIC, 100);
+			energy -= usage;
+			if (energy < usage) {
+				break;
 			}
 		}
 	}
