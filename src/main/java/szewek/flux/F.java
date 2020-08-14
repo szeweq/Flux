@@ -178,7 +178,7 @@ public final class F {
 		final Item[] arr = new Item[0];
 		final ItemColors ic = mc.getItemColors();
 
-		ic.register(Gifts::colorByGift, I.GIFT);
+		ic.register(Gifts::giftColors, I.GIFT);
 		ic.register(Metals::gritColors, I.GRITS.values().toArray(arr));
 		ic.register(Metals::itemColors, I.DUSTS.values().toArray(arr));
 		ic.register(Metals::ingotColors, I.INGOTS.values().toArray(arr));

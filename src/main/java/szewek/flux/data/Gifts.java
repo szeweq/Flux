@@ -53,18 +53,18 @@ public class Gifts implements IFutureReloadListener {
 		});
 	}
 
-	public static int colorByGift(ItemStack stack, int pass) {
+	private static void saveGiftLootTables(Set<ResourceLocation> locSet) {
+		GIFT_LOOT_TABLES.clear();
+		GIFT_LOOT_TABLES.addAll(locSet);
+	}
+
+	public static int giftColors(ItemStack stack, int pass) {
 		CompoundNBT tag = stack.getTag();
 		if (tag == null) {
 			return 0x808080;
 		}
 		String name = pass == 0 ? "Box" : "Ribbon";
 		return tag.contains(name) ? tag.getInt(name) : 0x404040;
-	}
-
-	public static void saveGiftLootTables(Set<ResourceLocation> locSet) {
-		GIFT_LOOT_TABLES.clear();
-		GIFT_LOOT_TABLES.addAll(locSet);
 	}
 
 	public static void makeGiftsForPlayer(ServerPlayerEntity player) {
