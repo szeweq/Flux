@@ -8,7 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IRecipeHelperPopulator;
 import net.minecraft.inventory.IRecipeHolder;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -25,7 +24,6 @@ import net.minecraft.world.World;
 import szewek.fl.recipe.RecipeCompat;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.MachineBlock;
-import szewek.flux.config.ConfigChangeListener;
 import szewek.flux.item.ChipItem;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.util.inventory.IInventoryIO;
@@ -38,9 +36,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity, ConfigChangeListener {
+public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity {
 	private final IOSize ioSize;
-	protected int process = -1, processTotal, energyUse, processSpeed = 100, compatState;
+	protected final Process process = new Process();
+	protected int energyUse, compatState;
 	protected boolean lazyCheck, wasLit;
 	protected final MachineInventory inv;
 	protected final IRecipeType<?> recipeType;
@@ -52,10 +51,10 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			switch (index) {
 				case 0: return energy >> 16;
 				case 1: return energy & 0xFFFF;
-				case 2: return process;
-				case 3: return processTotal;
+				case 2: return process.current;
+				case 3: return process.total;
 				case 4: return energyUse;
-				case 5: return processSpeed;
+				case 5: return process.speed;
 				case 6: return compatState;
 				default: return 0;
 			}
@@ -66,10 +65,10 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			switch (index) {
 				case 0: energy = (energy & 0xFFFF) + (value << 16); break;
 				case 1: energy = (energy & 0xFFFF0000) + value; break;
-				case 2: process = value; break;
-				case 3: processTotal = value; break;
+				case 2: process.current = value; break;
+				case 3: process.total = value; break;
 				case 4: energyUse = value; break;
-				case 5: processSpeed = value; break;
+				case 5: process.speed = value; break;
 				case 6: compatState = value; break;
 				default:
 			}
@@ -87,12 +86,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		this.ioSize = ioSize;
 		inv = new MachineInventory(ioSize, 1);
 		energyUse = FluxCfg.COMMON.basicMachineEU.get();
-		FluxCfg.addListener(this);
-	}
-
-	@Override
-	public void onConfigChanged() {
-		updateValues();
+		FluxCfg.addListener(this::updateValues);
 	}
 
 	@Override
@@ -100,8 +94,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		super.read(blockState, compound);
 		inv.readNBT(compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
-		process = compound.getInt("Process");
-		processTotal = compound.getInt("Total");
+		process.current = compound.getInt("Process");
+		process.total = compound.getInt("Total");
 		int i = compound.getShort("RSize");
 		for (int j = 0; j < i; j++) {
 			ResourceLocation location = new ResourceLocation(compound.getString("RLoc" + j));
@@ -115,8 +109,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 		compound.putInt("E", energy);
-		compound.putInt("Process", process);
-		compound.putInt("Total", processTotal);
+		compound.putInt("Process", process.current);
+		compound.putInt("Total", process.total);
 		inv.writeNBT(compound, true);
 		compound.putShort("RSize", (short) recipesCount.size());
 		int i = 0;
@@ -131,21 +125,17 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	@Override
 	protected void serverTick(World w) {
 		boolean inputEmpty = inv.isInputEmpty();
-		boolean workState = process > 0;
+		boolean workState = process.current > 0;
 		if (energy >= energyUse && !inputEmpty && canProcess()) {
 			energy -= energyUse;
-			if (process >= processTotal) {
-				process = 0;
-				//processTotal = getProcessTime() * 100;
+			if (process.update()) {
 				produceResult();
 				isDirty = true;
-			} else {
-				process += processSpeed;
 			}
 		} else {
-			process = 0;
+			process.current = 0;
 		}
-		boolean currState = process > 0;
+		boolean currState = process.current > 0;
 		if (lazyCheck) {
 			if (workState == currState && wasLit != currState) {
 				w.setBlockState(pos, w.getBlockState(pos).with(MachineBlock.LIT, currState), 3);
@@ -187,7 +177,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	protected void setCachedRecipe(@Nullable final IRecipe<?> recipe) {
 		cachedRecipe = recipe;
 		compatState = recipe != null && recipe.getType() != recipeType ? 1 : 0;
-		processTotal = recipe instanceof AbstractMachineRecipe ? ((AbstractMachineRecipe) cachedRecipe).processTime * 100 : 20000;
+		process.total = recipe instanceof AbstractMachineRecipe ? ((AbstractMachineRecipe) cachedRecipe).processTime * 100 : 20000;
 	}
 
 	@Override
@@ -242,7 +232,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			assert world != null;
 			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null));
 			//processTotal = getProcessTime() * 100;
-			process = 0;
+			process.current = 0;
 			lazyCheck = true;
 			markDirty();
 		}
@@ -301,15 +291,13 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	public void updateValues() {
 		energyUse = FluxCfg.COMMON.basicMachineEU.get();
-		processSpeed = 100;
+		process.speed = 100;
 		ItemStack chipStack = inv.get(ioSize.in + ioSize.out);
-		Item item = chipStack.getItem();
-		if (!chipStack.isEmpty() && item instanceof ChipItem) {
-			ChipItem ci = (ChipItem) item;
+		if (!chipStack.isEmpty() && chipStack.getItem() instanceof ChipItem) {
 			CompoundNBT tag = chipStack.getTag();
 			if (tag != null) {
-				processSpeed = ci.countValue(tag, "speed", processSpeed);
-				energyUse = ci.countValue(tag, "energy", energyUse) * processSpeed / 100;
+				process.speed = ChipItem.countValue(tag, "speed", process.speed);
+				energyUse = ChipItem.countValue(tag, "energy", energyUse) * process.speed / 100;
 			}
 
 		}
@@ -341,6 +329,16 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	@Override
 	public void remove() {
 		super.remove();
-		FluxCfg.removeListener(this);
+		FluxCfg.removeListener(this::updateValues);
+	}
+
+	private static class Process {
+		int current = -1, total, speed = 100;
+
+		private boolean update() {
+			boolean b = current >= total;
+			current = b ? 0 : current + speed;
+			return b;
+		}
 	}
 }
