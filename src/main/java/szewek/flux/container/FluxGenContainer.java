@@ -56,8 +56,8 @@ public class FluxGenContainer extends Container {
 	}
 
 	public float getWorkFill() {
-		final int maxWork = data.get(3);
-		return maxWork == 0 ? 0 : (float) data.get(2) / (float) maxWork;
+		final int maxWork = data.get(7);
+		return maxWork == 0 ? 0 : (float) data.get(6) / (float) maxWork;
 	}
 
 	private int getEnergy() {
@@ -73,14 +73,14 @@ public class FluxGenContainer extends Container {
 	}
 
 	public ITextComponent genText() {
-		return new TranslationTextComponent("flux.gen", data.get(4));
+		return new TranslationTextComponent("flux.gen", data.get(8));
 	}
 
 	public FluidStack getHotFluid() {
-		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(6)), data.get(7));
+		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(2)), data.get(3));
 	}
 	public FluidStack getColdFluid() {
-		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(8)), data.get(9));
+		return new FluidStack(((ForgeRegistry<Fluid>) ForgeRegistries.FLUIDS).getValue(data.get(4)), data.get(5));
 	}
 
 	@Override

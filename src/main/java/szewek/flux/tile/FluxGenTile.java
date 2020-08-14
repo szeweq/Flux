@@ -34,6 +34,7 @@ import szewek.flux.FluxCfg;
 import szewek.flux.container.FluxGenContainer;
 import szewek.flux.data.FluxGenValues;
 import szewek.flux.energy.EnergyCache;
+import szewek.flux.util.FieldIntArray;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,7 +50,39 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	private int tickCount, workTicks, maxWork, energyGen, workSpeed;
 	private boolean isReady, isDirty;
 	public boolean receivedRedstone;
-	protected final IIntArray fluxGenData = new IIntArray() {
+	protected final IIntArray tileData = FieldIntArray.of(this, new String[]{"workTicks", "maxWork", "energyGen", "workSpeed"}, new FieldIntArray.Extended() {
+		@Override
+		public int translate(int i) {
+			return i - 6;
+		}
+
+		@Override
+		public int get(int i) {
+			if (i == 0) {
+				return energy.stored >> 16;
+			} else if (i == 1) {
+				return energy.stored & 0xFFFF;
+			}
+			return tank.getData(i - 2);
+		}
+
+		@Override
+		public void set(int i, int v) {
+			if (i == 0) {
+				energy.stored = (energy.stored & 0xFFFF) + (v << 16);
+			} else if (i == 1) {
+				energy.stored = (energy.stored & 0xFFFF0000) + v;
+			} else {
+				tank.setData(i - 2, v);
+			}
+		}
+
+		@Override
+		public int size() {
+			return 10;
+		}
+	});
+	/* protected final IIntArray fluxGenData = new IIntArray() {
 		@Override
 		public int get(int i) {
 			if (i >= 6) {
@@ -87,7 +120,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		public int size() {
 			return 10;
 		}
-	};
+	}; */
 
 	public FluxGenTile() {
 		super(F.T.FLUXGEN);
@@ -266,7 +299,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 
 	@Override
 	protected Container createMenu(int id, PlayerInventory playerInv) {
-		return new FluxGenContainer(id, playerInv, this, fluxGenData);
+		return new FluxGenContainer(id, playerInv, this, tileData);
 	}
 
 	static class Energy implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
