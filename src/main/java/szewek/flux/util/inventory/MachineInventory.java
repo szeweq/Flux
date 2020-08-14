@@ -93,13 +93,13 @@ public class MachineInventory extends AbstractList<ItemStack> {
 		return true;
 	}
 
-	public boolean isInputEmpty() {
+	public boolean inputHasStacks() {
 		for (int i = 0; i < in; i++) {
 			if (!stacks[i].isEmpty()) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public boolean checkResult(ItemStack result) {

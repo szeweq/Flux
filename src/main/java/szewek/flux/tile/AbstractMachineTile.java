@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractMachineTile extends PoweredDeviceTile implements ISidedInventory, IInventoryIO, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity {
 	private final IOSize ioSize;
 	protected final Process process = new Process();
-	protected int energyUse, compatState;
+	protected int compatState;
 	protected boolean lazyCheck, wasLit;
 	protected final MachineInventory inv;
 	protected final IRecipeType<?> recipeType;
@@ -124,10 +124,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 	@Override
 	protected void serverTick(World w) {
-		boolean inputEmpty = inv.isInputEmpty();
 		boolean workState = process.current > 0;
-		if (energy >= energyUse && !inputEmpty && canProcess()) {
-			energy -= energyUse;
+		if (inv.inputHasStacks() && canProcess() && useEnergy()) {
 			if (process.update()) {
 				produceResult();
 				isDirty = true;

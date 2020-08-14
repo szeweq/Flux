@@ -15,7 +15,7 @@ import szewek.fl.energy.IEnergyReceiver;
 import javax.annotation.Nullable;
 
 public abstract class PoweredDeviceTile extends LockableTileEntity implements IEnergyReceiver, ITickableTileEntity {
-	protected int energy;
+	protected int energy, energyUse;
 	protected boolean isDirty;
 
 	private final LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> this);
@@ -25,6 +25,14 @@ public abstract class PoweredDeviceTile extends LockableTileEntity implements IE
 	}
 
 	protected abstract void serverTick(World w);
+
+	protected boolean useEnergy() {
+		boolean b = energy >= energyUse;
+		if (b) {
+			energy -= energyUse;
+		}
+		return b;
+	}
 
 	@Override
 	public void tick() {
