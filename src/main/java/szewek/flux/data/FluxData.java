@@ -19,14 +19,13 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static szewek.flux.Flux.MODID;
 
 public final class FluxData {
 	private static final Gson GSON = new GsonBuilder().setLenient().create();
 	static final Logger LOGGER = LogManager.getLogger();
 	private static final IFutureReloadListener
 			FLUXGEN_VALUES = new FluxGenValues(),
-			FLUX_GIFTS = new FluxGifts();
+			FLUX_GIFTS = new Gifts();
 
 	public static void addReloadListeners(final AddReloadListenerEvent e) {
 		e.addListener(FLUXGEN_VALUES);

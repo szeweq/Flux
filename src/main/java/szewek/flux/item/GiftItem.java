@@ -15,7 +15,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootParameters;
-import szewek.flux.util.Gifts;
+import szewek.flux.data.Gifts;
 
 public final class GiftItem extends Item {
 	private static final ITextComponent GIFT_INVALID = new TranslationTextComponent("flux.gift.invalid");

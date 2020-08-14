@@ -30,11 +30,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
+import szewek.flux.data.Gifts;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.network.FluxPackets;
 import szewek.flux.signal.MinecartSignals;
 import szewek.flux.data.FluxData;
-import szewek.flux.util.Gifts;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 

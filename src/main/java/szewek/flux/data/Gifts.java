@@ -1,27 +1,57 @@
-package szewek.flux.util;
+package szewek.flux.data;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.LootTable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.LootTable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-public final class Gifts {
+import static szewek.flux.Flux.MODID;
+
+public class Gifts implements IFutureReloadListener {
 	private static final ITextComponent RECEIVED_GIFT = new TranslationTextComponent("flux.gift.received");
 	private static final Set<ResourceLocation> GIFT_LOOT_TABLES = new HashSet<>();
+	private static final ResourceLocation GIFTS_LIST = new ResourceLocation(MODID, "gifts/global_list.json");
+
+	Gifts() {
+	}
+
+	@Override
+	public CompletableFuture<Void> reload(IStage stage, IResourceManager rm, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor bgExec, Executor gameExec) {
+		return collectGiftLootTables(rm, bgExec)
+				.thenCompose(stage::markCompleteAwaitingOthers)
+				.thenAcceptAsync(Gifts::saveGiftLootTables, gameExec);
+	}
+
+	private static CompletableFuture<Set<ResourceLocation>> collectGiftLootTables(IResourceManager rm, Executor exec) {
+		return FluxData.collectFromResources(HashSet::new, rm, GIFTS_LIST, exec, (set, json) -> {
+			JsonArray entries = JSONUtils.getJsonArray(json, "entries");
+			for (JsonElement el : entries) {
+				set.add(new ResourceLocation(el.getAsString()));
+			}
+		});
+	}
 
 	public static int colorByGift(ItemStack stack, int pass) {
 		CompoundNBT tag = stack.getTag();
@@ -65,6 +95,4 @@ public final class Gifts {
 			ItemHandlerHelper.giveItemToPlayer(player, stack);
 		}
 	}
-
-	private Gifts() {}
 }
