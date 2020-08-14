@@ -69,7 +69,7 @@ public class FluxGenValues implements IFutureReloadListener {
 				String key = e.getKey();
 				IntPair pair = pairFromJSON(e.getValue(), key);
 				if (pair.l <= 0 || pair.r <= 0) {
-					LOGGER.warn("Factor and usage must be bigger than 0. Skipping {}", key);
+					LOGGER.warn("Factor and usage must be bigger than 0 ({}). Skipping {}", pair, key);
 					continue;
 				}
 				vals.add(new Entry(key, pair));
@@ -79,7 +79,7 @@ public class FluxGenValues implements IFutureReloadListener {
 
 	private static IntPair pairFromJSON(JsonElement el, String key) {
 		if (JSONUtils.isNumber(el)) {
-			return IntPair.of(el.getAsInt(), 0);
+			return IntPair.of(el.getAsInt(), 1);
 		} else if (el.isJsonArray()) {
 			JsonArray ja = el.getAsJsonArray();
 			if (ja.size() == 2) {
