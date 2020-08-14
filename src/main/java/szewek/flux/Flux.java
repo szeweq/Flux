@@ -33,7 +33,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.network.FluxPackets;
 import szewek.flux.signal.MinecartSignals;
-import szewek.flux.util.FluxData;
+import szewek.flux.data.FluxData;
 import szewek.flux.util.Gifts;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
