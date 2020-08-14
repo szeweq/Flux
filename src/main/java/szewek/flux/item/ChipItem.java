@@ -28,11 +28,6 @@ public class ChipItem extends Item {
 		}
 	}
 
-	public int countValue(final CompoundNBT tag, String name, int v) {
-		int x = MathHelper.clamp(tag.getByte(name) * 10, -90, 1000);
-		return v * (100 + x) / 100;
-	}
-
 	private void addTooltip(final CompoundNBT tag, List<ITextComponent> tooltip, String name, boolean reversed) {
 		final int v = MathHelper.clamp(tag.getByte(name) * 10, -90, 1000);
 		if (v != 0) {
@@ -47,5 +42,10 @@ public class ChipItem extends Item {
 					)
 			);
 		}
+	}
+
+	public static int countValue(final CompoundNBT tag, String name, int v) {
+		int x = MathHelper.clamp(tag.getByte(name) * 10, -90, 1000);
+		return v * (100 + x) / 100;
 	}
 }
