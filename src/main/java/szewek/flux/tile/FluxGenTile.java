@@ -40,12 +40,13 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class FluxGenTile extends LockableTileEntity implements ITickableTileEntity, IEnergyStorage {
+public class FluxGenTile extends LockableTileEntity implements ITickableTileEntity {
 	public static final int fluidCap = 4000;
 	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 	private final Tank tank = new Tank();
-	private int tickCount, energy, workTicks, maxWork, energyGen, workSpeed;
+	private final Energy energy = new Energy();
+	private int tickCount, workTicks, maxWork, energyGen, workSpeed;
 	private boolean isReady, isDirty;
 	public boolean receivedRedstone;
 	protected final IIntArray fluxGenData = new IIntArray() {
@@ -55,8 +56,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 				return tank.getData(i - 6);
 			}
 			switch (i) {
-				case 0: return energy >> 16;
-				case 1: return energy & 0xFFFF;
+				case 0: return energy.stored >> 16;
+				case 1: return energy.stored & 0xFFFF;
 				case 2: return workTicks;
 				case 3: return maxWork;
 				case 4: return energyGen;
@@ -72,8 +73,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 				return;
 			}
 			switch (i) {
-				case 0: energy = (energy & 0xFFFF) + (v << 16); break;
-				case 1: energy = (energy & 0xFFFF0000) + v; break;
+				case 0: energy.stored = (energy.stored & 0xFFFF) + (v << 16); break;
+				case 1: energy.stored = (energy.stored & 0xFFFF0000) + v; break;
 				case 2: workTicks = v; break;
 				case 3: maxWork = v; break;
 				case 4: energyGen = v; break;
@@ -87,7 +88,6 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			return 10;
 		}
 	};
-	private final LazyOptional<FluxGenTile> selfHandler = LazyOptional.of(() -> this);
 
 	public FluxGenTile() {
 		super(F.T.FLUXGEN);
@@ -96,7 +96,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	@Override
 	public void read(BlockState blockState, CompoundNBT compound) {
 		super.read(blockState, compound);
-		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
+		energy.stored = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		workTicks = compound.getInt("WorkTicks");
 		maxWork = compound.getInt("MaxWork");
 		energyGen = compound.getInt("Gen");
@@ -112,7 +112,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		compound.putInt("E", energy);
+		compound.putInt("E", energy.stored);
 		compound.putInt("WorkTicks", workTicks);
 		compound.putInt("MaxWork", maxWork);
 		compound.putInt("Gen", energyGen);
@@ -136,8 +136,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			if ((maxWork == 0 && ForgeHooks.getBurnTime(items.get(0)) > 0) || workTicks >= maxWork) {
 				workTicks = 0;
 				maxWork = updateWork();
-			} else if (energy + energyGen <= 1000000) {
-				energy += energyGen;
+			} else if (energy.generate(energyGen)) {
 				workTicks += workSpeed;
 				if (maxWork <= workTicks) {
 					maxWork = 0;
@@ -146,9 +145,9 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			}
 		}
 		tickCount++;
-		if (tickCount > 3 && energy > 0) {
+		if (tickCount > 3 && energy.stored > 0) {
 			tickCount = 0;
-			shareEnergy();
+			energy.share(energyCache);
 		}
 		if (isDirty) markDirty();
 	}
@@ -181,27 +180,6 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		return f;
 	}
 
-	private void shareEnergy() {
-		try {
-			for (Direction d : Direction.values()) {
-				IEnergyStorage ie = energyCache.getCached(d);
-				if (ie != null && ie.canReceive()) {
-					int r = 40000;
-					if (r >= energy) r = energy;
-					r = ie.receiveEnergy(r, true);
-					if (r > 0) {
-						energy -= r;
-						ie.receiveEnergy(r, false);
-					}
-				}
-			}
-		} catch (Exception ignored) {
-			// Keep garbage "integrations" away from my precious Flux Generator!
-			energyCache.clear();
-			// A good mod developer ALWAYS invalidates LazyOptional instances!
-		}
-	}
-
 	public Tank getTank() {
 		return tank;
 	}
@@ -210,7 +188,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction dir) {
 		if (!removed) {
 			if (cap == CapabilityEnergy.ENERGY) {
-				return selfHandler.cast();
+				return energy.lazy.cast();
 			} else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 				return tank.lazy.cast();
 			}
@@ -222,45 +200,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	public void remove() {
 		super.remove();
 		energyCache.clear();
-		selfHandler.invalidate();
+		energy.lazy.invalidate();
 		tank.lazy.invalidate();
-	}
-
-	@Override
-	public int getEnergyStored() {
-		return energy;
-	}
-
-	@Override
-	public int getMaxEnergyStored() {
-		return 1000000;
-	}
-
-	@Override
-	public boolean canExtract() {
-		return true;
-	}
-
-	@Override
-	public boolean canReceive() {
-		return false;
-	}
-
-	@Override
-	public int receiveEnergy(int maxReceive, boolean simulate) {
-		return 0;
-	}
-
-	@Override
-	public int extractEnergy(int maxExtract, boolean simulate) {
-		int r = maxExtract;
-		if (r > 0) {
-			if (r > energy) r = energy;
-			if (!simulate) {
-				energy -= r;
-			}
-		}
-		return r;
 	}
 
 	@Override
@@ -326,6 +267,84 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	@Override
 	protected Container createMenu(int id, PlayerInventory playerInv) {
 		return new FluxGenContainer(id, playerInv, this, fluxGenData);
+	}
+
+	static class Energy implements IEnergyStorage, NonNullSupplier<IEnergyStorage> {
+		private final LazyOptional<IEnergyStorage> lazy = LazyOptional.of(this);
+		int stored;
+
+		private boolean generate(int amount) {
+			boolean b = stored + amount <= 1_000_000;
+			if (b) {
+				stored += amount;
+			}
+			return b;
+		}
+
+		private void share(EnergyCache cache) {
+			try {
+				for (Direction d : Direction.values()) {
+					IEnergyStorage ie = cache.getCached(d);
+					if (ie == null || !ie.canReceive()) {
+						continue;
+					}
+					int r = 40000;
+					if (r >= stored) r = stored;
+					r = ie.receiveEnergy(r, true);
+					if (r > 0) {
+						stored -= r;
+						ie.receiveEnergy(r, false);
+					}
+				}
+			} catch (Exception ignored) {
+				// Keep garbage "integrations" away from my precious Flux Generator!
+				cache.clear();
+				// A good mod developer ALWAYS invalidates LazyOptional instances!
+			}
+		}
+
+		@Override
+		public int getEnergyStored() {
+			return stored;
+		}
+
+		@Override
+		public int getMaxEnergyStored() {
+			return 1_000_000;
+		}
+
+		@Override
+		public boolean canExtract() {
+			return true;
+		}
+
+		@Override
+		public boolean canReceive() {
+			return false;
+		}
+
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate) {
+			return 0;
+		}
+
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate) {
+			int r = maxExtract;
+			if (r > 0) {
+				if (r > stored) r = stored;
+				if (!simulate) {
+					stored -= r;
+				}
+			}
+			return r;
+		}
+
+		@Nonnull
+		@Override
+		public IEnergyStorage get() {
+			return this;
+		}
 	}
 
 	class Tank implements IFluidHandler, NonNullSupplier<IFluidHandler> {
