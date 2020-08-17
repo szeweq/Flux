@@ -3,6 +3,7 @@ package szewek.mcgen.template
 import com.google.gson.JsonElement
 import szewek.mcgen.util.JsonFileWriter
 
+@Suppress("unused")
 object Templates {
     private val colors = arrayOf(
             "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
@@ -51,73 +52,73 @@ object Templates {
             out("${item}_block", craftingShaped(
                     blockShape,
                     mapOf("#" to "$ns:${item}_ingot"),
-                    "$ns:${item}_block"
+                    1 of "$ns:${item}_block"
             ))
             out("${item}_ingot", craftingShaped(
                     blockShape,
                     mapOf("#" to "$ns:${item}_nugget"),
-                    "$ns:${item}_ingot"
+                    1 of "$ns:${item}_ingot"
             ))
             out("${item}_nugget", craftingShapeless(
                     "${item}_nugget",
-                    "$ns:${item}_nugget", 9
+                    9 of "$ns:${item}_nugget"
             ) { item("$ns:${item}_ingot") })
             out("${item}_ingot_from_${item}_block", craftingShapeless(
                     "${item}_ingot",
-                    "$ns:${item}_ingot", 9
+                    9 of "$ns:${item}_ingot"
             ) { item("$ns:${item}_block") })
             if (!isAlloy(item)) out("${item}_ingot_smelting_ore", smelting(
                     "${item}_ingot",
                     "#forge:ores/${item}",
-                    "$ns:${item}_ingot"
+                    1 of "$ns:${item}_ingot"
             ))
         }
         if (!isAlloy(item)) {
-            out("${item}_dust_grinding_ore", fluxMachine("grinding", "$ns:${item}_dust", 2) {
+            out("${item}_dust_grinding_ore", fluxMachine("grinding", 2 of "$ns:${item}_dust") {
                 tag("forge:ores/${item}")
             })
-            out("${item}_grit_washing_ore", fluxMachine("washing", "$ns:${item}_grit", 3) {
+            out("${item}_grit_washing_ore", fluxMachine("washing", 3 of "$ns:${item}_grit") {
                 tag("forge:ores/${item}")
             })
-            out("${item}_dust_grinding_grit", fluxMachine("grinding", "$ns:${item}_dust", 1) {
+            out("${item}_dust_grinding_grit", fluxMachine("grinding", 1 of "$ns:${item}_dust") {
                 tag("forge:grits/${item}")
             })
         }
-        out("${item}_dust_grinding_ingot", fluxMachine("grinding", "$ns:${item}_dust") {
+        out("${item}_dust_grinding_ingot", fluxMachine("grinding", 1 of "$ns:${item}_dust") {
             tag("forge:ingots/${item}")
         })
         out("${item}_ingot_smelting_dust", smelting(
                 "${item}_ingot",
                 "#forge:dusts/${item}",
-                (if (isVanilla(item)) "minecraft" else ns) + ":${item}_ingot"
+                1 of (if (isVanilla(item)) "minecraft" else ns) + ":${item}_ingot"
         ))
         out("${item}_gear", craftingShaped(
                 arrayOf("X#X", "# #", "X#X"),
                 mapOf("#" to "#forge:ingots/$item", "X" to "#forge:nuggets/$item"),
-                "$ns:${item}_gear", 2
+                2 of "$ns:${item}_gear"
         ))
         out("${item}_plate", craftingShaped(
                 arrayOf("#", "#"),
                 mapOf("#" to "#forge:ingots/$item"),
-                "$ns:${item}_plate"
+                1 of "$ns:${item}_plate"
         ))
-        out("${item}_plate_compacting_ingot", fluxMachine("compacting", "$ns:${item}_plate") {
+        out("${item}_plate_compacting_ingot", fluxMachine("compacting", 1 of "$ns:${item}_plate") {
             tag("forge:ingots/${item}")
         })
     }
 
     private fun metalRecipesTagged(v: JsonElement, out: JsonFileWriter) {
         val item = v.asString
-        out("${item}_dust_grinding_ore", fluxMachine("grinding", "#forge:dusts/$item", 2) {
+        out("${item}_dust_grinding_ore", fluxMachine("grinding", 2 of "#forge:dusts/$item") {
             tag("forge:ores/$item")
         })
-        out("${item}_dust_grinding_grit", fluxMachine("grinding", "forge:dusts/$item") {
+        out("${item}_dust_grinding_grit", fluxMachine("grinding", 1 of "forge:dusts/$item") {
             tag("forge:grits/$item")
         })
-        out("${item}_dust_grinding_ingot", fluxMachine("grinding", "forge:dusts/$item") {
+        out("${item}_dust_grinding_ingot", fluxMachine("grinding", 1 of "forge:dusts/$item") {
             tag("forge:ingots/$item")
         })
-        out("${item}_grit_washing_ore", fluxMachine("washing", "forge:grits/$item", 3) {
+        out("${item}_grit_washing_ore", fluxMachine("washing", 3 of "forge:grits/$item") {
             tag("forge:ores/$item")
         })
     }
@@ -132,7 +133,7 @@ object Templates {
         o.remove("type")
         for(col in colors) out("${col}_${into}_$type", typedRecipe("${out.namespace}:$type") {
             ingredients { item("${col}_$from") }
-            keyResult("${col}_$into")
+            keyResult(1 of "${col}_$into")
             for ((k, je) in o.entrySet()) k set je
         })
     }
@@ -160,7 +161,7 @@ object Templates {
                 "axe" to arrayOf("XX", "X#", " #"),
                 "hoe" to arrayOf("XX", " #", " #")
         )
-        for((name, pat) in mapShapes) out("${item}_$name", craftingShaped(pat, mapKeys, "$ns:${item}_$name"))
+        for((name, pat) in mapShapes) out("${item}_$name", craftingShaped(pat, mapKeys,1 of "$ns:${item}_$name"))
     }
 
     private fun metalTags(v: JsonElement, out: JsonFileWriter) {

@@ -2,13 +2,13 @@ package szewek.mcgen.template
 
 import szewek.mcgen.util.JsonFunc
 
-internal fun fluxMachine(type: String, result: String, count: Int = 1, ingredients: JsonFunc): JsonFunc = {
+internal fun fluxMachine(type: String, result: Pair<String, Int>, ingredients: JsonFunc): JsonFunc = {
     "type" set "flux:$type"
-    keyResult(result, count)
+    keyResult(result)
     "ingredients" arr ingredients
 }
 
-internal fun craftingShaped(pattern: Array<String>, keys: Map<String, String>, result: String, count: Int = 1): JsonFunc = {
+internal fun craftingShaped(pattern: Array<String>, keys: Map<String, String>, result: Pair<String, Int>): JsonFunc = {
     "type" set "minecraft:crafting_shaped"
     "pattern" set pattern
     "key" obj {
@@ -16,21 +16,21 @@ internal fun craftingShaped(pattern: Array<String>, keys: Map<String, String>, r
             keyItemOrTag(t, u)
         }
     }
-    keyResult(result, count)
+    keyResult(result)
 }
 
-internal fun craftingShapeless(group: String, result: String, count: Int = 1, ingredients: JsonFunc): JsonFunc = {
+internal fun craftingShapeless(group: String, result: Pair<String, Int>, ingredients: JsonFunc): JsonFunc = {
     "type" set "minecraft:crafting_shapeless"
     if (group != "") "group" set group
     "ingredients" arr ingredients
-    keyResult(result, count)
+    keyResult(result)
 }
 
-internal fun smelting(group: String, ingredient: String, result: String, count: Int = 1): JsonFunc = {
+internal fun smelting(group: String, ingredient: String, result: Pair<String, Int>): JsonFunc = {
     "type" set "minecraft:smelting"
     if (group != "") "group" set group
     keyItemOrTag("ingredient", ingredient)
-    keyResult(result, count)
+    keyResult(result)
 }
 
 internal fun singleTag(name: String) = tagList(arrayOf(name))
