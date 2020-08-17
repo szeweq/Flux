@@ -85,25 +85,12 @@ public final class DrawUtils {
 	 * @param z Z position
 	 */
 	public static void drawFluidStack(Matrix4f matrix, GuiRect rect, FluidStack fs, int cap, float z) {
-		if (fs.isEmpty()) {
+		final TextureAtlasSprite tas = applyFluidTexture(fs);
+		if (tas == null) {
 			return;
 		}
-		Fluid fl = fs.getFluid();
-		if (fl == Fluids.EMPTY) {
-			return;
-		}
-
-		ResourceLocation still = fl.getAttributes().getStillTexture();
-		Minecraft minecraft = Minecraft.getInstance();
-		TextureAtlasSprite tas = minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
-		minecraft.textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
-		glColorInt(fl.getAttributes().getColor(fs));
-
 		final int w = rect.x2 - rect.x1;
-		final int h = rect.y2 - rect.y1;
-
-		final int ny = rect.y2;
-		final int nh = Math.min(h * fs.getAmount() / cap, h);
+		final int nh = (rect.y2 - rect.y1) * Math.min(fs.getAmount() / cap, 1);
 
 		final int xTiles = w >> 4;
 		final int xRemainder = w & 15;
@@ -121,11 +108,11 @@ public final class DrawUtils {
 		RenderSystem.enableAlphaTest();
 		for (int xt = 0; xt <= xTiles; xt++) {
 			int width = (xt == xTiles) ? xRemainder : 16;
-			int tx = rect.x1 + (xt * 16);
+			int tx = xt * 16 + rect.x1;
 
 			for (int yt = 0; yt <= yTiles; yt++) {
 				int height = (yt == yTiles) ? yRemainder : 16;
-				int ty = ny - ((yt + 1) * 16);
+				int ty = rect.y2 - ((yt + 1) * 16);
 				if (width > 0 && height > 0) {
 					int maskTop = 16 - height;
 					int maskRight = 16 - width;
@@ -144,6 +131,23 @@ public final class DrawUtils {
 		}
 		RenderSystem.disableAlphaTest();
 		RenderSystem.disableBlend();
+	}
+
+	private static TextureAtlasSprite applyFluidTexture(FluidStack fs) {
+		if (fs.isEmpty()) {
+			return null;
+		}
+		Fluid fl = fs.getFluid();
+		if (fl == Fluids.EMPTY) {
+			return null;
+		}
+
+		ResourceLocation still = fl.getAttributes().getStillTexture();
+		Minecraft minecraft = Minecraft.getInstance();
+		TextureAtlasSprite tas = minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
+		minecraft.textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+		glColorInt(fl.getAttributes().getColor(fs));
+		return tas;
 	}
 
 	/**
