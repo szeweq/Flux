@@ -24,27 +24,11 @@ public final class DrawUtils {
 
 	/**
 	 * Draws a solid gradient. This method does not change rendering properties.
-	 * @param left left X position
-	 * @param top top Y position
-	 * @param right right X position
-	 * @param bottom bottom Y position
+	 * @param rect Rectangle
 	 * @param c color
 	 * @param z Z position
 	 */
-	public static void drawRectBatchOnly(Matrix4f matrix, float left, float top, float right, float bottom, int c, float z) {
-		float p;
-		if (left < right) {
-			p = left;
-			left = right;
-			right = p;
-		}
-
-		if (top < bottom) {
-			p = top;
-			top = bottom;
-			bottom = p;
-		}
-
+	public static void drawRectBatchOnly(Matrix4f matrix, GuiRect rect, int c, float z) {
 		int ya = c >> 24 & 255;
 		int yr = c >> 16 & 255;
 		int yg = c >> 8 & 255;
@@ -52,25 +36,22 @@ public final class DrawUtils {
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vb.pos(matrix, left, bottom, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, right, bottom, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, right, top, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, left, top, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, rect.x1, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+		vb.pos(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
 		tes.draw();
 	}
 
 	/**
 	 * Draws gradient with angle based on rectangle size. This method does not change rendering properties.
 	 * If width is larger than height then the gradient is vertical. Otherwise it is horizontal.
-	 * @param left left X position
-	 * @param top top Y position
-	 * @param right right X position
-	 * @param bottom bottom Y position
+	 * @param rect Rectangle
 	 * @param color1 gradient starting color
 	 * @param color2 gradient ending color
 	 * @param z Z position
 	 */
-	public static void drawGradientRectBatchOnly(Matrix4f matrix, float left, float top, float right, float bottom, int color1, int color2, float z) {
+	public static void drawGradientRectBatchOnly(Matrix4f matrix, GuiRect rect, int color1, int color2, float z) {
 		int ya = color1 >> 24 & 255;
 		int yr = color1 >> 16 & 255;
 		int yg = color1 >> 8 & 255;
@@ -82,31 +63,28 @@ public final class DrawUtils {
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		if (right - left > bottom - top) {
-			vb.pos(matrix, right, top, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, left, top, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, left, bottom, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, right, bottom, z).color(yr, yg, yb, ya).endVertex();
+		if (rect.x2 - rect.x1 > rect.y2 - rect.y1) {
+			vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(matrix, rect.x1, rect.y1, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
 		} else {
-			vb.pos(matrix, right, top, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, left, top, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, left, bottom, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, right, bottom, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.pos(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.pos(matrix, rect.x2, rect.y2, z).color(zr, zg, zb, za).endVertex();
 		}
 		tes.draw();
 	}
 
 	/**
 	 * Draws fluid texture in a rectangular area from bottom to top.
-	 * @param x X position
-	 * @param y Y position
-	 * @param w width
-	 * @param h height
+	 * @param rect Rectangle
 	 * @param fs fluid stack
 	 * @param cap internal capacity
 	 * @param z Z position
 	 */
-	public static void drawFluidStack(Matrix4f matrix, int x, int y, int w, int h, FluidStack fs, int cap, float z) {
+	public static void drawFluidStack(Matrix4f matrix, GuiRect rect, FluidStack fs, int cap, float z) {
 		if (fs.isEmpty()) {
 			return;
 		}
@@ -114,13 +92,17 @@ public final class DrawUtils {
 		if (fl == Fluids.EMPTY) {
 			return;
 		}
+
 		ResourceLocation still = fl.getAttributes().getStillTexture();
 		Minecraft minecraft = Minecraft.getInstance();
 		TextureAtlasSprite tas = minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
 		minecraft.textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 		glColorInt(fl.getAttributes().getColor(fs));
 
-		final int ny = y + h;
+		final int w = rect.x2 - rect.x1;
+		final int h = rect.y2 - rect.y1;
+
+		final int ny = rect.y2;
 		final int nh = Math.min(h * fs.getAmount() / cap, h);
 
 		final int xTiles = w >> 4;
@@ -139,7 +121,7 @@ public final class DrawUtils {
 		RenderSystem.enableAlphaTest();
 		for (int xt = 0; xt <= xTiles; xt++) {
 			int width = (xt == xTiles) ? xRemainder : 16;
-			int tx = x + (xt * 16);
+			int tx = rect.x1 + (xt * 16);
 
 			for (int yt = 0; yt <= yTiles; yt++) {
 				int height = (yt == yTiles) ? yRemainder : 16;

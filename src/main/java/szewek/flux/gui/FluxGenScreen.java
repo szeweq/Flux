@@ -26,8 +26,8 @@ import static szewek.flux.Flux.MODID;
 public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> implements HoverSet.HoverListener {
 	private static final ResourceLocation BG_TEX = new ResourceLocation(MODID, "textures/gui/fluxgen.png");
 	private static final GuiBar
-			workFillBar = new GuiBar(86, 34, 90, 52, 0xffa8a8a8, 0xffefefef, false),
-			energyFillBar = new GuiBar(68, 63, 108, 71, 0xffa82121, 0xffef4242, true);
+			workFillBar = new GuiBar(new GuiRect(86, 34, 90, 52), 0xffa8a8a8, 0xffefefef, false),
+			energyFillBar = new GuiBar(new GuiRect(68, 63, 108, 71), 0xffa82121, 0xffef4242, true);
 	private static final GuiRect
 			hoverHotFluid = new GuiRect(47, 15, 63, 71),
 			hoverColdFluid = new GuiRect(113, 15, 129, 71);
@@ -35,7 +35,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 
 	public FluxGenScreen(FluxGenContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);
-		tooltips.addAll(energyFillBar, hoverHotFluid, hoverColdFluid);
+		tooltips.addAll(energyFillBar.rect, hoverHotFluid, hoverColdFluid);
 	}
 
 	@Override
@@ -60,8 +60,8 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
 		final Matrix4f matrix = matrixStack.getLast().getMatrix();
-		DrawUtils.drawFluidStack(matrix, 47, 15, 16, 56, container.getHotFluid(), 4000, getBlitOffset());
-		DrawUtils.drawFluidStack(matrix, 113, 15, 16, 56, container.getColdFluid(), 4000, getBlitOffset());
+		DrawUtils.drawFluidStack(matrix, hoverHotFluid, container.getHotFluid(), 4000, getBlitOffset());
+		DrawUtils.drawFluidStack(matrix, hoverColdFluid, container.getColdFluid(), 4000, getBlitOffset());
 		tooltips.checkCoords(matrixStack, mx, my);
 		func_230459_a_(matrixStack, mx, my);
 	}
@@ -69,7 +69,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 	@Override
 	public void onHover(GuiRect rect, MatrixStack matrixStack, int mx, int my) {
 		List<ITextComponent> l;
-		if (rect == energyFillBar) {
+		if (rect == energyFillBar.rect) {
 			l = Arrays.asList(container.energyText(), container.genText());
 		} else {
 			FluidStack fluid;

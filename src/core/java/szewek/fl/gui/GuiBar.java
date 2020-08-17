@@ -11,12 +11,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Bar for displaying relative values. Starting point is determined by its size and "reverse" value.
  */
 @OnlyIn(Dist.CLIENT)
-public class GuiBar extends GuiRect {
+public class GuiBar {
+
+	public final GuiRect rect;
+	private final GuiRect rectShrink;
 	private final int c1, c2;
 	private final boolean reverse;
 
-	public GuiBar(int x1, int y1, int x2, int y2, int c1, int c2, boolean reverse) {
-		super(x1, y1, x2, y2);
+	public GuiBar(GuiRect rect, int c1, int c2, boolean reverse) {
+		this.rect = rect;
+		this.rectShrink = rect.grow(-1);
 		this.c1 = c1;
 		this.c2 = c2;
 		this.reverse = reverse;
@@ -29,15 +33,15 @@ public class GuiBar extends GuiRect {
 		RenderSystem.disableAlphaTest();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.shadeModel(7425);
-		DrawUtils.drawRectBatchOnly(matrix, x1, y1, x2, y2, 0xff323232, z);
-		int x1 = this.x1 + 1;
-		int y1 = this.y1 + 1;
-		int x2 = this.x2 - 1;
-		int y2 = this.y2 - 1;
+		DrawUtils.drawRectBatchOnly(matrix, rect, 0xff323232, z);
+		int x1 = rectShrink.x1;
+		int y1 = rectShrink.y1;
+		int x2 = rectShrink.x2;
+		int y2 = rectShrink.y2;
 		if (fill > 0F) {
-			DrawUtils.drawGradientRectBatchOnly(matrix, x1, y1, x2, y2, c1, c2, z);
+			DrawUtils.drawGradientRectBatchOnly(matrix, rectShrink, c1, c2, z);
 			int f;
-			if (x2 - x1 > y2 - y1) {
+			if (rect.x2 - rect.x1 > rect.y2 - rect.y1) {
 				f = MathHelper.ceil((float)(x2 - x1) * fill);
 				if (reverse) {
 					x1 += f;
@@ -54,7 +58,7 @@ public class GuiBar extends GuiRect {
 			}
 		}
 
-		DrawUtils.drawRectBatchOnly(matrix, x1, y1, x2, y2, 0xff151515, z);
+		DrawUtils.drawRectBatchOnly(matrix, new GuiRect(x1, y1, x2, y2), 0xff151515, z);
 		RenderSystem.shadeModel(7424);
 		RenderSystem.disableBlend();
 		RenderSystem.enableAlphaTest();
