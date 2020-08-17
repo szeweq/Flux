@@ -12,13 +12,16 @@ class JsonFileWriter(private val dir: File, val namespace: String) {
         val file = File(dir, "$name.json")
         file.parentFile.mkdirs()
         val fw = FileWriter(file)
-        return JsonWriter(fw)
+        val jw = JsonWriter(fw)
+        jw.isLenient = true
+        return jw
     }
 
-    inline operator fun invoke(name: String, fn: JsonCreator.() -> Unit) {
+    operator fun invoke(name: String, rf: ResourceFactory) {
         val jw = create(name)
-        jw.isLenient = true
-        JsonCreator(jw).fn()
+        jw.beginObject()
+        rf.create(JsonCreator(jw))
+        jw.endObject()
         jw.close()
     }
 

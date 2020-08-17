@@ -23,7 +23,7 @@ abstract class AbstractTemplateTask(private val type: String) : AbstractProcessT
         val tmpl = Templates.byName(tname)
         val jfw = JsonFileWriter(outputDir, namespace)
         for (it in arg) {
-            tmpl(it, jfw)
+            tmpl.process(it, jfw)
         }
     }
 }
