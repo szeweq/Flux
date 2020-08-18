@@ -9,9 +9,9 @@ import java.io.IOException
 
 open class GenTypeRecipes : AbstractProcessTask() {
 
-    override fun doProcessFile(namespace: String, file: File, outputDir: File) {
+    override suspend fun doProcessFile(namespace: String, file: File, outputDir: File) {
         val rbw = RecipeBatchWriter(namespace, outputDir)
-        recipesFromBatch(file, rbw)
+        runCatching { recipesFromBatch(file, rbw) }
     }
 
     override fun outputDirName(namespace: String) = "data/$namespace/recipes"

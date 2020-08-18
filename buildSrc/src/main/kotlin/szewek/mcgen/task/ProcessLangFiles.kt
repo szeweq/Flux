@@ -10,20 +10,22 @@ import java.io.FileWriter
 
 open class ProcessLangFiles : AbstractProcessTask() {
 
-    override fun doProcessFile(namespace: String, file: File, outputDir: File) {
+    override suspend fun doProcessFile(namespace: String, file: File, outputDir: File) {
         val out = File(outputDir, file.nameWithoutExtension + ".json")
         val cfg = FileConfig.of(file, TomlFormat.instance())
         cfg.load()
-        val writer = FileWriter(out)
-        val jsonWriter = JsonWriter(writer)
-        jsonWriter.isLenient = true
-        jsonWriter.setIndent(" ")
-        jsonWriter.beginObject()
-        for ((k, v) in cfg.valueMap()) {
-            flatMap(k, v, jsonWriter)
+        out.writer().use {
+            val jsonWriter = JsonWriter(it)
+            jsonWriter.isLenient = true
+            jsonWriter.setIndent(" ")
+            runCatching {
+                jsonWriter.beginObject()
+                for ((k, v) in cfg.valueMap()) {
+                    flatMap(k, v, jsonWriter)
+                }
+                jsonWriter.endObject()
+            }
         }
-        jsonWriter.endObject()
-        writer.close()
     }
 
     override fun outputDirName(namespace: String) = "assets/$namespace/lang"
