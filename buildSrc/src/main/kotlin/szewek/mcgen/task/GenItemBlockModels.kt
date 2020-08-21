@@ -22,15 +22,15 @@ open class GenItemBlockModels : AbstractProcessTask() {
 
     override suspend fun doProcessFile(namespace: String, file: File, outputDir: File) {
         val modelJson = file.readJson().asJsonArray
-        val outObj = JsonObject()
         modelJson.map { e -> scope.launch(Dispatchers.IO) {
             val v = e.asString
-            outObj.addProperty("parent", "$namespace:block/$v")
             val f = File(outputDir, "$v.json")
             f.writer().use {
                 val jw = JsonWriter(it)
                 jw.isLenient = true
-                runCatching { Streams.write(outObj, jw) }
+                jw.beginObject()
+                jw.name("parent").value("$namespace:block/$v")
+                jw.endObject()
             }
         } }.joinAll()
     }
