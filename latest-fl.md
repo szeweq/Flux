@@ -1,4 +1,6 @@
-# Flux Library (Version 4.0.0)
+# Flux Library (Version 4.1.0)
+
+Not compatible with Flux 5.0.0
 
 ### Changes
-- First release for Minecraft 1.16.1
+- Changed parameters in drawing methods (using single `GuiRect` instead of `x, y, width|x2, height|y2`)
