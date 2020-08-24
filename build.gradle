@@ -26,7 +26,7 @@ String core_version = project.core_version
 
 String mc_version = "1.16.1"
 String jei_version = "7.0.1.9"
-String patchouli_version = "1.16-39"
+String patchouli_version = "1.16-40"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
