@@ -22,7 +22,7 @@ import java.util.List;
 public class FarmerTile extends BlockInteractingTile {
 
 	public FarmerTile() {
-		super(F.T.FARMER, new SpatialWalker.NonStop(5, 0, 5), FluxCfg.COMMON.farmerEU);
+		super(F.T.FARMER, new SpatialWalker.NonStop(5, 0, 5), FluxCfg.ENERGY.farmer);
 
 		walker.startFrom(true, true, true);
 		walker.putActions(Action.X_POS, Action.Z_POS, Action.LOOP);

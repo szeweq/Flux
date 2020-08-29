@@ -10,6 +10,8 @@ import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
 import java.util.function.Supplier;
 
@@ -33,12 +35,14 @@ public class FluxPackets {
 	}
 
 	public static void updateData2Server(ContainerType<?> ctype, int window, int id, int val) {
-		CHANNEL.sendToServer(new UpdateData(Registry.MENU.getId(ctype), window, id, val));
+		CHANNEL.sendToServer(UpdateData.of(ctype, window, id, val));
 	}
 
 	private FluxPackets() {}
 
 	public static class UpdateData {
+		static final ForgeRegistry<ContainerType<?>> reg = (ForgeRegistry<ContainerType<?>>) ForgeRegistries.CONTAINERS;
+
 		private final int ctype, window, id, value;
 
 
@@ -47,6 +51,11 @@ public class FluxPackets {
 			this.window = window;
 			this.id = id;
 			this.value = value;
+		}
+
+		public static UpdateData of(ContainerType<?> ctype, int window, int id, int val) {
+			final int cid = reg.getID(ctype);
+			return new UpdateData(cid, window, id, val);
 		}
 
 		public final ContainerType<?> getType() {

@@ -12,7 +12,7 @@ import java.util.List;
 public class ItemAbsorberTile extends EntityInteractingTile {
 
 	public ItemAbsorberTile() {
-		super(F.T.ITEM_ABSORBER, FluxCfg.COMMON.itemAbsorberEU);
+		super(F.T.ITEM_ABSORBER, FluxCfg.ENERGY.itemAbsorber);
 	}
 
 	@Override

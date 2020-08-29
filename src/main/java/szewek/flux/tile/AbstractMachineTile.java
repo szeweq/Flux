@@ -85,7 +85,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		recipeType = recipeTypeIn;
 		this.ioSize = ioSize;
 		inv = new MachineInventory(ioSize, 1);
-		energyUse = FluxCfg.COMMON.basicMachineEU.get();
+		energyUse = FluxCfg.ENERGY.basicMachine.get();
 		FluxCfg.addListener(this::updateValues);
 	}
 
@@ -288,7 +288,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	public void updateValues() {
-		energyUse = FluxCfg.COMMON.basicMachineEU.get();
+		energyUse = FluxCfg.ENERGY.basicMachine.get();
 		process.speed = 100;
 		ItemStack chipStack = inv.get(ioSize.in + ioSize.out);
 		if (!chipStack.isEmpty() && chipStack.getItem() instanceof ChipItem) {

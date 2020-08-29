@@ -45,7 +45,7 @@ public final class Flux {
 
 	public Flux() {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FluxCfg.commonSpec);
+		FluxCfg.addConfig(ModLoadingContext.get());
 		modEventBus.register(FluxCfg.class);
 		modEventBus.addListener(Flux::setup);
 		modEventBus.register(F.class);

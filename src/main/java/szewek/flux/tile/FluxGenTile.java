@@ -192,7 +192,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		int f = ForgeHooks.getBurnTime(fuel);
 		if (f == 0) return 0;
 		ItemStack catalyst = items.get(1);
-		energyGen = FluxCfg.COMMON.fluxGenBaseEnergy.get();
+		energyGen = FluxCfg.ENERGY.fluxGenBaseEnergy.get();
 		IntPair genCat = FluxGenValues.CATALYSTS.get(catalyst.getItem());
 		if (genCat.r <= catalyst.getCount()) {
 			energyGen *= genCat.l;

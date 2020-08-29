@@ -10,7 +10,7 @@ import java.util.List;
 public class ButcherTile extends EntityInteractingTile {
 
 	public ButcherTile() {
-		super(F.T.BUTCHER, FluxCfg.COMMON.butcherEU);
+		super(F.T.BUTCHER, FluxCfg.ENERGY.butcher);
 	}
 
 	@Override

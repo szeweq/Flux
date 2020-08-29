@@ -11,7 +11,7 @@ import java.util.List;
 public class MobPounderTile extends EntityInteractingTile {
 
 	public MobPounderTile() {
-		super(F.T.MOB_POUNDER, FluxCfg.COMMON.mobPounderEU);
+		super(F.T.MOB_POUNDER, FluxCfg.ENERGY.mobPounder);
 	}
 
 	@Override
