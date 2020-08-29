@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[30,)"
 issueTrackerURL="https://github.com/Szewek/Flux/issues"
+license="MIT"
 
 [[mods]]
  modId="flux"
