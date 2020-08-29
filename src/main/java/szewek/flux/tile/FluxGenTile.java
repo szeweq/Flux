@@ -40,15 +40,17 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FluxGenTile extends LockableTileEntity implements ITickableTileEntity {
 	public static final int fluidCap = 4000;
 	private final EnergyCache energyCache = new EnergyCache(this);
 	private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
-	private final Tank tank = new Tank();
+	private final AtomicBoolean isDirty = new AtomicBoolean();
+	private final Tank tank = new Tank(isDirty);
 	private final Energy energy = new Energy();
 	private int tickCount, workTicks, maxWork, energyGen, workSpeed;
-	private boolean isReady, isDirty;
+	private boolean isReady;
 	public boolean receivedRedstone;
 	protected final IIntArray tileData = FieldIntArray.of(this, new String[]{"workTicks", "maxWork", "energyGen", "workSpeed"}, new FieldIntArray.Extended() {
 		@Override
@@ -182,7 +184,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			tickCount = 0;
 			energy.share(energyCache);
 		}
-		if (isDirty) markDirty();
+		if (isDirty.getAndSet(false)) markDirty();
 	}
 
 	private int updateWork() {
@@ -209,7 +211,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			workSpeed = 1;
 		}
 		fuel.grow(-1);
-		isDirty = true;
+		isDirty.set(true);
 		return f;
 	}
 
@@ -380,9 +382,14 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		}
 	}
 
-	class Tank implements IFluidHandler, NonNullSupplier<IFluidHandler> {
+	static class Tank implements IFluidHandler, NonNullSupplier<IFluidHandler> {
 		private final FluidStack[] fluids = {FluidStack.EMPTY, FluidStack.EMPTY};
 		private final LazyOptional<IFluidHandler> lazy = LazyOptional.of(this);
+		private final AtomicBoolean isDirty;
+
+		Tank(AtomicBoolean dirty) {
+			isDirty = dirty;
+		}
 
 		private int getData(int i) {
 			if (i >= 4) return 0;
@@ -451,7 +458,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 				} else {
 					fs.grow(l);
 				}
-				isDirty = true;
+				isDirty.set(true);
 			}
 			return l;
 		}
