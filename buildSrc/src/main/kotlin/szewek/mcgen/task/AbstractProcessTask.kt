@@ -41,7 +41,8 @@ abstract class AbstractProcessTask : DefaultTask(), FileVisitor {
     override fun visitDir(dirDetails: FileVisitDetails?) {}
 
     override fun visitFile(fvd: FileVisitDetails) {
-        val namespace = fvd.relativePath.split("/", limit = 3)[1]
+        val namespace = fvd.relativePath.segments[1] // fvd.relativePath.split("/", limit = 3)[1]
+        println("NS $namespace")
         val outputDir = File(genResourcesDir, outputDirName(namespace))
         if (!outputDir.isDirectory && !outputDir.mkdirs())
             throw IOException("Could not create a directory: $outputDir")

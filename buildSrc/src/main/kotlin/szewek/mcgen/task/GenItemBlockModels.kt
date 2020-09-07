@@ -1,17 +1,11 @@
 package szewek.mcgen.task
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.internal.Streams
 import com.google.gson.stream.JsonWriter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import org.gradle.api.tasks.util.PatternFilterable
 import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
 
 open class GenItemBlockModels : AbstractProcessTask() {
     override fun filter(pf: PatternFilterable) {
