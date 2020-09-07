@@ -112,13 +112,13 @@ object Templates {
         out("${item}_dust_grinding_ore", fluxMachine("grinding", 2 of "#forge:dusts/$item") {
             tag("forge:ores/$item")
         })
-        out("${item}_dust_grinding_grit", fluxMachine("grinding", 1 of "forge:dusts/$item") {
+        out("${item}_dust_grinding_grit", fluxMachine("grinding", 1 of "#forge:dusts/$item") {
             tag("forge:grits/$item")
         })
-        out("${item}_dust_grinding_ingot", fluxMachine("grinding", 1 of "forge:dusts/$item") {
+        out("${item}_dust_grinding_ingot", fluxMachine("grinding", 1 of "#forge:dusts/$item") {
             tag("forge:ingots/$item")
         })
-        out("${item}_grit_washing_ore", fluxMachine("washing", 3 of "forge:grits/$item") {
+        out("${item}_grit_washing_ore", fluxMachine("washing", 3 of "#forge:grits/$item") {
             tag("forge:ores/$item")
         })
     }
