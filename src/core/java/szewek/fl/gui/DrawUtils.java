@@ -36,10 +36,10 @@ public final class DrawUtils {
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vb.pos(matrix, rect.x1, rect.y2, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+		vb.vertex(matrix, rect.x1, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+		vb.vertex(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+		vb.vertex(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+		vb.vertex(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
 		tes.draw();
 	}
 
@@ -64,15 +64,15 @@ public final class DrawUtils {
 		BufferBuilder vb = tes.getBuffer();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		if (rect.x2 - rect.x1 > rect.y2 - rect.y1) {
-			vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, rect.x1, rect.y1, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y1, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
 		} else {
-			vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, rect.x2, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y2, z).color(zr, zg, zb, za).endVertex();
 		}
 		tes.draw();
 	}
@@ -121,10 +121,10 @@ public final class DrawUtils {
 					vMax = vMax - (maskTop / 16.0f * (vMax - vMin));
 
 					buf.begin(7, DefaultVertexFormats.POSITION_TEX);
-					buf.pos(matrix, tx, ty + 16, z).tex(uMin, vMax).endVertex();
-					buf.pos(matrix, tx + 16 - maskRight, ty + 16, z).tex(uMax, vMax).endVertex();
-					buf.pos(matrix, tx + 16 - maskRight, ty + maskTop, z).tex(uMax, vMin).endVertex();
-					buf.pos(matrix, tx, ty + maskTop, z).tex(uMin, vMin).endVertex();
+					buf.vertex(matrix, tx, ty + 16, z).texture(uMin, vMax).endVertex();
+					buf.vertex(matrix, tx + 16 - maskRight, ty + 16, z).texture(uMax, vMax).endVertex();
+					buf.vertex(matrix, tx + 16 - maskRight, ty + maskTop, z).texture(uMax, vMin).endVertex();
+					buf.vertex(matrix, tx, ty + maskTop, z).texture(uMin, vMin).endVertex();
 					tes.draw();
 				}
 			}
@@ -144,8 +144,8 @@ public final class DrawUtils {
 
 		ResourceLocation still = fl.getAttributes().getStillTexture();
 		Minecraft minecraft = Minecraft.getInstance();
-		TextureAtlasSprite tas = minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
-		minecraft.textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+		TextureAtlasSprite tas = minecraft.getSpriteAtlas(PlayerContainer.BLOCK_ATLAS_TEXTURE).apply(still);
+		minecraft.textureManager.bindTexture(PlayerContainer.BLOCK_ATLAS_TEXTURE);
 		glColorInt(fl.getAttributes().getColor(fs));
 		return tas;
 	}

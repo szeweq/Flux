@@ -27,8 +27,8 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void fromTag(BlockState blockState, CompoundNBT compound) {
+		super.fromTag(blockState, compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 500000);
 	}
 

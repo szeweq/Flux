@@ -54,7 +54,7 @@ public final class RecipeCompat {
 		Set<IRecipeType<?>> result = new LinkedHashSet<>();
 		result.add(rtype);
 		for (String compat : compats) {
-			Optional<IRecipeType<?>> value = Registry.RECIPE_TYPE.getValue(new ResourceLocation(compat));
+			Optional<IRecipeType<?>> value = Registry.RECIPE_TYPE.getOrEmpty(new ResourceLocation(compat));  //.getValue(new ResourceLocation(compat));
 			value.ifPresent(result::add);
 		}
 		compatMap.put(rtype, result);

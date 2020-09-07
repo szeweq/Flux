@@ -17,8 +17,8 @@ abstract class EntityInteractingTile extends PoweredTile {
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void fromTag(BlockState blockState, CompoundNBT compound) {
+		super.fromTag(blockState, compound);
 		int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
 	}
@@ -31,9 +31,11 @@ abstract class EntityInteractingTile extends PoweredTile {
 		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
 	}
 
+
+
 	@Override
-	public void setWorldAndPos(World w, BlockPos posIn) {
-		super.setWorldAndPos(w, posIn);
+	public void setLocation(World w, BlockPos posIn) {
+		super.setLocation(w, posIn);
 		int x = posIn.getX(), y = posIn.getY(), z = posIn.getZ();
 		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
 	}

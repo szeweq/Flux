@@ -27,7 +27,7 @@ public class GuiBar {
 	}
 
 	public void draw(MatrixStack matrixStack, float fill, float z) {
-		final Matrix4f matrix = matrixStack.getLast().getMatrix();
+		final Matrix4f matrix = matrixStack.peek().getModel(); //.getLast().getMatrix();
 		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.disableAlphaTest();

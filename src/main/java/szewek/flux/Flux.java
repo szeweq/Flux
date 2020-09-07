@@ -8,13 +8,13 @@ import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -24,17 +24,15 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.registries.ForgeRegistries;
+import szewek.flux.data.FluxData;
 import szewek.flux.data.Gifts;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.network.FluxPackets;
 import szewek.flux.signal.MinecartSignals;
-import szewek.flux.data.FluxData;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
@@ -56,13 +54,8 @@ public final class Flux {
 		FluxPackets.init();
 
 		if (!FluxCfg.COMMON.disableOres.get()) {
-			for (Biome biome : ForgeRegistries.BIOMES.getValues()) {
-				Biome.Category cat = biome.getCategory();
-				if (cat != Biome.Category.NETHER && cat != Biome.Category.THEEND) {
-					addOreGen(biome, Metals.COPPER, new CountRangeConfig(20, 0, 0, 96));
-					addOreGen(biome, Metals.TIN, new CountRangeConfig(20, 0, 0, 72));
-				}
-			}
+			addOreGen(Metals.COPPER, new TopSolidRangeConfig(0, 0, 96));
+			addOreGen(Metals.TIN, new TopSolidRangeConfig(0, 0, 72));
 		}
 	}
 
@@ -103,7 +96,7 @@ public final class Flux {
 			if (!player.world.isRemote) {
 				VersionChecker.CheckResult ver = VersionChecker.getResult(modInfo);
 				if (ver.target != null && (ver.status == VersionChecker.Status.OUTDATED || ver.status == VersionChecker.Status.BETA_OUTDATED)) {
-					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()), Util.DUMMY_UUID);
+					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()), Util.NIL_UUID);
 				}
 				Gifts.makeGiftsForPlayer((ServerPlayerEntity) player);
 			}
@@ -115,14 +108,14 @@ public final class Flux {
 		}
 	}
 
-	private static void addOreGen(Biome biome, Metal metal, CountRangeConfig cfg) {
-		biome.addFeature(
-				GenerationStage.Decoration.UNDERGROUND_ORES,
-				Feature.ORE.withConfiguration(new OreFeatureConfig(
-						OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+	private static void addOreGen(Metal metal, TopSolidRangeConfig cfg) {
+		Registry.register(
+				WorldGenRegistries.CONFIGURED_FEATURE,
+				new ResourceLocation(MODID, "ore_" + metal.metalName),
+				Feature.ORE.configure(new OreFeatureConfig(
+						OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
 						F.B.ORES.get(metal).getDefaultState(),
 						7
-				)).withPlacement(Placement.COUNT_RANGE.configure(cfg))
-		);
+				)).decorate(Placement.RANGE.configure(cfg)));
 	}
 }

@@ -39,31 +39,31 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		renderBackground(matrixStack, 0);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		assert minecraft != null;
-		minecraft.getTextureManager().bindTexture(BG_TEX);
-		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+		assert client != null;
+		client.getTextureManager().bindTexture(BG_TEX);
+		drawTexture(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
 		matrixStack.push();
 		matrixStack.translate(guiLeft, guiTop, 0.0F);
-		workFillBar.draw(matrixStack, container.getWorkFill(), getBlitOffset());
-		energyFillBar.draw(matrixStack, container.getEnergyFill(), getBlitOffset());
+		workFillBar.draw(matrixStack, container.getWorkFill(), getZOffset());
+		energyFillBar.draw(matrixStack, container.getEnergyFill(), getZOffset());
 		matrixStack.pop();
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
 		final String s = title.getString();
-		font.drawString(matrixStack, s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
-		font.drawString(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
+		textRenderer.draw(matrixStack, s, (float)((xSize - textRenderer.getStringWidth(s)) / 2), 5.0F, 0x404040);
+		textRenderer.draw(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
-		final Matrix4f matrix = matrixStack.getLast().getMatrix();
-		DrawUtils.drawFluidStack(matrix, hoverHotFluid, container.getHotFluid(), 4000, getBlitOffset());
-		DrawUtils.drawFluidStack(matrix, hoverColdFluid, container.getColdFluid(), 4000, getBlitOffset());
+		final Matrix4f matrix = matrixStack.peek().getModel();//.getLast().getMatrix();
+		DrawUtils.drawFluidStack(matrix, hoverHotFluid, container.getHotFluid(), 4000, getZOffset());
+		DrawUtils.drawFluidStack(matrix, hoverColdFluid, container.getColdFluid(), 4000, getZOffset());
 		tooltips.checkCoords(matrixStack, mx, my);
-		func_230459_a_(matrixStack, mx, my);
+		drawMouseoverTooltip(matrixStack, mx, my);
 	}
 
 	@Override

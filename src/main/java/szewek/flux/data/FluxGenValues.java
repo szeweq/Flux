@@ -10,8 +10,8 @@ import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagCollection;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -94,8 +94,8 @@ public class FluxGenValues implements IFutureReloadListener {
 
 	private static void collectValues(Triple<Collection<Entry>, Collection<Entry>, Collection<Entry>> tr) {
 		CATALYSTS.convert(tr.getLeft(), ForgeRegistries.ITEMS, ItemTags.getCollection());
-		HOT_FLUIDS.convert(tr.getMiddle(), ForgeRegistries.FLUIDS, FluidTags.getCollection());
-		COLD_FLUIDS.convert(tr.getRight(), ForgeRegistries.FLUIDS, FluidTags.getCollection());
+		HOT_FLUIDS.convert(tr.getMiddle(), ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());//.getCollection()
+		COLD_FLUIDS.convert(tr.getRight(), ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());
 	}
 
 	public static class ValMap<T extends IForgeRegistryEntry<T>> {
@@ -113,7 +113,7 @@ public class FluxGenValues implements IFutureReloadListener {
 			return Collections.unmodifiableMap(map);
 		}
 
-		void convert(Collection<FluxGenValues.Entry> entries, IForgeRegistry<T> reg, TagCollection<T> tags) {
+		void convert(Collection<FluxGenValues.Entry> entries, IForgeRegistry<T> reg, ITagCollection<T> tags) {
 			map.clear();
 			for (FluxGenValues.Entry e : entries) {
 				if (!e.conv.convert(map::put, reg, tags)) {
@@ -135,18 +135,18 @@ public class FluxGenValues implements IFutureReloadListener {
 			conv = tag ? this::tag : this::item;
 		}
 
-		private <T extends IForgeRegistryEntry<T>> boolean tag(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, TagCollection<T> tags) {
+		private <T extends IForgeRegistryEntry<T>> boolean tag(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, ITagCollection<T> tags) {
 			ITag<T> tag = tags.get(this.loc);
 			if (tag == null) {
 				return false;
 			}
-			for (T t : tag.getAllElements()) {
+			for (T t : tag.values()) { //.getAllElements()
 				fn.accept(t, this.values);
 			}
 			return true;
 		}
 
-		private <T extends IForgeRegistryEntry<T>> boolean item(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, TagCollection<T> tags) {
+		private <T extends IForgeRegistryEntry<T>> boolean item(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, ITagCollection<T> tags) {
 			T t = reg.getValue(this.loc);
 			if (t == null) {
 				return false;
@@ -157,6 +157,6 @@ public class FluxGenValues implements IFutureReloadListener {
 	}
 
 	interface EntryConverter {
-		<T extends IForgeRegistryEntry<T>> boolean convert(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, TagCollection<T> tags);
+		<T extends IForgeRegistryEntry<T>> boolean convert(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, ITagCollection<T> tags);
 	}
 }

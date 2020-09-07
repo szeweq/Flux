@@ -20,8 +20,8 @@ public final class RecipeTagCompat {
 	public static ItemStack findItemTag(JsonObject json) {
 		String tagName = JSONUtils.getString(json, "tag");
 		ITag<Item> tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
-		if (tag != null && !tag.getAllElements().isEmpty()) {
-			Item foundItem = itemFromTagCompat(tag.getAllElements());
+		if (tag != null && !tag.values().isEmpty()) {
+			Item foundItem = itemFromTagCompat(tag.values());
 			if (foundItem != null) {
 				return new ItemStack(foundItem, JSONUtils.getInt(json, "count", 1));
 			}

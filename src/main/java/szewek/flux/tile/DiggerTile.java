@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import szewek.fl.util.ItemsUtil;
 import szewek.fl.util.SpatialWalker;
@@ -45,7 +46,7 @@ public final class DiggerTile extends BlockInteractingTile {
 				BlockState bs = world.getBlockState(bp);
 				Block b = bs.getBlock();
 				if (!F.Tags.DIGGER_SKIP.contains(b) && !b.hasTileEntity(bs)) {
-					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)world).withParameter(LootParameters.POSITION, pos).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
+					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)world).withParameter(LootParameters.ORIGIN, Vector3d.ofCenter(pos)).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
 					if (!drops.isEmpty()) {
 						world.removeBlock(bp, false);
 						ItemsUtil.trySendingItems(drops, world, pos);

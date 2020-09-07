@@ -25,7 +25,7 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 		this.recipeType = recipeType;
 		filterName = new TranslationTextComponent("gui.flux.recipebook.toggleRecipes." + name);
 	}
-
+	/*
 	@Override
 	protected boolean func_212962_b() {
 		return recipeBook.isFilteringCraftable();
@@ -46,8 +46,10 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 		recipeBook.setGuiOpen(v);
 	}
 
+	 */
+
 	@Override
-	protected ITextComponent func_230479_g_() {
+	protected ITextComponent getToggleCraftableButtonText() {
 		return filterName;
 	}
 

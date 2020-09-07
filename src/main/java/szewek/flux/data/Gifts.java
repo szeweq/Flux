@@ -72,11 +72,11 @@ public class Gifts implements IFutureReloadListener {
 		ListNBT received = data.getList("receivedGifts", 8);
 		boolean change = false;
 		LootContext lootCtx = new LootContext.Builder((ServerWorld) player.world)
-				.withParameter(LootParameters.POSITION, player.getPosition())
+				.withParameter(LootParameters.ORIGIN, player.getPositionVec())
 				.withParameter(LootParameters.THIS_ENTITY, player)
 				.build(LootParameterSets.GIFT);
 		for (ResourceLocation loc : GIFT_LOOT_TABLES) {
-			final StringNBT locNBT = StringNBT.valueOf(loc.toString());
+			final StringNBT locNBT = StringNBT.of(loc.toString());
 			if (!received.contains(locNBT)) {
 				produceGifts(player, lootCtx, loc);
 				change = true;
@@ -84,7 +84,7 @@ public class Gifts implements IFutureReloadListener {
 			}
 		}
 		if (change) {
-			player.sendMessage(RECEIVED_GIFT, Util.DUMMY_UUID);
+			player.sendMessage(RECEIVED_GIFT, Util.NIL_UUID);
 			data.put("receivedGifts", received);
 		}
 	}

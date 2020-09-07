@@ -53,7 +53,7 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 		container.addListener(listener);
 		int i = (xSize - 100) / 2;
 		modeBtn = new Button(guiLeft + i, guiTop + 44, 100, 20, new TranslationTextComponent("gui.flux.signal_controller.mode" + container.getMode()), this);
-		numberInput = new TextFieldWidget(font, i, 28, 100, 14, new TranslationTextComponent("gui.flux.type_channel"));
+		numberInput = new TextFieldWidget(textRenderer, i, 28, 100, 14, new TranslationTextComponent("gui.flux.type_channel"));
 		numberInput.setMaxStringLength(3);
 		addButton(modeBtn);
 		children.add(numberInput);
@@ -72,30 +72,30 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		renderBackground(matrixStack, 0);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		assert minecraft != null;
-		minecraft.getTextureManager().bindTexture(BG_TEX);
-		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+		assert client != null;
+		client.getTextureManager().bindTexture(BG_TEX);
+		drawTexture(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
 		String s = title.getString();
-		font.drawString(matrixStack, s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
+		textRenderer.draw(matrixStack, s, (float)((xSize - textRenderer.getStringWidth(s)) / 2), 5.0F, 0x404040);
 		s = I18n.format("gui.flux.type_channel");
-		font.drawString(matrixStack, s, (float)((xSize - font.getStringWidth(s)) / 2), 16.0F, 0x404040);
-		float z = getBlitOffset();
+		textRenderer.draw(matrixStack, s, (float)((xSize - textRenderer.getStringWidth(s)) / 2), 16.0F, 0x404040);
+		float z = getZOffset();
 		numberInput.render(matrixStack, mouseX, mouseY, z);
 
-		font.drawString(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
+		textRenderer.draw(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
 	}
 
 	@Override
 	public boolean charTyped(char c, int k) {
 		boolean b = super.charTyped(c, k);
-		if (getListener() == numberInput) {
+		if (getFocused() == numberInput) {
 			int st;
 			String txt = numberInput.getText();
 			try {

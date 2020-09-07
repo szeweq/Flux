@@ -117,7 +117,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		final Toolset[] toolsets = {F.I.BRONZE_TOOLS, F.I.STEEL_TOOLS};
 		final List<Object> recipes = new ArrayList<>();
 		for (Toolset tools : toolsets) {
-			List<ItemStack> repairItems = tools.tier.repairMaterialTag.getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());
+			List<ItemStack> repairItems = tools.tier.repairMaterialTag.values().stream().map(ItemStack::new).collect(Collectors.toList());
 			if (repairItems.isEmpty()) {
 				repairItems = Collections.singletonList(new ItemStack(tools.tier.material));
 			}

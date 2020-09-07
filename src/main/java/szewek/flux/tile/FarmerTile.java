@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
@@ -81,7 +82,7 @@ public class FarmerTile extends BlockInteractingTile {
 
 	private void tryHarvest(BlockState bs, BlockPos bp, @Nullable BlockState nbs) {
 		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld) world)
-				.withParameter(LootParameters.POSITION, bp)
+				.withParameter(LootParameters.ORIGIN, Vector3d.ofCenter(bp))
 				.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
 		);
 		if (!drops.isEmpty()) {

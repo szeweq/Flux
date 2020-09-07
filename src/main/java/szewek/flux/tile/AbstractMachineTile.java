@@ -90,8 +90,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void fromTag(BlockState blockState, CompoundNBT compound) {
+		super.fromTag(blockState, compound);
 		inv.readNBT(compound);
 		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
 		process.current = compound.getInt("Process");
@@ -318,7 +318,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			count -= x;
 			player.world.addEntity(new ExperienceOrbEntity(
 					player.world,
-					player.getPosX(), player.getPosY() + 0.5D, player.getPosZ() + 0.5D,
+					player.getX(), player.getY() + 0.5D, player.getZ() + 0.5D,
 					x
 			));
 		}

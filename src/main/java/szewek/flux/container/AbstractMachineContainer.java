@@ -15,6 +15,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
@@ -83,7 +84,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	}
 
 	@Override
-	public void fillStackedContents(RecipeItemHelper helper) {
+	public void func_201771_a(RecipeItemHelper helper) {
 		if (machineInventory instanceof IRecipeHelperPopulator) {
 			((IRecipeHelperPopulator) machineInventory).fillStackedContents(helper);
 		}
@@ -174,8 +175,14 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	}
 
 	@Override
+	// TODO Specify better catrgory
+	public RecipeBookCategory getCategory() {
+		return RecipeBookCategory.CRAFTING;
+	}
+
+	@Override
 	public List<RecipeBookCategories> getRecipeBookCategories() {
-		return Arrays.asList(RecipeBookCategories.SEARCH, RecipeBookCategories.CRAFTING_EQUIPMENT, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS, RecipeBookCategories.CRAFTING_MISC, RecipeBookCategories.CRAFTING_REDSTONE);
+		return Arrays.asList(RecipeBookCategories.CRAFTING_SEARCH, RecipeBookCategories.CRAFTING_EQUIPMENT, RecipeBookCategories.CRAFTING_BUILDING_BLOCKS, RecipeBookCategories.CRAFTING_MISC, RecipeBookCategories.CRAFTING_REDSTONE);
 	}
 
 	@OnlyIn(Dist.CLIENT)

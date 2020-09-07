@@ -20,14 +20,14 @@ It comes with useful machines that make item processing even more interesting.
 [[dependencies.flux]]
  modId="forge"
  mandatory=true
- versionRange="[32,)"
+ versionRange="[33,)"
  ordering="NONE"
  side="BOTH"
 
 [[dependencies.flux]]
  modId="minecraft"
  mandatory=true
- versionRange="[1.16.1]"
+ versionRange="[1.16.2]"
  ordering="NONE"
  side="BOTH"
 

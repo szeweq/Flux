@@ -50,8 +50,8 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	}
 
 	@Override
-	public void setWorldAndPos(World world, BlockPos pos) {
-		super.setWorldAndPos(world, pos);
+	public void setLocation(World world, BlockPos pos) {
+		super.setLocation(world, pos);
 		updateBox();
 	}
 

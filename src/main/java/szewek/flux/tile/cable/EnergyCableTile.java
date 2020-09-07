@@ -23,8 +23,8 @@ public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage> {
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void fromTag(BlockState blockState, CompoundNBT compound) {
+		super.fromTag(blockState, compound);
 		energy.set(MathHelper.clamp(compound.getInt("E"), 0, 50000));
 	}
 

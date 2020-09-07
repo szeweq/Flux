@@ -60,7 +60,7 @@ public class InteractorRailBlock extends AbstractRailBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
+	public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
 		updateTile(worldIn, pos, state);
 	}
 
@@ -102,7 +102,8 @@ public class InteractorRailBlock extends AbstractRailBlock {
 			if (state.get(SHAPE).isAscending()) {
 				worldIn.notifyNeighborsOfStateChange(pos.up(), this);
 			}
-			worldIn.markBlockRangeForRenderUpdate(pos, state, newState);
+			worldIn.scheduleBlockRerenderIfNeeded(pos, state, newState);
+			//worldIn.markBlockRangeForRenderUpdate(pos, state, newState);
 		}
 
 	}
