@@ -18,6 +18,7 @@ import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,6 +30,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forgespi.language.IModInfo;
 import szewek.flux.data.FluxData;
+import szewek.flux.data.FluxGenValues;
 import szewek.flux.data.Gifts;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.network.FluxPackets;
@@ -105,6 +107,11 @@ public final class Flux {
 		@SubscribeEvent
 		public static void reloadData(final AddReloadListenerEvent e) {
 			FluxData.addReloadListeners(e);
+		}
+
+		@SubscribeEvent
+		public static void updateTags(final TagsUpdatedEvent e) {
+			FluxGenValues.updateValues();
 		}
 	}
 

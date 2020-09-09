@@ -93,13 +93,20 @@ public class FluxGenValues implements IFutureReloadListener {
 	}
 
 	private static void collectValues(Triple<Collection<Entry>, Collection<Entry>, Collection<Entry>> tr) {
-		CATALYSTS.convert(tr.getLeft(), ForgeRegistries.ITEMS, ItemTags.getCollection());
-		HOT_FLUIDS.convert(tr.getMiddle(), ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());//.getCollection()
-		COLD_FLUIDS.convert(tr.getRight(), ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());
+		CATALYSTS.update(tr.getLeft()).convert(ForgeRegistries.ITEMS, ItemTags.getCollection());
+		HOT_FLUIDS.update(tr.getMiddle()).convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());//.getCollection()
+		COLD_FLUIDS.update(tr.getRight()).convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());
+	}
+
+	public static void updateValues() {
+		CATALYSTS.convert(ForgeRegistries.ITEMS, ItemTags.getCollection());
+		HOT_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());//.getCollection()
+		COLD_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());
 	}
 
 	public static class ValMap<T extends IForgeRegistryEntry<T>> {
 		private final Map<T, IntPair> map = new HashMap<>();
+		private final List<FluxGenValues.Entry> cached = new ArrayList<>();
 
 		public boolean has(T t) {
 			return map.containsKey(t);
@@ -113,10 +120,16 @@ public class FluxGenValues implements IFutureReloadListener {
 			return Collections.unmodifiableMap(map);
 		}
 
-		void convert(Collection<FluxGenValues.Entry> entries, IForgeRegistry<T> reg, ITagCollection<T> tags) {
+		ValMap<T> update(Collection<FluxGenValues.Entry> entries) {
+			cached.clear();
+			cached.addAll(entries);
+			return this;
+		}
+
+		void convert(IForgeRegistry<T> reg, ITagCollection<T> tags) {
 			map.clear();
-			for (FluxGenValues.Entry e : entries) {
-				if (!e.conv.convert(map::put, reg, tags)) {
+			for (FluxGenValues.Entry e : cached) {
+				if (!e.convert(map::put, reg, tags)) {
 					LOGGER.error("Couldn't find tag/resource with name: {}", e.loc);
 				}
 			}
@@ -126,19 +139,22 @@ public class FluxGenValues implements IFutureReloadListener {
 	static class Entry {
 		final IntPair values;
 		final ResourceLocation loc;
-		final EntryConverter conv;
+		final boolean tag;
 
 		Entry(String key, IntPair values) {
 			this.values = values;
-			boolean tag = key.charAt(0) == '#';
+			tag = key.charAt(0) == '#';
 			loc = new ResourceLocation(tag ? key.substring(1): key);
-			conv = tag ? this::tag : this::item;
+		}
+
+		private <T extends IForgeRegistryEntry<T>> boolean convert(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, ITagCollection<T> tags) {
+			return tag ? tag(fn, reg, tags) : item(fn, reg, tags);
 		}
 
 		private <T extends IForgeRegistryEntry<T>> boolean tag(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, ITagCollection<T> tags) {
 			ITag<T> tag = tags.get(this.loc);
 			if (tag == null) {
-				return false;
+				return true; // IGNORE EMPTY TAGS
 			}
 			for (T t : tag.values()) { //.getAllElements()
 				fn.accept(t, this.values);
@@ -154,9 +170,5 @@ public class FluxGenValues implements IFutureReloadListener {
 			fn.accept(t, this.values);
 			return true;
 		}
-	}
-
-	interface EntryConverter {
-		<T extends IForgeRegistryEntry<T>> boolean convert(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, ITagCollection<T> tags);
 	}
 }
