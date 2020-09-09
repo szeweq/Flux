@@ -1,4 +1,4 @@
 {
   "name": "metalTags",
-  "args": ["iron", "gold", "copper", "tin", "bronze", "steel"]
+  "args": ["iron", "gold", "copper", "tin", "bronze", "steel", "netherite"]
 }

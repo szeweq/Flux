@@ -33,5 +33,11 @@
   "flux:glue": {
     "ingredients": [{"item": "flux:seal"}, {"tag": "flux:sticky"}],
     "count": 2
+  },
+  "flux:netherite_dust": {
+    "ingredients": [
+      {"type": "fl:counted", "item": "minecraft:netherite_scrap", "count": 3},
+      {"type": "fl:counted", "tag": "forge:dusts/gold", "count": 3}
+    ]
   }
 }

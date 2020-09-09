@@ -92,7 +92,7 @@ object Templates {
                 "#forge:dusts/${item}",
                 1 of (if (isVanilla(item)) "minecraft" else ns) + ":${item}_ingot"
         ))
-        out("${item}_gear", craftingShaped(
+        if (item != "netherite") out("${item}_gear", craftingShaped(
                 arrayOf("X#X", "# #", "X#X"),
                 mapOf("#" to "#forge:ingots/$item", "X" to "#forge:nuggets/$item"),
                 2 of "$ns:${item}_gear"
@@ -282,6 +282,6 @@ object Templates {
         })
     }
 
-    private fun isVanilla(name: String) = name == "iron" || name == "gold"
-    private fun isAlloy(name: String) = name == "bronze" || name == "steel"
+    private fun isVanilla(name: String) = name == "iron" || name == "gold" || name == "netherite"
+    private fun isAlloy(name: String) = name == "bronze" || name == "steel" || name == "netherite"
 }
