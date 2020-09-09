@@ -19,11 +19,8 @@ public class MobPounderTile extends EntityInteractingTile {
 		assert world != null;
 		List<LivingEntity> mobs = world.getEntitiesWithinAABB(LivingEntity.class, aabb, m -> m instanceof IMob);
 		for (LivingEntity mob : mobs) {
+			if (!energy.use(usage)) break;
 			mob.attackEntityFrom(DamageSource.GENERIC, 100);
-			energy -= usage;
-			if (energy < usage) {
-				break;
-			}
 		}
 	}
 }

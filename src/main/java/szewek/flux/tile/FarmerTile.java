@@ -33,14 +33,14 @@ public class FarmerTile extends BlockInteractingTile {
 	public void tick() {
 		assert world != null;
 		final int usage = energyUse.get();
-		if (!world.isRemote() && energy >= usage) {
+		if (!world.isRemote() && energy.getEnergyStored() >= usage) {
 			walker.walk();
 			BlockPos bp = walker.getPosOffset(pos);
 			BlockState bs = world.getBlockState(bp);
 			Block b = bs.getBlock();
 			if (b != F.B.FARMER) {
 				checkBlockForHarvest(b, bs, bp);
-				energy -= usage;
+				energy.use(usage);
 			}
 		}
 	}

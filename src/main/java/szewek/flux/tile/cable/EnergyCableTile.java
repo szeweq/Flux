@@ -9,6 +9,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import szewek.flux.energy.EnergyCache;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage> {
@@ -138,6 +139,7 @@ public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage> {
 			return true;
 		}
 
+		@Nonnull
 		@Override
 		public IEnergyStorage get() {
 			return this;

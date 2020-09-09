@@ -6,20 +6,17 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
-import szewek.fl.energy.IEnergyReceiver;
+import szewek.flux.tile.part.MachineEnergy;
 
 import javax.annotation.Nullable;
 
-public abstract class PoweredTile extends TileEntity implements IEnergyReceiver, ITickableTileEntity {
-	protected int energy;
+public abstract class PoweredTile extends TileEntity implements ITickableTileEntity {
+	protected final MachineEnergy energy = new MachineEnergy(500_000);
 	protected final ForgeConfigSpec.IntValue energyUse;
-	private final LazyOptional<IEnergyStorage> handler = LazyOptional.of(() -> this);
 
 	public PoweredTile(TileEntityType tileEntityTypeIn, ForgeConfigSpec.IntValue energyUse) {
 		super(tileEntityTypeIn);
@@ -29,44 +26,20 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 	@Override
 	public void fromTag(BlockState blockState, CompoundNBT compound) {
 		super.fromTag(blockState, compound);
-		energy = MathHelper.clamp(compound.getInt("E"), 0, 500000);
+		energy.readNBT(compound);
 	}
 
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		compound.putInt("E", energy);
+		energy.writeNBT(compound);
 		return compound;
-	}
-
-	@Override
-	public int getMaxEnergyStored() {
-		return 500000;
-	}
-
-	@Override
-	public int getEnergyStored() {
-		return energy;
-	}
-
-	@Override
-	public int receiveEnergy(int maxReceive, boolean simulate) {
-		int r = maxReceive;
-		if (r > 0) {
-			if (r > 500000 - energy) {
-				r = 500000 - energy;
-			}
-			if (!simulate) {
-				energy += r;
-			}
-		}
-		return r;
 	}
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!removed && CapabilityEnergy.ENERGY == cap) {
-			return handler.cast();
+			return energy.lazyCast();
 		} else {
 			return super.getCapability(cap, side);
 		}
@@ -75,6 +48,6 @@ public abstract class PoweredTile extends TileEntity implements IEnergyReceiver,
 	@Override
 	public void remove() {
 		super.remove();
-		handler.invalidate();
+		energy.invalidate();
 	}
 }

@@ -21,13 +21,10 @@ public class ItemAbsorberTile extends EntityInteractingTile {
 		List<ItemEntity> itemDrops = world.getEntitiesWithinAABB(ItemEntity.class, aabb);
 		List<ItemStack> list = new ArrayList<>();
 		for (ItemEntity itemDrop : itemDrops) {
+			if (!energy.use(usage)) break;
 			ItemStack item = itemDrop.getItem();
 			list.add(item);
 			itemDrop.remove();
-			energy -= usage;
-			if (energy < usage) {
-				break;
-			}
 		}
 		ItemsUtil.trySendingItems(list, world, pos);
 	}

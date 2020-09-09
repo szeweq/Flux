@@ -147,7 +147,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 		if (countdown == 0) {
 			countdown = 5;
 			final int usage = energyUse.get();
-			if (energy >= usage) {
+			if (energy.use(usage)) {
 				updateOffers();
 			} else {
 				offers.clear();

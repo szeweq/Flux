@@ -2,13 +2,13 @@ package szewek.flux.tile.cable;
 
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
+import szewek.flux.tile.part.SelfLazy;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class AbstractSide<T> implements NonNullSupplier<T> {
+public abstract class AbstractSide<T> extends SelfLazy<T> {
 	private final byte bit;
 	private final AtomicInteger sideFlag;
-	protected final LazyOptional<T> lazy = LazyOptional.of(this);
 
 	AbstractSide(int i, AtomicInteger sf) {
 		bit = (byte) (1 << i);

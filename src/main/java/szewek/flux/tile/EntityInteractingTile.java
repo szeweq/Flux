@@ -16,28 +16,28 @@ abstract class EntityInteractingTile extends PoweredTile {
 		super(tileEntityTypeIn, energyUse);
 	}
 
+	private void updateAABB(BlockPos bp) {
+		int x = bp.getX(), y = bp.getY(), z = bp.getZ();
+		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
+	}
+
 	@Override
 	public void fromTag(BlockState blockState, CompoundNBT compound) {
 		super.fromTag(blockState, compound);
-		int x = pos.getX(), y = pos.getY(), z = pos.getZ();
-		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
+		updateAABB(pos);
 	}
 
 
 	@Override
 	public void setPos(BlockPos posIn) {
 		super.setPos(posIn);
-		int x = posIn.getX(), y = posIn.getY(), z = posIn.getZ();
-		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
+		updateAABB(posIn);
 	}
-
-
 
 	@Override
 	public void setLocation(World w, BlockPos posIn) {
 		super.setLocation(w, posIn);
-		int x = posIn.getX(), y = posIn.getY(), z = posIn.getZ();
-		aabb = new AxisAlignedBB(x-4, y-4, z-4, x+4, y+4, z+4);
+		updateAABB(posIn);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ abstract class EntityInteractingTile extends PoweredTile {
 		} else if (aabb != null) {
 			cooldown = 20;
 			int usage = energyUse.get();
-			if (energy >= usage) {
+			if (energy.getEnergyStored() >= usage) {
 				interact(usage);
 			}
 		}

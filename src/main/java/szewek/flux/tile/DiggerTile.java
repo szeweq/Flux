@@ -32,7 +32,7 @@ public final class DiggerTile extends BlockInteractingTile {
 		if (!world.isRemote) {
 			boolean flag = !disabled;
 			final int usage = energyUse.get();
-			if (flag && energy >= usage) {
+			if (flag && energy.getEnergyStored() >= usage) {
 				walker.walk();
 				BlockPos bp = walker.getPosOffset(pos);
 
@@ -52,7 +52,7 @@ public final class DiggerTile extends BlockInteractingTile {
 						ItemsUtil.trySendingItems(drops, world, pos);
 					}
 				}
-				energy -= usage;
+				energy.use(usage);
 			}
 
 			if (flag != lastFlag) {

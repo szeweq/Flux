@@ -48,9 +48,10 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	protected final IIntArray machineData = new IIntArray() {
 		@Override
 		public int get(int index) {
+			if (index < 2) {
+				return energy.getEnergy16Bit(index == 1);
+			}
 			switch (index) {
-				case 0: return energy >> 16;
-				case 1: return energy & 0xFFFF;
 				case 2: return process.current;
 				case 3: return process.total;
 				case 4: return energyUse;
@@ -62,9 +63,11 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 
 		@Override
 		public void set(int index, int value) {
+			if (index < 2) {
+				energy.setEnergy16Bit(index == 1, value);
+				return;
+			}
 			switch (index) {
-				case 0: energy = (energy & 0xFFFF) + (value << 16); break;
-				case 1: energy = (energy & 0xFFFF0000) + value; break;
 				case 2: process.current = value; break;
 				case 3: process.total = value; break;
 				case 4: energyUse = value; break;
@@ -93,7 +96,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	public void fromTag(BlockState blockState, CompoundNBT compound) {
 		super.fromTag(blockState, compound);
 		inv.readNBT(compound);
-		energy = MathHelper.clamp(compound.getInt("E"), 0, 1000000);
+		energy.readNBT(compound);
 		process.current = compound.getInt("Process");
 		process.total = compound.getInt("Total");
 		int i = compound.getShort("RSize");
@@ -108,7 +111,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
-		compound.putInt("E", energy);
+		energy.writeNBT(compound);
 		compound.putInt("Process", process.current);
 		compound.putInt("Total", process.total);
 		inv.writeNBT(compound, true);
@@ -125,7 +128,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	@Override
 	protected void serverTick(World w) {
 		boolean workState = process.current > 0;
-		if (inv.inputHasStacks() && canProcess() && useEnergy()) {
+		if (inv.inputHasStacks() && canProcess() && energy.use(energyUse)) {
 			if (process.update()) {
 				produceResult();
 				isDirty = true;

@@ -45,7 +45,7 @@ public abstract class AbstractCableTile<T> extends TileEntity implements ITickab
 	}
 
 	public LazyOptional<T> getSide(Direction dir) {
-		return sides[dir.getIndex()].lazy;
+		return sides[dir.getIndex()].lazyCast();
 	}
 
 	protected abstract void updateSide(Direction dir);
@@ -54,7 +54,7 @@ public abstract class AbstractCableTile<T> extends TileEntity implements ITickab
 	@Override
 	public <X> LazyOptional<X> getCapability(@Nonnull Capability<X> cap, @Nullable Direction side) {
 		if (!removed && cap == this.cap && side != null) {
-			return sides[side.getIndex()].lazy.cast();
+			return sides[side.getIndex()].lazyCast();
 		} else {
 			return super.getCapability(cap, side);
 		}
@@ -64,7 +64,7 @@ public abstract class AbstractCableTile<T> extends TileEntity implements ITickab
 	public void remove() {
 		super.remove();
 		for (AbstractSide<T> s : sides) {
-			s.lazy.invalidate();
+			s.invalidate();
 		}
 	}
 }
