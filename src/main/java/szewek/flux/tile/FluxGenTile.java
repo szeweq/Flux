@@ -33,7 +33,6 @@ import szewek.flux.container.FluxGenContainer;
 import szewek.flux.data.FluxGenValues;
 import szewek.flux.energy.EnergyCache;
 import szewek.flux.tile.part.GeneratorEnergy;
-import szewek.flux.util.FieldIntArray;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,37 +47,28 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	private final AtomicBoolean isDirty = new AtomicBoolean();
 	private final Tank tank = new Tank(isDirty);
 	private final GeneratorEnergy energy = new GeneratorEnergy(1_000_000);
-	private int workTicks, maxWork, energyGen, workSpeed;
-	private boolean isReady;
-	public boolean receivedRedstone;
-	protected final IIntArray tileData = FieldIntArray.of(this, new String[]{"workTicks", "maxWork", "energyGen", "workSpeed"}, new FieldIntArray.Extended() {
-		@Override
-		public int translate(int i) {
-			return i - 6;
-		}
-
+	private final WorkValues work = new WorkValues(isDirty);
+	private int redstoneState = -1;
+	protected final IIntArray tileData = new IIntArray() {
 		@Override
 		public int get(int i) {
-			if (i < 2) {
-				return energy.getEnergy16Bit(i == 1);
-			}
-			return tank.getData(i - 2);
+			if (i < 2) return energy.getEnergy16Bit(i == 1);
+			if (i < 6) return tank.getData(i - 2);
+			return work.getData(i - 6);
 		}
 
 		@Override
 		public void set(int i, int v) {
-			if (i < 2) {
-				energy.setEnergy16Bit(i == 1, v);
-			} else {
-				tank.setData(i - 2, v);
-			}
+			if (i < 2) energy.setEnergy16Bit(i == 1, v);
+			else if (i < 6) tank.setData(i - 2, v);
+			else work.setData(i - 6, v);
 		}
 
 		@Override
 		public int size() {
 			return 10;
 		}
-	});
+	};
 
 	public FluxGenTile() {
 		super(F.T.FLUXGEN);
@@ -88,10 +78,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	public void fromTag(BlockState blockState, CompoundNBT compound) {
 		super.fromTag(blockState, compound);
 		energy.readNBT(compound);
-		workTicks = compound.getInt("WorkTicks");
-		maxWork = compound.getInt("MaxWork");
-		energyGen = compound.getInt("Gen");
-		workSpeed = compound.getInt("WorkSpeed");
+		work.readNBT(compound);
 		ItemStackHelper.loadAllItems(compound, items);
 		List<FluidStack> fluidList = NonNullList.withSize(tank.fluids.length, FluidStack.EMPTY);
 		FluidsUtil.loadAllFluids(compound, fluidList);
@@ -104,10 +91,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 		energy.writeNBT(compound);
-		compound.putInt("WorkTicks", workTicks);
-		compound.putInt("MaxWork", maxWork);
-		compound.putInt("Gen", energyGen);
-		compound.putInt("WorkSpeed", workSpeed);
+		work.writeNBT(compound);
 		ItemStackHelper.saveAllItems(compound, items);
 		FluidsUtil.saveAllFluids(compound, Arrays.asList(tank.fluids), true);
 
@@ -118,21 +102,14 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	public void tick() {
 		assert world != null;
 		if (world.isRemote) return;
-		if (!isReady) {
-			if (world.getRedstonePowerFromNeighbors(pos) > 0)
-				receivedRedstone = true;
-			isReady = true;
+		if (redstoneState == -1) {
+			redstoneState = world.getRedstonePowerFromNeighbors(pos) > 0 ? 1 : 0;
 		}
-		if (!receivedRedstone) {
-			if ((maxWork == 0 && ForgeHooks.getBurnTime(items.get(0)) > 0) || workTicks >= maxWork) {
-				workTicks = 0;
-				maxWork = updateWork();
-			} else if (energy.generate(energyGen)) {
-				workTicks += workSpeed;
-				if (maxWork <= workTicks) {
-					maxWork = 0;
-					energyGen = 0;
-				}
+		if (redstoneState == 0) {
+			if (work.canBegin(ForgeHooks.getBurnTime(items.get(0)))) {
+				work.update(items, tank.fluids);
+			} else if (energy.generate(work.gen)) {
+				work.tick();
 				markDirty();
 			}
 		}
@@ -140,32 +117,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		if (isDirty.getAndSet(false)) markDirty();
 	}
 
-	private int updateWork() {
-		ItemStack fuel = items.get(0);
-		int f = ForgeHooks.getBurnTime(fuel);
-		if (f == 0) return 0;
-		ItemStack catalyst = items.get(1);
-		energyGen = FluxCfg.ENERGY.fluxGenBaseEnergy.get();
-		IntPair genCat = FluxGenValues.CATALYSTS.get(catalyst.getItem());
-		if (genCat.r <= catalyst.getCount()) {
-			energyGen *= genCat.l;
-			if (genCat.r > 0) catalyst.grow(-genCat.r);
-		}
-		IntPair genHot = FluxGenValues.HOT_FLUIDS.get(tank.fluids[0].getFluid());
-		if (genHot.r <= tank.fluids[0].getAmount()) {
-			f *= genHot.l;
-			if (genHot.r > 0) tank.fluids[0].grow(-genHot.r);
-		}
-		IntPair genCold = FluxGenValues.COLD_FLUIDS.get(tank.fluids[1].getFluid());
-		if (genCold.r <= tank.fluids[1].getAmount()) {
-			workSpeed = genCold.l < genCat.l ? genCat.l - genCold.l : 1;
-			if (genCold.r > 0) tank.fluids[1].grow(-genCold.r);
-		} else {
-			workSpeed = 1;
-		}
-		fuel.grow(-1);
-		isDirty.set(true);
-		return f;
+	public void setRedstoneState(boolean state) {
+		redstoneState = state ? 1 : 0;
 	}
 
 	public Tank getTank() {
@@ -352,6 +305,92 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		@Override
 		public IFluidHandler get() {
 			return this;
+		}
+	}
+
+	static class WorkValues {
+		private final AtomicBoolean isDirty;
+		private int ticks, max, gen, speed;
+
+		WorkValues(AtomicBoolean isDirty) {
+			this.isDirty = isDirty;
+		}
+
+		private int getData(int i) {
+			switch (i) {
+				case 0: return ticks;
+				case 1: return max;
+				case 2: return gen;
+				case 3: return speed;
+			}
+			return 0;
+		}
+
+		private void setData(int i, int v) {
+			switch (i) {
+				case 0: ticks = v; break;
+				case 1: max = v; break;
+				case 2: gen = v; break;
+				case 3: speed = v; break;
+			}
+		}
+
+		private void readNBT(CompoundNBT nbt) {
+			ticks = nbt.getInt("WorkTicks");
+			max = nbt.getInt("MaxWork");
+			gen = nbt.getInt("Gen");
+			speed = nbt.getInt("WorkSpeed");
+		}
+
+		private void writeNBT(CompoundNBT nbt) {
+			nbt.putInt("WorkTicks", ticks);
+			nbt.putInt("MaxWork", max);
+			nbt.putInt("Gen", gen);
+			nbt.putInt("WorkSpeed", speed);
+		}
+
+		private boolean canBegin(int burnValue) {
+			return (max == 0 && burnValue > 0) || ticks >= max;
+		}
+
+		private void tick() {
+			ticks += speed;
+			if (max <= ticks) {
+				max = 0;
+				gen = 0;
+			}
+		}
+
+		private void update(NonNullList<ItemStack> items, FluidStack[] fluids) {
+			ticks = 0;
+			ItemStack fuel = items.get(0);
+			int f = ForgeHooks.getBurnTime(fuel);
+			if (f == 0) {
+				max = 0;
+				return;
+			}
+			ItemStack catalyst = items.get(1);
+			gen = FluxCfg.ENERGY.fluxGenBaseEnergy.get();
+			IntPair genCat = FluxGenValues.CATALYSTS.get(catalyst.getItem());
+			if (genCat.r <= catalyst.getCount()) {
+				gen *= genCat.l;
+				if (genCat.r > 0) catalyst.grow(-genCat.r);
+			}
+			IntPair genHot = FluxGenValues.HOT_FLUIDS.get(fluids[0].getFluid());
+			if (genHot.r <= fluids[0].getAmount()) {
+				f *= genHot.l;
+				if (genHot.r > 0) fluids[0].grow(-genHot.r);
+			}
+			IntPair genCold = FluxGenValues.COLD_FLUIDS.get(fluids[1].getFluid());
+			if (genCold.r <= fluids[1].getAmount()) {
+				speed = genCold.l < genCat.l ? genCat.l - genCold.l : 1;
+				if (genCold.r > 0) fluids[1].grow(-genCold.r);
+			} else {
+				speed = 1;
+			}
+			fuel.grow(-1);
+			max = f;
+			isDirty.set(true);
 		}
 	}
 }

@@ -69,10 +69,7 @@ public final class FluxGenBlock extends Block {
 	private void updateRedstoneState(World w, BlockPos pos) {
 		FluxGenTile tfg = (FluxGenTile)w.getTileEntity(pos);
 		if (tfg != null) {
-			boolean nb = w.getRedstonePowerFromNeighbors(pos) > 0;
-			if (tfg.receivedRedstone != nb) {
-				tfg.receivedRedstone = nb;
-			}
+			tfg.setRedstoneState(w.getRedstonePowerFromNeighbors(pos) > 0);
 		}
 
 	}
