@@ -20,6 +20,7 @@ public final class FL {
 
 	public FL() {
 		MinecraftForge.EVENT_BUS.register(Events.class);
+		FluxPlus.init();
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

@@ -37,8 +37,7 @@ public final class RecipeCompat {
 						return Optional.of(r);
 					}
 				} catch (RuntimeException e) {
-					LOGGER.warn("An exception occurred while checking recipe ({}). Sending report!", r.getId());
-					FluxPlus.reportRecipeCompatError(recipeType.toString(), r.getClass().getName(), e.getMessage());
+					LOGGER.warn("An exception occurred while checking recipe ({}) [type {}]", r.getId(), recipeType.toString());
 				}
 			}
 		}
@@ -63,7 +62,7 @@ public final class RecipeCompat {
 	public static ItemStack getCompatOutput(final IRecipe<?> recipe, IInventory inv) {
 		ItemStack stack = recipe.getRecipeOutput();
 		if (stack.isEmpty()) {
-			FluxPlus.reportRecipeCompatError(recipe.getType().toString(), recipe.getClass().getName(), "ItemStack is EMPTY");
+			LOGGER.warn("Returned ItemStack from [{}] is EMPTY", recipe.getType().toString());
 		}
 		return stack;
 	}

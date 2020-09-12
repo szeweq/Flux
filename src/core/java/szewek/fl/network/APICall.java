@@ -4,6 +4,8 @@ import com.google.common.io.ByteStreams;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -17,7 +19,12 @@ public class APICall {
 		this.conn = conn;
 	}
 
-	private void checkStatus() throws IOException {
+	public static APICall to(String url) throws IOException {
+		final HttpURLConnection huc = (HttpURLConnection) new URL(url).openConnection();
+		return new APICall(huc);
+	}
+
+	public void checkStatus() throws IOException {
 		int status = conn.getResponseCode();
 		if (status / 100 != 2) {
 			InputStream err = conn.getErrorStream();
@@ -63,11 +70,5 @@ public class APICall {
 		T t = FluxPlus.GSON.fromJson(r, type);
 		r.close();
 		return t;
-	}
-
-	public void voidResponse() throws IOException {
-		final Reader r = prepareResponse();
-		int c = r.read();
-		r.close();
 	}
 }
