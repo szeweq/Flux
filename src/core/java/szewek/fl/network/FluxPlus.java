@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class FluxPlus {
 	private static final String GA_URL = "https://www.google-analytics.com/collect";
-	private static final UUID CLIENT_ID = UUID.randomUUID();
+	private static final String CLIENT_ID = UUID.randomUUID().toString();
 	private static final String HOST = "https://fluxplus.herokuapp.com/api";
 	private static final Logger LOGGER = LogManager.getLogger("Flux+");
 	static final Gson GSON = new GsonBuilder().setLenient().create();
@@ -37,7 +37,7 @@ public final class FluxPlus {
 	private static void sendEvent(final String cat, final String name) {
 		try {
 			connect(GA_URL)
-					.postString("v=1&t=event&tid=UA-177867488-1&cid=" + CLIENT_ID.toString() + "&ec=" + cat + "&ea=" + name, "application/x-www-form-urlencoded;charset=utf-8")
+					.postString("v=1&t=event&tid=UA-177867488-1&cid=" + CLIENT_ID + "&ec=" + cat + "&ea=" + name, "application/x-www-form-urlencoded;charset=utf-8")
 					.voidResponse();
 		} catch (IOException e) {
 			LOGGER.error("Exception while sending an event", e);
