@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class HoverSet {
 	private final Set<GuiRect> rects = new HashSet<>();
-	private HoverListener hoverListener;
+	private final HoverListener hoverListener;
 
 	public HoverSet(HoverListener onHover) {
 		hoverListener = onHover;
