@@ -1,4 +1,5 @@
-# Flux Library (Version 4.2.0)
+# Flux Library (Version 4.2.1)
 
 ### Changes
-- Release for 1.16.2
+- Removed unused utility functions
+- Removed reporting incompatible recipes
