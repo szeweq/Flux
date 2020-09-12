@@ -119,30 +119,6 @@ public abstract class SpatialWalker {
 		return pos.add(x, y, z);
 	}
 
-	public <T> Iterator<T> iterator(GeoFunction<T> gf) {
-		return new Iterator<T>() {
-			@Override
-			public boolean hasNext() {
-				return walk();
-			}
-
-			@Override
-			public T next() {
-				return gf.apply(x, y, z);
-			}
-		};
-	}
-
-	public <T> Spliterator<T> spliterator(GeoFunction<T> gf) {
-		long l = actions[actions.length-1] == Action.LOOP ? Long.MAX_VALUE :
-				(long) (maxX - minX + 1) * (long) (maxY - minY + 1) * (long) (maxZ - minZ + 1);
-		return Spliterators.spliterator(iterator(gf), l, 0);
-	}
-
-	public <T> Stream<T> stream(GeoFunction<T> gf, boolean parallel) {
-		return StreamSupport.stream(spliterator(gf), parallel);
-	}
-
 	public static class NonStop extends SpatialWalker {
 		public NonStop(int x, int y, int z) {
 			super(-x, -y, -z, x, y, z);

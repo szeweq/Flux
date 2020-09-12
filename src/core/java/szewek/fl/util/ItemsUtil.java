@@ -17,10 +17,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
  */
 public final class ItemsUtil {
 	private static final Direction[] DIRS = Direction.values();
-	private static final LogTimer timSI = new LogTimer("trySendingItems");
 
 	public static void trySendingItems(final Iterable<ItemStack> items, World world, BlockPos pos) {
-		final long t = timSI.start();
 		final IItemHandler[] inv = new IItemHandler[6];
 		int size = 0;
 		for (Direction dir : DIRS) {
@@ -49,7 +47,6 @@ public final class ItemsUtil {
 			}
 			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), tempStack);
 		}
-		timSI.stop(t);
 	}
 
 	public static IItemHandler getItemHandlerCompat(TileEntity tile, Direction dir) {

@@ -9,12 +9,14 @@ import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.stream.Stream;
 
 /**
  * Ingredient with set count for an item stack
  */
 @MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class CountedIngredient extends Ingredient {
 	private final int count;
 	private boolean counted;
