@@ -29,23 +29,45 @@ public class APICall {
 		}
 	}
 
-	public APICall post(final Object obj) throws IOException {
+	private Writer preparePost(final String type) throws IOException {
 		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+		conn.setRequestProperty("User-Agent", "FL-Client/1.0");
+		conn.setRequestProperty("Content-Type", type);
 		conn.setDoOutput(true);
 		final OutputStream out = conn.getOutputStream();
-		final OutputStreamWriter writer = new OutputStreamWriter(new BufferedOutputStream(out), UTF_8);
-		FluxPlus.GSON.toJson(obj, writer);
-		writer.close();
+		return new OutputStreamWriter(new BufferedOutputStream(out), UTF_8);
+	}
+
+	public APICall post(final Object obj) throws IOException {
+		final Writer w = preparePost("application/json;charset=utf-8");
+		FluxPlus.GSON.toJson(obj, w);
+		w.close();
 		return this;
 	}
 
-	public <T> T response(final Class<T> type) throws IOException {
+	public APICall postString(final String s, final String type) throws IOException {
+		final Writer w = preparePost(type);
+		w.write(s);
+		w.close();
+		return this;
+	}
+
+	public Reader prepareResponse() throws IOException {
 		checkStatus();
 		final InputStream in = conn.getInputStream();
-		final InputStreamReader reader = new InputStreamReader(new BufferedInputStream(in), UTF_8);
-		T t = FluxPlus.GSON.fromJson(reader, type);
-		reader.close();
+		return new InputStreamReader(new BufferedInputStream(in), UTF_8);
+	}
+
+	public <T> T response(final Class<T> type) throws IOException {
+		final Reader r = prepareResponse();
+		T t = FluxPlus.GSON.fromJson(r, type);
+		r.close();
 		return t;
+	}
+
+	public void voidResponse() throws IOException {
+		final Reader r = prepareResponse();
+		int c = r.read();
+		r.close();
 	}
 }

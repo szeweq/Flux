@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -19,6 +20,8 @@ import java.util.concurrent.TimeUnit;
  * Class interacting with Flux+ API.
  */
 public final class FluxPlus {
+	private static final String GA_URL = "https://www.google-analytics.com/collect";
+	private static final UUID CLIENT_ID = UUID.randomUUID();
 	private static final String HOST = "https://fluxplus.herokuapp.com/api";
 	private static final Logger LOGGER = LogManager.getLogger("Flux+");
 	static final Gson GSON = new GsonBuilder().setLenient().create();
@@ -27,29 +30,29 @@ public final class FluxPlus {
 	private FluxPlus() {}
 
 	private static APICall connect(String path) throws IOException {
-		final HttpURLConnection huc = (HttpURLConnection) new URL(HOST + path).openConnection();
+		final HttpURLConnection huc = (HttpURLConnection) new URL(path).openConnection();
 		return new APICall(huc);
 	}
 
-	public static void putAction(final String type) {
-		EXEC.execute(() -> {
-			try {
-				boolean b = connect("/collect/action?type=" + type)
-						.response(Boolean.TYPE);
-				if (!b) {
-					LOGGER.warn("Action type {} is not acceptable", type);
-				}
-			} catch (Exception e) {
-				LOGGER.error("Exception while registering an action", e);
-			}
-		});
+	private static void sendEvent(final String cat, final String name) {
+		try {
+			connect(GA_URL)
+					.postString("v=1&t=event&tid=UA-177867488-1&cid=" + CLIENT_ID.toString() + "&ec=" + cat + "&ea=" + name, "application/x-www-form-urlencoded;charset=utf-8")
+					.voidResponse();
+		} catch (IOException e) {
+			LOGGER.error("Exception while sending an event", e);
+		}
+	}
+
+	public static void putAction(final String cat, final String type) {
+		EXEC.execute(() -> sendEvent(cat, type));
 	}
 
 	public static void reportRecipeCompatError(final String recipeType, final String className, final String msg) {
 		EXEC.execute(() -> {
 			try {
 				Map<String, String> m = ImmutableMap.of("recipeType", recipeType, "class", className, "msg", msg);
-				connect("/report/recipeCompat").post(m).response(Boolean.TYPE);
+				connect(HOST + "/report/recipeCompat").post(m).response(Boolean.TYPE);
 			} catch (Exception e) {
 				LOGGER.error("Exception while sending recipe compat error", e);
 			}

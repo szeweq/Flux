@@ -26,7 +26,7 @@ public final class FL {
 	public static class ModEvents {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
-			FluxPlus.putAction("start");
+			FluxPlus.putAction(ID, "start");
 			SignalCapability.register();
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
 		}
@@ -35,7 +35,7 @@ public final class FL {
 	static class Events {
 		@SubscribeEvent
 		public static void playerLogin(final PlayerEvent.PlayerLoggedInEvent e) {
-			FluxPlus.putAction("login");
+			FluxPlus.putAction(ID, "login");
 		}
 	}
 }
