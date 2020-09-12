@@ -45,7 +45,6 @@ public class FluxPackets {
 
 		private final int ctype, window, id, value;
 
-
 		UpdateData(int ctype, int window, int id, int value) {
 			this.ctype = ctype;
 			this.window = window;
@@ -53,14 +52,14 @@ public class FluxPackets {
 			this.value = value;
 		}
 
-		public static UpdateData of(ContainerType<?> ctype, int window, int id, int val) {
-			final int cid = reg.getID(ctype);
-			return new UpdateData(cid, window, id, val);
-		}
-
 		public final ContainerType<?> getType() {
 			//noinspection deprecation
 			return Registry.MENU.getByValue(ctype);
+		}
+
+		public static UpdateData of(ContainerType<?> ctype, int window, int id, int val) {
+			final int cid = reg.getID(ctype);
+			return new UpdateData(cid, window, id, val);
 		}
 
 		public static void encode(UpdateData msg, PacketBuffer buf) {
@@ -74,10 +73,11 @@ public class FluxPackets {
 			return new UpdateData(buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
 		}
 
-		public static void handle(UpdateData msg, Supplier<NetworkEvent.Context> ctx) {
-			final ServerPlayerEntity player = ctx.get().getSender();
+		public static void handle(UpdateData msg, Supplier<NetworkEvent.Context> fn) {
+			final NetworkEvent.Context ctx = fn.get();
+			final ServerPlayerEntity player = ctx.getSender();
 			if (player != null) {
-				ctx.get().enqueueWork(() -> {
+				ctx.enqueueWork(() -> {
 					ContainerType<?> ctype = msg.getType();
 					Container container = player.openContainer;
 					if (container.getType() == ctype && msg.window == container.windowId) {
@@ -85,7 +85,7 @@ public class FluxPackets {
 					}
 				});
 			}
-			ctx.get().setPacketHandled(true);
+			ctx.setPacketHandled(true);
 		}
 	}
 }
