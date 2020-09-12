@@ -15,8 +15,7 @@ public abstract class EnergyPart extends SelfLazy<IEnergyStorage> implements IEn
     }
 
     public final int getEnergy16Bit(boolean low) {
-        int v = low ? stored & 0xFFFF : stored >> 16;
-        return v;
+        return low ? stored & 0xFFFF : stored >> 16;
     }
 
     public final void setEnergy16Bit(boolean low, int v) {
