@@ -17,7 +17,7 @@ class MCGenPlugin : Plugin<Project> {
         val jpc = p.convention.getPlugin(JavaPluginConvention::class.java)
 
         jpc.sourceSets.configureEach {
-            configureSourceSet(it, p.buildDir, p.tasks)
+            if (it.name != "test") configureSourceSet(it, p.buildDir, p.tasks)
         }
     }
 
