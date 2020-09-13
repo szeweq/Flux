@@ -44,7 +44,7 @@ public final class RecipeCompat {
 		return Optional.empty();
 	}
 
-	public static void registerCompatRecipeTypes(IRecipeType<?> rtype, Set<String> compats) {
+	public static void registerCompatRecipeTypes(IRecipeType<?> rtype, Iterable<String> compats) {
 		ResourceLocation loc = Registry.RECIPE_TYPE.getKey(rtype);
 		if (loc == null || !"flux".equals(loc.getNamespace())) {
 			return;

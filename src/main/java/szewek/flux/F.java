@@ -64,10 +64,7 @@ import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
 
@@ -462,7 +459,13 @@ public final class F {
 	}
 
 	private static void recipeCompat(IRecipeType<?> rtype, Predicate<String> filter, String... compats) {
-		RecipeCompat.registerCompatRecipeTypes(rtype, Arrays.stream(compats).filter(filter).collect(Collectors.toSet()));
+		List<String> compatList = new ArrayList<>(compats.length);
+		for (String compat : compats) {
+			if (filter.test(compat)) {
+				compatList.add(compat);
+			}
+		}
+		RecipeCompat.registerCompatRecipeTypes(rtype, compatList);
 	}
 
 	private F() {}
