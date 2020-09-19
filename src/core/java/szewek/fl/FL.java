@@ -7,6 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import szewek.fl.finance.FinanceCapabilities;
 import szewek.fl.network.FluxPlus;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.signal.SignalCapability;
@@ -29,6 +30,7 @@ public final class FL {
 		public static void setup(final FMLCommonSetupEvent e) {
 			FluxPlus.putAction(ID, "start");
 			SignalCapability.register();
+			FinanceCapabilities.register();
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
 		}
 	}
