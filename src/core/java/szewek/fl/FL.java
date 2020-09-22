@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import szewek.fl.finance.FinanceCapabilities;
-import szewek.fl.network.FluxPlus;
+import szewek.fl.network.FluxAnalytics;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.signal.SignalCapability;
 
@@ -21,14 +21,14 @@ public final class FL {
 
 	public FL() {
 		MinecraftForge.EVENT_BUS.register(Events.class);
-		FluxPlus.init();
+		FluxAnalytics.init();
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class ModEvents {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
-			FluxPlus.putAction(ID, "start");
+			FluxAnalytics.putAction(ID, "start");
 			SignalCapability.register();
 			FinanceCapabilities.register();
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
@@ -38,7 +38,7 @@ public final class FL {
 	static class Events {
 		@SubscribeEvent
 		public static void playerLogin(final PlayerEvent.PlayerLoggedInEvent e) {
-			FluxPlus.putAction(ID, "login");
+			FluxAnalytics.putAction(ID, "login");
 		}
 	}
 }

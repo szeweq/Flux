@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -13,9 +15,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Class interacting with Flux+ API.
+ * Class for usage analytics.
  */
-public final class FluxPlus {
+public final class FluxAnalytics {
 	// THIS IS TEMPORARY! MIGHT USE SOMETHING LESS ANNOYING
 	private static final String GA_URL = "https://www.google-analytics.com/collect";
 	private static final String FORM_TYPE = "application/x-www-form-urlencoded;charset=utf-8";
@@ -24,7 +26,7 @@ public final class FluxPlus {
 	static final Gson GSON = new GsonBuilder().setLenient().create();
 	private static final ExecutorService EXEC = new ThreadPoolExecutor(0, 2, 30L, TimeUnit.SECONDS, new SynchronousQueue<>());
 
-	private FluxPlus() {}
+	private FluxAnalytics() {}
 
 	public static void init() {
 		send("t=pageview&dp=%2F");
@@ -42,7 +44,29 @@ public final class FluxPlus {
 		});
 	}
 
+	private static String safeParam(String param) {
+		if (param == null) {
+			return "";
+		}
+		int x = param.indexOf('&');
+		if (x != -1) {
+			param = param.substring(0, x);
+		}
+		try {
+			return URLEncoder.encode(param, "UTF-8");
+		} catch (UnsupportedEncodingException ignored) {}
+		return "";
+	}
+
+	public static void putView(String view) {
+		String form = "t=pageview&dp=%2F";
+		if (view != null && !view.isEmpty()) {
+			form += safeParam(view);
+		}
+		send(form);
+	}
+
 	public static void putAction(final String cat, final String type) {
-		send("t=event&ec=" + cat + "&ea=" + type);
+		send("t=event&ec=" + safeParam(cat) + "&ea=" + safeParam(type));
 	}
 }

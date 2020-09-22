@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import szewek.fl.network.FluxPlus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

@@ -5,7 +5,6 @@ import com.google.common.io.ByteStreams;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -47,7 +46,7 @@ public class APICall {
 
 	public APICall post(final Object obj) throws IOException {
 		final Writer w = preparePost("application/json;charset=utf-8");
-		FluxPlus.GSON.toJson(obj, w);
+		FluxAnalytics.GSON.toJson(obj, w);
 		w.close();
 		return this;
 	}
@@ -67,7 +66,7 @@ public class APICall {
 
 	public <T> T response(final Class<T> type) throws IOException {
 		final Reader r = prepareResponse();
-		T t = FluxPlus.GSON.fromJson(r, type);
+		T t = FluxAnalytics.GSON.fromJson(r, type);
 		r.close();
 		return t;
 	}
