@@ -1,6 +1,5 @@
 package szewek.flux.container;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.RecipeBookCategories;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,9 +24,10 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import szewek.fl.util.IntPair;
+import szewek.fl.util.ConsumerUtil;
 import szewek.flux.item.ChipItem;
 import szewek.flux.util.ServerRecipePlacerMachine;
+import szewek.flux.util.inventory.IOSize;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,51 +37,28 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	private final IIntArray data;
 	protected final World world;
 	public final IRecipeType<?> recipeType;
-	private final int inputSize;
-	private final int outputSize;
+	private final IOSize ioSize;
 
-	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, IntPair ioSize) {
-		this(containerType, recipeType, id, playerInventoryIn, ioSize, new Inventory(ioSize.l+ioSize.r+1), new IntArray(7));
+	protected AbstractMachineContainer(ContainerType ctype, IRecipeType<?> rtype, int id, PlayerInventory playerInv, IOSize ioSize) {
+		this(ctype, rtype, id, playerInv, ioSize, new Inventory(ioSize.all + 1), new IntArray(7));
 	}
 
-	protected AbstractMachineContainer(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventoryIn, IntPair ioSize, IInventory machineInventoryIn, IIntArray dataIn) {
-		super(containerType, id);
-		this.recipeType = recipeType;
-		inputSize = ioSize.l;
-		outputSize = ioSize.r;
-		Container.assertInventorySize(machineInventoryIn, inputSize + outputSize + 1);
-		Container.assertIntArraySize(dataIn, 7);
-		machineInventory = machineInventoryIn;
-		data = dataIn;
-		world = playerInventoryIn.player.world;
-		initSlots(playerInventoryIn);
+	protected AbstractMachineContainer(ContainerType ctype, IRecipeType<?> rtype, int id, PlayerInventory playerInv, IOSize ioSize, IInventory machineInv, IIntArray data) {
+		super(ctype, id);
+		recipeType = rtype;
+		this.ioSize = ioSize;
+		Container.assertInventorySize(machineInv, ioSize.all + 1);
+		Container.assertIntArraySize(data, 7);
+		machineInventory = machineInv;
+		this.data = data;
+		world = playerInv.player.world;
+		initSlots(playerInv);
 
-		initPlayerSlotsAt(playerInventoryIn, 8, 84);
+		ConsumerUtil.addPlayerSlotsAt(playerInv, 8, 84, this::addSlot);
 		trackIntArray(data);
 	}
 
 	protected abstract void initSlots(PlayerInventory playerInventory);
-
-	protected final void initPlayerSlotsAt(PlayerInventory playerInventory, int x, int y) {
-		int xBase = x;
-		int i;
-
-		for(i = 0; i < 3; ++i) {
-			for(int j = 0; j < 9; ++j) {
-				this.addSlot(new Slot(playerInventory, 9 * i + j + 9, x, y));
-				x += 18;
-			}
-			x = xBase;
-			y += 18;
-		}
-
-		y += 4;
-		for(i = 0; i < 9; ++i) {
-			this.addSlot(new Slot(playerInventory, i, x, y));
-			x += 18;
-		}
-
-	}
 
 	@Override
 	public void func_201771_a(RecipeItemHelper helper) {
@@ -98,7 +75,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	@Override
 	public void func_217056_a(boolean placeAll, IRecipe<?> recipe, ServerPlayerEntity player) {
 		//noinspection unchecked
-		new ServerRecipePlacerMachine<>(this, inputSize, outputSize).place(player, (IRecipe<IInventory>) recipe, placeAll);
+		new ServerRecipePlacerMachine<>(this, ioSize).place(player, (IRecipe<IInventory>) recipe, placeAll);
 	}
 
 	@Override
@@ -108,12 +85,12 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@Override
 	public int getOutputSlot() {
-		return inputSize;
+		return ioSize.in;
 	}
 
 	@Override
 	public int getWidth() {
-		return inputSize;
+		return ioSize.in;
 	}
 
 	@Override
@@ -124,7 +101,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public int getSize() {
-		return inputSize + 1;
+		return ioSize.in + 1;
 	}
 
 	@Override
@@ -139,11 +116,11 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		if (slot != null && slot.getHasStack()) {
 			ItemStack slotStack = slot.getStack();
 			stack = slotStack.copy();
-			int s = inputSize + outputSize + 1;
+			int s = ioSize.all + 1;
 			int e = s + 36;
 			if (index >= s) {
 				if (slotStack.getItem() instanceof ChipItem) {
-					s = inputSize + outputSize;
+					s = ioSize.all;
 					e = s + 1;
 				} else {
 					e = s;
@@ -155,7 +132,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 				return ItemStack.EMPTY;
 			}
 
-			if (index >= inputSize && index < inputSize + outputSize + 1) {
+			if (index >= ioSize.in && index < ioSize.all + 1) {
 				slot.onSlotChange(slotStack, stack);
 			}
 

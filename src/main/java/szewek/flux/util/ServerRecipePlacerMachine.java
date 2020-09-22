@@ -10,16 +10,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.item.crafting.ServerRecipePlacer;
+import szewek.flux.util.inventory.IOSize;
 
 public final class ServerRecipePlacerMachine<C extends IInventory> extends ServerRecipePlacer<C> {
 	private boolean matches;
-	private final int inputSize;
-	private final int outputSize;
+	private final IOSize ioSize;
 
-	public ServerRecipePlacerMachine(RecipeBookContainer<C> container, int inputSize, int outputSize) {
+	public ServerRecipePlacerMachine(RecipeBookContainer<C> container, IOSize ioSize) {
 		super(container);
-		this.inputSize = inputSize;
-		this.outputSize = outputSize;
+		this.ioSize = ioSize;
 	}
 
 	@Override
@@ -29,7 +28,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 		int j;
 		if (matches) {
 			j = recipe.getIngredients().size();
-			int r = inputSize;
+			int r = ioSize.in;
 			for (int k = 0; k < j; ++k) {
 				ItemStack stack = recipeBookContainer.getSlot(k).getStack();
 				if (stack.isEmpty() || i <= stack.getCount()) {
@@ -45,7 +44,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 		IntList intList = new IntArrayList();
 		if (recipeItemHelper.canCraft(recipe, intList, j)) {
 			if (!matches) {
-				for(int n = inputSize + outputSize - 1; n >= 0; --n) {
+				for(int n = ioSize.in + ioSize.out - 1; n >= 0; --n) {
 					giveToPlayer(n);
 				}
 			}
@@ -56,8 +55,8 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 
 	@Override
 	protected void clear() {
-		int l = inputSize + outputSize;
-		for(int i = inputSize; i < l; ++i) {
+		int l = ioSize.in + ioSize.out;
+		for(int i = ioSize.in; i < l; ++i) {
 			giveToPlayer(i);
 		}
 		super.clear();
@@ -66,7 +65,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 	protected void consume(int amount, IntList intList) {
 		IntIterator iterator = intList.iterator();
 		byte i = 0;
-		while(iterator.hasNext() && i < inputSize) {
+		while(iterator.hasNext() && i < ioSize.in) {
 			Slot slot = recipeBookContainer.getSlot(i++);
 			ItemStack stack = RecipeItemHelper.unpack(iterator.nextInt());
 			if (!stack.isEmpty()) {

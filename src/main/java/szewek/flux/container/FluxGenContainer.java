@@ -18,6 +18,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
+import szewek.fl.util.ConsumerUtil;
 import szewek.flux.F;
 import szewek.flux.data.FluxGenValues;
 
@@ -36,22 +37,7 @@ public class FluxGenContainer extends Container {
 
 		addSlot(new Slot(fluxGenInv, 0, 67, 35));
 		addSlot(new Slot(fluxGenInv, 1, 93, 35));
-		int xBase;
-		int yBase = 84;
-		for (int y = 0; y < 3; y++) {
-			xBase = 8;
-			for (int x = 0; x < 9; x++) {
-				addSlot(new Slot(pinv, x + 9 * y + 9, xBase, yBase));
-				xBase += 18;
-			}
-			yBase += 18;
-		}
-		xBase = 8;
-		yBase += 4;
-		for (int w = 0; w < 9; w++) {
-			addSlot(new Slot(pinv, w, xBase, yBase));
-			xBase += 18;
-		}
+		ConsumerUtil.addPlayerSlotsAt(pinv, 8, 84, this::addSlot);
 		trackIntArray(extra);
 	}
 

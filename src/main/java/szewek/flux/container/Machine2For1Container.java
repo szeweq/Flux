@@ -7,11 +7,11 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.IIntArray;
 import szewek.fl.type.FluxContainerType;
-import szewek.fl.util.IntPair;
 import szewek.flux.recipe.AbstractMachineRecipe;
+import szewek.flux.util.inventory.IOSize;
 
 public class Machine2For1Container extends AbstractMachineContainer {
-	private static final IntPair IO_SIZE = IntPair.of(2, 1);
+	private static final IOSize IO_SIZE = new IOSize(2, 1);
 
 	public Machine2For1Container(ContainerType containerType, IRecipeType<?> recipeType, int id, PlayerInventory playerInventory) {
 		super(containerType, recipeType, id, playerInventory, IO_SIZE);
