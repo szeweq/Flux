@@ -43,6 +43,7 @@ import szewek.fl.recipe.RecipeCompat;
 import szewek.fl.type.FluxContainerType;
 import szewek.fl.type.FluxRecipeType;
 import szewek.fl.type.FluxTileType;
+import szewek.fl.util.ConsumerUtil;
 import szewek.fl.util.FluxItemTier;
 import szewek.flux.block.*;
 import szewek.flux.container.*;
@@ -59,14 +60,15 @@ import szewek.flux.tile.*;
 import szewek.flux.tile.cable.EnergyCableTile;
 import szewek.flux.tile.cable.SignalCableTile;
 import szewek.flux.util.ChipUpgradeTrade;
-import szewek.flux.util.JavaUtils;
 import szewek.flux.util.Toolset;
 import szewek.flux.util.metals.Metal;
 import szewek.flux.util.metals.Metals;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.*;
-import java.util.stream.Collectors;
 
 import static szewek.flux.Flux.MODID;
 
@@ -95,18 +97,18 @@ public final class F {
 	@SubscribeEvent
 	public static void items(final RegistryEvent.Register<Item> re) {
 		final IForgeRegistry<Item> reg = re.getRegistry();
-		final Consumer<Block> regFromBlock = b -> reg.register(fromBlock(b));
+		final BiConsumer<Metal, Block> regFromBlock = (m, b) -> reg.register(fromBlock(b));
 		registerMapValues(I.GRITS, reg);
 		registerMapValues(I.DUSTS, reg);
 		registerMapValues(I.INGOTS, reg);
 		registerMapValues(I.NUGGETS, reg);
 		registerMapValues(I.GEARS, reg);
 		registerMapValues(I.PLATES, reg);
-		JavaUtils.forEachValue(B.ORES, regFromBlock);
-		JavaUtils.forEachValue(B.METAL_BLOCKS, regFromBlock);
+		B.ORES.forEach(regFromBlock);
+		B.METAL_BLOCKS.forEach(regFromBlock);
 		registerFromClass(I.class, reg);
-		JavaUtils.forEachStaticField(B.class, Block.class, b -> reg.register(fromBlock(b)));
-		JavaUtils.forEachStaticField(I.class, Toolset.class, toolset -> toolset.registerTools(reg));
+		ConsumerUtil.forEachStaticField(B.class, Block.class, b -> reg.register(fromBlock(b)));
+		ConsumerUtil.forEachStaticField(I.class, Toolset.class, toolset -> toolset.registerTools(reg));
 	}
 
 	@SubscribeEvent
@@ -439,11 +441,11 @@ public final class F {
 	}
 
 	private static <T extends IForgeRegistryEntry<T>> void registerMapValues(Map<?, ? extends T> map, IForgeRegistry<T> reg) {
-		JavaUtils.forEachValue(map, reg::register);
+		map.values().forEach(reg::register);
 	}
 
 	private static <T extends IForgeRegistryEntry<T>> void registerFromClass(Class<?> cl, IForgeRegistry<T> reg) {
-		JavaUtils.forEachStaticField(cl, reg.getRegistrySuperType(), reg::register);
+		ConsumerUtil.forEachStaticField(cl, reg.getRegistrySuperType(), reg::register);
 	}
 
 	@SuppressWarnings("ConstantConditions")
