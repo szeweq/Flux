@@ -129,11 +129,11 @@ copier = "Kopierer"
 
 
 [gui.flux.recipebook.toggleRecipes]
-grindable = "Showing grindable only"
-alloyable = "Showing alloyable only"
-washable = "Showing washable only"
-compactable = "Showing compactable only"
-copyable = "Showing copyable only"
+grindable = "Herstellbares wird angezeigt"
+alloyable = "Herstellbares wird angezeigt"
+washable = "Herstellbares wird angezeigt"
+compactable = "Herstellbares wird angezeigt"
+copyable = "Herstellbares wird angezeigt"
 
 [gui.flux.jei.category]
 grinding = "Mahlen"
