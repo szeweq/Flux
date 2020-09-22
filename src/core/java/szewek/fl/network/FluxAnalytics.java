@@ -28,10 +28,6 @@ public final class FluxAnalytics {
 
 	private FluxAnalytics() {}
 
-	public static void init() {
-		send("t=pageview&dp=%2F");
-	}
-
 	private static void send(final String form) {
 		EXEC.execute(() -> {
 			try {

@@ -21,7 +21,7 @@ public final class FL {
 
 	public FL() {
 		MinecraftForge.EVENT_BUS.register(Events.class);
-		FluxAnalytics.init();
+		FluxAnalytics.putView(null);
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
