@@ -21,6 +21,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.ItemHandlerHelper;
+import szewek.fl.network.FluxAnalytics;
+import szewek.flux.network.FluxPackets;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -84,8 +86,9 @@ public class Gifts implements IFutureReloadListener {
 			}
 		}
 		if (change) {
-			player.sendMessage(RECEIVED_GIFT, Util.NIL_UUID);
+			FluxPackets.sendGiftReceived(player);
 			data.put("receivedGifts", received);
+			player.sendMessage(RECEIVED_GIFT, Util.NIL_UUID);
 		}
 	}
 

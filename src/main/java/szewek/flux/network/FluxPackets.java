@@ -1,17 +1,21 @@
 package szewek.flux.network;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
+import szewek.fl.network.FluxAnalytics;
 
 import java.util.function.Supplier;
 
@@ -32,10 +36,19 @@ public class FluxPackets {
 				.encoder(UpdateData::encode)
 				.consumer(UpdateData::handle)
 				.add();
+		CHANNEL.messageBuilder(GiftReceived.class, 1, NetworkDirection.PLAY_TO_CLIENT)
+				.decoder(GiftReceived::decode)
+				.encoder(GiftReceived::encode)
+				.consumer(GiftReceived::handle)
+				.add();
 	}
 
 	public static void updateData2Server(ContainerType<?> ctype, int window, int id, int val) {
 		CHANNEL.sendToServer(UpdateData.of(ctype, window, id, val));
+	}
+
+	public static void sendGiftReceived(final ServerPlayerEntity player) {
+		CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), GiftReceived.INSTANCE);
 	}
 
 	private FluxPackets() {}
@@ -85,6 +98,27 @@ public class FluxPackets {
 					}
 				});
 			}
+			ctx.setPacketHandled(true);
+		}
+	}
+
+	public enum GiftReceived {
+		INSTANCE;
+
+		private static final ResourceLocation DING = new ResourceLocation("entity.player.levelup");
+
+		public static void encode(GiftReceived gr, PacketBuffer buf) {}
+
+		public static GiftReceived decode(PacketBuffer buf) {
+			return INSTANCE;
+		}
+
+		public static void handle(GiftReceived gr, Supplier<NetworkEvent.Context> fn) {
+			final NetworkEvent.Context ctx = fn.get();
+			if (ctx.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
+				ctx.enqueueWork(() -> Minecraft.getInstance().player.playSound(new SoundEvent(DING), 0.5F, 1));
+			}
+			FluxAnalytics.putView("flux/gift");
 			ctx.setPacketHandled(true);
 		}
 	}
