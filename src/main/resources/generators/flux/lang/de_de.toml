@@ -1,0 +1,146 @@
+# INCOMPLETE! Uncomment only translated strings!
+[flux]
+energystat = "Energie: %s / %s F"
+gen = "Erzeugung: %s F/t"
+usage = "Verwendung: %s F/t"
+update = "Flux hat eine neuere Version: %s"
+works_underwater = "Es funktioniert sogar unter Wasser!"
+recipe_compat = "Kompatibles Rezept verwenden! Es kann instabil sein!"
+
+[flux.book]
+name = "Flux-Buch"
+landing_text = "Ein Handbuch für Flux."
+
+[flux.gift]
+invalid = "Ungültiges Geschenk!"
+#received = "You just received a Flux Gift!"
+
+[flux.chip]
+speed = "Schnelligkeit"
+energy = "Energie"
+
+[flux.fluxgen]
+speed = "Schnelligkeit"
+time = "Zeit"
+length = "Länge"
+
+[flux.configgui]
+fluxGenBaseEnergyValue = "Basis Energieerzeugung für Flux-Generator"
+basicMachineEU = "Energieverbrauch für Basismaschinen (Mahlmühle, Wäscher, etc.)"
+
+[item.flux]
+gift = "Flux-Geschenk"
+machine_base = "Maschinenbasis"
+chip = "Flux-Chip"
+seal = "Flux-Dichtung"
+glue = "Flux-Kleben"
+paste = "Flux-Paste"
+iron_grit = "Eisengrieß"
+gold_grit = "Goldgrieß"
+copper_grit = "Kupfergrieß"
+tin_grit = "Zinngrieß"
+iron_dust = "Eisenstaub"
+gold_dust = "Goldstaub"
+copper_dust = "Kupferstaub"
+tin_dust = "Zinnstaub"
+bronze_dust = "Bronzestaub"
+steel_dust = "Stahlstaub"
+netherite_dust = "Netheritstaub"
+copper_ingot = "Kupferbarren"
+tin_ingot = "Zinnbarren"
+bronze_ingot = "Bronzebarren"
+steel_ingot = "Stahlbarren"
+copper_nugget = "Kupferklumpen"
+tin_nugget = "Zinnklumpen"
+bronze_nugget = "Bronzeklumpen"
+steel_nugget = "Stahlklumpen"
+iron_gear = "Eisengetriebe"
+gold_gear = "Goldgetriebe"
+copper_gear = "Kupfergetriebe"
+tin_gear = "Zinngetriebe"
+bronze_gear = "Bronzegetriebe"
+steel_gear = "Stahlgetriebe"
+netherite_gear = "Netheritgetriebe"
+iron_plate = "Eisenplatte"
+gold_plate = "Goldplatte"
+copper_plate = "Kupferplatte"
+tin_plate = "Zinnplatte"
+bronze_plate = "Bronzeplatte"
+steel_plate = "Stahlplatte"
+netherite_plate = "Netheritplatte"
+bronze_sword = "Bronzeschwert"
+bronze_shovel = "Bronzeschaufel"
+bronze_pickaxe = "Bronzespitzhacke"
+bronze_axe = "Bronzeaxt"
+bronze_hoe = "Bronzehacke"
+steel_sword = "Stahlschwert"
+steel_shovel = "Stahlschaufel"
+steel_pickaxe = "Stahlspitzhacke"
+steel_axe = "Stahlaxt"
+steel_hoe = "Stahlhacke"
+
+[itemGroup.flux]
+items = "Flux-Gegenstände"
+blocks = "Flux-Blöcke"
+
+[block.flux]
+fluxgen = "Flux-Generator"
+grinding_mill = "Mahlmühle"
+alloy_caster = "Legierungsgießer"
+washer = "Wäscher"
+compactor = "Verdichter"
+copper_ore = "Kupfererz"
+tin_ore = "Zinnerz"
+copper_block = "Kupferblock"
+tin_block = "Zinnblock"
+bronze_block = "Bronzeblock"
+steel_block = "Stahlblock"
+energy_cable = "Energiekabel"
+signal_cable = "Signalkabel [WIP]"
+digger = "Bagger"
+#farmer = "Farmer"
+butcher = "Metzger"
+mob_pounder = "Mob-Stampfer"
+#item_absorber = "Item Absorber"
+#rrtable = "Recipe Research Table"
+online_market = "Online-Markt"
+interactor_rail = "Interaktor-Schiene"
+signal_controller = "Signalsteuerung"
+copier = "Kopierer"
+
+[container.flux]
+fluxgen = "Flux-Generator"
+grinding_mill = "Mahlmühle"
+alloy_caster = "Legierungsgießer"
+washer = "Wäscher"
+compactor = "Verdichter"
+online_market = "Online-Markt"
+signal_controller = "Signalsteuerung"
+copier = "Kopierer"
+
+[gui.flux]
+#type_channel = "Type channel number"
+
+[gui.flux.signal_controller]
+#mode0 = "Emit to Redstone"
+#mode1 = "Set signal"
+#mode2 = "Clear signal"
+#mode3 = "Set from Redstone"
+
+
+[gui.flux.recipebook.toggleRecipes]
+grindable = "Showing grindable only"
+alloyable = "Showing alloyable only"
+washable = "Showing washable only"
+compactable = "Showing compactable only"
+copyable = "Showing copyable only"
+
+[gui.flux.jei.category]
+grinding = "Mahlen"
+alloying = "Legieren"
+washing = "Waschen"
+compacting = "Verdichten"
+copying = "Kopieren"
+
+[entity.minecraft.villager.flux]
+flux_engineer = "Flux-Ingenieur"
