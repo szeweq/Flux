@@ -44,7 +44,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 		IntList intList = new IntArrayList();
 		if (recipeItemHelper.canCraft(recipe, intList, j)) {
 			if (!matches) {
-				for(int n = ioSize.in + ioSize.out - 1; n >= 0; --n) {
+				for(int n = ioSize.all - 1; n >= 0; --n) {
 					giveToPlayer(n);
 				}
 			}
@@ -55,7 +55,7 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 
 	@Override
 	protected void clear() {
-		int l = ioSize.in + ioSize.out;
+		int l = ioSize.all;
 		for(int i = ioSize.in; i < l; ++i) {
 			giveToPlayer(i);
 		}
