@@ -37,7 +37,7 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	public void init() {
 		super.init();
 		recipeBookShown = width < 379;
-		recipeGui.init(width, height, client, recipeBookShown, container);
+		recipeGui.init(width, height, minecraft, recipeBookShown, container);
 		guiLeft = recipeGui.updateScreenPosition(recipeBookShown, width, xSize);
 		addButton(new ImageButton(guiLeft + 20, height / 2 - 49, 20, 18, 0, 0, 19, recipeTex, button -> {
 			recipeGui.initSearchBar(recipeBookShown);
@@ -57,32 +57,32 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		if (recipeGui.isVisible() && recipeBookShown) {
-			drawBackground(matrixStack, partialTicks, mouseX, mouseY);
+			drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 			recipeGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		} else {
 			recipeGui.render(matrixStack, mouseX, mouseY, partialTicks);
 			super.render(matrixStack, mouseX, mouseY, partialTicks);
 			// RENDER GHOST RECIPE
-			recipeGui.drawGhostSlots(matrixStack, guiLeft, guiTop, true, partialTicks);
+			recipeGui.func_230477_a_(matrixStack, guiLeft, guiTop, true, partialTicks);
 		}
-
-		drawMouseoverTooltip(matrixStack, mouseX, mouseY);
-		recipeGui.drawTooltip(matrixStack, guiLeft, guiTop, mouseX, mouseY);
+		// RENDER TOOLTIPS
+		func_230459_a_(matrixStack, mouseX, mouseY);
+		recipeGui.func_238924_c_(matrixStack, guiLeft, guiTop, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 		String s = title.getString();
-		textRenderer.draw(matrixStack, s, (float)(xSize / 2 - textRenderer.getStringWidth(s) / 2), 6F, 0x404040);
+		font.drawString(matrixStack, s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6F, 0x404040);
 		ITextComponent var8 = playerInventory.getDisplayName();
-		textRenderer.draw(matrixStack, var8.getString(), 8F, (float)(ySize - 96 + 2), 0x404040);
+		font.drawString(matrixStack, var8.getString(), 8F, (float)(ySize - 96 + 2), 0x404040);
 		int mx = mouseX - guiLeft;
 		int my = mouseY - guiTop;
 		if (151 <= mx && 168 >= mx && 16 <= my && 69 >= my) {
-			renderTooltip(matrixStack, container.energyText(), mx, my);
+			func_243308_b(matrixStack, container.energyText(), mx, my);
 		}
 		if (container.isCompatRecipe()) {
-			textRenderer.draw(matrixStack, "!", 82F, 24F, 0xFF0000);
+			font.drawString(matrixStack, "!", 82F, 24F, 0xFF0000);
 			if (80 <= mx && 84 >= mx && 24 <= my && 32 >= my) {
 				renderTooltip(matrixStack, compatInfo, mx, my);
 			}
@@ -90,21 +90,21 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		client.getTextureManager().bindTexture(guiTexture);
+		minecraft.getTextureManager().bindTexture(guiTexture);
 		int i = guiLeft;
 		int j = guiTop;
-		drawTexture(matrixStack, i, j, 0, 0, xSize, ySize);
+		blit(matrixStack, i, j, 0, 0, xSize, ySize);
 
 		int n = container.energyScaled();
 		if (n > 0) {
-			drawTexture(matrixStack, i + 152, j + 71 - n, 176, 71 - n, 16, n - 1);
+			blit(matrixStack, i + 152, j + 71 - n, 176, 71 - n, 16, n - 1);
 		}
 
 		n = container.processScaled();
 		if (n > 0) {
-			drawTexture(matrixStack, i + 79, j + 34, 176, 0, n + 1, 16);
+			blit(matrixStack, i + 79, j + 34, 176, 0, n + 1, 16);
 		}
 
 	}

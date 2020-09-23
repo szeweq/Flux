@@ -45,18 +45,18 @@ public final class GiftItem extends Item {
 		if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity && stack.getItem() == this) {
 			CompoundNBT tag = stack.getTag();
 			if (tag == null || tag.isEmpty() || !tag.contains("LootTable")) {
-				entityLiving.sendMessage(GIFT_INVALID, Util.NIL_UUID);
+				entityLiving.sendMessage(GIFT_INVALID, Util.DUMMY_UUID);
 				return ItemStack.EMPTY;
 			}
 
 			String lt = tag.getString("LootTable");
 			ResourceLocation loc = ResourceLocation.tryCreate(lt);
 			if (loc == null) {
-				entityLiving.sendMessage(GIFT_INVALID, Util.NIL_UUID);
+				entityLiving.sendMessage(GIFT_INVALID, Util.DUMMY_UUID);
 				return ItemStack.EMPTY;
 			}
 			LootContext lootCtx = new LootContext.Builder((ServerWorld) worldIn)
-					.withParameter(LootParameters.ORIGIN, entityLiving.getPositionVec())
+					.withParameter(LootParameters.field_237457_g_, entityLiving.getPositionVec())
 					.withParameter(LootParameters.THIS_ENTITY, entityLiving)
 					.build(LootParameterSets.GIFT);
 			Gifts.produceGifts((ServerPlayerEntity) entityLiving, lootCtx, loc);

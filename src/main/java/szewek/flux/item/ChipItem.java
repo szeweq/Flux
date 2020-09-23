@@ -35,10 +35,10 @@ public class ChipItem extends Item {
 			boolean positive = reversed ? v < 0 : v > 0;
 			tooltip.add(
 					new TranslationTextComponent("flux.chip." + name, s)
-							.formatted(TextFormatting.GRAY)
-							.append(": ")
+							.mergeStyle(TextFormatting.GRAY)
+							.appendString(": ")
 							.append(new StringTextComponent(s)
-							.formatted(positive ? TextFormatting.GREEN: TextFormatting.RED)
+							.mergeStyle(positive ? TextFormatting.GREEN: TextFormatting.RED)
 					)
 			);
 		}

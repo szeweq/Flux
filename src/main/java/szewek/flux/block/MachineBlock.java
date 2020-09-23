@@ -33,7 +33,7 @@ public final class MachineBlock extends Block {
 		super(Properties.create(Material.IRON)
 				.hardnessAndResistance(1.0F)
 				.sound(SoundType.METAL)
-				.lightLevel(state -> state.get(LIT) ? 13 : 0)
+				.setLightLevel(state -> state.get(LIT) ? 13 : 0)
 		);
 		this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
 	}
@@ -51,7 +51,7 @@ public final class MachineBlock extends Block {
 	}
 
 	@Override
-	public ActionResultType onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
 		if (!world.isRemote()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te != null) {

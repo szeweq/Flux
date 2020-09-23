@@ -36,7 +36,7 @@ public final class OnlineMarketBlock extends Block {
 	}
 
 	@Override
-	public ActionResultType onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
 		if (!world.isRemote()) {
 			final TileEntity tile = world.getTileEntity(pos);
 			if (tile != null && F.T.ONLINE_MARKET == tile.getType()) {

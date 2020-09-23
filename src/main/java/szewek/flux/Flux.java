@@ -98,7 +98,7 @@ public final class Flux {
 			if (!player.world.isRemote) {
 				VersionChecker.CheckResult ver = VersionChecker.getResult(modInfo);
 				if (ver.target != null && (ver.status == VersionChecker.Status.OUTDATED || ver.status == VersionChecker.Status.BETA_OUTDATED)) {
-					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()), Util.NIL_UUID);
+					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()), Util.DUMMY_UUID);
 				}
 				Gifts.makeGiftsForPlayer((ServerPlayerEntity) player);
 			}
@@ -117,12 +117,12 @@ public final class Flux {
 
 	private static void addOreGen(Metal metal, TopSolidRangeConfig cfg) {
 		Registry.register(
-				WorldGenRegistries.CONFIGURED_FEATURE,
+				WorldGenRegistries.field_243653_e,
 				new ResourceLocation(MODID, "ore_" + metal.metalName),
-				Feature.ORE.configure(new OreFeatureConfig(
-						OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
+				Feature.ORE.withConfiguration(new OreFeatureConfig(
+						OreFeatureConfig.FillerBlockType.field_241882_a,
 						F.B.ORES.get(metal).getDefaultState(),
 						7
-				)).decorate(Placement.RANGE.configure(cfg)));
+				)).withPlacement(Placement.field_242907_l.configure(cfg)));
 	}
 }

@@ -423,7 +423,7 @@ public final class F {
 		public static final VillagerProfession FLUX_ENGINEER = job("flux_engineer", FLUX_ENGINEER_POI, null);
 
 		private static PointOfInterestType poi(String name, Block b) {
-			return PointOfInterestType.func_221052_a(
+			return PointOfInterestType.registerBlockStates(
 					new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1)
 							.setRegistryName(MODID, name)
 			);

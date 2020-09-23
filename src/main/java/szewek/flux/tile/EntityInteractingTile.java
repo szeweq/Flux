@@ -22,8 +22,8 @@ abstract class EntityInteractingTile extends PoweredTile {
 	}
 
 	@Override
-	public void fromTag(BlockState blockState, CompoundNBT compound) {
-		super.fromTag(blockState, compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		updateAABB(pos);
 	}
 
@@ -35,8 +35,8 @@ abstract class EntityInteractingTile extends PoweredTile {
 	}
 
 	@Override
-	public void setLocation(World w, BlockPos posIn) {
-		super.setLocation(w, posIn);
+	public void setWorldAndPos(World w, BlockPos posIn) {
+		super.setWorldAndPos(w, posIn);
 		updateAABB(posIn);
 	}
 

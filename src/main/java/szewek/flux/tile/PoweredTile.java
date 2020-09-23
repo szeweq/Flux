@@ -24,8 +24,8 @@ public abstract class PoweredTile extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public void fromTag(BlockState blockState, CompoundNBT compound) {
-		super.fromTag(blockState, compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		energy.readNBT(compound);
 	}
 

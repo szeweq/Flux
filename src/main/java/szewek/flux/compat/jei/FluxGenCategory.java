@@ -104,10 +104,10 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 		FontRenderer fontRenderer = minecraft.fontRenderer;
 
 		int strW = fontRenderer.getStringWidth(product.typeStr);
-		fontRenderer.draw(matrixStack, product.typeStr, (float)(background.getWidth() - strW) / 2, 1, 0xff404040);
+		fontRenderer.drawString(matrixStack, product.typeStr, (float)(background.getWidth() - strW) / 2, 1, 0xff404040);
 
 		strW = fontRenderer.getStringWidth(product.factorStr);
-		fontRenderer.draw(matrixStack, product.factorStr, (float)(background.getWidth() - strW) / 2, 51, 0xff404040);
+		fontRenderer.drawString(matrixStack, product.factorStr, (float)(background.getWidth() - strW) / 2, 51, 0xff404040);
 	}
 
 	static class Product {

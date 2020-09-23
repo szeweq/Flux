@@ -102,8 +102,7 @@ public class InteractorRailBlock extends AbstractRailBlock {
 			if (state.get(SHAPE).isAscending()) {
 				worldIn.notifyNeighborsOfStateChange(pos.up(), this);
 			}
-			worldIn.scheduleBlockRerenderIfNeeded(pos, state, newState);
-			//worldIn.markBlockRangeForRenderUpdate(pos, state, newState);
+			worldIn.markBlockRangeForRenderUpdate(pos, state, newState);
 		}
 
 	}

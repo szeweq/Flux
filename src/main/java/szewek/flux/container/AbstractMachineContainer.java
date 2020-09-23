@@ -61,7 +61,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	protected abstract void initSlots(PlayerInventory playerInventory);
 
 	@Override
-	public void func_201771_a(RecipeItemHelper helper) {
+	public void fillStackedContents(RecipeItemHelper helper) {
 		if (machineInventory instanceof IRecipeHelperPopulator) {
 			((IRecipeHelperPopulator) machineInventory).fillStackedContents(helper);
 		}
@@ -153,7 +153,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@Override
 	// TODO Specify better catrgory
-	public RecipeBookCategory getCategory() {
+	public RecipeBookCategory func_241850_m() {
 		return RecipeBookCategory.CRAFTING;
 	}
 

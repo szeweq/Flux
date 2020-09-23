@@ -94,14 +94,14 @@ public class FluxGenValues implements IFutureReloadListener {
 
 	private static void collectValues(Triple<Collection<Entry>, Collection<Entry>, Collection<Entry>> tr) {
 		CATALYSTS.update(tr.getLeft()).convert(ForgeRegistries.ITEMS, ItemTags.getCollection());
-		HOT_FLUIDS.update(tr.getMiddle()).convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());//.getCollection()
-		COLD_FLUIDS.update(tr.getRight()).convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());
+		HOT_FLUIDS.update(tr.getMiddle()).convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
+		COLD_FLUIDS.update(tr.getRight()).convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
 	}
 
 	public static void updateValues() {
 		CATALYSTS.convert(ForgeRegistries.ITEMS, ItemTags.getCollection());
-		HOT_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());//.getCollection()
-		COLD_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.func_226157_a_());
+		HOT_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
+		COLD_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
 	}
 
 	public static class ValMap<T extends IForgeRegistryEntry<T>> {
@@ -156,7 +156,7 @@ public class FluxGenValues implements IFutureReloadListener {
 			if (tag == null) {
 				return true; // IGNORE EMPTY TAGS
 			}
-			for (T t : tag.values()) { //.getAllElements()
+			for (T t : tag.getAllElements()) {
 				fn.accept(t, this.values);
 			}
 			return true;

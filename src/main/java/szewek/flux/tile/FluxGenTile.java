@@ -75,8 +75,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public void fromTag(BlockState blockState, CompoundNBT compound) {
-		super.fromTag(blockState, compound);
+	public void read(BlockState blockState, CompoundNBT compound) {
+		super.read(blockState, compound);
 		energy.readNBT(compound);
 		work.readNBT(compound);
 		ItemStackHelper.loadAllItems(compound, items);

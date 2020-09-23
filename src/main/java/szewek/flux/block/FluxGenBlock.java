@@ -37,7 +37,7 @@ public final class FluxGenBlock extends Block {
 	}
 
 	@Override
-	public ActionResultType onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
 		if (!world.isRemote) {
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile instanceof FluxGenTile) {

@@ -43,7 +43,7 @@ public class SignalControllerBlock extends DirectionalBlock {
 	}
 
 	@Override
-	public ActionResultType onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		if (!worldIn.isRemote) {
 			TileEntity tile = worldIn.getTileEntity(pos);
 			if (tile instanceof SignalControllerTile) {

@@ -81,7 +81,7 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 			Minecraft minecraft = Minecraft.getInstance();
 			FontRenderer fontRenderer = minecraft.fontRenderer;
 			int stringWidth = fontRenderer.getStringWidth(experienceString);
-			fontRenderer.draw(matrixStack, experienceString, (float)(background.getWidth() - stringWidth), 0.0F, 0xff808080);
+			fontRenderer.drawString(matrixStack, experienceString, (float)(background.getWidth() - stringWidth), 0.0F, 0xff808080);
 		}
 	}
 

@@ -49,7 +49,7 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 	 */
 
 	@Override
-	protected ITextComponent getToggleCraftableButtonText() {
+	protected ITextComponent func_230479_g_() {
 		return filterName;
 	}
 
@@ -71,7 +71,7 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 			list1.removeIf(rl -> !objectset.contains(rl));
 		}
 
-		if (recipeBook.isFilteringCraftable(field_201522_g)) {
+		if (recipeBook.func_242141_a(field_201522_g)) {
 			list1.removeIf(rl -> !rl.containsCraftableRecipes());
 		}
 

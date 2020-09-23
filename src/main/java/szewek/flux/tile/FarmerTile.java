@@ -82,7 +82,7 @@ public class FarmerTile extends BlockInteractingTile {
 
 	private void tryHarvest(BlockState bs, BlockPos bp, @Nullable BlockState nbs) {
 		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld) world)
-				.withParameter(LootParameters.ORIGIN, Vector3d.ofCenter(bp))
+				.withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(bp))
 				.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
 		);
 		if (!drops.isEmpty()) {

@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import szewek.flux.FluxCfg;
@@ -20,8 +19,8 @@ public final class RecipeTagCompat {
 	public static ItemStack findItemTag(JsonObject json) {
 		String tagName = JSONUtils.getString(json, "tag");
 		ITag<Item> tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
-		if (tag != null && !tag.values().isEmpty()) {
-			Item foundItem = itemFromTagCompat(tag.values());
+		if (tag != null && !tag.getAllElements().isEmpty()) {
+			Item foundItem = itemFromTagCompat(tag.getAllElements());
 			if (foundItem != null) {
 				return new ItemStack(foundItem, JSONUtils.getInt(json, "count", 1));
 			}
