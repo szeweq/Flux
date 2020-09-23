@@ -1,5 +1,6 @@
-# Flux Library (Version 4.2.1)
+# Flux Library (Version 4.3.0)
 
 ### Changes
-- Removed unused utility functions
-- Removed reporting incompatible recipes
+- Release for Minecraft 1.16.3
+- Added new Finance Capabilities (WIP)
+- Moved utility methods from Flux
