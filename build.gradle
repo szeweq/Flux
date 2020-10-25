@@ -172,7 +172,7 @@ jar {
             "Specification-Vendor": "Szewek",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": "Flux",
-            "Implementation-Version": "${version}",
+            "Implementation-Version": "${project.version}",
             "Implementation-Vendor" :"Szewek",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
