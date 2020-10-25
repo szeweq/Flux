@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
+import szewek.fl.network.FluxAnalytics;
 import szewek.flux.F;
 
 import java.util.Set;
@@ -19,6 +20,7 @@ public final class MarketUtil {
 			if (!offer.getBuyingStackSecond().isEmpty()) {
 				stack2.shrink(offer.getBuyingStackSecond().getCount());
 			}
+			FluxAnalytics.putView("flux/online_market/transaction");
 		}
 		return accept;
 	}

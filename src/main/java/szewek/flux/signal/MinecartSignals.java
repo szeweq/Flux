@@ -6,6 +6,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import szewek.fl.network.FluxAnalytics;
 import szewek.fl.signal.ISignalHandler;
 import szewek.fl.signal.SignalCapability;
 import szewek.fl.signal.SignalHandler;
@@ -20,7 +21,11 @@ public class MinecartSignals extends SignalHandler implements ICapabilityProvide
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		return valid && cap == SignalCapability.SIGNAL_CAP ? handler.cast() : LazyOptional.empty();
+		if (valid && cap == SignalCapability.SIGNAL_CAP) {
+			FluxAnalytics.putView("flux/use/minecart_signals");
+			return handler.cast();
+		}
+		return LazyOptional.empty();
 	}
 
 	@Override
