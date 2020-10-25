@@ -1,0 +1,145 @@
+[flux]
+energystat = "Energia: %s / %s F"
+gen = "Generuje %s F/t"
+usage = "Używa %s F/t"
+update = "Flux ma nowszą wersję: %s"
+works_underwater = "Działa nawet pod wodą!"
+recipe_compat = "Użycie kompatybilnego przepisu! It may be unstable!"
+
+[flux.book]
+name = "Książka Fluxu"
+landing_text = "Instrukcja obsługi dla Fluxu."
+
+[flux.gift]
+invalid = "Nieprawidłowy Prezent!"
+received = "Otrzymałeś Flux-prezent!"
+
+[flux.chip]
+speed = "Szybkość"
+energy = "Energia"
+
+[flux.fluxgen]
+speed = "Szybkość"
+time = "Czas"
+length = "Długość"
+
+[flux.configgui]
+fluxGenBaseEnergyValue = "Bazowa produkcja energii dla Flux-eneratora"
+basicMachineEU = "Bazowe zużycie energii dla podstawowych maszyn (Młyna kruszącego, Płuczki, etc.)"
+
+[item.flux]
+gift = "Flux-prezent"
+machine_base = "Podstawa urządzenia"
+chip = "Flux Chip"
+seal = "Flux-uszczelniacz"
+glue = "Flux-klej"
+paste = "Flux-pasta"
+iron_grit = "Grys żelaza"
+gold_grit = "Grys złota"
+copper_grit = "Grys miedzi"
+tin_grit = "Grys cyny"
+iron_dust = "Proch żelaza"
+gold_dust = "Proch złota"
+copper_dust = "Proch miedzi"
+tin_dust = "Proch cyny"
+bronze_dust = "Proch brązu"
+steel_dust = "Proch stali"
+netherite_dust = "Proch netherytu"
+copper_ingot = "Sztabka miedzi"
+tin_ingot = "Sztabka cyny"
+bronze_ingot = "Sztabka brązu"
+steel_ingot = "Sztabka stali"
+copper_nugget = "Samorodek miedzi"
+tin_nugget = "Samorodek cyny"
+bronze_nugget = "Samorodek brązu"
+steel_nugget = "Samorodek stali"
+iron_gear = "Żelazne koło zębate"
+gold_gear = "Złote koło zębate"
+copper_gear = "Miedziane koło zębate"
+tin_gear = "Cynowe koło zębate"
+bronze_gear = "Brązowe koło zębate"
+steel_gear = "Stalowe koło zębate"
+netherite_gear = "Netherytowe koło zębate"
+iron_plate = "Żelazna płyta"
+gold_plate = "Złota płyta"
+copper_plate = "Miedziana płyta"
+tin_plate = "Cynowa płyta"
+bronze_plate = "Brązowa płyta"
+steel_plate = "Stalowa płyta"
+netherite_plate = "Netherytowa płyta"
+bronze_sword = "Brązowy miecz"
+bronze_shovel = "Brązowa łoptat"
+bronze_pickaxe = "Brązowy kilof"
+bronze_axe = "Brązowa siekiera"
+bronze_hoe = "Brązowa motyka"
+steel_sword = "Stalowy miecz"
+steel_shovel = "Stalowa łopata"
+steel_pickaxe = "Stalowy kilof"
+steel_axe = "Stalowa siekiera"
+steel_hoe = "Stalowa motyka"
+
+[itemGroup.flux]
+items = "Przedmioty Fluxu"
+blocks = "Bloki Fluxu"
+
+[block.flux]
+fluxgen = "Flux-generator"
+grinding_mill = "Młyn kruszący"
+alloy_caster = "Odlewnik stopowy"
+washer = "Płuczka"
+compactor = "Zagęszczarka"
+copper_ore = "Ruda miedzi"
+tin_ore = "Ruda cyny"
+copper_block = "Blok miedzi"
+tin_block = "Blok cyny"
+bronze_block = "Blok brązu"
+steel_block = "Blok stali"
+energy_cable = "Kabel energatyczny"
+signal_cable = "Kabel sygnałowy [WIP]"
+digger = "Czerparka"
+farmer = "Farmer"
+butcher = "Rzeżnik"
+mob_pounder = "Mob Pounder"
+item_absorber = "Pochłaniacz przedmiotów"
+rrtable = "Stół badań nad przepisami"
+online_market = "Rynek online"
+interactor_rail = "Tory interakcyjne"
+signal_controller = "Kontroler sygnałowy"
+copier = "Kopiarka"
+
+[container.flux]
+fluxgen = "Flux-generator"
+grinding_mill = "Młyn kruszący"
+alloy_caster = "Odlewnik stopowy"
+washer = "Płuczka"
+compactor = "Zagęszczarka"
+online_market = "Rynek online"
+signal_controller = "Kontroler sygnałowy"
+copier = "Kopiarka"
+
+[gui.flux]
+type_channel = "Wpisz numer kanału"
+
+[gui.flux.signal_controller]
+mode0 = "Emituj Redstone"
+mode1 = "Ustaw sygnał"
+mode2 = "Clear sygnał"
+mode3 = "Ustaw przez Redstone"
+
+
+[gui.flux.recipebook.toggleRecipes]
+grindable = "Pokazuje wyrabialne kruszywa"
+alloyable = "Pokazuje wyrabialne stopy"
+washable = "Pokazuje spłukiwalne"
+compactable = "Pokazuje zagęszczalne"
+copyable = "Pokazuje kopiowalne"
+
+[gui.flux.jei.category]
+grinding = "Kruszenie"
+alloying = "Stopowanie"
+washing = "Płukanie"
+compacting = "Zagęszczanie"
+copying = "Kopiowanie"
+
+[entity.minecraft.villager.flux]
+flux_engineer = "Flux-inżynier"
