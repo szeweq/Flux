@@ -26,7 +26,7 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 	private int cooldown, keepPower;
 	private short currentChannel;
 	private byte mode;
-	private IIntArray data = new IIntArray() {
+	private final IIntArray data = new IIntArray() {
 		@Override
 		public int get(int index) {
 			switch (index) {
