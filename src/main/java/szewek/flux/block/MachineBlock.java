@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
+import szewek.fl.network.FluxAnalytics;
 import szewek.flux.tile.AbstractMachineTile;
 
 import javax.annotation.Nullable;
@@ -52,7 +53,7 @@ public final class MachineBlock extends Block {
 
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
-		if (!world.isRemote()) {
+		if (!world.isRemote) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te != null) {
 				TileEntityType<?> type = ForgeRegistries.TILE_ENTITIES.getValue(this.getRegistryName());
@@ -60,7 +61,8 @@ public final class MachineBlock extends Block {
 					player.openContainer((INamedContainerProvider) te);
 				}
 			}
-
+		} else {
+			FluxAnalytics.putView("flux/open/" + getRegistryName());
 		}
 		return ActionResultType.SUCCESS;
 	}
@@ -72,6 +74,9 @@ public final class MachineBlock extends Block {
 
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+		if (worldIn.isRemote) {
+			FluxAnalytics.putView("flux/place/" + getRegistryName());
+		}
 		if (stack.hasDisplayName()) {
 			TileEntity tileentity = worldIn.getTileEntity(pos);
 			if (tileentity instanceof AbstractMachineTile) {

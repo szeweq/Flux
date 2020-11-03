@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import szewek.fl.network.FluxAnalytics;
 import szewek.flux.F;
 import szewek.flux.tile.FluxGenTile;
 
@@ -48,14 +49,18 @@ public final class FluxGenBlock extends Block {
 					player.openContainer((FluxGenTile) tile);
 				}
 			}
+		} else {
+			FluxAnalytics.putView("flux/open/" + getRegistryName());
 		}
 		return ActionResultType.SUCCESS;
 	}
 
 	@Override
 	public void onBlockPlacedBy(World w, BlockPos pos, BlockState state, LivingEntity ent, ItemStack stack) {
-		if (!w.isRemote()) {
+		if (!w.isRemote) {
 			updateRedstoneState(w, pos);
+		} else {
+			FluxAnalytics.putView("flux/place/" + getRegistryName());
 		}
 	}
 

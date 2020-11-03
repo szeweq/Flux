@@ -1,13 +1,10 @@
-# Flux (Version 5.3.1)
-Requires Flux Library 4.3.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux (Version 5.3.2)
+Requires Flux Library 4.3.1 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
 ### Changes
-- Added Polish translation
-- Added usage checks (I'm not sure if someone is using Signal Controllers)
-
-### NOTICE
-There have been many changes in source code due to updating to Minecraft 1.16.3.
-Some features may not work properly.
+- Compatibility with both Minecraft 1.16.3 and 1.16.4 versions
+- Changed deserializing recipes (it should use less memory)
+- Usage checks on blocks
 
 ----
 You can add your own native language to Flux.
