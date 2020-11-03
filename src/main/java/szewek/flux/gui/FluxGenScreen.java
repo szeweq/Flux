@@ -63,7 +63,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 		DrawUtils.drawFluidStack(matrix, hoverHotFluid, container.getHotFluid(), 4000, getBlitOffset());
 		DrawUtils.drawFluidStack(matrix, hoverColdFluid, container.getColdFluid(), 4000, getBlitOffset());
 		tooltips.checkCoords(matrixStack, mx, my);
-		func_230459_a_(matrixStack, mx, my); // Rendering tooltip
+		renderHoveredTooltip(matrixStack, mx, my); // Rendering tooltip
 	}
 
 	@Override

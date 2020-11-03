@@ -16,7 +16,7 @@ public final class MarketUtil {
 	public static boolean doTransaction(MerchantOffer offer, ItemStack stack1, ItemStack stack2) {
 		boolean accept = canAccept(offer, stack1, stack2);
 		if (accept) {
-			stack1.shrink(offer.func_222205_b().getCount());
+			stack1.shrink(offer.getBuyingStackFirst().getCount());
 			if (!offer.getBuyingStackSecond().isEmpty()) {
 				stack2.shrink(offer.getBuyingStackSecond().getCount());
 			}

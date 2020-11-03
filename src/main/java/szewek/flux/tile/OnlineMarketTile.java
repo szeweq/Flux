@@ -128,7 +128,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	}
 
 	@Override
-	public boolean func_213705_dZ() {
+	public boolean hasXPBar() {
 		return false;
 	}
 
@@ -138,7 +138,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	}
 
 	@Override
-	public boolean func_223340_ej() {
+	public boolean canRestockTrades() {
 		return true;
 	}
 

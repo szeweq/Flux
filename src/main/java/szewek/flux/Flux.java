@@ -117,12 +117,12 @@ public final class Flux {
 
 	private static void addOreGen(Metal metal, TopSolidRangeConfig cfg) {
 		Registry.register(
-				WorldGenRegistries.field_243653_e,
+				WorldGenRegistries.CONFIGURED_FEATURE,
 				new ResourceLocation(MODID, "ore_" + metal.metalName),
 				Feature.ORE.withConfiguration(new OreFeatureConfig(
-						OreFeatureConfig.FillerBlockType.field_241882_a,
+						OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
 						F.B.ORES.get(metal).getDefaultState(),
 						7
-				)).withPlacement(Placement.field_242907_l.configure(cfg)));
+				)).withPlacement(Placement.RANGE.configure(cfg)));
 	}
 }

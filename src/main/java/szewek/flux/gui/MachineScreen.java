@@ -66,7 +66,7 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 			recipeGui.func_230477_a_(matrixStack, guiLeft, guiTop, true, partialTicks);
 		}
 		// RENDER TOOLTIPS
-		func_230459_a_(matrixStack, mouseX, mouseY);
+		renderHoveredTooltip(matrixStack, mouseX, mouseY);
 		recipeGui.func_238924_c_(matrixStack, guiLeft, guiTop, mouseX, mouseY);
 	}
 
