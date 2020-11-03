@@ -17,6 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -24,6 +25,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 	private static final String RESULT = "result";
 	private final BiFunction<ResourceLocation, Builder, T> factory;
 	private final int defaultProcess;
+	private final Builder builder = new Builder();
 
 	public MachineRecipeSerializer(BiFunction<ResourceLocation, Builder, T> factory, int defaultProcess) {
 		this.factory = factory;
@@ -37,7 +39,8 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 			throw new JsonSyntaxException("Missing result, expected to find a string or object");
 		}
 		boolean tagResult = false;
-		Builder b = new Builder();
+		builder.clear();
+		Builder b = builder;
 		if (json.get(RESULT).isJsonObject()) {
 			tagResult = readResultObject(json, b);
 			if (b.result == ItemStack.EMPTY) {
@@ -122,7 +125,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 	}
 
 	public static final class Builder {
-		public final NonNullList<Ingredient> ingredients = NonNullList.create();
+		public final ArrayList<Ingredient> ingredients = new ArrayList<>();
 		public ItemStack result = ItemStack.EMPTY;
 		public String group = "";
 		public float experience;
@@ -131,6 +134,16 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		public Builder withGroup(String group) {
 			this.group = group;
 			return this;
+		}
+
+		public NonNullList<Ingredient> buildIngredients() {
+			List<Ingredient> icopy = new ArrayList<>(ingredients);
+			return new NonNullList<>(icopy, Ingredient.EMPTY);
+		}
+
+		void clear() {
+			ingredients.clear();
+			result = ItemStack.EMPTY;
 		}
 	}
 }

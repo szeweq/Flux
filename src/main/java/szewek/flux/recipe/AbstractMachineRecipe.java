@@ -9,6 +9,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.RecipeMatcher;
+import szewek.fl.network.FluxAnalytics;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.type.FluxRecipeType;
 import szewek.flux.util.inventory.IInventoryIO;
@@ -29,7 +30,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 		this.type = type;
 		this.id = id;
 		group = builder.group;
-		ingredients = builder.ingredients;
+		ingredients = builder.buildIngredients();
 		result = builder.result;
 		experience = builder.experience;
 		processTime = builder.process;
@@ -93,7 +94,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 
 	@Override
 	public final void accept(Iterable<ItemStack> stacks) {
-		ArrayList<ItemStack> filledInputs = new ArrayList<>();
+		ArrayList<ItemStack> filledInputs = new ArrayList<>(ingredients.size());
 
 		for (ItemStack stack : stacks) {
 			if (!stack.isEmpty()) {
@@ -103,6 +104,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 
 		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
 		if (match != null) {
+			FluxAnalytics.putView("flux/recipe/use/" + type.toString() + "/" + id.toString());
 			for(int i = 0; i < match.length; ++i) {
 				Ingredient ingredient = ingredients.get(match[i]);
 				int count = ingredient instanceof CountedIngredient ? ((CountedIngredient) ingredient).getCount() : 1;
