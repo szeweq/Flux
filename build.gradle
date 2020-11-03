@@ -24,7 +24,7 @@ project.version = project.version + ((project.versionSub as int) > 0 ? "-${proje
 
 String core_version = project.core_version
 
-String mc_version = "1.16.3"
+String mc_version = "1.16.4"
 String jei_version = "7.3.2.34"
 String patchouli_version = "1.16.2-44"
 
@@ -72,7 +72,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20200723-1.16.1'
+    mappings channel: 'snapshot', version: '20201028-1.16.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -144,12 +144,15 @@ processCoreResources {
 dependencies {
     minecraft "net.minecraftforge:forge:$mc_version-$forge_version"
 
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-    compileOnly fg.deobf("com.feed_the_beast.mods:ftb-gui-library:1.0.0.18") // FOR JEI
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    compileOnly "mezz.jei:jei-1.16.3:${jei_version}:api"
+    compileOnly "com.feed_the_beast.mods:ftb-gui-library:1.0.0.18" // FOR JEI
+
+    //compileOnly fg.deobf("mezz.jei:jei-1.16.3:${jei_version}:api")
+    //compileOnly fg.deobf("com.feed_the_beast.mods:ftb-gui-library:1.0.0.18") // FOR JEI
+    //runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
     //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+    //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
     // Jar from "libs" folder
     //runtimeOnly fg.deobf("mekanism:Mekanism-1.16.1:10.0.8.431")
@@ -223,6 +226,8 @@ curseforge {
         releaseType = project.versionType
         changelogType = "markdown"
         changelog = file("latest.md")
+        addGameVersion mc_version
+        addGameVersion "1.16.3"
         relations {
             requiredDependency "fl"
             optionalDependency "jei"
@@ -234,6 +239,8 @@ curseforge {
         releaseType = "release"
         changelogType = "markdown"
         changelog = file("latest-fl.md")
+        addGameVersion mc_version
+        addGameVersion "1.16.3"
         mainArtifact(coreJar) {
 
         }
