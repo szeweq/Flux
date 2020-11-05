@@ -23,10 +23,16 @@ internal fun JsonCreator.itemOrTag(name: String) {
     }
 }
 
-internal inline fun JsonCreator.pool(rolls: Int = 1, fn: JsonFunc) = obj(fn after {"rolls" set rolls})
+internal fun JsonCreator.pool(rolls: Int = 1, entries: JsonFunc, conditions: JsonFunc? = null) = obj {
+    "rolls" set rolls
+    "entries" arr entries
+    if (conditions != null) "conditions" arr conditions
+}
 
 inline infix fun JsonFunc.then(crossinline fn: JsonFunc): JsonFunc = {
     this@then()
     fn()
 }
 inline infix fun JsonFunc.after(fn: JsonFunc): JsonFunc = fn then this
+
+val condition_survivesExplosion: JsonFunc = { obj { "condition" set "minecraft:survives_explosion" } }

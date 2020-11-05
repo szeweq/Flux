@@ -1,3 +1,4 @@
+@file:JvmName("ResourceFactories")
 package szewek.mcgen.template
 
 import szewek.mcgen.util.JsonFunc
@@ -40,6 +41,8 @@ internal fun tagList(names: Array<out String>): JsonFunc = {
 }
 
 internal fun variants(fn: JsonFunc): JsonFunc = { "variants" obj fn }
+internal fun lazyTag(name: String): JsonFunc = { tag(name) }
+internal fun lazyItem(name: String): JsonFunc = { item(name) }
 
 internal fun typedRecipe(type: String, fn: JsonFunc): JsonFunc = fn after { "type" set type }
 internal fun typedLoot(type: String, fn: JsonFunc): JsonFunc = {

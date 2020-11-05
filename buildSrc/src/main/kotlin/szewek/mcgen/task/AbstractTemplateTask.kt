@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import org.gradle.api.tasks.util.PatternFilterable
-import szewek.mcgen.template.Templates
+import szewek.mcgen.template.TemplateFunc
 import szewek.mcgen.util.JsonFileWriter
 import java.io.File
 import java.io.Reader
@@ -22,7 +22,7 @@ abstract class AbstractTemplateTask(private val type: String) : AbstractProcessT
 
     override suspend fun doProcessFile(namespace: String, file: File, outputDir: File) {
         val fd = file.reader().use { GSON.fromJson<FileData>(it) }
-        val tmpl = Templates.byName(fd.name)
+        val tmpl = TemplateFunc.byName(fd.name)
         val jfw = JsonFileWriter(outputDir, namespace)
 
         fd.args.map { scope.launch(Dispatchers.IO) { tmpl.process(it, jfw) } }.joinAll()
