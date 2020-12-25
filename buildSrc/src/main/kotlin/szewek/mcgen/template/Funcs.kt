@@ -7,7 +7,7 @@ internal infix fun Int.of(that: String) = Pair(that, this)
 
 internal fun JsonCreator.item(name: String) = obj { "item" set name }
 internal fun JsonCreator.tag(name: String) = obj { "tag" set name }
-internal inline fun JsonCreator.ingredients(fn: JsonFunc) = "ingredients" arr fn
+internal inline fun JsonCreator.ingredients(crossinline fn: JsonFunc) = "ingredients" arr fn
 internal inline fun JsonCreator.typed(type: String, fn: JsonFunc) = obj(fn after { "type" set type })
 internal fun JsonCreator.keyResult(pair: Pair<String, Int>) = "result" obj { result(pair) }
 internal fun JsonCreator.result(pair: Pair<String, Int>) {

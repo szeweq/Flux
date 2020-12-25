@@ -11,16 +11,18 @@ inline class JsonCreator(val jw: JsonWriter) {
         fn()
         end()
     }
-    inline fun named(name: String, fn: JsonFunc) {
-        jw.name(name)
-        fn()
+    fun named(name: String, fn: JsonFunc?) {
+        if (fn != null) {
+            jw.name(name)
+            fn()
+        }
     }
 
     inline fun obj(fn: JsonFunc) = wrap(jw::beginObject, jw::endObject, fn)
     inline fun arr(fn: JsonFunc) = wrap(jw::beginArray, jw::endArray, fn)
 
-    inline infix fun String.obj(fn: JsonFunc) = named(this) { obj(fn) }
-    inline infix fun String.arr(fn: JsonFunc) = named(this) { arr(fn) }
+    inline infix fun String.obj(crossinline fn: JsonFunc) = named(this) { obj(fn) }
+    inline infix fun String.arr(crossinline fn: JsonFunc) = named(this) { arr(fn) }
 
     infix fun String.set(v: String) = named(this) { jw.value(v) }
     infix fun String.set(v: Number) = named(this) { jw.value(v) }
