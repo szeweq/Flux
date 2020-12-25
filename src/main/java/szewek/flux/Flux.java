@@ -11,6 +11,8 @@ import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.Placement;
@@ -20,6 +22,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -55,10 +58,7 @@ public final class Flux {
 		modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
 		FluxPackets.init();
 
-		if (!FluxCfg.COMMON.disableOres.get()) {
-			addOreGen(Metals.COPPER, new TopSolidRangeConfig(0, 0, 96));
-			addOreGen(Metals.TIN, new TopSolidRangeConfig(0, 0, 72));
-		}
+		F.features();
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -112,6 +112,18 @@ public final class Flux {
 		@SubscribeEvent
 		public static void updateTags(final TagsUpdatedEvent e) {
 			FluxGenValues.updateValues();
+		}
+
+		@SubscribeEvent
+		public static void loadBiomes(final BiomeLoadingEvent e) {
+			if (!FluxCfg.COMMON.disableOres.get()) {
+				Biome.Category bcat = e.getCategory();
+				if (bcat != Biome.Category.THEEND && bcat != Biome.Category.NETHER) {
+					e.getGeneration()
+							.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, F.W.COPPER_ORES)
+							.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, F.W.TIN_ORES);
+				}
+			}
 		}
 	}
 

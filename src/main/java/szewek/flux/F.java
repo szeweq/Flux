@@ -30,7 +30,13 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.village.PointOfInterestType;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -172,6 +178,11 @@ public final class F {
 	@SubscribeEvent
 	public static void pointsOfInterest(final RegistryEvent.Register<PointOfInterestType> re) {
 		re.getRegistry().register(V.FLUX_ENGINEER_POI);
+	}
+
+	public static void features() {
+		Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(MODID, "ore_copper"), W.COPPER_ORES);
+		Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(MODID, "ore_tin"), W.TIN_ORES);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -432,6 +443,20 @@ public final class F {
 		private static VillagerProfession job(String name, PointOfInterestType poi, SoundEvent sound) {
 			return new VillagerProfession(MODID + ':' + name, poi, ImmutableSet.of(), ImmutableSet.of(), sound)
 					.setRegistryName(MODID, name);
+		}
+	}
+
+	public static final class W {
+		public static final ConfiguredFeature<?, ?>
+				TIN_ORES = oreGen(Metals.TIN, 72),
+				COPPER_ORES = oreGen(Metals.COPPER, 96);
+
+		private static ConfiguredFeature<?, ?> oreGen(Metal metal, int top) {
+			return Feature.ORE.withConfiguration(new OreFeatureConfig(
+					OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
+					F.B.ORES.get(metal).getDefaultState(),
+					8
+			)).range(top).square().func_242731_b(20);
 		}
 	}
 
