@@ -27,16 +27,4 @@ public class OnlineMarketMerchantOffers extends MerchantOffers {
 			return null;
 		}
 	}
-
-	public static int compareOffers(MerchantOffer o1, MerchantOffer o2) {
-		ItemStack o1buy1 = o1.getBuyingStackFirst();
-		ItemStack o2buy1 = o2.getBuyingStackFirst();
-		if (o1buy1.getItem() == Items.EMERALD) {
-			if (o2buy1.getItem() == Items.EMERALD) {
-				return o1buy1.getCount() - o2buy1.getCount();
-			}
-			return -1;
-		}
-		return o1buy1.getCount() - o2buy1.getCount();
-	}
 }

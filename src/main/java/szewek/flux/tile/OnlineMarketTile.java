@@ -8,7 +8,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.util.EntityPredicates;
@@ -24,6 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.container.OnlineMarketContainer;
+import szewek.flux.util.market.MarketUtil;
 import szewek.flux.util.market.OnlineMarketMerchantOffers;
 
 import javax.annotation.Nullable;
@@ -90,18 +90,12 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 		for (VillagerEntity v : world.getEntitiesWithinAABB(EntityType.VILLAGER, scanAABB, EntityPredicates.NOT_SPECTATING)) {
 			MerchantOffers vmo = v.getOffers();
 			for (MerchantOffer offer : vmo) {
-				ItemStack first = offer.getBuyingStackFirst();
-				ItemStack second = offer.getBuyingStackSecond();
-				ItemStack result = offer.getSellingStack();
-				if (offers.stream().noneMatch(xmo -> xmo.getBuyingStackFirst().equals(first, false)
-						&& xmo.getBuyingStackSecond().equals(second, false)
-						&& xmo.getSellingStack().equals(result, false)
-				)) {
-					offers.add(offer);
+				int index = Collections.binarySearch(offers, offer, MarketUtil::compareOffers);
+				if (index < 0) {
+					offers.add(-index - 1, offer);
 				}
 			}
 		}
-		offers.sort(OnlineMarketMerchantOffers::compareOffers);
 	}
 
 	@OnlyIn(Dist.CLIENT)
