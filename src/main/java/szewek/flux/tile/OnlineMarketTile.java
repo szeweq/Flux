@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.util.EntityPredicates;
@@ -99,6 +100,17 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 				}
 			}
 		}
+		offers.sort((o1, o2) -> {
+			ItemStack o1buy1 = o1.getBuyingStackFirst();
+			ItemStack o2buy1 = o2.getBuyingStackFirst();
+			if (o1buy1.getItem() == Items.EMERALD) {
+				if (o2buy1.getItem() == Items.EMERALD) {
+					return o1buy1.getCount() - o2buy1.getCount();
+				}
+				return -1;
+			}
+			return o1buy1.getCount() - o2buy1.getCount();
+		});
 	}
 
 	@OnlyIn(Dist.CLIENT)
