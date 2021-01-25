@@ -90,9 +90,11 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 		for (VillagerEntity v : world.getEntitiesWithinAABB(EntityType.VILLAGER, scanAABB, EntityPredicates.NOT_SPECTATING)) {
 			MerchantOffers vmo = v.getOffers();
 			for (MerchantOffer offer : vmo) {
-				int index = Collections.binarySearch(offers, offer, MarketUtil::compareOffers);
-				if (index < 0) {
-					offers.add(-index - 1, offer);
+				if (offers.stream().noneMatch(o -> MarketUtil.areSameOffers(o, offer))) {
+					int index = Collections.binarySearch(offers, offer, MarketUtil::compareOffers);
+					if (index < 0) {
+						offers.add(-index - 1, offer);
+					}
 				}
 			}
 		}

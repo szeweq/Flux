@@ -64,23 +64,27 @@ public final class MarketUtil {
 	public static int compareOffers(MerchantOffer o1, MerchantOffer o2) {
 		ItemStack o1buy1 = o1.getBuyingStackFirst();
 		ItemStack o2buy1 = o2.getBuyingStackFirst();
-
-		if ((o1buy1.getItem() == Items.EMERALD && o2buy1.getItem() == Items.EMERALD) || (o1buy1.getItem() != Items.EMERALD && o2buy1.getItem() != Items.EMERALD)) {
-			int c = o1buy1.getCount() - o2buy1.getCount();
-			if (c == 0) {
-				if (o1buy1.equals(o2buy1) && o1.getBuyingStackSecond().equals(o2.getBuyingStackSecond()) && o1.getSellingStack().equals(o2.getSellingStack()))
-					c = -1;
+		if (o1buy1.getItem() != o2buy1.getItem()) {
+			if (o1buy1.getItem() == Items.EMERALD) {
+				return -1;
 			}
-			return c;
+			if (o2buy1.getItem() == Items.EMERALD) {
+				return 1;
+			}
 		}
-
-		if (o1buy1.getItem() == Items.EMERALD) {
-			return -1;
+		if (areSameOffers(o1, o2)) {
+			return 0;
 		}
-		if (o2buy1.getItem() == Items.EMERALD) {
-			return 1;
+		int c = o1buy1.getCount() - o2buy1.getCount();
+		if (c == 0) {
+			c = -1;
 		}
-		return 0;
+		return c;
 	}
 
+	public static boolean areSameOffers(MerchantOffer o1, MerchantOffer o2) {
+		return o1.getBuyingStackFirst().equals(o2.getBuyingStackFirst(), false)
+				&& o1.getBuyingStackSecond().equals(o2.getBuyingStackSecond(), false)
+				&& o1.getSellingStack().equals(o2.getSellingStack(), false);
+	}
 }
