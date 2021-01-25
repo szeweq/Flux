@@ -1,4 +1,4 @@
-# Flux Library (Version 4.3.1)
+# Flux Library (Version 4.3.2)
 
 ### Changes
-- Compatibility with both Minecraft 1.16.3 and 1.16.4 versions
+- Fixed Forge version requirement (it should work for 1.16.4 and 1.16.5)
