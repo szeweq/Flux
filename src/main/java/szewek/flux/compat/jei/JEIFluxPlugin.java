@@ -5,8 +5,10 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
@@ -137,6 +139,13 @@ public class JEIFluxPlugin implements IModPlugin {
 			}
 		}
 		return recipes;
+	}
+
+	static void setMachineRecipeLayout(IGuiItemStackGroup guiItemStacks, IIngredients ingredients) {
+		guiItemStacks.init(0, true, 0, 0);
+		guiItemStacks.init(1, true, 0, 18);
+		guiItemStacks.init(2, false, 60, 9);
+		guiItemStacks.set(ingredients);
 	}
 
 	private static class MachineScreenHandler implements IGuiContainerHandler<MachineScreen> {

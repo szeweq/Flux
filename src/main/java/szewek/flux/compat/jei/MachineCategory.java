@@ -65,11 +65,7 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, T recipe, IIngredients ingredients) {
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 0, 0);
-		guiItemStacks.init(1, true, 0, 18);
-		guiItemStacks.init(2, false, 60, 9);
-		guiItemStacks.set(ingredients);
+		JEIFluxPlugin.setMachineRecipeLayout(recipeLayout.getItemStacks(), ingredients);
 	}
 
 	@Override

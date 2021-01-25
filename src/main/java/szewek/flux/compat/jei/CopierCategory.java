@@ -78,10 +78,6 @@ public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
 
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, CopyingRecipe copyingRecipe, IIngredients ingredients) {
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 0, 0);
-		guiItemStacks.init(1, true, 0, 18);
-		guiItemStacks.init(2, false, 60, 9);
-		guiItemStacks.set(ingredients);
+		JEIFluxPlugin.setMachineRecipeLayout(recipeLayout.getItemStacks(), ingredients);
 	}
 }
