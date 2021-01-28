@@ -25,7 +25,8 @@ project.version = project.version + ((project.versionSub as int) > 0 ? "-${proje
 String core_version = project.core_version
 
 String mc_version = "1.16.4"
-String jei_version = "7.3.2.34"
+String jei_version = "7.6.1.65"
+String top_version = "1.16-3.0.6-8"
 String patchouli_version = "1.16.2-44"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -144,12 +145,14 @@ processCoreResources {
 dependencies {
     minecraft "net.minecraftforge:forge:$mc_version-$forge_version"
 
-    compileOnly "mezz.jei:jei-1.16.3:${jei_version}:api"
+    compileOnly "mezz.jei:jei-1.16.4:${jei_version}:api"
     compileOnly "com.feed_the_beast.mods:ftb-gui-library:1.0.0.18" // FOR JEI
 
     //compileOnly fg.deobf("mezz.jei:jei-1.16.3:${jei_version}:api")
     //compileOnly fg.deobf("com.feed_the_beast.mods:ftb-gui-library:1.0.0.18") // FOR JEI
-    //runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}")
+
+    compile fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
     //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
