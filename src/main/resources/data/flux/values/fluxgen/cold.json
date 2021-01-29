@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": {
-    "minecraft:water": [50, 200]
+    "minecraft:water": [2, 500]
   }
 }

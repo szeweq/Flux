@@ -3,12 +3,15 @@
   "values": {
     "minecraft:flint": [2, 2],
     "#forge:dusts/redstone": 2,
-    "#forge:storage_blocks/redstone": 20,
-    "minecraft:blaze_powder": 4,
+    "#forge:storage_blocks/redstone": 18,
+    "#forge:dusts/glowstone": 4,
+    "minecraft:glowstone": 8,
+    "minecraft:blaze_powder": 5,
     "#forge:dusts/prismarine": 3,
-    "minecraft:conduit": 30,
+    "minecraft:conduit": 25,
     "minecraft:dragon_breath": 60,
     "#forge:nether_stars": 100,
-    "minecraft:totem_of_undying": 200
+    "minecraft:totem_of_undying": 200,
+    "#forge:dusts/netherite": 80
   }
 }

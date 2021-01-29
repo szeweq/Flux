@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": {
-    "minecraft:lava": [2, 200]
+    "minecraft:lava": [2, 500]
   }
 }

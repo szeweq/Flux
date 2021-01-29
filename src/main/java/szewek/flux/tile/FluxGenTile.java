@@ -384,6 +384,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			IntPair genCold = FluxGenValues.COLD_FLUIDS.get(fluids[1].getFluid());
 			if (genCold.r <= fluids[1].getAmount()) {
 				speed = genCold.l < genCat.l ? genCat.l - genCold.l : 1;
+				gen *= speed;
 				if (genCold.r > 0) fluids[1].grow(-genCold.r);
 			} else {
 				speed = 1;

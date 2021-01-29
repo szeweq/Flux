@@ -20,9 +20,9 @@ speed = "Schnelligkeit"
 energy = "Energie"
 
 [flux.fluxgen]
-speed = "Schnelligkeit"
+factor = "Faktor"
 time = "Zeit"
-length = "Länge"
+speed = "Schnelligkeit"
 
 [flux.configgui]
 fluxGenBaseEnergyValue = "Basis Energieerzeugung für Flux-Generator"

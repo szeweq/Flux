@@ -118,7 +118,7 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 		public Product(Item item, IntPair val) {
 			type = 2;
-			typeStr = I18n.format("flux.fluxgen.speed");
+			typeStr = I18n.format("flux.fluxgen.factor");
 			this.item = new ItemStack(item, val.r);
 			fluid = FluidStack.EMPTY;
 			factorStr = "x" + val.l;
@@ -126,10 +126,10 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 		public Product(Fluid fluid, boolean hot, IntPair val) {
 			type = hot ? 1 : 0;
-			typeStr = I18n.format("flux.fluxgen." + (hot ? "time" : "length"));
+			typeStr = I18n.format("flux.fluxgen." + (hot ? "time" : "speed"));
 			this.fluid = new FluidStack(fluid, val.r);
 			item = ItemStack.EMPTY;
-			factorStr = "-" + val.l;
+			factorStr = "x" + val.l;
 		}
 
 		static Collection<Product> getAll() {
