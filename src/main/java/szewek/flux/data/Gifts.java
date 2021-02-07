@@ -22,6 +22,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.ItemHandlerHelper;
 import szewek.fl.network.FluxAnalytics;
+import szewek.flux.FluxCfg;
 import szewek.flux.network.FluxPackets;
 
 import java.util.HashSet;
@@ -70,6 +71,9 @@ public class Gifts implements IFutureReloadListener {
 	}
 
 	public static void makeGiftsForPlayer(ServerPlayerEntity player) {
+		if (!FluxCfg.COMMON.gifts.get()) {
+			return;
+		}
 		CompoundNBT data = player.getPersistentData();
 		ListNBT received = data.getList("receivedGifts", 8);
 		boolean change = false;

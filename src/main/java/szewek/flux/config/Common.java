@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class Common {
-	public final ForgeConfigSpec.BooleanValue disableOres;
+	public final ForgeConfigSpec.BooleanValue disableOres, gifts;
 	public final ForgeConfigSpec.ConfigValue<List<? extends String>> preferModCompat, blacklistCompatRecipes;
 
 	public Common(ForgeConfigSpec.Builder bld) {
@@ -19,6 +19,7 @@ public final class Common {
 		blacklistCompatRecipes = translate(bld, "blacklistCompatRecipes", "A blacklist for recipe compatibility with other mods.",
 				"Put names of recipe types you don't want them to work with Flux machines (like \"minecraft:smelting\").")
 				.defineList("blacklistCompatRecipes", Collections::emptyList, o -> true);
+		gifts = translate(bld, "gifts", "Send gifts to players on login.").define("gifts", true);
 	}
 
 	static ForgeConfigSpec.Builder translate(ForgeConfigSpec.Builder bld, String name, String... comment) {
