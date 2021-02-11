@@ -21,7 +21,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.ItemHandlerHelper;
-import szewek.fl.network.FluxAnalytics;
+import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.network.FluxPackets;
 
@@ -30,12 +30,10 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import static szewek.flux.Flux.MODID;
-
 public class Gifts implements IFutureReloadListener {
 	private static final ITextComponent RECEIVED_GIFT = new TranslationTextComponent("flux.gift.received");
 	private static final Set<ResourceLocation> GIFT_LOOT_TABLES = new HashSet<>();
-	private static final ResourceLocation GIFTS_LIST = new ResourceLocation(MODID, "gifts/global_list.json");
+	private static final ResourceLocation GIFTS_LIST = F.loc("gifts/global_list.json");
 
 	Gifts() {
 	}

@@ -71,8 +71,8 @@ public final class Flux {
 
 	@Mod.EventBusSubscriber
 	final static class Events {
-		private static final ResourceLocation FURNACE_CAP = new ResourceLocation(MODID, "furnace_energy");
-		private static final ResourceLocation CART_CAP = new ResourceLocation(MODID, "minecart_signal");
+		private static final ResourceLocation FURNACE_CAP = F.loc("furnace_energy");
+		private static final ResourceLocation CART_CAP = F.loc("minecart_signal");
 
 		@SubscribeEvent
 		public static void wrapTile(final AttachCapabilitiesEvent<TileEntity> e) {
@@ -125,16 +125,5 @@ public final class Flux {
 				}
 			}
 		}
-	}
-
-	private static void addOreGen(Metal metal, TopSolidRangeConfig cfg) {
-		Registry.register(
-				WorldGenRegistries.CONFIGURED_FEATURE,
-				new ResourceLocation(MODID, "ore_" + metal.metalName),
-				Feature.ORE.withConfiguration(new OreFeatureConfig(
-						OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
-						F.B.ORES.get(metal).getDefaultState(),
-						7
-				)).withPlacement(Placement.RANGE.configure(cfg)));
 	}
 }

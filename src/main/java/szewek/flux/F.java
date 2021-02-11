@@ -35,8 +35,6 @@ import net.minecraft.village.PointOfInterestType;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -181,8 +179,8 @@ public final class F {
 	}
 
 	public static void features() {
-		Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(MODID, "ore_copper"), W.COPPER_ORES);
-		Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(MODID, "ore_tin"), W.TIN_ORES);
+		Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, loc("ore_copper"), W.COPPER_ORES);
+		Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, loc("ore_tin"), W.TIN_ORES);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -418,7 +416,7 @@ public final class F {
 		public static final FluxRecipeType<CopyingRecipe> COPYING = recipe("copying", CopyingRecipe.SERIALIZER);
 
 		private static <T extends IRecipe<?>> FluxRecipeType<T> recipe(String key, IRecipeSerializer<T> ser) {
-			return Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, key), new FluxRecipeType<>(key, ser));
+			return Registry.register(Registry.RECIPE_TYPE, loc(key), new FluxRecipeType<>(key, ser));
 		}
 
 		private static <T extends AbstractMachineRecipe> MachineRecipeSerializer<T> serializer(BiFunction<ResourceLocation, MachineRecipeSerializer.Builder, T> factory, String key) {
@@ -463,6 +461,10 @@ public final class F {
 	public static final class Tags {
 		public static final ITag.INamedTag<Block> DIGGER_SKIP = BlockTags.makeWrapperTag(MODID + ":digger_skip");
 		public static final ITag.INamedTag<Item> MARKET_ACCEPT = ItemTags.makeWrapperTag(MODID + ":market_accept");
+	}
+
+	public static ResourceLocation loc(String path) {
+		return new ResourceLocation(MODID, path);
 	}
 
 	private static <T extends IForgeRegistryEntry<T>> void registerMapValues(Map<?, ? extends T> map, IForgeRegistry<T> reg) {
