@@ -6,7 +6,7 @@ import net.minecraftforge.common.ToolType;
 import szewek.flux.util.metals.Metal;
 
 public final class MetalBlock extends Block {
-	public MetalBlock(Metal metal) {
-		super(Block.Properties.create(Material.IRON).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3f, 3f).harvestLevel(metal.harvestLevel));
+	public MetalBlock(Metal metal, Material mat) {
+		super(Block.Properties.create(mat).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3f, 3f).harvestLevel(metal.harvestLevel));
 	}
 }

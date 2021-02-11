@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.screen.inventory.MerchantScreen;
@@ -211,8 +212,8 @@ public final class F {
 	}
 
 	public static final class B {
-		public static final Map<Metal, FluxOreBlock> ORES = makeOres();
-		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeBlocks();
+		public static final Map<Metal, MetalBlock> ORES = makeMetalBlocks(Material.ROCK, "_ore", Metal::notVanillaOrAlloy);
+		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeMetalBlocks(Material.IRON, "_block", Metal::nonVanilla);
 		public static final FluxGenBlock FLUXGEN = named(new FluxGenBlock(), "fluxgen");
 		public static final AbstractCableBlock
 				ENERGY_CABLE = named(new EnergyCableBlock(), "energy_cable"),
@@ -234,24 +235,12 @@ public final class F {
 				COMPACTOR = named(new MachineBlock(), "compactor"),
 				COPIER = named(new MachineBlock(), "copier");
 
-		private static Map<Metal, FluxOreBlock> makeOres() {
-			ImmutableMap.Builder<Metal, FluxOreBlock> mb = new ImmutableMap.Builder<>();
-			for (Metal metal : Metals.all()) {
-				if (metal.notVanillaOrAlloy()) {
-					FluxOreBlock b = new FluxOreBlock(metal);
-					b.setRegistryName("flux", metal.metalName + "_ore");
-					mb.put(metal, b);
-				}
-			}
-			return mb.build();
-		}
-
-		private static Map<Metal, MetalBlock> makeBlocks() {
+		private static Map<Metal, MetalBlock> makeMetalBlocks(Material mat, String suffix, Predicate<Metal> predicate) {
 			ImmutableMap.Builder<Metal, MetalBlock> mb = new ImmutableMap.Builder<>();
 			for (Metal metal : Metals.all()) {
-				if (metal.nonVanilla()) {
-					MetalBlock b = new MetalBlock(metal);
-					b.setRegistryName("flux", metal.metalName + "_block");
+				if (predicate.test(metal)) {
+					MetalBlock b = new MetalBlock(metal, mat);
+					b.setRegistryName(MODID, metal.metalName + suffix);
 					mb.put(metal, b);
 				}
 			}
