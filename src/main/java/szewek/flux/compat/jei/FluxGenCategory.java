@@ -33,7 +33,7 @@ import static szewek.flux.Flux.MODID;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product> {
-	private static final ResourceLocation BG_TEX = new ResourceLocation(MODID, "textures/gui/fluxgen.png");
+	private static final ResourceLocation BG_TEX = F.loc("textures/gui/fluxgen.png");
 	private final IDrawable background;
 	private final IDrawable icon;
 	private final String localizedName = I18n.format("block.flux.fluxgen");

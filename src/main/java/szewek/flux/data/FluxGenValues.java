@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import szewek.fl.util.IntPair;
+import szewek.flux.F;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -33,9 +34,9 @@ import static szewek.flux.Flux.MODID;
 public class FluxGenValues implements IFutureReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final ResourceLocation
-			CATALYST_JSON = new ResourceLocation(MODID, "values/fluxgen/catalyst.json"),
-			HOT_JSON = new ResourceLocation(MODID, "values/fluxgen/hot.json"),
-			COLD_JSON = new ResourceLocation(MODID, "values/fluxgen/cold.json");
+			CATALYST_JSON = F.loc("values/fluxgen/catalyst.json"),
+			HOT_JSON = F.loc("values/fluxgen/hot.json"),
+			COLD_JSON = F.loc("values/fluxgen/cold.json");
 
 	/* IntPair values: l = factor; r = usage */
 	public static final IntPair DEFAULT = IntPair.of(1, 0);

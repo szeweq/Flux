@@ -15,6 +15,7 @@ import szewek.fl.gui.DrawUtils;
 import szewek.fl.gui.GuiBar;
 import szewek.fl.gui.GuiRect;
 import szewek.fl.gui.HoverSet;
+import szewek.flux.F;
 import szewek.flux.container.FluxGenContainer;
 
 import java.util.Arrays;
@@ -24,7 +25,7 @@ import static szewek.flux.Flux.MODID;
 
 @OnlyIn(Dist.CLIENT)
 public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> implements HoverSet.HoverListener {
-	private static final ResourceLocation BG_TEX = new ResourceLocation(MODID, "textures/gui/fluxgen.png");
+	private static final ResourceLocation BG_TEX = F.loc("textures/gui/fluxgen.png");
 	private static final GuiBar
 			workFillBar = new GuiBar(new GuiRect(86, 34, 90, 52), 0xffa8a8a8, 0xffefefef, false),
 			energyFillBar = new GuiBar(new GuiRect(68, 63, 108, 71), 0xffa82121, 0xffef4242, true);

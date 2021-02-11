@@ -16,6 +16,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import szewek.flux.F;
 import szewek.flux.recipe.AbstractMachineRecipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,7 +35,7 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 	private final Class<T> cl;
 
 	public MachineCategory(String resUid, Class<T> tClass, IDrawable bg, IDrawable icon, IDrawableAnimated arrow) {
-		uid = new ResourceLocation(MODID, resUid);
+		uid = F.loc(resUid);
 		localizedName = I18n.format("gui.flux.jei.category." + resUid);
 		cl = tClass;
 		background = bg;

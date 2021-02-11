@@ -14,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import szewek.flux.F;
 import szewek.flux.recipe.CopyingRecipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,7 +26,7 @@ import static szewek.flux.Flux.MODID;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
-	private static final ResourceLocation TEX = new ResourceLocation(MODID, "textures/gui/copier.png");
+	private static final ResourceLocation TEX = F.loc("textures/gui/copier.png");
 	private final IDrawable
 			background,
 			icon;

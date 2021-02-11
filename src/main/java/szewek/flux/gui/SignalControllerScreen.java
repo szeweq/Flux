@@ -16,13 +16,14 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import szewek.flux.F;
 import szewek.flux.container.SignalControllerContainer;
 
 import static szewek.flux.Flux.MODID;
 
 @OnlyIn(Dist.CLIENT)
 public class SignalControllerScreen extends ContainerScreen<SignalControllerContainer> implements Button.IPressable {
-	private static final ResourceLocation BG_TEX = new ResourceLocation(MODID, "textures/gui/signal_controller.png");
+	private static final ResourceLocation BG_TEX = F.loc("textures/gui/signal_controller.png");
 	private TextFieldWidget numberInput;
 	private Button modeBtn;
 	private final IContainerListener listener = new IContainerListener() {

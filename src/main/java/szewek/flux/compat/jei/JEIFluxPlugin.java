@@ -41,17 +41,17 @@ import static szewek.flux.Flux.MODID;
 @JeiPlugin
 public class JEIFluxPlugin implements IModPlugin {
 	static final ResourceLocation
-			FLUXGEN = new ResourceLocation(MODID, "fluxgen"),
-			GRINDING = new ResourceLocation(MODID, "grinding"),
-			ALLOYING = new ResourceLocation(MODID, "alloying"),
-			WASHING = new ResourceLocation(MODID, "washing"),
-			COMPACTING = new ResourceLocation(MODID, "compacting"),
-			COPYING = new ResourceLocation(MODID, "copying"),
+			FLUXGEN = F.loc("fluxgen"),
+			GRINDING = F.loc("grinding"),
+			ALLOYING = F.loc("alloying"),
+			WASHING = F.loc("washing"),
+			COMPACTING = F.loc("compacting"),
+			COPYING = F.loc("copying"),
 			GUI_VANILLA = new ResourceLocation("jei", "textures/gui/gui_vanilla.png");
 
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation(MODID, "jei");
+		return F.loc("jei");
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class JEIFluxPlugin implements IModPlugin {
 	private static class MachineScreenHandler implements IGuiContainerHandler<MachineScreen> {
 		@Override
 		public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen, double mouseX, double mouseY) {
-			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, new ResourceLocation(MODID, containerScreen.getContainer().recipeType.toString()));
+			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, F.loc(containerScreen.getContainer().recipeType.toString()));
 			return Collections.singleton(area);
 		}
 	}
