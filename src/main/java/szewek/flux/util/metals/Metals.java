@@ -11,13 +11,13 @@ import java.util.Set;
 public final class Metals {
 	static final Set<Metal> allMetals = new HashSet<>();
 	public static final Metal
-			IRON = new VanillaMetal(0xC0C0C0, "iron", 1),
-			GOLD = new VanillaMetal(0xFFD84A, "gold", 2),
-			NETHERITE = new VanillaMetal(0x6B686B, "netherite", 4),
-			COPPER = new SimpleMetal(0xE99868, "copper", 1),
-			TIN = new SimpleMetal(0xCAD6DC, "tin", 1),
-			BRONZE = new AlloyMetal(0xCCA168, "bronze", 2),
-			STEEL = new AlloyMetal(0xA0A0A0, "steel", 3);
+			IRON = Metal.vanilla(0xC0C0C0, "iron", 1),
+			GOLD = Metal.vanilla(0xFFD84A, "gold", 2),
+			NETHERITE = new Metal(0x6B686B, "netherite", 4, Metal.NO_ORE | Metal.VANILLA),
+			COPPER = new Metal(0xE99868, "copper", 1),
+			TIN = new Metal(0xCAD6DC, "tin", 1),
+			BRONZE = Metal.alloy(0xCCA168, "bronze", 2),
+			STEEL = Metal.alloy(0xA0A0A0, "steel", 3);
 
 	private Metals() {}
 

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -212,8 +213,8 @@ public final class F {
 	}
 
 	public static final class B {
-		public static final Map<Metal, MetalBlock> ORES = makeMetalBlocks(Material.ROCK, "_ore", Metal::notVanillaOrAlloy);
-		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeMetalBlocks(Material.IRON, "_block", Metal::nonVanilla);
+		public static final Map<Metal, MetalBlock> ORES = makeMetalBlocks(B::oreProps, "_ore", Metal.VANILLA | Metal.ALLOY);
+		public static final Map<Metal, MetalBlock> METAL_BLOCKS = makeMetalBlocks(B::blockProps, "_block", Metal.VANILLA);
 		public static final FluxGenBlock FLUXGEN = named(new FluxGenBlock(), "fluxgen");
 		public static final AbstractCableBlock
 				ENERGY_CABLE = named(new EnergyCableBlock(), "energy_cable"),
@@ -235,28 +236,36 @@ public final class F {
 				COMPACTOR = named(new MachineBlock(), "compactor"),
 				COPIER = named(new MachineBlock(), "copier");
 
-		private static Map<Metal, MetalBlock> makeMetalBlocks(Material mat, String suffix, Predicate<Metal> predicate) {
+		private static Map<Metal, MetalBlock> makeMetalBlocks(Supplier<AbstractBlock.Properties> propFn, String suffix, int flagCheck) {
 			ImmutableMap.Builder<Metal, MetalBlock> mb = new ImmutableMap.Builder<>();
 			for (Metal metal : Metals.all()) {
-				if (predicate.test(metal)) {
-					MetalBlock b = new MetalBlock(metal, mat);
+				if ((metal.flags & flagCheck) == 0) {
+					MetalBlock b = new MetalBlock(propFn.get(), metal);
 					b.setRegistryName(MODID, metal.metalName + suffix);
 					mb.put(metal, b);
 				}
 			}
 			return mb.build();
 		}
+
+		private static AbstractBlock.Properties oreProps() {
+			return AbstractBlock.Properties.create(Material.ROCK);
+		}
+
+		private static AbstractBlock.Properties blockProps() {
+			return AbstractBlock.Properties.create(Material.IRON);
+		}
 	}
 
 	@SuppressWarnings("unused")
 	public static final class I {
 		public static final Map<Metal, MetalItem>
-				GRITS = metalMap("grit", (m) -> m.nonAlloy() && m != Metals.NETHERITE),
-				DUSTS = metalMap("dust", null),
-				INGOTS = metalMap("ingot", Metal::nonVanilla),
-				NUGGETS = metalMap("nugget", Metal::nonVanilla),
-				GEARS = metalMap("gear", null),
-				PLATES = metalMap("plate", null);
+				GRITS = metalMap("grit", Metal.ALLOY | Metal.NO_ORE),
+				DUSTS = metalMap("dust", 0),
+				INGOTS = metalMap("ingot", Metal.VANILLA),
+				NUGGETS = metalMap("nugget", Metal.VANILLA),
+				GEARS = metalMap("gear", 0),
+				PLATES = metalMap("plate", 0);
 		public static final GiftItem GIFT = named(new GiftItem(props().maxStackSize(1)), "gift");
 		public static final Item MACHINE_BASE = named(new Item(props()), "machine_base");
 		public static final ChipItem CHIP = named(new ChipItem(props()), "chip");
@@ -294,11 +303,11 @@ public final class F {
 			STEEL_TOOLS = new Toolset(STEEL_TIER, "steel");
 		}
 
-		private static Map<Metal, MetalItem> metalMap(String type, Predicate<Metal> filter) {
+		private static Map<Metal, MetalItem> metalMap(String type, int flagCheck) {
 			ImmutableMap.Builder<Metal, MetalItem> mb = new ImmutableMap.Builder<>();
 			Item.Properties p = props();
 			for (Metal met : Metals.all()) {
-				if (filter == null || filter.test(met)) {
+				if ((met.flags & flagCheck) == 0) {
 					mb.put(met, named(new MetalItem(p, met), met.metalName + '_' + type));
 				}
 			}
