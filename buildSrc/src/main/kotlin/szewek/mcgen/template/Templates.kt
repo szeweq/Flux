@@ -106,14 +106,15 @@ private fun metalRecipes(v: JsonElement, out: JsonFileWriter) {
 
 private fun metalRecipesTagged(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
+    val dustsTag = "#forge:dusts/$item"
     out("${item}_dust_grinding_ore",
-            fluxMachine("grinding", 2 of "#forge:dusts/$item", lazyTag("forge:ores/$item"))
+            fluxMachine("grinding", 2 of dustsTag, lazyTag("forge:ores/$item"))
     )
     out("${item}_dust_grinding_grit",
-            fluxMachine("grinding", 1 of "#forge:dusts/$item", lazyTag("forge:grits/$item"))
+            fluxMachine("grinding", 1 of dustsTag, lazyTag("forge:grits/$item"))
     )
     out("${item}_dust_grinding_ingot",
-            fluxMachine("grinding", 1 of "#forge:dusts/$item", lazyTag("forge:ingots/$item"))
+            fluxMachine("grinding", 1 of dustsTag, lazyTag("forge:ingots/$item"))
     )
     out("${item}_grit_washing_ore",
             fluxMachine("washing", 3 of "#forge:grits/$item", lazyTag("forge:ores/$item"))
@@ -164,15 +165,18 @@ private fun toolRecipes(v: JsonElement, out: JsonFileWriter) {
 private fun metalTags(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
     val ns = out.namespace
+    val nsItem = "${out.namespace}:$item"
     if (!isVanilla(item)) {
         if (!isAlloy(item)) {
-            out("items/ores/${item}", singleTag("$ns:${item}_ore"))
-            out("blocks/ores/${item}", singleTag("$ns:${item}_ore"))
+            val ore = "${nsItem}_ore"
+            out("items/ores/${item}", singleTag(ore))
+            out("blocks/ores/${item}", singleTag(ore))
         }
+        val block = "${nsItem}_block"
         out("items/ingots/$item", singleTag("$ns:${item}_ingot"))
         out("items/nuggets/$item", singleTag("$ns:${item}_nugget"))
-        out("items/storage_blocks/$item", singleTag("$ns:${item}_block"))
-        out("blocks/storage_blocks/$item", singleTag("$ns:${item}_block"))
+        out("items/storage_blocks/$item", singleTag(block))
+        out("blocks/storage_blocks/$item", singleTag(block))
     }
     out("items/dusts/$item", singleTag("$ns:${item}_dust"))
     if (!isAlloy(item)) out("items/grits/$item", singleTag("$ns:${item}_grit"))
