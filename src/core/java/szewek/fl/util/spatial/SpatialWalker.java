@@ -1,13 +1,7 @@
-package szewek.fl.util;
+package szewek.fl.util.spatial;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * SpatialWalker is a programmable block position iterator.
@@ -16,7 +10,7 @@ public abstract class SpatialWalker {
 	private int x, y, z;
 	protected final int minX, minY, minZ;
 	protected final int maxX, maxY, maxZ;
-	private Action[] actions;
+	private WalkAction[] actions;
 
 	public SpatialWalker(int ax, int ay, int az, int zx, int zy, int zz) {
 		minX = ax;
@@ -35,14 +29,14 @@ public abstract class SpatialWalker {
 		z = sz ? minZ : maxZ;
 	}
 
-	public void putActions(Action... actions) {
+	public void putActions(WalkAction... actions) {
 		this.actions = actions.clone();
 	}
 
 	public boolean walk() {
 		if (canWalk()) {
 			for(int i = 0; i < actions.length; i++) {
-				Action a = actions[i];
+				WalkAction a = actions[i];
 				switch (a) {
 					case X_POS:
 						if (++x > maxX) {
@@ -119,22 +113,4 @@ public abstract class SpatialWalker {
 		return pos.add(x, y, z);
 	}
 
-	public static class NonStop extends SpatialWalker {
-		public NonStop(int x, int y, int z) {
-			super(-x, -y, -z, x, y, z);
-		}
-
-		public NonStop(int ax, int ay, int az, int zx, int zy, int zz) {
-			super(ax, ay, az, zx, zy, zz);
-		}
-
-		@Override
-		public boolean canWalk() {
-			return true;
-		}
-	}
-
-	public enum Action {
-		X_POS, X_NEG, Y_POS, Y_NEG, Z_POS, Z_NEG, LOOP
-	}
 }
