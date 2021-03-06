@@ -11,8 +11,8 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
 import net.minecraftforge.common.Tags;
 import szewek.fl.util.ItemsUtil;
-import szewek.fl.util.SpatialWalker;
-import szewek.fl.util.SpatialWalker.Action;
+import szewek.fl.util.spatial.NonStopWalker;
+import szewek.fl.util.spatial.WalkAction;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 
@@ -23,10 +23,10 @@ import java.util.List;
 public class FarmerTile extends BlockInteractingTile {
 
 	public FarmerTile() {
-		super(F.T.FARMER, new SpatialWalker.NonStop(5, 0, 5), FluxCfg.ENERGY.farmer);
+		super(F.T.FARMER, new NonStopWalker(5, 0, 5), FluxCfg.ENERGY.farmer);
 
 		walker.startFrom(true, true, true);
-		walker.putActions(Action.X_POS, Action.Z_POS, Action.LOOP);
+		walker.putActions(WalkAction.X_POS, WalkAction.Z_POS, WalkAction.LOOP);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
-import szewek.fl.util.SpatialWalker;
+import szewek.fl.util.spatial.SpatialWalker;
 
 abstract class BlockInteractingTile extends PoweredTile {
 	protected final SpatialWalker walker;

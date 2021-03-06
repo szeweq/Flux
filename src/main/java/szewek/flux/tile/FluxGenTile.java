@@ -15,6 +15,7 @@ import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.Explosion;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -111,6 +112,9 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			} else if (energy.generate(work.gen)) {
 				work.tick();
 				markDirty();
+			} else if (work.gen > energy.getMaxEnergyStored()) {
+				// BLOW UP
+				world.createExplosion(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 9.0F, Explosion.Mode.DESTROY);
 			}
 		}
 		energy.share(energyCache);

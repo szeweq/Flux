@@ -9,8 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import szewek.fl.util.ItemsUtil;
-import szewek.fl.util.SpatialWalker;
-import szewek.fl.util.SpatialWalker.Action;
+import szewek.fl.util.spatial.NonStopWalker;
+import szewek.fl.util.spatial.WalkAction;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.block.ActiveTileBlock;
@@ -21,9 +21,9 @@ public final class DiggerTile extends BlockInteractingTile {
 	private boolean lastFlag;
 
 	public DiggerTile() {
-		super(F.T.DIGGER, new SpatialWalker.NonStop(-5, -256, -5, 5, -1, 5), FluxCfg.ENERGY.digger);
+		super(F.T.DIGGER, new NonStopWalker(-5, -256, -5, 5, -1, 5), FluxCfg.ENERGY.digger);
 		walker.startFrom(true, false, true);
-		walker.putActions(Action.X_POS, Action.Z_POS, Action.Y_NEG);
+		walker.putActions(WalkAction.X_POS, WalkAction.Z_POS, WalkAction.Y_NEG);
 	}
 
 	@Override
