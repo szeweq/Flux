@@ -1,8 +1,6 @@
 package szewek.flux.tile.cable;
 
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
-import szewek.flux.tile.part.SelfLazy;
+import szewek.fl.util.lazy.SelfLazy;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

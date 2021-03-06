@@ -1,4 +1,4 @@
-package szewek.flux.tile.part;
+package szewek.fl.util.lazy;
 
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;

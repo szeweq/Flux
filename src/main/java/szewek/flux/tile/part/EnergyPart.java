@@ -3,6 +3,7 @@ package szewek.flux.tile.part;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.energy.IEnergyStorage;
+import szewek.fl.util.lazy.SelfLazy;
 
 import javax.annotation.Nonnull;
 
