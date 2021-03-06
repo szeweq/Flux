@@ -61,8 +61,4 @@ public final class FluxAnalytics {
 		}
 		send(form);
 	}
-
-	public static void putAction(final String cat, final String type) {
-		send("t=event&ec=" + safeParam(cat) + "&ea=" + safeParam(type));
-	}
 }
