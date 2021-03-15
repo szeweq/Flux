@@ -25,7 +25,7 @@ project.version = project.version + ((project.versionSub as int) > 0 ? "-${proje
 String core_version = project.core_version
 
 String mc_version = "1.16.4"
-String jei_version = "7.6.1.65"
+String jei_version = "7.6.1.72"
 String top_version = "1.16-3.0.6-8"
 String patchouli_version = "1.16.2-44"
 
