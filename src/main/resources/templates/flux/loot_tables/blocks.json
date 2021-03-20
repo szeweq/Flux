@@ -1,4 +1,4 @@
 {
   "name": "blockLootTables",
-  "args": ["energy_cable", "digger", "farmer", "butcher", "mob_pounder", "item_absorber", "online_market", "rrtable"]
+  "args": ["energy_cable", "digger", "farmer", "butcher", "mob_pounder", "item_absorber", "online_market"]
 }

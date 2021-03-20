@@ -219,7 +219,6 @@ public final class F {
 		public static final AbstractCableBlock
 				ENERGY_CABLE = named(new EnergyCableBlock(), "energy_cable"),
 				SIGNAL_CABLE = named(new SignalCableBlock(), "signal_cable");
-		public static final RRTableBlock RR_TABLE = named(new RRTableBlock(), "rrtable");
 		public static final OnlineMarketBlock ONLINE_MARKET = named(new OnlineMarketBlock(), "online_market");
 		public static final InteractorRailBlock INTERACTOR_RAIL = named(new InteractorRailBlock(), "interactor_rail");
 		public static final SignalControllerBlock SIGNAL_CONTROLLER = named(new SignalControllerBlock(), "signal_controller");
@@ -328,7 +327,6 @@ public final class F {
 		public static final TileEntityType<ButcherTile> BUTCHER;
 		public static final TileEntityType<MobPounderTile> MOB_POUNDER;
 		public static final TileEntityType<ItemAbsorberTile> ITEM_ABSORBER;
-		public static final TileEntityType<RRTableTile> RR_TABLE;
 		public static final TileEntityType<OnlineMarketTile> ONLINE_MARKET;
 		public static final TileEntityType<InteractorRailTile> INTERACTOR_RAIL;
 		public static final TileEntityType<SignalControllerTile> SIGNAL_CONTROLLER;
@@ -348,7 +346,6 @@ public final class F {
 			BUTCHER = tile(ButcherTile::new, B.BUTCHER);
 			MOB_POUNDER = tile(MobPounderTile::new, B.MOB_POUNDER);
 			ITEM_ABSORBER = tile(ItemAbsorberTile::new, B.ITEM_ABSORBER);
-			RR_TABLE = tile(RRTableTile::new, B.RR_TABLE);
 			ONLINE_MARKET = tile(OnlineMarketTile::new, B.ONLINE_MARKET);
 			INTERACTOR_RAIL = tile(InteractorRailTile::new, B.INTERACTOR_RAIL);
 			SIGNAL_CONTROLLER = tile(SignalControllerTile::new, B.SIGNAL_CONTROLLER);
