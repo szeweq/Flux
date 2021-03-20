@@ -6,7 +6,7 @@
     {
       "type": "spotlight",
       "item": "flux:item_absorber",
-      "text": "A vacuum hopper"
+      "text": "A vacuum hopper. Picks up any item in a 5x5 box radius."
     },
     {
       "type": "crafting",

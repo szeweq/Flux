@@ -6,7 +6,7 @@
     {
       "type": "spotlight",
       "item": "flux:digger",
-      "text": "Your D-Word Pass. Digs ores and non-common blocks in 5x5 area under it. Place a chest next to it to collect drops."
+      "text": "This machine will silently dig ores and non-common blocks in 5x5 area under it. Place a chest next to it to collect drops."
     },
     {
       "type": "crafting",

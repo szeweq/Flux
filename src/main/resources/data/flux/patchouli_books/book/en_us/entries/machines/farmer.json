@@ -6,7 +6,7 @@
     {
       "type": "spotlight",
       "item": "flux:farmer",
-      "text": "That's a crop spitting monster. Place a chest next to it to store crops."
+      "text": "Creates a 5x5 automated farming area. Place a chest next to it to store crops."
     },
     {
       "type": "crafting",
