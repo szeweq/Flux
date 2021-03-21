@@ -50,7 +50,7 @@ public final class ItemsUtil {
 	}
 
 	public static IItemHandler getItemHandlerCompat(TileEntity tile, Direction dir) {
-		final LazyOptional<IItemHandler> il = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
+		final LazyOptional<IItemHandler> il = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir);
 		IItemHandler iih = null;
 		if (il.isPresent()) {
 			//noinspection ConstantConditions
