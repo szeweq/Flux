@@ -8,15 +8,9 @@ import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.gen.placement.TopSolidRangeConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -38,8 +32,6 @@ import szewek.flux.data.Gifts;
 import szewek.flux.energy.FurnaceEnergy;
 import szewek.flux.network.FluxPackets;
 import szewek.flux.signal.MinecartSignals;
-import szewek.flux.util.metals.Metal;
-import szewek.flux.util.metals.Metals;
 
 @Mod(Flux.MODID)
 public final class Flux {
