@@ -15,7 +15,7 @@ public final class GrindingRecipe extends AbstractMachineRecipe {
 	}
 
 	@Override
-	public ItemStack getIcon() {
+	public ItemStack getToastSymbol() {
 		return new ItemStack(F.B.GRINDING_MILL);
 	}
 }

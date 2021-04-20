@@ -52,7 +52,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() {
+	public ItemStack getResultItem() {
 		return result;
 	}
 
@@ -72,7 +72,7 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 
 		int inputSize = inv.getIOSize().in;
 		for (int i = 0; i < inputSize; i++) {
-			ItemStack stack = inv.getStackInSlot(i);
+			ItemStack stack = inv.getItem(i);
 			if (!stack.isEmpty()) {
 				filledInputs.add(stack);
 			}
@@ -83,12 +83,12 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 	}
 
 	@Override
-	public ItemStack getCraftingResult(IInventoryIO inv) {
+	public ItemStack assemble(IInventoryIO inv) {
 		return result.copy();
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return ingredients.size() <= width * height;
 	}
 

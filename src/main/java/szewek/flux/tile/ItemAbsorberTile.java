@@ -17,8 +17,8 @@ public class ItemAbsorberTile extends EntityInteractingTile {
 
 	@Override
 	protected void interact(int usage) {
-		assert world != null;
-		List<ItemEntity> itemDrops = world.getEntitiesWithinAABB(ItemEntity.class, aabb);
+		assert level != null;
+		List<ItemEntity> itemDrops = level.getEntitiesOfClass(ItemEntity.class, aabb);
 		List<ItemStack> list = new ArrayList<>();
 		for (ItemEntity itemDrop : itemDrops) {
 			if (!energy.use(usage)) break;
@@ -26,6 +26,6 @@ public class ItemAbsorberTile extends EntityInteractingTile {
 			list.add(item);
 			itemDrop.remove();
 		}
-		ItemsUtil.trySendingItems(list, world, pos);
+		ItemsUtil.trySendingItems(list, level, worldPosition);
 	}
 }

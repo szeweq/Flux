@@ -21,8 +21,8 @@ public class ActiveTileBlock extends Block {
 	public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
 	public ActiveTileBlock() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(1f).sound(SoundType.METAL));
-		setDefaultState(getStateContainer().getBaseState().with(LIT, false));
+		super(Block.Properties.of(Material.METAL).strength(1f).sound(SoundType.METAL));
+		registerDefaultState(stateDefinition.any().setValue(LIT, false));
 	}
 
 	@Override
@@ -37,13 +37,13 @@ public class ActiveTileBlock extends Block {
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(LIT);
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (worldIn.isRemote) {
+	public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		if (worldIn.isClientSide) {
 			FluxAnalytics.putView("flux/place/" + getRegistryName());
 		}
 	}

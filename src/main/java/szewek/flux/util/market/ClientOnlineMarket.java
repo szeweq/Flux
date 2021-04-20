@@ -12,16 +12,16 @@ public class ClientOnlineMarket extends NPCMerchant {
 
 	public ClientOnlineMarket(PlayerEntity p_i50184_1_) {
 		super(p_i50184_1_);
-		super.setClientSideOffers(new OnlineMarketMerchantOffers());
+		super.overrideOffers(new OnlineMarketMerchantOffers());
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void setClientSideOffers(@Nullable MerchantOffers offers) {
+	public void overrideOffers(@Nullable MerchantOffers offers) {
 		OnlineMarketMerchantOffers marketOffers = new OnlineMarketMerchantOffers();
 		if (offers != null) {
 			marketOffers.addAll(offers);
 		}
-		super.setClientSideOffers(marketOffers);
+		super.overrideOffers(marketOffers);
 	}
 }

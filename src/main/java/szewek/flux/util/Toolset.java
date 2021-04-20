@@ -17,11 +17,11 @@ public class Toolset {
 
 	public Toolset(FluxItemTier tier, String name) {
 		this.tier = tier;
-		sword = new SwordItem(tier, 3, -2.4f, new Item.Properties().group(ItemGroup.COMBAT));
-		shovel = new ShovelItem(tier, 1.5f, -3.0f, new Item.Properties().group(ItemGroup.TOOLS));
-		pickaxe = new PickaxeItem(tier, 1, -2.8f, new Item.Properties().group(ItemGroup.TOOLS));
-		axe = new AxeItem(tier, 6, -3.1f, new Item.Properties().group(ItemGroup.TOOLS));
-		hoe = new HoeItem(tier, Math.max(tier.getHarvestLevel()-4, 0), 0, new Item.Properties().group(ItemGroup.TOOLS));
+		sword = new SwordItem(tier, 3, -2.4f, new Item.Properties().tab(ItemGroup.TAB_COMBAT));
+		shovel = new ShovelItem(tier, 1.5f, -3.0f, new Item.Properties().tab(ItemGroup.TAB_TOOLS));
+		pickaxe = new PickaxeItem(tier, 1, -2.8f, new Item.Properties().tab(ItemGroup.TAB_TOOLS));
+		axe = new AxeItem(tier, 6, -3.1f, new Item.Properties().tab(ItemGroup.TAB_TOOLS));
+		hoe = new HoeItem(tier, Math.max(tier.getHarvestLevel()-4, 0), 0, new Item.Properties().tab(ItemGroup.TAB_TOOLS));
 
 		sword.setRegistryName(Flux.MODID, name + "_sword");
 		shovel.setRegistryName(Flux.MODID, name + "_shovel");

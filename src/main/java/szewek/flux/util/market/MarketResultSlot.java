@@ -26,42 +26,42 @@ public class MarketResultSlot extends Slot {
 		this.merchantInventory = merchantInventory;
 	}
 
-	public boolean isItemValid(ItemStack stack) {
+	public boolean mayPlace(ItemStack stack) {
 		return false;
 	}
 
-	public ItemStack decrStackSize(int amount) {
-		if (getHasStack()) {
-			removeCount += Math.min(amount, getStack().getCount());
+	public ItemStack remove(int amount) {
+		if (hasItem()) {
+			removeCount += Math.min(amount, getItem().getCount());
 		}
 
-		return super.decrStackSize(amount);
+		return super.remove(amount);
 	}
 
-	protected void onCrafting(ItemStack stack, int amount) {
+	protected void onQuickCraft(ItemStack stack, int amount) {
 		removeCount += amount;
-		onCrafting(stack);
+		checkTakeAchievements(stack);
 	}
 
-	protected void onCrafting(ItemStack stack) {
-		stack.onCrafting(player.world, player, removeCount);
+	protected void checkTakeAchievements(ItemStack stack) {
+		stack.onCraftedBy(player.level, player, removeCount);
 		removeCount = 0;
 	}
 
 	public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
-		onCrafting(stack);
-		MerchantOffer offer = merchantInventory.func_214025_g();
+		checkTakeAchievements(stack);
+		MerchantOffer offer = merchantInventory.getActiveOffer();
 		if (offer != null) {
-			ItemStack stack1 = merchantInventory.getStackInSlot(0);
-			ItemStack stack2 = merchantInventory.getStackInSlot(1);
+			ItemStack stack1 = merchantInventory.getItem(0);
+			ItemStack stack2 = merchantInventory.getItem(1);
 			if (MarketUtil.doTransaction(offer, stack1, stack2) || MarketUtil.doTransaction(offer, stack2, stack1)) {
-				merchant.onTrade(offer);
-				thePlayer.addStat(Stats.TRADED_WITH_VILLAGER);
-				merchantInventory.setInventorySlotContents(0, stack1);
-				merchantInventory.setInventorySlotContents(1, stack2);
+				merchant.notifyTrade(offer);
+				thePlayer.awardStat(Stats.TRADED_WITH_VILLAGER);
+				merchantInventory.setItem(0, stack1);
+				merchantInventory.setItem(1, stack2);
 			}
 
-			merchant.setXP(merchant.getXp() + offer.getGivenExp());
+			merchant.overrideXp(merchant.getVillagerXp() + offer.getXp());
 		}
 
 		return stack;

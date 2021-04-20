@@ -26,7 +26,7 @@ public class CopierTile extends AbstractMachineTile {
 	protected boolean canProcess() {
 		if (cachedRecipe == null) {
 			//noinspection ConstantConditions
-			setCachedRecipe(world.getRecipeManager().getRecipe(F.R.COPYING, this, world).orElse(null));
+			setCachedRecipe(level.getRecipeManager().getRecipeFor(F.R.COPYING, this, level).orElse(null));
 		}
 		if (cachedRecipe != null) {
 			ItemStack result = inv.get(1);
@@ -47,7 +47,7 @@ public class CopierTile extends AbstractMachineTile {
 				ItemStack output = inv.get(2);
 				if (output.isEmpty()) {
 					inv.set(2, copied);
-				} else if (ItemStack.areItemStacksEqual(copied, output)) {
+				} else if (ItemStack.isSame(copied, output)) {
 					output.grow(1);
 				}
 				RecipeCompat.getRecipeItemsConsumer(cachedRecipe).accept(inv.subList(0, 1));
@@ -62,7 +62,7 @@ public class CopierTile extends AbstractMachineTile {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return index == 0;
 	}
 
@@ -72,7 +72,7 @@ public class CopierTile extends AbstractMachineTile {
 	}
 
 	@Override
-	public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
+	public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
 		return index == 2;
 	}
 

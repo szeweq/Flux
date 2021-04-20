@@ -33,8 +33,8 @@ public class InteractorRailBlock extends AbstractRailBlock {
 	public static final BooleanProperty TRIGGERED = BlockStateProperties.TRIGGERED;
 
 	public InteractorRailBlock() {
-		super(true, Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0.7F).sound(SoundType.METAL));
-		setDefaultState(stateContainer.getBaseState().with(SHAPE, RailShape.NORTH_SOUTH).with(POWERED, false).with(TRIGGERED, false));
+		super(true, Block.Properties.of(Material.DECORATION).noCollission().strength(0.7F).sound(SoundType.METAL));
+		registerDefaultState(stateDefinition.any().setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(POWERED, false).setValue(TRIGGERED, false));
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class InteractorRailBlock extends AbstractRailBlock {
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-		if (!worldIn.isRemote) {
+	public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+		if (!worldIn.isClientSide) {
 			updateTile(worldIn, pos, state);
 		}
 	}
@@ -65,44 +65,44 @@ public class InteractorRailBlock extends AbstractRailBlock {
 	}
 
 	private void updateTile(World world, BlockPos pos, BlockState state) {
-		boolean trigger = state.get(TRIGGERED);
-		TileEntity tile = world.getTileEntity(pos);
+		boolean trigger = state.getValue(TRIGGERED);
+		TileEntity tile = world.getBlockEntity(pos);
 		if (tile instanceof InteractorRailTile) {
 			InteractorRailTile irTile = (InteractorRailTile) tile;
-			List<AbstractMinecartEntity> minecarts = world.getEntitiesWithinAABB(AbstractMinecartEntity.class, getDectectionBox(pos), null);
+			List<AbstractMinecartEntity> minecarts = world.getEntitiesOfClass(AbstractMinecartEntity.class, getDectectionBox(pos), null);
 			irTile.setMinecarts(minecarts);
 			boolean newTrigger = !minecarts.isEmpty();
 
 			if (trigger != newTrigger) {
-				world.setBlockState(pos, state.with(TRIGGERED, newTrigger));
+				world.setBlockAndUpdate(pos, state.setValue(TRIGGERED, newTrigger));
 			}
 
 			if (newTrigger) {
-				world.getPendingBlockTicks().scheduleTick(pos, this, 10);
+				world.getBlockTicks().scheduleTick(pos, this, 10);
 			}
 		} else {
-			world.setBlockState(pos, state.with(TRIGGERED, false));
+			world.setBlockAndUpdate(pos, state.setValue(TRIGGERED, false));
 		}
 	}
 
 	@Override
 	protected void updateState(BlockState state, World worldIn, BlockPos pos, Block blockIn) {
-		boolean flag = state.get(POWERED);
-		boolean flag1 = worldIn.isBlockPowered(pos);// || findPoweredRailSignal(worldIn, pos, state, true, 0) || findPoweredRailSignal(worldIn, pos, state, false, 0);
+		boolean flag = state.getValue(POWERED);
+		boolean flag1 = worldIn.hasNeighborSignal(pos);// || findPoweredRailSignal(worldIn, pos, state, true, 0) || findPoweredRailSignal(worldIn, pos, state, false, 0);
 		if (flag1 != flag) {
-			BlockState newState = state.with(POWERED, flag1);
-			worldIn.setBlockState(pos, newState, 3);
+			BlockState newState = state.setValue(POWERED, flag1);
+			worldIn.setBlock(pos, newState, 3);
 			RailState railstate = new RailState(worldIn, pos, state);
-			for(BlockPos blockpos : railstate.getConnectedRails()) {
+			for(BlockPos blockpos : railstate.getConnections()) {
 				BlockState blockstate = worldIn.getBlockState(blockpos);
 				blockstate.neighborChanged(worldIn, blockpos, blockstate.getBlock(), pos, false);
 			}
-			worldIn.notifyNeighborsOfStateChange(pos, this);
-			worldIn.notifyNeighborsOfStateChange(pos.down(), this);
-			if (state.get(SHAPE).isAscending()) {
-				worldIn.notifyNeighborsOfStateChange(pos.up(), this);
+			worldIn.updateNeighborsAt(pos, this);
+			worldIn.updateNeighborsAt(pos.below(), this);
+			if (state.getValue(SHAPE).isAscending()) {
+				worldIn.updateNeighborsAt(pos.above(), this);
 			}
-			worldIn.markBlockRangeForRenderUpdate(pos, state, newState);
+			worldIn.onBlockStateChange(pos, state, newState);
 		}
 
 	}
@@ -113,21 +113,21 @@ public class InteractorRailBlock extends AbstractRailBlock {
 	}
 
 	@Override
-	public boolean canProvidePower(BlockState state) {
+	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+	public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
 		return 0;
 	}
 
 	@Override
-	public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-		if (blockAccess.getBlockState(pos.offset(side.getOpposite())).getBlock() == this) {
+	public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+		if (blockAccess.getBlockState(pos.relative(side.getOpposite())).getBlock() == this) {
 			return 0;
 		}
-		return blockState.get(POWERED) ? 15 : 0;
+		return blockState.getValue(POWERED) ? 15 : 0;
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class InteractorRailBlock extends AbstractRailBlock {
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(SHAPE, POWERED, TRIGGERED);
 	}
 }

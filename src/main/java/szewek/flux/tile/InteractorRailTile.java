@@ -39,8 +39,8 @@ public class InteractorRailTile extends TileEntity {
 	}
 
 	@Override
-	public void remove() {
-		super.remove();
+	public void setRemoved() {
+		super.setRemoved();
 		minecarts.clear();
 	}
 }

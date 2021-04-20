@@ -16,15 +16,15 @@ abstract class BlockInteractingTile extends PoweredTile {
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void load(BlockState blockState, CompoundNBT compound) {
+		super.load(blockState, compound);
 		walker.read(compound);
 		disabled = compound.getBoolean("Disabled");
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public CompoundNBT save(CompoundNBT compound) {
+		super.save(compound);
 		walker.write(compound);
 		compound.putBoolean("Disabled", disabled);
 		return compound;

@@ -26,7 +26,7 @@ public class MachineInventory extends AbstractList<ItemStack> {
 			CompoundNBT compoundnbt = listnbt.getCompound(i);
 			int j = compoundnbt.getByte("Slot") & 255;
 			if (j < stacks.length) {
-				stacks[j] = ItemStack.read(compoundnbt);
+				stacks[j] = ItemStack.of(compoundnbt);
 			}
 		}
 	}
@@ -39,7 +39,7 @@ public class MachineInventory extends AbstractList<ItemStack> {
 			if (!itemstack.isEmpty()) {
 				CompoundNBT compoundnbt = new CompoundNBT();
 				compoundnbt.putByte("Slot", (byte)i);
-				itemstack.write(compoundnbt);
+				itemstack.save(compoundnbt);
 				listnbt.add(compoundnbt);
 			}
 		}
@@ -108,7 +108,7 @@ public class MachineInventory extends AbstractList<ItemStack> {
 			if (outputStack.isEmpty()) {
 				return true;
 			}
-			if (!outputStack.isItemEqual(result)) {
+			if (!outputStack.sameItem(result)) {
 				return false;
 			}
 			int minStackSize = Math.min(Math.min(64, outputStack.getMaxStackSize()), result.getMaxStackSize());

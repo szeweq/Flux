@@ -27,16 +27,16 @@ import szewek.flux.tile.AbstractMachineTile;
 import javax.annotation.Nullable;
 
 public final class MachineBlock extends Block {
-	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+	public static final DirectionProperty FACING = HorizontalBlock.FACING;
 	public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
 
 	public MachineBlock() {
-		super(Properties.create(Material.IRON)
-				.hardnessAndResistance(1.0F)
+		super(Properties.of(Material.METAL)
+				.strength(1.0F)
 				.sound(SoundType.METAL)
-				.setLightLevel(state -> state.get(LIT) ? 13 : 0)
+				.lightLevel(state -> state.getValue(LIT) ? 13 : 0)
 		);
-		this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(LIT, false));
+		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(LIT, false));
 	}
 
 	@Override
@@ -52,13 +52,13 @@ public final class MachineBlock extends Block {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
-		if (!world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+		if (!world.isClientSide) {
+			TileEntity te = world.getBlockEntity(pos);
 			if (te != null) {
 				TileEntityType<?> type = ForgeRegistries.TILE_ENTITIES.getValue(this.getRegistryName());
 				if (type == te.getType()) {
-					player.openContainer((INamedContainerProvider) te);
+					player.openMenu((INamedContainerProvider) te);
 				}
 			}
 		} else {
@@ -69,16 +69,16 @@ public final class MachineBlock extends Block {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+		return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-		if (worldIn.isRemote) {
+	public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+		if (worldIn.isClientSide) {
 			FluxAnalytics.putView("flux/place/" + getRegistryName());
 		}
-		if (stack.hasDisplayName()) {
-			TileEntity tileentity = worldIn.getTileEntity(pos);
+		if (stack.hasCustomHoverName()) {
+			TileEntity tileentity = worldIn.getBlockEntity(pos);
 			if (tileentity instanceof AbstractMachineTile) {
 				((AbstractMachineTile)tileentity).setCustomName(stack.getDisplayName());
 			}
@@ -87,41 +87,40 @@ public final class MachineBlock extends Block {
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity tileentity = worldIn.getTileEntity(pos);
+			TileEntity tileentity = worldIn.getBlockEntity(pos);
 			if (tileentity instanceof AbstractMachineTile) {
-				InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory)tileentity);
-				worldIn.updateComparatorOutputLevel(pos, this);
+				InventoryHelper.dropContents(worldIn, pos, (IInventory)tileentity);
+				worldIn.updateNeighbourForOutputSignal(pos, this);
 			}
 
-			super.onReplaced(state, worldIn, pos, newState, isMoving);
+			super.onRemove(state, worldIn, pos, newState, isMoving);
 		}
-
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(BlockState state) {
+	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
-		return Container.calcRedstone(worldIn.getTileEntity(pos));
+	public int getAnalogOutputSignal(BlockState blockState, World worldIn, BlockPos pos) {
+		return Container.getRedstoneSignalFromBlockEntity(worldIn.getBlockEntity(pos));
 	}
 
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.with(FACING, rot.rotate(state.get(FACING)));
+		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
-		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
+		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING, LIT);
 	}
 }

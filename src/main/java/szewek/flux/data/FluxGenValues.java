@@ -58,14 +58,14 @@ public class FluxGenValues implements IFutureReloadListener {
 					t.setRight(cf);
 					return t;
 				})
-				.thenCompose(stage::markCompleteAwaitingOthers)
+				.thenCompose(stage::wait)
 				.thenAcceptAsync(FluxGenValues::collectValues, gameExec);
 	}
 
 	private static CompletableFuture<Collection<Entry>> parse(
 			ResourceLocation loc, IResourceManager rm, Executor ex) {
 		return FluxData.collectFromResources(ArrayList::new, rm, loc, ex, (vals, json) -> {
-			JsonObject values = JSONUtils.getJsonObject(json, "values");
+			JsonObject values = JSONUtils.getAsJsonObject(json, "values");
 			for (Map.Entry<String, JsonElement> e : values.entrySet()) {
 				String key = e.getKey();
 				IntPair pair = pairFromJSON(e.getValue(), key);
@@ -79,30 +79,30 @@ public class FluxGenValues implements IFutureReloadListener {
 	}
 
 	private static IntPair pairFromJSON(JsonElement el, String key) {
-		if (JSONUtils.isNumber(el)) {
+		if (JSONUtils.isNumberValue(el)) {
 			return IntPair.of(el.getAsInt(), 1);
 		} else if (el.isJsonArray()) {
 			JsonArray ja = el.getAsJsonArray();
 			if (ja.size() == 2) {
-				int factor = JSONUtils.getInt(ja.get(0), key + "[0]");
-				int usage = JSONUtils.getInt(ja.get(1), key + "[1]");
+				int factor = JSONUtils.convertToInt(ja.get(0), key + "[0]");
+				int usage = JSONUtils.convertToInt(ja.get(1), key + "[1]");
 				return IntPair.of(factor, usage);
 			}
-			LOGGER.warn("Ignoring array with size other than 2 in {}", key);
+			LOGGER.warn("Ignoring array with getCount other than 2 in {}", key);
 		}
 		return IntPair.ZERO;
 	}
 
 	private static void collectValues(Triple<Collection<Entry>, Collection<Entry>, Collection<Entry>> tr) {
-		CATALYSTS.update(tr.getLeft()).convert(ForgeRegistries.ITEMS, ItemTags.getCollection());
-		HOT_FLUIDS.update(tr.getMiddle()).convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
-		COLD_FLUIDS.update(tr.getRight()).convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
+		CATALYSTS.update(tr.getLeft()).convert(ForgeRegistries.ITEMS, ItemTags.getAllTags());
+		HOT_FLUIDS.update(tr.getMiddle()).convert(ForgeRegistries.FLUIDS, FluidTags.getAllTags());
+		COLD_FLUIDS.update(tr.getRight()).convert(ForgeRegistries.FLUIDS, FluidTags.getAllTags());
 	}
 
 	public static void updateValues() {
-		CATALYSTS.convert(ForgeRegistries.ITEMS, ItemTags.getCollection());
-		HOT_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
-		COLD_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.getCollection());
+		CATALYSTS.convert(ForgeRegistries.ITEMS, ItemTags.getAllTags());
+		HOT_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.getAllTags());
+		COLD_FLUIDS.convert(ForgeRegistries.FLUIDS, FluidTags.getAllTags());
 	}
 
 	public static class ValMap<T extends IForgeRegistryEntry<T>> {
@@ -153,11 +153,11 @@ public class FluxGenValues implements IFutureReloadListener {
 		}
 
 		private <T extends IForgeRegistryEntry<T>> boolean tag(BiConsumer<T, IntPair> fn, IForgeRegistry<T> reg, ITagCollection<T> tags) {
-			ITag<T> tag = tags.get(this.loc);
+			ITag<T> tag = tags.getTag(this.loc);
 			if (tag == null) {
 				return true; // IGNORE EMPTY TAGS
 			}
-			for (T t : tag.getAllElements()) {
+			for (T t : tag.getValues()) {
 				fn.accept(t, this.values);
 			}
 			return true;

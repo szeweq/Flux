@@ -12,15 +12,15 @@ public class UpgradeSlot extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack stack) {
+	public boolean mayPlace(ItemStack stack) {
 		return stack.getItem() instanceof ChipItem;
 	}
 
 	@Override
-	public void onSlotChanged() {
-		if (inventory instanceof AbstractMachineTile) {
-			((AbstractMachineTile) inventory).updateValues();
+	public void setChanged() {
+		if (container instanceof AbstractMachineTile) {
+			((AbstractMachineTile) container).updateValues();
 		}
-		super.onSlotChanged();
+		super.setChanged();
 	}
 }

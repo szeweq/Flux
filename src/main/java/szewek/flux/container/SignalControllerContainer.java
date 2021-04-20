@@ -23,7 +23,7 @@ public class SignalControllerContainer extends Container {
 	public SignalControllerContainer(int id, PlayerInventory pinv, IIntArray extra) {
 		super(F.C.SIGNAL_CONTROLLER, id);
 
-		remote = pinv.player.world.isRemote;
+		remote = pinv.player.level.isClientSide;
 		data = extra;
 
 		int xBase;
@@ -42,19 +42,19 @@ public class SignalControllerContainer extends Container {
 			addSlot(new Slot(pinv, w, xBase, yBase));
 			xBase += 18;
 		}
-		trackIntArray(extra);
+		addDataSlots(extra);
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity playerIn) {
+	public boolean stillValid(PlayerEntity playerIn) {
 		return true;
 	}
 
 	@Override
-	public void updateProgressBar(int id, int data) {
-		super.updateProgressBar(id, data);
+	public void setData(int id, int data) {
+		super.setData(id, data);
 		if (remote) {
-			detectAndSendChanges();
+			broadcastChanges();
 		}
 	}
 
@@ -63,7 +63,7 @@ public class SignalControllerContainer extends Container {
 		int ov = data.get(id);
 		if (ov != v) {
 			data.set(id, v);
-			FluxPackets.updateData2Server(getType(), windowId, id, v);
+			FluxPackets.updateData2Server(getType(), containerId, id, v);
 		}
 	}
 

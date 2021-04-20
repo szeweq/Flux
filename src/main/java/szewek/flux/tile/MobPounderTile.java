@@ -16,11 +16,11 @@ public class MobPounderTile extends EntityInteractingTile {
 
 	@Override
 	protected void interact(int usage) {
-		assert world != null;
-		List<LivingEntity> mobs = world.getEntitiesWithinAABB(LivingEntity.class, aabb, m -> m instanceof IMob);
+		assert level != null;
+		List<LivingEntity> mobs = level.getEntitiesOfClass(LivingEntity.class, aabb, m -> m instanceof IMob);
 		for (LivingEntity mob : mobs) {
 			if (!energy.use(usage)) break;
-			mob.attackEntityFrom(DamageSource.GENERIC, 100);
+			mob.hurt(DamageSource.GENERIC, 100);
 		}
 	}
 }

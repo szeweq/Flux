@@ -21,9 +21,9 @@ public final class FurnaceEnergy extends EnergyCapable {
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		int r = 0;
 		if (!furnace.isRemoved() && maxReceive > 0) {
-			World w = furnace.getWorld();
+			World w = furnace.getLevel();
 			if (canBePowered(w)) {
-				IIntArray data = furnace.furnaceData;
+				IIntArray data = furnace.dataAccess;
 				int burnTime = data.get(0) * USE;
 				if (burnTime < CAP) {
 					r = CAP - burnTime;
@@ -37,10 +37,10 @@ public final class FurnaceEnergy extends EnergyCapable {
 						}
 						data.set(0, (burnTime + r) / USE);
 						if (burnTime == 0) {
-							BlockPos pos = furnace.getPos();
-							w.setBlockState(pos, w.getBlockState(pos).with(AbstractFurnaceBlock.LIT, true), 3);
+							BlockPos pos = furnace.getBlockPos();
+							w.setBlock(pos, w.getBlockState(pos).setValue(AbstractFurnaceBlock.LIT, true), 3);
 						}
-						furnace.markDirty();
+						furnace.setChanged();
 					}
 				}
 			}
@@ -50,7 +50,7 @@ public final class FurnaceEnergy extends EnergyCapable {
 
 	@Override
 	public int getEnergyStored() {
-		return Math.min(furnace.furnaceData.get(0) * USE, CAP);
+		return Math.min(furnace.dataAccess.get(0) * USE, CAP);
 	}
 
 	@Override
@@ -63,10 +63,10 @@ public final class FurnaceEnergy extends EnergyCapable {
 		if (furnace.isRemoved()) {
 			return false;
 		}
-		return canBePowered(furnace.getWorld());
+		return canBePowered(furnace.getLevel());
 	}
 
 	private boolean canBePowered(World w) {
-		return w != null && w.getRecipeManager().getRecipe(furnace.recipeType, furnace, w).map(furnace::canSmelt).orElse(false);
+		return w != null && w.getRecipeManager().getRecipeFor(furnace.recipeType, furnace, w).map(furnace::canBurn).orElse(false);
 	}
 }

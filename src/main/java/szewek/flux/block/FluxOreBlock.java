@@ -7,6 +7,6 @@ import szewek.flux.util.metals.Metal;
 
 public final class FluxOreBlock extends Block {
 	public FluxOreBlock(Metal metal) {
-		super(Block.Properties.create(Material.ROCK).harvestTool(ToolType.PICKAXE).hardnessAndResistance(3f, 3f).harvestLevel(metal.harvestLevel));
+		super(Block.Properties.of(Material.METAL).harvestTool(ToolType.PICKAXE).strength(3f, 3f).harvestLevel(metal.harvestLevel));
 	}
 }

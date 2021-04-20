@@ -50,7 +50,7 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 		}
 
 		@Override
-		public int size() {
+		public int getCount() {
 			return 2;
 		}
 	};
@@ -70,16 +70,16 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void load(BlockState blockState, CompoundNBT compound) {
+		super.load(blockState, compound);
 		currentChannel = (short) MathHelper.clamp(compound.getShort("Channel"), 0, 255);
 		mode = compound.getByte("Mode");
 		keepPower = compound.getInt("KeepPower");
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public CompoundNBT save(CompoundNBT compound) {
+		super.save(compound);
 		compound.putShort("Channel", currentChannel);
 		compound.putByte("Mode", mode);
 		compound.putInt("KeepPower", keepPower);
@@ -91,15 +91,15 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 		currentChannel = (short) MathHelper.clamp(ch, 0, 255);
 		if (mode != 0) {
 			BlockState state = getBlockState();
-			if (state.get(POWERED)) {
-				world.setBlockState(pos, getBlockState().with(POWERED, false));
+			if (state.getValue(POWERED)) {
+				level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, false));
 			}
 		}
 	}
 
 	@Override
 	public void tick() {
-		if (!world.isRemote) {
+		if (!level.isClientSide) {
 			if (cooldown > 0) {
 				--cooldown;
 			} else {
@@ -108,7 +108,7 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 			if (keepPower > 0) {
 				--keepPower;
 			} else {
-				world.setBlockState(pos, getBlockState().with(POWERED, false));
+				level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, false));
 			}
 		}
 	}
@@ -116,9 +116,9 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 	public void updateState() {
 		cooldown = 10;
 		BlockState state = getBlockState();
-		Direction dir = state.get(SignalControllerBlock.FACING);
-		TileEntity tile = world.getTileEntity(pos.offset(dir));
-		boolean sb = state.get(POWERED);
+		Direction dir = state.getValue(SignalControllerBlock.FACING);
+		TileEntity tile = level.getBlockEntity(worldPosition.relative(dir));
+		boolean sb = state.getValue(POWERED);
 		if (tile != null) {
 			LazyOptional<ISignalHandler> lazyOpt = tile.getCapability(SignalCapability.SIGNAL_CAP, dir.getOpposite());
 			if (lazyOpt.isPresent()) {
@@ -131,7 +131,7 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 							if (b) {
 								keepPower = 15;
 								if (!sb) {
-									world.setBlockState(pos, state.with(POWERED, true));
+									level.setBlockAndUpdate(worldPosition, state.setValue(POWERED, true));
 								}
 							}
 						}
@@ -148,7 +148,7 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 						break;
 					case 3:
 						if (sh.allowsSignalInput(currentChannel)) {
-							b = world.isBlockPowered(pos);
+							b = level.hasNeighborSignal(worldPosition);
 							sh.putSignal(currentChannel, b);
 						}
 				}

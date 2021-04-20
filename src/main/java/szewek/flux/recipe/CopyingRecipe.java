@@ -54,18 +54,18 @@ public class CopyingRecipe implements IRecipe<IInventoryIO>, Consumer<Iterable<I
 	}
 
 	@Override
-	public ItemStack getIcon() {
+	public ItemStack getToastSymbol() {
 		return new ItemStack(F.B.COPIER);
 	}
 
 	@Override
-	public boolean isDynamic() {
+	public boolean isSpecial() {
 		return true;
 	}
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.from(Ingredient.EMPTY, material, source);
+		return NonNullList.of(Ingredient.EMPTY, material, source);
 	}
 
 	public Ingredient getSource() {
@@ -78,22 +78,22 @@ public class CopyingRecipe implements IRecipe<IInventoryIO>, Consumer<Iterable<I
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() {
+	public ItemStack getResultItem() {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public boolean matches(IInventoryIO inv, World worldIn) {
-		return material.test(inv.getStackInSlot(0)) && source.test(inv.getStackInSlot(1));
+		return material.test(inv.getItem(0)) && source.test(inv.getItem(1));
 	}
 
 	@Override
-	public ItemStack getCraftingResult(IInventoryIO inv) {
-		return inv.getStackInSlot(1).copy();
+	public ItemStack assemble(IInventoryIO inv) {
+		return inv.getItem(1).copy();
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height == 2;
 	}
 
@@ -114,32 +114,32 @@ public class CopyingRecipe implements IRecipe<IInventoryIO>, Consumer<Iterable<I
 		}
 
 		@Override
-		public CopyingRecipe read(ResourceLocation recipeId, JsonObject json) {
+		public CopyingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			if (!json.has("source") || !json.has("material")) {
 				throw new JsonSyntaxException("Missing source and/or material key");
 			}
-			Ingredient source = Ingredient.deserialize(json.get("source"));
-			Ingredient material = Ingredient.deserialize(json.get("material"));
-			int process = JSONUtils.getInt(json, "processtime", 200);
-			String group = JSONUtils.getString(json, "group", "");
+			Ingredient source = Ingredient.fromJson(json.get("source"));
+			Ingredient material = Ingredient.fromJson(json.get("material"));
+			int process = JSONUtils.getAsInt(json, "processtime", 200);
+			String group = JSONUtils.getAsString(json, "group", "");
 			return new CopyingRecipe(recipeId, group, source, material, process);
 		}
 
 		@Nullable
 		@Override
-		public CopyingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-			String grp = buffer.readString(32767);
-			Ingredient source = Ingredient.read(buffer);
-			Ingredient material = Ingredient.read(buffer);
+		public CopyingRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+			String grp = buffer.readUtf(32767);
+			Ingredient source = Ingredient.fromNetwork(buffer);
+			Ingredient material = Ingredient.fromNetwork(buffer);
 			int process = buffer.readVarInt();
 			return new CopyingRecipe(recipeId, grp, source, material, process);
 		}
 
 		@Override
-		public void write(PacketBuffer buffer, CopyingRecipe recipe) {
-			buffer.writeString(recipe.getGroup());
-			recipe.source.write(buffer);
-			recipe.material.write(buffer);
+		public void toNetwork(PacketBuffer buffer, CopyingRecipe recipe) {
+			buffer.writeUtf(recipe.getGroup());
+			recipe.source.toNetwork(buffer);
+			recipe.material.toNetwork(buffer);
 			buffer.writeVarInt(recipe.processTime);
 		}
 	}

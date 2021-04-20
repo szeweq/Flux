@@ -18,15 +18,15 @@ import java.util.Map;
 
 public abstract class AbstractCableBlock extends SixWayBlock {
 	protected AbstractCableBlock() {
-		super(0.25F, Block.Properties.create(Material.IRON)
-				.hardnessAndResistance(0.3f));
-		this.setDefaultState(stateContainer.getBaseState()
-				.with(SixWayBlock.NORTH, false)
-				.with(SixWayBlock.EAST, false)
-				.with(SixWayBlock.SOUTH, false)
-				.with(SixWayBlock.WEST, false)
-				.with(SixWayBlock.UP, false)
-				.with(SixWayBlock.DOWN, false)
+		super(0.25F, Block.Properties.of(Material.METAL)
+				.strength(0.3f));
+		registerDefaultState(stateDefinition.any()
+				.setValue(SixWayBlock.NORTH, false)
+				.setValue(SixWayBlock.EAST, false)
+				.setValue(SixWayBlock.SOUTH, false)
+				.setValue(SixWayBlock.WEST, false)
+				.setValue(SixWayBlock.UP, false)
+				.setValue(SixWayBlock.DOWN, false)
 		);
 	}
 
@@ -39,48 +39,48 @@ public abstract class AbstractCableBlock extends SixWayBlock {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return makeConnections(context.getWorld(), context.getPos());
+		return makeConnections(context.getLevel(), context.getClickedPos());
 	}
 
 	private BlockState makeConnections(IBlockReader w, BlockPos pos) {
-		BlockState bs = getDefaultState();
+		BlockState bs = defaultBlockState();
 		boolean x;
-		for(Map.Entry<Direction, BooleanProperty> e : FACING_TO_PROPERTY_MAP.entrySet()) {
+		for(Map.Entry<Direction, BooleanProperty> e : PROPERTY_BY_DIRECTION.entrySet()) {
 			Direction dir = e.getKey();
 			x = true;
-			BlockPos bp = pos.offset(dir);
+			BlockPos bp = pos.relative(dir);
 			Block b = w.getBlockState(pos).getBlock();
 			if (b != this) {
-				TileEntity te = w.getTileEntity(bp);
+				TileEntity te = w.getBlockEntity(bp);
 				if (te == null || !checkTile(te, dir.getOpposite())) {
 					x = false;
 				}
 			}
-			bs = bs.with(e.getValue(), x);
+			bs = bs.setValue(e.getValue(), x);
 		}
 		return bs;
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		Block b = facingState.getBlock();
 		boolean x = true;
 		if (b != this) {
-			TileEntity te = worldIn.getTileEntity(facingPos);
+			TileEntity te = worldIn.getBlockEntity(facingPos);
 			if (te == null || !checkTile(te, facing.getOpposite())) {
 				x = false;
 			}
 		}
-		return stateIn.with(FACING_TO_PROPERTY_MAP.get(facing), x);
+		return stateIn.setValue(PROPERTY_BY_DIRECTION.get(facing), x);
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN);
 	}
 
 	@Override
-	public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
+	public boolean isPathfindable(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
 		return false;
 	}
 }

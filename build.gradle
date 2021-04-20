@@ -1,12 +1,13 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net/' }
         maven { url = 'https://plugins.gradle.org/m2/' }
+        maven { url = 'https://libraries.minecraft.net/' }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
     }
 }
@@ -24,7 +25,7 @@ project.version = project.version + ((project.versionSub as int) > 0 ? "-${proje
 
 String core_version = project.core_version
 
-String mc_version = "1.16.4"
+String mc_version = "1.16.5"
 String jei_version = "7.6.1.65"
 String top_version = "1.16-3.0.6-8"
 String patchouli_version = "1.16.2-44"
@@ -62,6 +63,8 @@ repositories {
     maven { url 'https://maven.blamejared.com' }
     maven { url 'https://maven.tterrag.com/' }
     maven { url 'https://maven.latmod.com/' }
+    maven { url = 'https://maven.minecraftforge.net/' }
+    maven { url = 'https://libraries.minecraft.net/' }
     flatDir {
         dirs "libs"
     }
@@ -73,7 +76,7 @@ minecraft {
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: mappings_version
+    mappings channel: 'official', version: mappings_version
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -84,7 +87,7 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -96,7 +99,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -108,7 +111,7 @@ minecraft {
         data {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'SCAN,REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
             args '--mod', 'flux', '--all', '--output', file('src/generated/resources/')

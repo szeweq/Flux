@@ -11,9 +11,9 @@ import szewek.flux.tile.cable.EnergyCableTile;
 public final class EnergyCache extends SideCached<IEnergyStorage> {
 	public EnergyCache(final TileEntity tile) {
 		super(dir -> {
-			World w = tile.getWorld();
+			World w = tile.getLevel();
 			assert w != null;
-			TileEntity te = w.getTileEntity(tile.getPos().offset(dir));
+			TileEntity te = w.getBlockEntity(tile.getBlockPos().relative(dir));
 			if (te == null) {
 				return LazyOptional.empty();
 			}

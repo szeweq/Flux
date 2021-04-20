@@ -67,7 +67,7 @@ public class FluxPackets {
 
 		public final ContainerType<?> getType() {
 			//noinspection deprecation
-			return Registry.MENU.getByValue(ctype);
+			return Registry.MENU.byId(ctype);
 		}
 
 		public static UpdateData of(ContainerType<?> ctype, int window, int id, int val) {
@@ -92,9 +92,9 @@ public class FluxPackets {
 			if (player != null) {
 				ctx.enqueueWork(() -> {
 					ContainerType<?> ctype = msg.getType();
-					Container container = player.openContainer;
-					if (container.getType() == ctype && msg.window == container.windowId) {
-						container.updateProgressBar(msg.id, msg.value);
+					Container container = player.containerMenu;
+					if (container.getType() == ctype && msg.window == container.containerId) {
+						container.setData(msg.id, msg.value);
 					}
 				});
 			}

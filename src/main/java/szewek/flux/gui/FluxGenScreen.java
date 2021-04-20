@@ -40,44 +40,44 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		renderBackground(matrixStack, 0);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		assert minecraft != null;
-		minecraft.getTextureManager().bindTexture(BG_TEX);
-		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
-		matrixStack.push();
-		matrixStack.translate(guiLeft, guiTop, 0.0F);
-		workFillBar.draw(matrixStack, container.getWorkFill(), getBlitOffset());
-		energyFillBar.draw(matrixStack, container.getEnergyFill(), getBlitOffset());
-		matrixStack.pop();
+		minecraft.getTextureManager().bind(BG_TEX);
+		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		matrixStack.pushPose();
+		matrixStack.translate(leftPos, topPos, 0.0F);
+		workFillBar.draw(matrixStack, menu.getWorkFill(), getBlitOffset());
+		energyFillBar.draw(matrixStack, menu.getEnergyFill(), getBlitOffset());
+		matrixStack.popPose();
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
 		final String s = title.getString();
-		font.drawString(matrixStack, s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
-		font.drawString(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
-		int mx = mouseX - guiLeft;
-		int my = mouseY - guiTop;
-		final Matrix4f matrix = matrixStack.getLast().getMatrix();
-		DrawUtils.drawFluidStack(matrix, hoverHotFluid, container.getHotFluid(), 4000, getBlitOffset());
-		DrawUtils.drawFluidStack(matrix, hoverColdFluid, container.getColdFluid(), 4000, getBlitOffset());
+		font.draw(matrixStack, s, (float)((imageWidth - font.width(s)) / 2), 5.0F, 0x404040);
+		font.draw(matrixStack, inventory.getDisplayName().getString(), 8.0F, imageHeight - 96 + 2, 0x404040);
+		int mx = mouseX - leftPos;
+		int my = mouseY - topPos;
+		final Matrix4f matrix = matrixStack.last().pose();
+		DrawUtils.drawFluidStack(matrix, hoverHotFluid, menu.getHotFluid(), 4000, getBlitOffset());
+		DrawUtils.drawFluidStack(matrix, hoverColdFluid, menu.getColdFluid(), 4000, getBlitOffset());
 		tooltips.checkCoords(matrixStack, mx, my);
-		renderHoveredTooltip(matrixStack, mx, my); // Rendering tooltip
+		renderTooltip(matrixStack, mx, my); // Rendering tooltip
 	}
 
 	@Override
 	public void onHover(GuiRect rect, MatrixStack matrixStack, int mx, int my) {
 		List<ITextComponent> l;
 		if (rect == energyFillBar.rect) {
-			l = Arrays.asList(container.energyText(), container.genText());
+			l = Arrays.asList(menu.energyText(), menu.genText());
 		} else {
 			FluidStack fluid;
 			if (rect == hoverHotFluid) {
-				fluid = container.getHotFluid();
+				fluid = menu.getHotFluid();
 			} else if (rect == hoverColdFluid) {
-				fluid = container.getColdFluid();
+				fluid = menu.getColdFluid();
 			} else {
 				return;
 			}
@@ -86,7 +86,7 @@ public final class FluxGenScreen extends ContainerScreen<FluxGenContainer> imple
 					new StringTextComponent(fluid.getAmount() + " mB")
 			);
 		}
-		func_243308_b(matrixStack, l, mx, my); // Render tooltip
+		renderComponentTooltip(matrixStack, l, mx, my); // Render tooltip
 	}
 
 }

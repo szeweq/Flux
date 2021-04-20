@@ -21,7 +21,7 @@ import java.util.OptionalInt;
 
 public final class OnlineMarketBlock extends Block {
 	public OnlineMarketBlock() {
-		super(Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL));
+		super(Properties.of(Material.METAL).strength(2.0F).sound(SoundType.METAL));
 	}
 
 	@Override
@@ -36,14 +36,14 @@ public final class OnlineMarketBlock extends Block {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
-		if (!world.isRemote()) {
-			final TileEntity tile = world.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+		if (!world.isClientSide) {
+			final TileEntity tile = world.getBlockEntity(pos);
 			if (tile != null && F.T.ONLINE_MARKET == tile.getType()) {
-				final OptionalInt oint = player.openContainer((INamedContainerProvider) tile);
+				final OptionalInt oint = player.openMenu((INamedContainerProvider) tile);
 				if (oint.isPresent()) {
 					final OnlineMarketTile omt = (OnlineMarketTile) tile;
-					player.openMerchantContainer(oint.getAsInt(), omt.getOffers(), 1, omt.getXp(), omt.hasXPBar(), omt.canRestockTrades());
+					player.sendMerchantOffers(oint.getAsInt(), omt.getOffers(), 1, omt.getVillagerXp(), omt.hasXPBar(), omt.canRestock());
 				}
 			}
 		}

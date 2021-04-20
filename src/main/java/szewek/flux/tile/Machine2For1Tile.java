@@ -58,7 +58,7 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+		if (!remove && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			if (side == Direction.UP) {
 				return sideHandlers[0].cast();
 			} else if (side == Direction.DOWN) {

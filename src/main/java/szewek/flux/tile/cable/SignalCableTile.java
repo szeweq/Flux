@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SignalCableTile extends AbstractCableTile<ISignalHandler> {
 	private final BitSet bits = new BitSet(256);
 	private final SideCached<ISignalHandler> signalCache = new SideCached<>(dir -> {
-		assert world != null;
-		TileEntity te = world.getTileEntity(pos.offset(dir));
+		assert level != null;
+		TileEntity te = level.getBlockEntity(worldPosition.relative(dir));
 		if (te == null) {
 			return LazyOptional.empty();
 		}
@@ -52,8 +52,8 @@ public final class SignalCableTile extends AbstractCableTile<ISignalHandler> {
 	}
 
 	@Override
-	public void remove() {
-		super.remove();
+	public void setRemoved() {
+		super.setRemoved();
 		signalCache.clear();
 	}
 

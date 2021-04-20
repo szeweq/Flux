@@ -15,7 +15,7 @@ public final class AlloyingRecipe extends AbstractMachineRecipe {
 	}
 
 	@Override
-	public ItemStack getIcon() {
+	public ItemStack getToastSymbol() {
 		return new ItemStack(F.B.ALLOY_CASTER);
 	}
 }

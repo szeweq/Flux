@@ -25,8 +25,8 @@ public abstract class AbstractCableTile<T> extends TileEntity implements ITickab
 
 	@Override
 	public void tick() {
-		assert world != null;
-		if (!world.isRemote) {
+		assert level != null;
+		if (!level.isClientSide) {
 			if (--cooldown > 0) {
 				return;
 			}
@@ -45,7 +45,7 @@ public abstract class AbstractCableTile<T> extends TileEntity implements ITickab
 	}
 
 	public LazyOptional<T> getSide(Direction dir) {
-		return sides[dir.getIndex()].lazyCast();
+		return sides[dir.get3DDataValue()].lazyCast();
 	}
 
 	protected abstract void updateSide(Direction dir);
@@ -53,16 +53,16 @@ public abstract class AbstractCableTile<T> extends TileEntity implements ITickab
 	@Nonnull
 	@Override
 	public <X> LazyOptional<X> getCapability(@Nonnull Capability<X> cap, @Nullable Direction side) {
-		if (!removed && cap == this.cap && side != null) {
-			return sides[side.getIndex()].lazyCast();
+		if (!remove && cap == this.cap && side != null) {
+			return sides[side.get3DDataValue()].lazyCast();
 		} else {
 			return super.getCapability(cap, side);
 		}
 	}
 
 	@Override
-	public void remove() {
-		super.remove();
+	public void setRemoved() {
+		super.setRemoved();
 		for (AbstractSide<T> s : sides) {
 			s.invalidate();
 		}

@@ -47,54 +47,54 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 		super(ctype, id);
 		recipeType = rtype;
 		this.ioSize = ioSize;
-		Container.assertInventorySize(machineInv, ioSize.all + 1);
-		Container.assertIntArraySize(data, 7);
+		Container.checkContainerSize(machineInv, ioSize.all + 1);
+		Container.checkContainerDataCount(data, 7);
 		machineInventory = machineInv;
 		this.data = data;
-		world = playerInv.player.world;
+		world = playerInv.player.level;
 		initSlots(playerInv);
 
 		ConsumerUtil.addPlayerSlotsAt(playerInv, 8, 84, this::addSlot);
-		trackIntArray(data);
+		addDataSlots(data);
 	}
 
 	protected abstract void initSlots(PlayerInventory playerInventory);
 
 	@Override
-	public void fillStackedContents(RecipeItemHelper helper) {
+	public void fillCraftSlotsStackedContents(RecipeItemHelper helper) {
 		if (machineInventory instanceof IRecipeHelperPopulator) {
 			((IRecipeHelperPopulator) machineInventory).fillStackedContents(helper);
 		}
 	}
 
 	@Override
-	public void clear() {
-		machineInventory.clear();
+	public void clearCraftingContent() {
+		machineInventory.clearContent();
 	}
 
 	@Override
-	public void func_217056_a(boolean placeAll, IRecipe<?> recipe, ServerPlayerEntity player) {
+	public void handlePlacement(boolean placeAll, IRecipe<?> recipe, ServerPlayerEntity player) {
 		//noinspection unchecked
-		new ServerRecipePlacerMachine<>(this, ioSize).place(player, (IRecipe<IInventory>) recipe, placeAll);
+		new ServerRecipePlacerMachine<>(this, ioSize).recipeClicked(player, (IRecipe<IInventory>) recipe, placeAll);
 	}
 
 	@Override
-	public boolean matches(IRecipe<? super IInventory> recipeIn) {
+	public boolean recipeMatches(IRecipe<? super IInventory> recipeIn) {
 		return recipeIn.getType() == recipeType && recipeIn.matches(machineInventory, world);
 	}
 
 	@Override
-	public int getOutputSlot() {
+	public int getResultSlotIndex() {
 		return ioSize.in;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getGridWidth() {
 		return ioSize.in;
 	}
 
 	@Override
-	public int getHeight() {
+	public int getGridHeight() {
 		return 1;
 	}
 
@@ -105,16 +105,16 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity playerIn) {
-		return machineInventory.isUsableByPlayer(playerIn);
+	public boolean stillValid(PlayerEntity playerIn) {
+		return machineInventory.stillValid(playerIn);
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+	public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
 		ItemStack stack = ItemStack.EMPTY;
-		Slot slot = inventorySlots.get(index);
-		if (slot != null && slot.getHasStack()) {
-			ItemStack slotStack = slot.getStack();
+		Slot slot = slots.get(index);
+		if (slot != null && slot.hasItem()) {
+			ItemStack slotStack = slot.getItem();
 			stack = slotStack.copy();
 			int s = ioSize.all + 1;
 			int e = s + 36;
@@ -128,18 +128,18 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 				}
 			}
 
-			if (!mergeItemStack(slotStack, s, e, false)) {
+			if (!moveItemStackTo(slotStack, s, e, false)) {
 				return ItemStack.EMPTY;
 			}
 
 			if (index >= ioSize.in && index < ioSize.all + 1) {
-				slot.onSlotChange(slotStack, stack);
+				slot.onQuickCraft(slotStack, stack);
 			}
 
 			if (slotStack.isEmpty()) {
-				slot.putStack(ItemStack.EMPTY);
+				slot.set(ItemStack.EMPTY);
 			} else {
-				slot.onSlotChanged();
+				slot.setChanged();
 			}
 
 			if (slotStack.getCount() == stack.getCount()) {
@@ -153,7 +153,7 @@ public abstract class AbstractMachineContainer extends RecipeBookContainer<IInve
 
 	@Override
 	// TODO Specify better catrgory
-	public RecipeBookCategory func_241850_m() {
+	public RecipeBookCategory getRecipeBookType() {
 		return RecipeBookCategory.CRAFTING;
 	}
 

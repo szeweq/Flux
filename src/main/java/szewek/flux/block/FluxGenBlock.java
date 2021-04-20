@@ -24,7 +24,7 @@ import szewek.flux.tile.FluxGenTile;
 
 public final class FluxGenBlock extends Block {
 	public FluxGenBlock() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(1f).sound(SoundType.METAL));
+		super(Block.Properties.of(Material.METAL).strength(1f).sound(SoundType.METAL));
 	}
 
 	@Override
@@ -38,15 +38,15 @@ public final class FluxGenBlock extends Block {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
-		if (!world.isRemote) {
-			TileEntity tile = world.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rt) {
+		if (!world.isClientSide) {
+			TileEntity tile = world.getBlockEntity(pos);
 			if (tile instanceof FluxGenTile) {
-				FluidActionResult far = FluidUtil.tryEmptyContainerAndStow(player.getHeldItem(hand), ((FluxGenTile) tile).getTank(), new InvWrapper(player.inventory), 4000, player, true);
+				FluidActionResult far = FluidUtil.tryEmptyContainerAndStow(player.getItemInHand(hand), ((FluxGenTile) tile).getTank(), new InvWrapper(player.inventory), 4000, player, true);
 				if (far.success) {
-					player.setHeldItem(hand, far.getResult());
+					player.setItemInHand(hand, far.getResult());
 				} else {
-					player.openContainer((FluxGenTile) tile);
+					player.openMenu((FluxGenTile) tile);
 				}
 			}
 		} else {
@@ -56,8 +56,8 @@ public final class FluxGenBlock extends Block {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World w, BlockPos pos, BlockState state, LivingEntity ent, ItemStack stack) {
-		if (!w.isRemote) {
+	public void setPlacedBy(World w, BlockPos pos, BlockState state, LivingEntity ent, ItemStack stack) {
+		if (!w.isClientSide) {
 			updateRedstoneState(w, pos);
 		} else {
 			FluxAnalytics.putView("flux/place/" + getRegistryName());
@@ -66,15 +66,15 @@ public final class FluxGenBlock extends Block {
 
 	@Override
 	public void onNeighborChange(BlockState state, IWorldReader w, BlockPos pos, BlockPos neighbor) {
-		if (!w.isRemote() && w instanceof World) {
+		if (!w.isClientSide() && w instanceof World) {
 			updateRedstoneState((World) w, pos);
 		}
 	}
 
 	private void updateRedstoneState(World w, BlockPos pos) {
-		FluxGenTile tfg = (FluxGenTile)w.getTileEntity(pos);
+		FluxGenTile tfg = (FluxGenTile)w.getBlockEntity(pos);
 		if (tfg != null) {
-			tfg.setRedstoneState(w.getRedstonePowerFromNeighbors(pos) > 0);
+			tfg.setRedstoneState(w.getBestNeighborSignal(pos) > 0);
 		}
 
 	}

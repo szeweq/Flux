@@ -6,7 +6,6 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -21,8 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static szewek.flux.Flux.MODID;
-
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
@@ -36,7 +33,7 @@ public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
 	public CopierCategory(IGuiHelper guiHelper, Block icon, IDrawableAnimated arrow) {
 		background = guiHelper.createDrawable(TEX, 55, 25, 82, 36);
 		this.icon = guiHelper.createDrawableIngredient(new ItemStack(icon));
-		localizedName = I18n.format("gui.flux.jei.category.copying");
+		localizedName = I18n.get("gui.flux.jei.category.copying");
 		this.arrow = arrow;
 	}
 
@@ -74,7 +71,7 @@ public class CopierCategory implements IRecipeCategory<CopyingRecipe> {
 	public void setIngredients(CopyingRecipe copyingRecipe, IIngredients ingredients) {
 		ingredients.setInputIngredients(copyingRecipe.getIngredients());
 		ingredients.setOutputLists(VanillaTypes.ITEM,
-				Collections.singletonList(Arrays.asList(copyingRecipe.getSource().getMatchingStacks())));
+				Collections.singletonList(Arrays.asList(copyingRecipe.getSource().getItems())));
 	}
 
 	@Override

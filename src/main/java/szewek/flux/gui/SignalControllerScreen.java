@@ -28,17 +28,17 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 	private Button modeBtn;
 	private final IContainerListener listener = new IContainerListener() {
 		@Override
-		public void sendAllContents(Container containerToSend, NonNullList<ItemStack> itemsList) {}
+		public void refreshContainer(Container containerToSend, NonNullList<ItemStack> itemsList) {}
 
 		@Override
-		public void sendSlotContents(Container containerToSend, int slotInd, ItemStack stack) {}
+		public void slotChanged(Container containerToSend, int slotInd, ItemStack stack) {}
 
 		@Override
-		public void sendWindowProperty(Container containerIn, int id, int v) {
+		public void setContainerData(Container containerIn, int id, int v) {
 			if (id == 0 && modeBtn != null) {
 				modeBtn.setMessage(new TranslationTextComponent("gui.flux.signal_controller.mode" + v));
 			} else if (id == 1 && numberInput != null) {
-				numberInput.setText(Integer.toString(v));
+				numberInput.setValue(Integer.toString(v));
 			}
 		}
 	};
@@ -51,18 +51,18 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 	@Override
 	protected void init() {
 		super.init();
-		container.addListener(listener);
-		int i = (xSize - 100) / 2;
-		modeBtn = new Button(guiLeft + i, guiTop + 44, 100, 20, new TranslationTextComponent("gui.flux.signal_controller.mode" + container.getMode()), this);
+		menu.addSlotListener(listener);
+		int i = (imageWidth - 100) / 2;
+		modeBtn = new Button(leftPos + i, topPos + 44, 100, 20, new TranslationTextComponent("gui.flux.signal_controller.mode" + menu.getMode()), this);
 		numberInput = new TextFieldWidget(font, i, 28, 100, 14, new TranslationTextComponent("gui.flux.type_channel"));
-		numberInput.setMaxStringLength(3);
+		numberInput.setMaxLength(3);
 		addButton(modeBtn);
 		children.add(numberInput);
-		setFocusedDefault(numberInput);
-		numberInput.setText(Integer.toString(container.getChannel()));
+		setFocused(numberInput);
+		numberInput.setValue(Integer.toString(menu.getChannel()));
 		numberInput.setCanLoseFocus(false);
-		numberInput.setFocused2(true);
-		numberInput.setValidator(this::validText);
+		numberInput.setFocus(true);
+		numberInput.setFilter(this::validText);
 	}
 
 	@Override
@@ -73,42 +73,42 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		renderBackground(matrixStack, 0);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		assert minecraft != null;
-		minecraft.getTextureManager().bindTexture(BG_TEX);
-		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+		minecraft.getTextureManager().bind(BG_TEX);
+		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
 		String s = title.getString();
-		font.drawString(matrixStack, s, (float)((xSize - font.getStringWidth(s)) / 2), 5.0F, 0x404040);
-		s = I18n.format("gui.flux.type_channel");
-		font.drawString(matrixStack, s, (float)((xSize - font.getStringWidth(s)) / 2), 16.0F, 0x404040);
+		font.draw(matrixStack, s, (float)((imageWidth - font.width(s)) / 2), 5.0F, 0x404040);
+		s = I18n.get("gui.flux.type_channel");
+		font.draw(matrixStack, s, (float)((imageWidth - font.width(s)) / 2), 16.0F, 0x404040);
 		float z = getBlitOffset();
 		numberInput.render(matrixStack, mouseX, mouseY, z);
 
-		font.drawString(matrixStack, playerInventory.getDisplayName().getString(), 8.0F, ySize - 96 + 2, 0x404040);
+		font.draw(matrixStack, inventory.getDisplayName().getString(), 8.0F, imageHeight - 96 + 2, 0x404040);
 	}
 
 	@Override
 	public boolean charTyped(char c, int k) {
 		boolean b = super.charTyped(c, k);
-		if (getListener() == numberInput) {
+		if (getFocused() == numberInput) {
 			int st;
-			String txt = numberInput.getText();
+			String txt = numberInput.getValue();
 			try {
 				st = Short.parseShort(txt);
 				if (st < 0 || st > 255) {
-					st = container.getChannel();
+					st = menu.getChannel();
 				}
-				container.setChannel(st);
+				menu.setChannel(st);
 			} catch (NumberFormatException ignored) {
-				st = container.getChannel();
+				st = menu.getChannel();
 			}
-			numberInput.setText(Integer.toString(st));
+			numberInput.setValue(Integer.toString(st));
 		}
 		return b;
 	}
@@ -120,13 +120,13 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 
 	@Override
 	public void onPress(Button btn) {
-		int cm = container.cycleMode();
+		int cm = menu.cycleMode();
 		btn.setMessage(new TranslationTextComponent("gui.flux.signal_controller.mode" + cm));
 	}
 
 	private boolean validText(String txt) {
 		if ("".equals(txt)) {
-			numberInput.setText("0");
+			numberInput.setValue("0");
 			return false;
 		}
 		try {
@@ -134,7 +134,7 @@ public class SignalControllerScreen extends ContainerScreen<SignalControllerCont
 			if (st < 0 || st > 255) {
 				return false;
 			}
-			container.setChannel(st);
+			menu.setChannel(st);
 		} catch (NumberFormatException ignored) {
 			return false;
 		}

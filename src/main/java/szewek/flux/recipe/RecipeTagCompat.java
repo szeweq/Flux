@@ -17,12 +17,12 @@ import java.util.Objects;
 public final class RecipeTagCompat {
 
 	public static ItemStack findItemTag(JsonObject json) {
-		String tagName = JSONUtils.getString(json, "tag");
-		ITag<Item> tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
-		if (tag != null && !tag.getAllElements().isEmpty()) {
-			Item foundItem = itemFromTagCompat(tag.getAllElements());
+		String tagName = JSONUtils.getAsString(json, "tag");
+		ITag<Item> tag = ItemTags.getAllTags().getTag(new ResourceLocation(tagName));
+		if (tag != null && !tag.getValues().isEmpty()) {
+			Item foundItem = itemFromTagCompat(tag.getValues());
 			if (foundItem != null) {
-				return new ItemStack(foundItem, JSONUtils.getInt(json, "count", 1));
+				return new ItemStack(foundItem, JSONUtils.getAsInt(json, "count", 1));
 			}
 		}
 		return ItemStack.EMPTY;

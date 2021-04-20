@@ -87,10 +87,10 @@ public final class Flux {
 		@SubscribeEvent
 		public static void onPlayerLogin(final PlayerEvent.PlayerLoggedInEvent pe) {
 			PlayerEntity player = pe.getPlayer();
-			if (!player.world.isRemote) {
+			if (!player.level.isClientSide) {
 				VersionChecker.CheckResult ver = VersionChecker.getResult(modInfo);
 				if (ver.target != null && (ver.status == VersionChecker.Status.OUTDATED || ver.status == VersionChecker.Status.BETA_OUTDATED)) {
-					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()), Util.DUMMY_UUID);
+					player.sendMessage(new TranslationTextComponent("flux.update", ver.target.toString()), Util.NIL_UUID);
 				}
 				Gifts.makeGiftsForPlayer((ServerPlayerEntity) player);
 			}
@@ -112,8 +112,8 @@ public final class Flux {
 				Biome.Category bcat = e.getCategory();
 				if (bcat != Biome.Category.THEEND && bcat != Biome.Category.NETHER) {
 					e.getGeneration()
-							.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, F.W.COPPER_ORES)
-							.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, F.W.TIN_ORES);
+							.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, F.W.COPPER_ORES)
+							.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, F.W.TIN_ORES);
 				}
 			}
 		}

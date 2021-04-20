@@ -78,7 +78,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		}
 
 		@Override
-		public int size() {
+		public int getCount() {
 			return 7;
 		}
 	};
@@ -93,8 +93,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void load(BlockState blockState, CompoundNBT compound) {
+		super.load(blockState, compound);
 		inv.readNBT(compound);
 		energy.readNBT(compound);
 		process.current = compound.getInt("Process");
@@ -109,8 +109,8 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public CompoundNBT save(CompoundNBT compound) {
+		super.save(compound);
 		energy.writeNBT(compound);
 		compound.putInt("Process", process.current);
 		compound.putInt("Total", process.total);
@@ -139,19 +139,19 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		boolean currState = process.current > 0;
 		if (lazyCheck) {
 			if (workState == currState && wasLit != currState) {
-				w.setBlockState(pos, w.getBlockState(pos).with(MachineBlock.LIT, currState), 3);
+				w.setBlock(worldPosition, w.getBlockState(worldPosition).setValue(MachineBlock.LIT, currState), 3);
 			}
 			lazyCheck = false;
 		} else if (workState != currState) {
 			lazyCheck = true;
-			wasLit = getBlockState().get(MachineBlock.LIT);
+			wasLit = getBlockState().getValue(MachineBlock.LIT);
 		}
 	}
 
 	protected boolean canProcess() {
 		if (cachedRecipe == null) {
 			//noinspection ConstantConditions
-			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null));
+			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, level, this).orElse(null));
 		}
 		if (cachedRecipe != null) {
 			ItemStack result = RecipeCompat.getCompatOutput(cachedRecipe, this);
@@ -187,17 +187,17 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return inv.size();
 	}
 
 	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, @Nullable Direction direction) {
-		return isItemValidForSlot(index, itemStackIn);
+	public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, @Nullable Direction direction) {
+		return canPlaceItem(index, itemStackIn);
 	}
 
 	@Override
-	public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
+	public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
 		return index >= ioSize.in && index < ioSize.in + ioSize.out;
 	}
 
@@ -207,46 +207,51 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int index) {
+	public ItemStack getItem(int index) {
 		return inv.get(index);
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
+	public ItemStack removeItem(int index, int count) {
 		return inv.getAndSplit(index, count);
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int index) {
+	public ItemStack removeItemNoUpdate(int index) {
 		return inv.getAndRemove(index);
 	}
 
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
+	public void setItem(int index, ItemStack stack) {
 		ItemStack inputStack = inv.get(index);
-		boolean same = !stack.isEmpty() && stack.isItemEqual(inputStack) && ItemStack.areItemStackTagsEqual(stack, inputStack);
+		boolean same = !stack.isEmpty() && stack.sameItem(inputStack) && ItemStack.tagMatches(stack, inputStack);
 		inv.set(index, stack);
 		if (stack.getCount() > 64) {
 			stack.setCount(64);
 		}
 		if (index < ioSize.in && !same) {
-			assert world != null;
-			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, world, this).orElse(null));
+			assert level != null;
+			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, level, this).orElse(null));
 			//processTotal = getProcessTime() * 100;
 			process.current = 0;
 			lazyCheck = true;
-			markDirty();
+			setChanged();
 		}
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return index < ioSize.in;
 	}
 
 	@Override
-	public void clear() {
+	public void clearContent() {
 		inv.clear();
+	}
+
+	@Override
+	public boolean stillValid(PlayerEntity player) {
+		return level.getBlockEntity(worldPosition) == this && worldPosition.distSqr(player.position(), true) <= 64.0;
 	}
 
 	@Override
@@ -263,11 +268,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public final void onCrafting(PlayerEntity player) {
-
-	}
-
-	@Override
 	public void fillStackedContents(RecipeItemHelper helper) {
 		for (ItemStack item : inv) {
 			helper.accountStack(item);
@@ -275,10 +275,10 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	public void updateRecipes(PlayerEntity player) {
-		final RecipeManager recipeManager = player.world.getRecipeManager();
+		final RecipeManager recipeManager = player.level.getRecipeManager();
 		List<IRecipe<?>> recipes = recipesCount.object2IntEntrySet().stream()
 				.map(e -> {
-					IRecipe<?> recipe = recipeManager.getRecipe(e.getKey()).orElse(null);
+					IRecipe<?> recipe = recipeManager.byKey(e.getKey()).orElse(null);
 					if (recipe instanceof AbstractMachineRecipe) {
 						collectExperience(player, e.getIntValue(), ((AbstractMachineRecipe) recipe).experience);
 					}
@@ -286,7 +286,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 				})
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
-		player.unlockRecipes(recipes);
+		player.awardRecipes(recipes);
 		recipesCount.clear();
 	}
 
@@ -317,19 +317,19 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			count = i;
 		}
 		while (count > 0) {
-			int x = ExperienceOrbEntity.getXPSplit(count);
+			int x = ExperienceOrbEntity.getExperienceValue(count);
 			count -= x;
-			player.world.addEntity(new ExperienceOrbEntity(
-					player.world,
-					player.getPosX(), player.getPosY() + 0.5D, player.getPosZ() + 0.5D,
+			player.level.addFreshEntity(new ExperienceOrbEntity(
+					player.level,
+					player.getX(), player.getY() + 0.5D, player.getZ() + 0.5D,
 					x
 			));
 		}
 	}
 
 	@Override
-	public void remove() {
-		super.remove();
+	public void setRemoved() {
+		super.setRemoved();
 		FluxCfg.removeListener(this::updateValues);
 	}
 

@@ -22,7 +22,7 @@ public final class ItemsUtil {
 		final IItemHandler[] inv = new IItemHandler[6];
 		int size = 0;
 		for (Direction dir : DIRS) {
-			TileEntity te = world.getTileEntity(pos.offset(dir));
+			TileEntity te = world.getBlockEntity(pos.relative(dir));
 			if (te != null) {
 				IItemHandler iih = getItemHandlerCompat(te, dir.getOpposite());
 				if (iih != null) {
@@ -45,7 +45,7 @@ public final class ItemsUtil {
 					}
 				}
 			}
-			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), tempStack);
+			InventoryHelper.dropItemStack(world, pos.getX(), pos.getY()+1, pos.getZ(), tempStack);
 		}
 	}
 

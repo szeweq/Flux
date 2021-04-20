@@ -24,21 +24,21 @@ public abstract class PoweredTile extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void load(BlockState blockState, CompoundNBT compound) {
+		super.load(blockState, compound);
 		energy.readNBT(compound);
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public CompoundNBT save(CompoundNBT compound) {
+		super.save(compound);
 		energy.writeNBT(compound);
 		return compound;
 	}
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed && CapabilityEnergy.ENERGY == cap) {
+		if (!remove && CapabilityEnergy.ENERGY == cap) {
 			return energy.lazyCast();
 		} else {
 			return super.getCapability(cap, side);
@@ -46,8 +46,8 @@ public abstract class PoweredTile extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public void remove() {
-		super.remove();
+	public void setRemoved() {
+		super.setRemoved();
 		energy.invalidate();
 	}
 }

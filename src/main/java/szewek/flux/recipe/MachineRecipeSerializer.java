@@ -34,7 +34,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 
 	@Nullable
 	@Override
-	public T read(ResourceLocation recipeId, JsonObject json) {
+	public T fromJson(ResourceLocation recipeId, JsonObject json) {
 		if (!json.has(RESULT)) {
 			throw new JsonSyntaxException("Missing result, expected to find a string or object");
 		}
@@ -47,7 +47,7 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 				return null;
 			}
 		} else {
-			String result = JSONUtils.getString(json, RESULT);
+			String result = JSONUtils.getAsString(json, RESULT);
 			ResourceLocation location = new ResourceLocation(result);
 			Item item = ForgeRegistries.ITEMS.getValue(location);
 			if (item == null) {
@@ -66,47 +66,47 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 			}
 		}
 
-		b.experience = JSONUtils.getFloat(json, "experience", 0.0F);
-		b.process = JSONUtils.getInt(json, "processtime", defaultProcess);
-		b.group = JSONUtils.getString(json, "group", "");
+		b.experience = JSONUtils.getAsFloat(json, "experience", 0.0F);
+		b.process = JSONUtils.getAsInt(json, "processtime", defaultProcess);
+		b.group = JSONUtils.getAsString(json, "group", "");
 
 		return factory.apply(recipeId, b);
 	}
 
 	@Override
-	public T read(ResourceLocation recipeId, PacketBuffer buffer) {
+	public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
 		Builder b = new Builder();
-		b.group = buffer.readString(32767);
+		b.group = buffer.readUtf(32767);
 		int size = buffer.readByte();
 
 		for(int i = 0; i < size; ++i) {
-			b.ingredients.add(Ingredient.read(buffer));
+			b.ingredients.add(Ingredient.fromNetwork(buffer));
 		}
 
-		b.result = buffer.readItemStack();
+		b.result = buffer.readItem();
 		b.experience = buffer.readFloat();
 		b.process = buffer.readVarInt();
 		return factory.apply(recipeId, b);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, T recipe) {
-		buffer.writeString(recipe.getGroup());
+	public void toNetwork(PacketBuffer buffer, T recipe) {
+		buffer.writeUtf(recipe.getGroup());
 		buffer.writeByte(recipe.ingredients.size());
 
 		for (Ingredient ingredient : recipe.ingredients) {
-			ingredient.write(buffer);
+			ingredient.toNetwork(buffer);
 		}
 
-		buffer.writeItemStack(recipe.result);
+		buffer.writeItem(recipe.result);
 		buffer.writeFloat(recipe.experience);
 		buffer.writeVarInt(recipe.processTime);
 	}
 
 	private static boolean readResultObject(JsonObject json, Builder b) {
-		JsonObject ro = JSONUtils.getJsonObject(json, RESULT);
+		JsonObject ro = JSONUtils.getAsJsonObject(json, RESULT);
 		if (ro.has("item")) {
-			b.result = ShapedRecipe.deserializeItem(ro);
+			b.result = ShapedRecipe.itemFromJson(ro);
 		}
 		if (ro.has("tag") && b.result == ItemStack.EMPTY) {
 			b.result = RecipeTagCompat.findItemTag(ro);
@@ -115,10 +115,10 @@ public final class MachineRecipeSerializer<T extends AbstractMachineRecipe> exte
 		return false;
 	}
 	private static void readIngredients(JsonObject json, List<Ingredient> ings) {
-		JsonArray arr = JSONUtils.getJsonArray(json, "ingredients");
+		JsonArray arr = JSONUtils.getAsJsonArray(json, "ingredients");
 		for (JsonElement jc : arr) {
-			Ingredient ingredient = Ingredient.deserialize(jc);
-			if (!ingredient.hasNoMatchingItems()) {
+			Ingredient ingredient = Ingredient.fromJson(jc);
+			if (!ingredient.isEmpty()) {
 				ings.add(ingredient);
 			}
 		}

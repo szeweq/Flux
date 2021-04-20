@@ -66,7 +66,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		}
 
 		@Override
-		public int size() {
+		public int getCount() {
 			return 10;
 		}
 	};
@@ -76,8 +76,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
+	public void load(BlockState blockState, CompoundNBT compound) {
+		super.load(blockState, compound);
 		energy.readNBT(compound);
 		work.readNBT(compound);
 		ItemStackHelper.loadAllItems(compound, items);
@@ -89,8 +89,8 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public CompoundNBT save(CompoundNBT compound) {
+		super.save(compound);
 		energy.writeNBT(compound);
 		work.writeNBT(compound);
 		ItemStackHelper.saveAllItems(compound, items);
@@ -101,24 +101,24 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 
 	@Override
 	public void tick() {
-		assert world != null;
-		if (world.isRemote) return;
+		assert level != null;
+		if (level.isClientSide) return;
 		if (redstoneState == -1) {
-			redstoneState = world.getRedstonePowerFromNeighbors(pos) > 0 ? 1 : 0;
+			redstoneState = level.getBestNeighborSignal(worldPosition) > 0 ? 1 : 0;
 		}
 		if (redstoneState == 0) {
 			if (work.canBegin(ForgeHooks.getBurnTime(items.get(0)))) {
 				work.update(items, tank.fluids);
 			} else if (energy.generate(work.gen)) {
 				work.tick();
-				markDirty();
+				setChanged();
 			} else if (work.gen > energy.getMaxEnergyStored()) {
 				// BLOW UP
-				world.createExplosion(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 9.0F, Explosion.Mode.DESTROY);
+				level.explode(null, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, 9.0F, Explosion.Mode.DESTROY);
 			}
 		}
 		energy.share(energyCache);
-		if (isDirty.getAndSet(false)) markDirty();
+		if (isDirty.getAndSet(false)) setChanged();
 	}
 
 	public void setRedstoneState(boolean state) {
@@ -131,7 +131,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction dir) {
-		if (!removed) {
+		if (!remove) {
 			if (cap == CapabilityEnergy.ENERGY) {
 				return energy.lazyCast();
 			} else if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
@@ -142,15 +142,15 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public void remove() {
-		super.remove();
+	public void setRemoved() {
+		super.setRemoved();
 		energyCache.clear();
 		energy.invalidate();
 		tank.lazy.invalidate();
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 2;
 	}
 
@@ -160,19 +160,19 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i) {
+	public ItemStack getItem(int i) {
 		if (i < 0 || i >= items.size())
 			throw new IndexOutOfBoundsException("Getting slot " + i + " outside range [0," + items.size() + ")");
 		return items.get(i);
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int count) {
+	public ItemStack removeItem(int i, int count) {
 		return i >= 0 && i <= items.size() && count > 0 && !items.get(i).isEmpty() ? items.get(i).split(count) : ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int i) {
+	public ItemStack removeItemNoUpdate(int i) {
 		if (i >= 0 && i <= items.size()) {
 			ItemStack stack = items.get(i);
 			items.set(i, ItemStack.EMPTY);
@@ -182,7 +182,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack stack) {
+	public void setItem(int i, ItemStack stack) {
 		if (i >= 0 && i <= items.size()) {
 			if (stack.getCount() > 64) stack.setCount(64);
 			items.set(i, stack);
@@ -190,17 +190,12 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public int getInventoryStackLimit() {
-		return 64;
+	public boolean stillValid(PlayerEntity player) {
+		return player.level.getBlockEntity(worldPosition) == this && worldPosition.distSqr(player.position(), true) <= 64.0;
 	}
 
 	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return player.world.getTileEntity(pos) == this && pos.distanceSq(player.getPositionVec(), true) <= 64.0;
-	}
-
-	@Override
-	public void clear() {
+	public void clearContent() {
 		items.clear();
 	}
 

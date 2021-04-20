@@ -28,35 +28,35 @@ public final class DiggerTile extends BlockInteractingTile {
 
 	@Override
 	public void tick() {
-		assert world != null;
-		if (!world.isRemote) {
+		assert level != null;
+		if (!level.isClientSide) {
 			boolean flag = !disabled;
 			final int usage = energyUse.get();
 			if (flag && energy.getEnergyStored() >= usage) {
 				walker.walk();
-				BlockPos bp = walker.getPosOffset(pos);
+				BlockPos bp = walker.getPosOffset(worldPosition);
 
 				if (bp.getY() < 0) {
 					disabled = true;
-					world.setBlockState(pos, world.getBlockState(pos).with(ActiveTileBlock.LIT, false), 3);
-					markDirty();
+					level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(ActiveTileBlock.LIT, false), 3);
+					setChanged();
 					return;
 				}
 
-				BlockState bs = world.getBlockState(bp);
+				BlockState bs = level.getBlockState(bp);
 				Block b = bs.getBlock();
 				if (!F.Tags.DIGGER_SKIP.contains(b) && !b.hasTileEntity(bs)) {
-					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)world).withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos)).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
+					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)level).withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(worldPosition)).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
 					if (!drops.isEmpty()) {
-						world.removeBlock(bp, false);
-						ItemsUtil.trySendingItems(drops, world, pos);
+						level.removeBlock(bp, false);
+						ItemsUtil.trySendingItems(drops, level, worldPosition);
 					}
 				}
 				energy.use(usage);
 			}
 
 			if (flag != lastFlag) {
-				world.setBlockState(pos, world.getBlockState(pos).with(ActiveTileBlock.LIT, flag), 3);
+				level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(ActiveTileBlock.LIT, flag), 3);
 				lastFlag = flag;
 			}
 		}

@@ -41,42 +41,42 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 
 	//MANUAL OVERRIDE
 	public World func_190670_t_() {
-		return world;
+		return level;
 	}
 
 	private void updateBox() {
-		final int x = pos.getX();
-		final int y = pos.getY();
-		final int z = pos.getZ();
+		final int x = worldPosition.getX();
+		final int y = worldPosition.getY();
+		final int z = worldPosition.getZ();
 		scanAABB = new AxisAlignedBB(x - 32, y - 32, z - 32, x + 32, y + 32, z + 32);
 	}
 
 	@Override
-	public void setWorldAndPos(World world, BlockPos pos) {
-		super.setWorldAndPos(world, pos);
+	public void setLevelAndPosition(World world, BlockPos pos) {
+		super.setLevelAndPosition(world, pos);
 		updateBox();
 	}
 
 	@Override
-	public void setPos(BlockPos posIn) {
-		super.setPos(posIn);
+	public void setPosition(BlockPos posIn) {
+		super.setPosition(posIn);
 		updateBox();
 	}
 
 	@Override
 	public Container createMenu(int id, PlayerInventory pi, PlayerEntity player) {
-		setCustomer(pi.player);
+		setTradingPlayer(pi.player);
 		return new OnlineMarketContainer(id, pi, this);
 	}
 
 	@Override
-	public void setCustomer(@Nullable PlayerEntity customer) {
+	public void setTradingPlayer(@Nullable PlayerEntity customer) {
 		this.customer = customer;
 	}
 
 	@Nullable
 	@Override
-	public PlayerEntity getCustomer() {
+	public PlayerEntity getTradingPlayer() {
 		return customer;
 	}
 
@@ -87,7 +87,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 
 	private void updateOffers() {
 		offers.clear();
-		for (VillagerEntity v : world.getEntitiesWithinAABB(EntityType.VILLAGER, scanAABB, EntityPredicates.NOT_SPECTATING)) {
+		for (VillagerEntity v : level.getEntities(EntityType.VILLAGER, scanAABB, EntityPredicates.NO_SPECTATORS)) {
 			MerchantOffers vmo = v.getOffers();
 			for (MerchantOffer offer : vmo) {
 				if (offers.stream().noneMatch(o -> MarketUtil.areSameOffers(o, offer))) {
@@ -102,42 +102,42 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void setClientSideOffers(@Nullable MerchantOffers offers) {
+	public void overrideOffers(@Nullable MerchantOffers offers) {
 
 	}
 
 	@Override
-	public void onTrade(MerchantOffer offer) {
+	public void notifyTrade(MerchantOffer offer) {
 		offer.increaseUses();
 	}
 
 	@Override
-	public void verifySellingItem(ItemStack stack) {
+	public void notifyTradeUpdated(ItemStack stack) {
 
 	}
 
 	@Override
-	public int getXp() {
+	public int getVillagerXp() {
 		return 0;
 	}
 
 	@Override
-	public void setXP(int xpIn) {
+	public void overrideXp(int xpIn) {
 
 	}
 
 	@Override
-	public boolean hasXPBar() {
+	public boolean showProgressBar() {
 		return false;
 	}
 
 	@Override
-	public SoundEvent getYesSound() {
-		return SoundEvents.ENTITY_VILLAGER_YES;
+	public SoundEvent getNotifyTradeSound() {
+		return SoundEvents.VILLAGER_YES;
 	}
 
 	@Override
-	public boolean canRestockTrades() {
+	public boolean canRestock() {
 		return true;
 	}
 

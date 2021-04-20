@@ -38,7 +38,7 @@ public class FluxGenContainer extends Container {
 		addSlot(new Slot(fluxGenInv, 0, 67, 35));
 		addSlot(new Slot(fluxGenInv, 1, 93, 35));
 		ConsumerUtil.addPlayerSlotsAt(pinv, 8, 84, this::addSlot);
-		trackIntArray(extra);
+		addDataSlots(extra);
 	}
 
 	public float getWorkFill() {
@@ -70,16 +70,16 @@ public class FluxGenContainer extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity player) {
-		return fluxGenInv.isUsableByPlayer(player);
+	public boolean stillValid(PlayerEntity player) {
+		return fluxGenInv.stillValid(player);
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity p, int index) {
+	public ItemStack quickMoveStack(PlayerEntity p, int index) {
 		ItemStack nis = ItemStack.EMPTY;
-		Slot sl = inventorySlots.get(index);
-		if (sl != null && sl.getHasStack()) {
-			ItemStack bis = sl.getStack();
+		Slot sl = slots.get(index);
+		if (sl != null && sl.hasItem()) {
+			ItemStack bis = sl.getItem();
 			nis = bis.copy();
 			int s = 2;
 			int e = 38;
@@ -97,14 +97,14 @@ public class FluxGenContainer extends Container {
 				}
 			}
 
-			if (!this.mergeItemStack(bis, s, e, false)) {
+			if (!moveItemStackTo(bis, s, e, false)) {
 				return ItemStack.EMPTY;
 			}
 
 			if (nis.isEmpty()) {
-				sl.putStack(ItemStack.EMPTY);
+				sl.set(ItemStack.EMPTY);
 			} else {
-				sl.onSlotChanged();
+				sl.setChanged();
 			}
 
 			if (nis.getCount() == bis.getCount()) {

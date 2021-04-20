@@ -41,13 +41,13 @@ public class Gifts implements IFutureReloadListener {
 	@Override
 	public CompletableFuture<Void> reload(IStage stage, IResourceManager rm, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor bgExec, Executor gameExec) {
 		return collectGiftLootTables(rm, bgExec)
-				.thenCompose(stage::markCompleteAwaitingOthers)
+				.thenCompose(stage::wait)
 				.thenAcceptAsync(Gifts::saveGiftLootTables, gameExec);
 	}
 
 	private static CompletableFuture<Set<ResourceLocation>> collectGiftLootTables(IResourceManager rm, Executor exec) {
 		return FluxData.collectFromResources(HashSet::new, rm, GIFTS_LIST, exec, (set, json) -> {
-			JsonArray entries = JSONUtils.getJsonArray(json, "entries");
+			JsonArray entries = JSONUtils.getAsJsonArray(json, "entries");
 			for (JsonElement el : entries) {
 				set.add(new ResourceLocation(el.getAsString()));
 			}
@@ -75,10 +75,10 @@ public class Gifts implements IFutureReloadListener {
 		CompoundNBT data = player.getPersistentData();
 		ListNBT received = data.getList("receivedGifts", 8);
 		boolean change = false;
-		LootContext lootCtx = new LootContext.Builder((ServerWorld) player.world)
-				.withParameter(LootParameters.field_237457_g_, player.getPositionVec())
+		LootContext lootCtx = new LootContext.Builder((ServerWorld) player.level)
+				.withParameter(LootParameters.ORIGIN, player.position())
 				.withParameter(LootParameters.THIS_ENTITY, player)
-				.build(LootParameterSets.GIFT);
+				.create(LootParameterSets.GIFT);
 		for (ResourceLocation loc : GIFT_LOOT_TABLES) {
 			final StringNBT locNBT = StringNBT.valueOf(loc.toString());
 			if (!received.contains(locNBT)) {
@@ -90,13 +90,13 @@ public class Gifts implements IFutureReloadListener {
 		if (change) {
 			FluxPackets.sendGiftReceived(player);
 			data.put("receivedGifts", received);
-			player.sendMessage(RECEIVED_GIFT, Util.DUMMY_UUID);
+			player.sendMessage(RECEIVED_GIFT, Util.NIL_UUID);
 		}
 	}
 
 	public static void produceGifts(ServerPlayerEntity player, LootContext lootCtx, ResourceLocation loc) {
-		LootTable lootTable = player.server.getLootTableManager().getLootTableFromLocation(loc);
-		for (ItemStack stack : lootTable.generate(lootCtx)) {
+		LootTable lootTable = player.server.getLootTables().get(loc);
+		for (ItemStack stack : lootTable.getRandomItems(lootCtx)) {
 			ItemHandlerHelper.giveItemToPlayer(player, stack);
 		}
 	}

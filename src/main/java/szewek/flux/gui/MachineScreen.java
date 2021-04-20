@@ -37,13 +37,13 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	public void init() {
 		super.init();
 		recipeBookShown = width < 379;
-		recipeGui.init(width, height, minecraft, recipeBookShown, container);
-		guiLeft = recipeGui.updateScreenPosition(recipeBookShown, width, xSize);
-		addButton(new ImageButton(guiLeft + 20, height / 2 - 49, 20, 18, 0, 0, 19, recipeTex, button -> {
-			recipeGui.initSearchBar(recipeBookShown);
+		recipeGui.init(width, height, minecraft, recipeBookShown, menu);
+		leftPos = recipeGui.updateScreenPosition(recipeBookShown, width, imageWidth);
+		addButton(new ImageButton(leftPos + 20, height / 2 - 49, 20, 18, 0, 0, 19, recipeTex, button -> {
+			recipeGui.initVisuals(recipeBookShown);
 			recipeGui.toggleVisibility();
-			guiLeft = recipeGui.updateScreenPosition(recipeBookShown, width, xSize);
-			((ImageButton)button).setPosition(guiLeft + 20, height / 2 - 49);
+			leftPos = recipeGui.updateScreenPosition(recipeBookShown, width, imageWidth);
+			((ImageButton)button).setPosition(leftPos + 20, height / 2 - 49);
 		}));
 	}
 
@@ -57,32 +57,32 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		if (recipeGui.isVisible() && recipeBookShown) {
-			drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+			renderBg(matrixStack, partialTicks, mouseX, mouseY);
 			recipeGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		} else {
 			recipeGui.render(matrixStack, mouseX, mouseY, partialTicks);
 			super.render(matrixStack, mouseX, mouseY, partialTicks);
 			// RENDER GHOST RECIPE
-			recipeGui.func_230477_a_(matrixStack, guiLeft, guiTop, true, partialTicks);
+			recipeGui.renderGhostRecipe(matrixStack, leftPos, topPos, true, partialTicks);
 		}
 		// RENDER TOOLTIPS
-		renderHoveredTooltip(matrixStack, mouseX, mouseY);
-		recipeGui.func_238924_c_(matrixStack, guiLeft, guiTop, mouseX, mouseY);
+		renderTooltip(matrixStack, mouseX, mouseY);
+		recipeGui.renderTooltip(matrixStack, leftPos, topPos, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
 		String s = title.getString();
-		font.drawString(matrixStack, s, (float)(xSize / 2 - font.getStringWidth(s) / 2), 6F, 0x404040);
-		ITextComponent var8 = playerInventory.getDisplayName();
-		font.drawString(matrixStack, var8.getString(), 8F, (float)(ySize - 96 + 2), 0x404040);
-		int mx = mouseX - guiLeft;
-		int my = mouseY - guiTop;
+		font.draw(matrixStack, s, (float)(imageWidth / 2 - font.width(s) / 2), 6F, 0x404040);
+		ITextComponent var8 = inventory.getDisplayName();
+		font.draw(matrixStack, var8.getString(), 8F, (float)(imageHeight - 96 + 2), 0x404040);
+		int mx = mouseX - leftPos;
+		int my = mouseY - topPos;
 		if (151 <= mx && 168 >= mx && 16 <= my && 69 >= my) {
-			func_243308_b(matrixStack, container.energyText(), mx, my);
+			renderComponentTooltip(matrixStack, menu.energyText(), mx, my);
 		}
-		if (container.isCompatRecipe()) {
-			font.drawString(matrixStack, "!", 82F, 24F, 0xFF0000);
+		if (menu.isCompatRecipe()) {
+			font.draw(matrixStack, "!", 82F, 24F, 0xFF0000);
 			if (80 <= mx && 84 >= mx && 24 <= my && 32 >= my) {
 				renderTooltip(matrixStack, compatInfo, mx, my);
 			}
@@ -90,19 +90,19 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bindTexture(guiTexture);
-		int i = guiLeft;
-		int j = guiTop;
-		blit(matrixStack, i, j, 0, 0, xSize, ySize);
+		minecraft.getTextureManager().bind(guiTexture);
+		int i = leftPos;
+		int j = topPos;
+		blit(matrixStack, i, j, 0, 0, imageWidth, imageHeight);
 
-		int n = container.energyScaled();
+		int n = menu.energyScaled();
 		if (n > 0) {
 			blit(matrixStack, i + 152, j + 71 - n, 176, 71 - n, 16, n - 1);
 		}
 
-		n = container.processScaled();
+		n = menu.processScaled();
 		if (n > 0) {
 			blit(matrixStack, i + 79, j + 34, 176, 0, n + 1, 16);
 		}
@@ -115,8 +115,8 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	}
 
 	@Override
-	protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-		super.handleMouseClick(slotIn, slotId, mouseButton, type);
+	protected void slotClicked(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+		super.slotClicked(slotIn, slotId, mouseButton, type);
 		recipeGui.slotClicked(slotIn);
 	}
 
@@ -127,8 +127,8 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 
 	@Override
 	protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
-		boolean flag = mouseX < (double)guiLeftIn || mouseY < (double)guiTopIn || mouseX >= (double)(guiLeftIn + xSize) || mouseY >= (double)(guiTopIn + ySize);
-		return recipeGui.func_195604_a(mouseX, mouseY, guiLeft, guiTop, xSize, ySize, mouseButton) && flag;
+		boolean flag = mouseX < (double)guiLeftIn || mouseY < (double)guiTopIn || mouseX >= (double)(guiLeftIn + imageWidth) || mouseY >= (double)(guiTopIn + imageHeight);
+		return recipeGui.hasClickedOutside(mouseX, mouseY, leftPos, topPos, imageWidth, imageHeight, mouseButton) && flag;
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class MachineScreen extends ContainerScreen<AbstractMachineContainer> imp
 	}
 
 	@Override
-	public RecipeBookGui getRecipeGui() {
+	public RecipeBookGui getRecipeBookComponent() {
 		return recipeGui;
 	}
 

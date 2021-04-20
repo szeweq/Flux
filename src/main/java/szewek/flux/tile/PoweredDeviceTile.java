@@ -26,32 +26,31 @@ public abstract class PoweredDeviceTile extends LockableTileEntity implements IT
 
 	@Override
 	public void tick() {
-		if (world != null && !world.isRemote) {
-			serverTick(world);
+		if (level != null && !level.isClientSide) {
+			serverTick(level);
 			if (isDirty) {
-				markDirty();
+				setChanged();
 				isDirty = false;
 			}
 		}
 	}
 
-	@Nullable
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!removed && cap == CapabilityEnergy.ENERGY) {
+		if (!remove && cap == CapabilityEnergy.ENERGY) {
 			return energy.lazyCast();
 		}
 		return super.getCapability(cap, side);
 	}
 
 	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return player.world.getTileEntity(pos) == this && pos.distanceSq(player.getPositionVec(), true) <= 64.0;
+	public boolean canOpen(PlayerEntity player) {
+		return player.level.getBlockEntity(worldPosition) == this && worldPosition.distSqr(player.position(), true) <= 64.0;
 	}
 
 	@Override
-	public void remove() {
+	public void setRemoved() {
 		energy.invalidate();
-		super.remove();
+		super.setRemoved();
 	}
 }

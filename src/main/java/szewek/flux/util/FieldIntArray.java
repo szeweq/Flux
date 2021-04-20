@@ -53,7 +53,7 @@ public class FieldIntArray implements IIntArray {
 	}
 
 	@Override
-	public int size() {
+	public int getCount() {
 		return fields.length;
 	}
 
@@ -89,8 +89,8 @@ public class FieldIntArray implements IIntArray {
 		}
 
 		@Override
-		public int size() {
-			return ext.size();
+		public int getCount() {
+			return ext.getCount();
 		}
 	}
 }

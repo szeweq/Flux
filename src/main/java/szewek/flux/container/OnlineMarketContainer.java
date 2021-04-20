@@ -19,9 +19,9 @@ public class OnlineMarketContainer extends MerchantContainer {
 
 	public OnlineMarketContainer(int id, PlayerInventory playerInventory, IMerchant merchant) {
 		super(id, playerInventory, merchant);
-		Slot outputSlot = new MarketResultSlot(playerInventory.player, merchant, merchantInventory, 2, 220, 37);
-		outputSlot.slotNumber = 2;
-		inventorySlots.set(2, outputSlot);
+		Slot outputSlot = new MarketResultSlot(playerInventory.player, merchant, tradeContainer, 2, 220, 37);
+		outputSlot.index = 2;
+		slots.set(2, outputSlot);
 	}
 
 	@Override
@@ -30,33 +30,33 @@ public class OnlineMarketContainer extends MerchantContainer {
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+	public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
 		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = this.inventorySlots.get(index);
-		if (slot != null && slot.getHasStack()) {
-			ItemStack itemstack1 = slot.getStack();
+		Slot slot = slots.get(index);
+		if (slot != null && slot.hasItem()) {
+			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 			if (index == 2) {
-				if (!this.mergeItemStack(itemstack1, 3, 39, true)) {
+				if (!moveItemStackTo(itemstack1, 3, 39, true)) {
 					return ItemStack.EMPTY;
 				}
-				slot.onSlotChange(itemstack1, itemstack);
+				slot.onQuickCraft(itemstack1, itemstack);
 			} else if (index != 0 && index != 1) {
 				if (index < 30) {
-					if (!this.mergeItemStack(itemstack1, 30, 39, false)) {
+					if (!moveItemStackTo(itemstack1, 30, 39, false)) {
 						return ItemStack.EMPTY;
 					}
-				} else if (index < 39 && !this.mergeItemStack(itemstack1, 3, 30, false)) {
+				} else if (index < 39 && !moveItemStackTo(itemstack1, 3, 30, false)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (!this.mergeItemStack(itemstack1, 3, 39, false)) {
+			} else if (!moveItemStackTo(itemstack1, 3, 39, false)) {
 				return ItemStack.EMPTY;
 			}
 
 			if (itemstack1.isEmpty()) {
-				slot.putStack(ItemStack.EMPTY);
+				slot.set(ItemStack.EMPTY);
 			} else {
-				slot.onSlotChanged();
+				slot.setChanged();
 			}
 
 			if (itemstack1.getCount() == itemstack.getCount()) {

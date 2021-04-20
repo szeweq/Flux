@@ -22,27 +22,27 @@ abstract class EntityInteractingTile extends PoweredTile {
 	}
 
 	@Override
-	public void read(BlockState blockState, CompoundNBT compound) {
-		super.read(blockState, compound);
-		updateAABB(pos);
+	public void load(BlockState blockState, CompoundNBT compound) {
+		super.load(blockState, compound);
+		updateAABB(worldPosition);
 	}
 
 
 	@Override
-	public void setPos(BlockPos posIn) {
-		super.setPos(posIn);
+	public void setPosition(BlockPos posIn) {
+		super.setPosition(posIn);
 		updateAABB(posIn);
 	}
 
 	@Override
-	public void setWorldAndPos(World w, BlockPos posIn) {
-		super.setWorldAndPos(w, posIn);
+	public void setLevelAndPosition(World w, BlockPos posIn) {
+		super.setLevelAndPosition(w, posIn);
 		updateAABB(posIn);
 	}
 
 	@Override
 	public void tick() {
-		if (world == null || world.isRemote) {
+		if (level == null || level.isClientSide) {
 			return;
 		}
 		if (cooldown > 0) {

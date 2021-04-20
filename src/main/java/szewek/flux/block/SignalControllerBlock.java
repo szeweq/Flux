@@ -27,8 +27,8 @@ public class SignalControllerBlock extends DirectionalBlock {
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
 	public SignalControllerBlock() {
-		super(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.0F));
-		setDefaultState(stateContainer.getBaseState().with(FACING, Direction.SOUTH).with(POWERED, false));
+		super(Block.Properties.of(Material.METAL).strength(3.0F));
+		registerDefaultState(stateDefinition.any().setValue(FACING, Direction.SOUTH).setValue(POWERED, false));
 	}
 
 	@Override
@@ -43,35 +43,35 @@ public class SignalControllerBlock extends DirectionalBlock {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-		if (!worldIn.isRemote) {
-			TileEntity tile = worldIn.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+		if (!worldIn.isClientSide) {
+			TileEntity tile = worldIn.getBlockEntity(pos);
 			if (tile instanceof SignalControllerTile) {
-				player.openContainer((SignalControllerTile) tile);
+				player.openMenu((SignalControllerTile) tile);
 			}
 		}
 		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING, POWERED);
 	}
 
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.with(FACING, rot.rotate(state.get(FACING)));
+		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
-		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
+		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+	public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		if (stack.hasTag()) {
-			TileEntity tile = worldIn.getTileEntity(pos);
+			TileEntity tile = worldIn.getBlockEntity(pos);
 			if (tile instanceof SignalControllerTile) {
 				CompoundNBT compound = stack.getTag();
 				byte m = compound.getByte("Mode");
@@ -83,7 +83,7 @@ public class SignalControllerBlock extends DirectionalBlock {
 
 	@Override
 	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-		TileEntity tile = worldIn.getTileEntity(pos);
+		TileEntity tile = worldIn.getBlockEntity(pos);
 		if (tile instanceof SignalControllerTile) {
 			((SignalControllerTile) tile).updateState();
 		}
@@ -92,21 +92,21 @@ public class SignalControllerBlock extends DirectionalBlock {
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite().getOpposite());
+		return defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite().getOpposite());
 	}
 
 	@Override
-	public boolean canProvidePower(BlockState state) {
+	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-		return blockState.getWeakPower(blockAccess, pos, side);
+	public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+		return blockState.getDirectSignal(blockAccess, pos, side);
 	}
 
 	@Override
-	public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-		return blockState.get(POWERED) ? 15 : 0;
+	public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+		return blockState.getValue(POWERED) ? 15 : 0;
 	}
 }

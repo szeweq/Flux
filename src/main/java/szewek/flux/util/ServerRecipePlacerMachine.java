@@ -22,15 +22,15 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 	}
 
 	@Override
-	protected void tryPlaceRecipe(IRecipe<C> recipe, boolean placeAll) {
-		matches = recipeBookContainer.matches(recipe);
-		int i = recipeItemHelper.getBiggestCraftableStack(recipe, null);
+	protected void handleRecipeClicked(IRecipe<C> recipe, boolean placeAll) {
+		matches = menu.recipeMatches(recipe);
+		int i = stackedContents.getBiggestCraftableStack(recipe, null);
 		int j;
 		if (matches) {
 			j = recipe.getIngredients().size();
 			int r = ioSize.in;
 			for (int k = 0; k < j; ++k) {
-				ItemStack stack = recipeBookContainer.getSlot(k).getStack();
+				ItemStack stack = menu.getSlot(k).getItem();
 				if (stack.isEmpty() || i <= stack.getCount()) {
 					--r;
 				}
@@ -40,12 +40,12 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 			}
 		}
 
-		j = getMaxAmount(placeAll, i, matches);
+		j = getStackSize(placeAll, i, matches);
 		IntList intList = new IntArrayList();
-		if (recipeItemHelper.canCraft(recipe, intList, j)) {
+		if (stackedContents.canCraft(recipe, intList, j)) {
 			if (!matches) {
 				for(int n = ioSize.all - 1; n >= 0; --n) {
-					giveToPlayer(n);
+					moveItemToInventory(n);
 				}
 			}
 			consume(j, intList);
@@ -54,27 +54,27 @@ public final class ServerRecipePlacerMachine<C extends IInventory> extends Serve
 	}
 
 	@Override
-	protected void clear() {
+	protected void clearGrid() {
 		int l = ioSize.all;
 		for(int i = ioSize.in; i < l; ++i) {
-			giveToPlayer(i);
+			moveItemToInventory(i);
 		}
-		super.clear();
+		super.clearGrid();
 	}
 
 	protected void consume(int amount, IntList intList) {
 		IntIterator iterator = intList.iterator();
 		byte i = 0;
 		while(iterator.hasNext() && i < ioSize.in) {
-			Slot slot = recipeBookContainer.getSlot(i++);
-			ItemStack stack = RecipeItemHelper.unpack(iterator.nextInt());
+			Slot slot = menu.getSlot(i++);
+			ItemStack stack = RecipeItemHelper.fromStackingIndex(iterator.nextInt());
 			if (!stack.isEmpty()) {
 				int m = Math.min(stack.getMaxStackSize(), amount);
 				if (matches) {
-					m -= slot.getStack().getCount();
+					m -= slot.getItem().getCount();
 				}
 				while(m > 0) {
-					consumeIngredient(slot, stack);
+					moveItemToGrid(slot, stack);
 					--m;
 				}
 			}

@@ -25,9 +25,9 @@ public final class GiftItem extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		playerIn.setActiveHand(handIn);
-		return new ActionResult<>(ActionResultType.CONSUME, playerIn.getHeldItem(handIn));
+	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+		playerIn.swing(handIn);
+		return new ActionResult<>(ActionResultType.CONSUME, playerIn.getItemInHand(handIn));
 	}
 
 	@Override
@@ -36,29 +36,29 @@ public final class GiftItem extends Item {
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack) {
+	public UseAction getUseAnimation(ItemStack stack) {
 		return UseAction.EAT;
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity && stack.getItem() == this) {
+	public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+		if (!worldIn.isClientSide && entityLiving instanceof ServerPlayerEntity && stack.getItem() == this) {
 			CompoundNBT tag = stack.getTag();
 			if (tag == null || tag.isEmpty() || !tag.contains("LootTable")) {
-				entityLiving.sendMessage(GIFT_INVALID, Util.DUMMY_UUID);
+				entityLiving.sendMessage(GIFT_INVALID, Util.NIL_UUID);
 				return ItemStack.EMPTY;
 			}
 
 			String lt = tag.getString("LootTable");
-			ResourceLocation loc = ResourceLocation.tryCreate(lt);
+			ResourceLocation loc = ResourceLocation.tryParse(lt);
 			if (loc == null) {
-				entityLiving.sendMessage(GIFT_INVALID, Util.DUMMY_UUID);
+				entityLiving.sendMessage(GIFT_INVALID, Util.NIL_UUID);
 				return ItemStack.EMPTY;
 			}
 			LootContext lootCtx = new LootContext.Builder((ServerWorld) worldIn)
-					.withParameter(LootParameters.field_237457_g_, entityLiving.getPositionVec())
+					.withParameter(LootParameters.ORIGIN, entityLiving.position())
 					.withParameter(LootParameters.THIS_ENTITY, entityLiving)
-					.build(LootParameterSets.GIFT);
+					.create(LootParameterSets.GIFT);
 			Gifts.produceGifts((ServerPlayerEntity) entityLiving, lootCtx, loc);
 
 			stack.grow(-1);

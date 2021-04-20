@@ -82,12 +82,12 @@ public final class F {
 	public static final ItemGroup
 			FLUX_BLOCKS = new ItemGroup("flux.blocks") {
 				@Override
-				public ItemStack createIcon() {
+				public ItemStack makeIcon() {
 					return new ItemStack(B.FLUXGEN);
 				}
 			},
 			FLUX_ITEMS = new ItemGroup("flux.items") {
-				@Override public ItemStack createIcon() {
+				@Override public ItemStack makeIcon() {
 					return new ItemStack(I.CHIP);
 				}
 			};
@@ -172,7 +172,7 @@ public final class F {
 		lvlTrades.put(5, new VillagerTrades.ITrade[]{
 				new ChipUpgradeTrade(-9, 100)
 		});
-		VillagerTrades.VILLAGER_DEFAULT_TRADES.put(V.FLUX_ENGINEER, lvlTrades);
+		VillagerTrades.TRADES.put(V.FLUX_ENGINEER, lvlTrades);
 	}
 
 	@SubscribeEvent
@@ -200,16 +200,16 @@ public final class F {
 		I.BRONZE_TOOLS.registerToolColors(Metals.BRONZE, ic);
 		I.STEEL_TOOLS.registerToolColors(Metals.STEEL, ic);
 
-		RenderTypeLookup.setRenderLayer(B.INTERACTOR_RAIL, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(B.INTERACTOR_RAIL, RenderType.cutout());
 
-		ScreenManager.registerFactory(C.FLUXGEN, FluxGenScreen::new);
-		ScreenManager.registerFactory(C.SIGNAL_CONTROLLER, SignalControllerScreen::new);
-		ScreenManager.registerFactory(C.GRINDING_MILL, MachineScreen.make("grindable", "grinding_mill"));
-		ScreenManager.registerFactory(C.ALLOY_CASTER, MachineScreen.make("alloyable", "alloy_caster"));
-		ScreenManager.registerFactory(C.WASHER, MachineScreen.make("washable", "washer"));
-		ScreenManager.registerFactory(C.COMPACTOR, MachineScreen.make("compactable", "compactor"));
-		ScreenManager.registerFactory(C.COPIER, MachineScreen.make("copyable", "copier"));
-		ScreenManager.registerFactory(C.ONLINE_MARKET, MerchantScreen::new);
+		ScreenManager.register(C.FLUXGEN, FluxGenScreen::new);
+		ScreenManager.register(C.SIGNAL_CONTROLLER, SignalControllerScreen::new);
+		ScreenManager.register(C.GRINDING_MILL, MachineScreen.make("grindable", "grinding_mill"));
+		ScreenManager.register(C.ALLOY_CASTER, MachineScreen.make("alloyable", "alloy_caster"));
+		ScreenManager.register(C.WASHER, MachineScreen.make("washable", "washer"));
+		ScreenManager.register(C.COMPACTOR, MachineScreen.make("compactable", "compactor"));
+		ScreenManager.register(C.COPIER, MachineScreen.make("copyable", "copier"));
+		ScreenManager.register(C.ONLINE_MARKET, MerchantScreen::new);
 	}
 
 	public static final class B {
@@ -248,11 +248,11 @@ public final class F {
 		}
 
 		private static AbstractBlock.Properties oreProps() {
-			return AbstractBlock.Properties.create(Material.ROCK);
+			return AbstractBlock.Properties.of(Material.STONE);
 		}
 
 		private static AbstractBlock.Properties blockProps() {
-			return AbstractBlock.Properties.create(Material.IRON);
+			return AbstractBlock.Properties.of(Material.METAL);
 		}
 	}
 
@@ -265,7 +265,7 @@ public final class F {
 				NUGGETS = metalMap("nugget", Metal.VANILLA),
 				GEARS = metalMap("gear", 0),
 				PLATES = metalMap("plate", 0);
-		public static final GiftItem GIFT = named(new GiftItem(props().maxStackSize(1)), "gift");
+		public static final GiftItem GIFT = named(new GiftItem(props().stacksTo(1)), "gift");
 		public static final Item MACHINE_BASE = named(new Item(props()), "machine_base");
 		public static final ChipItem CHIP = named(new ChipItem(props()), "chip");
 		public static final FluxAdhesiveItem
@@ -314,7 +314,7 @@ public final class F {
 		}
 
 		private static Item.Properties props() {
-			return new Item.Properties().group(FLUX_ITEMS);
+			return new Item.Properties().tab(FLUX_ITEMS);
 		}
 	}
 
@@ -428,7 +428,7 @@ public final class F {
 
 		private static PointOfInterestType poi(String name, Block b) {
 			return PointOfInterestType.registerBlockStates(
-					new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateContainer().getValidStates()), 1, 1)
+					new PointOfInterestType(MODID + ":" + name, ImmutableSet.copyOf(b.getStateDefinition().getPossibleStates()), 1, 1)
 							.setRegistryName(MODID, name)
 			);
 		}
@@ -445,17 +445,17 @@ public final class F {
 				COPPER_ORES = oreGen(Metals.COPPER, 96);
 
 		private static ConfiguredFeature<?, ?> oreGen(Metal metal, int top) {
-			return Feature.ORE.withConfiguration(new OreFeatureConfig(
-					OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,
-					F.B.ORES.get(metal).getDefaultState(),
+			return Feature.ORE.configured(new OreFeatureConfig(
+					OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+					B.ORES.get(metal).defaultBlockState(),
 					8
-			)).range(top).square().func_242731_b(20);
+			)).range(top).squared().range(20);
 		}
 	}
 
 	public static final class Tags {
-		public static final ITag.INamedTag<Block> DIGGER_SKIP = BlockTags.makeWrapperTag(MODID + ":digger_skip");
-		public static final ITag.INamedTag<Item> MARKET_ACCEPT = ItemTags.makeWrapperTag(MODID + ":market_accept");
+		public static final ITag.INamedTag<Block> DIGGER_SKIP = BlockTags.bind(MODID + ":digger_skip");
+		public static final ITag.INamedTag<Item> MARKET_ACCEPT = ItemTags.bind(MODID + ":market_accept");
 	}
 
 	public static ResourceLocation loc(String path) {
@@ -472,7 +472,7 @@ public final class F {
 
 	@SuppressWarnings("ConstantConditions")
 	private static BlockItem fromBlock(Block b) {
-		BlockItem item = new BlockItem(b, new Item.Properties().group(FLUX_BLOCKS));
+		BlockItem item = new BlockItem(b, new Item.Properties().tab(FLUX_BLOCKS));
 		item.setRegistryName(b.getRegistryName());
 		return item;
 	}

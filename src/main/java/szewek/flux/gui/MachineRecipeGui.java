@@ -49,32 +49,32 @@ public final class MachineRecipeGui extends AbstractRecipeBookGui {
 	 */
 
 	@Override
-	protected ITextComponent func_230479_g_() {
+	protected ITextComponent getRecipeFilterName() {
 		return filterName;
 	}
 
 	@Override
-	protected Set<Item> func_212958_h() {
+	protected Set<Item> getFuelItems() {
 		return Collections.singleton(Items.AIR);
 	}
 
 	@Override
 	protected void updateCollections(boolean resetPage) {
-		List<RecipeList> list = recipeBook.getRecipes(currentTab.func_201503_d());
-		list.forEach(rl -> rl.canCraft(stackedContents, field_201522_g.getWidth(), field_201522_g.getHeight(), recipeBook));
+		List<RecipeList> list = book.getCollection(selectedTab.getCategory());
+		list.forEach(rl -> rl.canCraft(stackedContents, menu.getGridWidth(), menu.getGridHeight(), book));
 		List<RecipeList> list1 = new ArrayList<>(list);
-		list1.removeIf(rl -> !rl.isNotEmpty() || !rl.containsValidRecipes());
+		list1.removeIf(rl -> !rl.hasFitting() || !rl.hasKnownRecipes());
 		list1.removeIf(rl -> rl.getRecipes().stream().noneMatch(recipe -> recipe.getType() == recipeType));
-		String s = searchBar.getText();
+		String s = searchBox.getValue();
 		if (s.length() > 0) {
-			final ObjectSet<RecipeList> objectset = new ObjectLinkedOpenHashSet<>(mc.getSearchTree(SearchTreeManager.RECIPES).search(s.toLowerCase(Locale.ROOT)));
+			final ObjectSet<RecipeList> objectset = new ObjectLinkedOpenHashSet<>(minecraft.getSearchTree(SearchTreeManager.RECIPE_COLLECTIONS).search(s.toLowerCase(Locale.ROOT)));
 			list1.removeIf(rl -> !objectset.contains(rl));
 		}
 
-		if (recipeBook.func_242141_a(field_201522_g)) {
-			list1.removeIf(rl -> !rl.containsCraftableRecipes());
+		if (book.isFiltering(menu)) {
+			list1.removeIf(rl -> !rl.hasCraftable());
 		}
 
-		recipeBookPage.updateLists(list1, resetPage);
+		recipeBookPage.updateCollections(list1, resetPage);
 	}
 }

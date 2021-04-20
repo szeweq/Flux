@@ -17,9 +17,9 @@ public final class MarketUtil {
 	public static boolean doTransaction(MerchantOffer offer, ItemStack stack1, ItemStack stack2) {
 		boolean accept = canAccept(offer, stack1, stack2);
 		if (accept) {
-			stack1.shrink(offer.getBuyingStackFirst().getCount());
-			if (!offer.getBuyingStackSecond().isEmpty()) {
-				stack2.shrink(offer.getBuyingStackSecond().getCount());
+			stack1.shrink(offer.getCostA().getCount());
+			if (!offer.getCostB().isEmpty()) {
+				stack2.shrink(offer.getCostB().getCount());
 			}
 			FluxAnalytics.putView("flux/online_market/transaction");
 		}
@@ -27,15 +27,15 @@ public final class MarketUtil {
 	}
 
 	public static boolean canAccept(MerchantOffer offer, ItemStack stack1, ItemStack stack2) {
-		final ItemStack offerStack = offer.getBuyingStackFirst();
+		final ItemStack offerStack = offer.getBaseCostA();
 		if (F.Tags.MARKET_ACCEPT.contains(offerStack.getItem())) {
-			final ItemStack offerStack2 = offer.getBuyingStackSecond();
+			final ItemStack offerStack2 = offer.getCostB();
 			return customEqualWithoutDamage(MarketUtil::matchingItemTag, stack1, offerStack)
 					&& stack1.getCount() >= offerStack.getCount()
-					&& customEqualWithoutDamage(ItemStack::isItemEqual, stack2, offerStack2)
+					&& customEqualWithoutDamage(ItemStack::sameItem, stack2, offerStack2)
 					&& stack2.getCount() >= offerStack2.getCount();
 		} else {
-			return offer.matches(stack1, stack2);
+			return offer.satisfiedBy(stack1, stack2);
 		}
 	}
 
@@ -44,16 +44,16 @@ public final class MarketUtil {
 			return true;
 		} else {
 			ItemStack stack = left.copy();
-			if (stack.getItem().isDamageable()) {
-				stack.setDamage(stack.getDamage());
+			if (stack.getItem().canBeDepleted()) {
+				stack.setDamageValue(stack.getDamageValue());
 			}
 
-			return func.test(stack, right) && (!right.hasTag() || stack.hasTag() && NBTUtil.areNBTEquals(right.getTag(), stack.getTag(), false));
+			return func.test(stack, right) && (!right.hasTag() || stack.hasTag() && NBTUtil.compareNbt(right.getTag(), stack.getTag(), false));
 		}
 	}
 
 	private static boolean matchingItemTag(ItemStack left, ItemStack right) {
-		if (ItemStack.areItemsEqual(left, right)) {
+		if (ItemStack.isSame(left, right)) {
 			return true;
 		}
 		Set<ResourceLocation> checkTags = right.getItem().getTags();
@@ -62,8 +62,8 @@ public final class MarketUtil {
 	}
 
 	public static int compareOffers(MerchantOffer o1, MerchantOffer o2) {
-		ItemStack o1buy1 = o1.getBuyingStackFirst();
-		ItemStack o2buy1 = o2.getBuyingStackFirst();
+		ItemStack o1buy1 = o1.getBaseCostA();
+		ItemStack o2buy1 = o2.getBaseCostA();
 		if (o1buy1.getItem() != o2buy1.getItem()) {
 			if (o1buy1.getItem() == Items.EMERALD) {
 				return -1;
@@ -83,8 +83,8 @@ public final class MarketUtil {
 	}
 
 	public static boolean areSameOffers(MerchantOffer o1, MerchantOffer o2) {
-		return o1.getBuyingStackFirst().equals(o2.getBuyingStackFirst(), false)
-				&& o1.getBuyingStackSecond().equals(o2.getBuyingStackSecond(), false)
-				&& o1.getSellingStack().equals(o2.getSellingStack(), false);
+		return o1.getBaseCostA().equals(o2.getBaseCostA(), false)
+				&& o1.getCostB().equals(o2.getCostB(), false)
+				&& o1.getResult().equals(o2.getResult(), false);
 	}
 }

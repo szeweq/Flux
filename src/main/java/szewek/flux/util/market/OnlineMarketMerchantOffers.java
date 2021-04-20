@@ -14,7 +14,7 @@ import static szewek.flux.util.market.MarketUtil.canAccept;
 public class OnlineMarketMerchantOffers extends MerchantOffers {
 	@Nullable
 	@Override
-	public MerchantOffer func_222197_a(ItemStack stack1, ItemStack stack2, int index) {
+	public MerchantOffer getRecipeFor(ItemStack stack1, ItemStack stack2, int index) {
 		if (index > 0 && index < size()) {
 			MerchantOffer offer1 = get(index);
 			return canAccept(offer1, stack1, stack2) ? offer1 : null;

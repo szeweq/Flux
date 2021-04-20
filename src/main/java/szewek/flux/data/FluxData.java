@@ -49,7 +49,7 @@ public final class FluxData {
 			T t = sup.get();
 			List<IResource> resources;
 			try {
-				resources = rm.getAllResources(loc);
+				resources = rm.getResources(loc);
 			} catch (IOException e) {
 				LOGGER.error("Couldn't load any data from {}", loc, e);
 				return t;
@@ -61,7 +61,7 @@ public final class FluxData {
 						jc.process(t, json);
 					}
 				} catch (RuntimeException | IOException e) {
-					LOGGER.error("Couldn't load values from {} in data pack {}", loc, res.getPackName(), e);
+					LOGGER.error("Couldn't load values from {} in data pack {}", loc, res.getSourceName(), e);
 				} finally {
 					IOUtils.closeQuietly(res);
 				}

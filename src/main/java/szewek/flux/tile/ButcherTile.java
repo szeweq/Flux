@@ -15,11 +15,11 @@ public class ButcherTile extends EntityInteractingTile {
 
 	@Override
 	protected void interact(int usage) {
-		assert world != null;
-		List<AnimalEntity> animals = world.getEntitiesWithinAABB(AnimalEntity.class, aabb, e -> !e.isChild());
+		assert level != null;
+		List<AnimalEntity> animals = level.getEntitiesOfClass(AnimalEntity.class, aabb, e -> !e.isBaby());
 		for (AnimalEntity animal : animals) {
 			if (!energy.use(usage)) break;
-			animal.attackEntityFrom(DamageSource.GENERIC, 100);
+			animal.hurt(DamageSource.GENERIC, 100);
 		}
 	}
 }

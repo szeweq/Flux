@@ -20,7 +20,7 @@ public class ChipItem extends Item {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		final CompoundNBT tag = stack.getTag();
 		if (tag != null) {
 			addTooltip(tag, tooltip, "speed", false);
@@ -33,13 +33,10 @@ public class ChipItem extends Item {
 		if (v != 0) {
 			String s = (v > 0 ? "+" : "") + v + " %";
 			boolean positive = reversed ? v < 0 : v > 0;
-			tooltip.add(
-					new TranslationTextComponent("flux.chip." + name, s)
-							.mergeStyle(TextFormatting.GRAY)
-							.appendString(": ")
-							.append(new StringTextComponent(s)
-							.mergeStyle(positive ? TextFormatting.GREEN: TextFormatting.RED)
-					)
+			tooltip.add(new TranslationTextComponent("flux.chip." + name, s)
+					.withStyle(TextFormatting.GRAY)
+					.append(": ")
+					.append(new StringTextComponent(s).withStyle(positive ? TextFormatting.GREEN: TextFormatting.RED))
 			);
 		}
 	}

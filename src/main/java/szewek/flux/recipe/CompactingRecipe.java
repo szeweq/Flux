@@ -15,7 +15,7 @@ public final class CompactingRecipe extends AbstractMachineRecipe {
 	}
 
 	@Override
-	public ItemStack getIcon() {
+	public ItemStack getToastSymbol() {
 		return new ItemStack(F.B.COMPACTOR);
 	}
 }
