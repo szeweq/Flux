@@ -43,15 +43,7 @@ public final class DiggerTile extends BlockInteractingTile {
 					return;
 				}
 
-				BlockState bs = level.getBlockState(bp);
-				Block b = bs.getBlock();
-				if (!F.Tags.DIGGER_SKIP.contains(b) && !b.hasTileEntity(bs)) {
-					List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)level).withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(worldPosition)).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
-					if (!drops.isEmpty()) {
-						level.removeBlock(bp, false);
-						ItemsUtil.trySendingItems(drops, level, worldPosition);
-					}
-				}
+				dig(bp);
 				energy.use(usage);
 			}
 
@@ -63,5 +55,16 @@ public final class DiggerTile extends BlockInteractingTile {
 
 	}
 
-
+	private void dig(BlockPos bp) {
+		BlockState bs = level.getBlockState(bp);
+		Block b = bs.getBlock();
+		if (F.Tags.DIGGER_SKIP.contains(b) || b.hasTileEntity(bs)) {
+			return;
+		}
+		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)level).withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(worldPosition)).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
+		if (!drops.isEmpty()) {
+			level.removeBlock(bp, false);
+			ItemsUtil.trySendingItems(drops, level, worldPosition);
+		}
+	}
 }
