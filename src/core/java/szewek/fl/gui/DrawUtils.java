@@ -34,13 +34,13 @@ public final class DrawUtils {
 		int yg = c >> 8 & 255;
 		int yb = c & 255;
 		Tessellator tes = Tessellator.getInstance();
-		BufferBuilder vb = tes.getBuffer();
+		BufferBuilder vb = tes.getBuilder();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vb.pos(matrix, rect.x1, rect.y2, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-		vb.pos(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-		tes.draw();
+		vb.vertex(matrix, rect.x1, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+		vb.vertex(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+		vb.vertex(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+		vb.vertex(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+		tes.end();
 	}
 
 	/**
@@ -61,20 +61,20 @@ public final class DrawUtils {
 		int zg = color2 >> 8 & 255;
 		int zb = color2 & 255;
 		Tessellator tes = Tessellator.getInstance();
-		BufferBuilder vb = tes.getBuffer();
+		BufferBuilder vb = tes.getBuilder();
 		vb.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		if (rect.x2 - rect.x1 > rect.y2 - rect.y1) {
-			vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, rect.x1, rect.y1, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y1, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y2, z).color(yr, yg, yb, ya).endVertex();
 		} else {
-			vb.pos(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
-			vb.pos(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
-			vb.pos(matrix, rect.x2, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y1, z).color(yr, yg, yb, ya).endVertex();
+			vb.vertex(matrix, rect.x1, rect.y2, z).color(zr, zg, zb, za).endVertex();
+			vb.vertex(matrix, rect.x2, rect.y2, z).color(zr, zg, zb, za).endVertex();
 		}
-		tes.draw();
+		tes.end();
 	}
 
 	/**
@@ -97,12 +97,12 @@ public final class DrawUtils {
 		final int yTiles = nh >> 4;
 		final int yRemainder = nh & 15;
 
-		float uMin = tas.getMinU();
-		float uMax = tas.getMaxU();
-		float vMin = tas.getMinV();
-		float vMax = tas.getMaxV();
+		float uMin = tas.getU0();
+		float uMax = tas.getU1();
+		float vMin = tas.getV0();
+		float vMax = tas.getV1();
 		Tessellator tes = Tessellator.getInstance();
-		BufferBuilder buf = tes.getBuffer();
+		BufferBuilder buf = tes.getBuilder();
 
 		RenderSystem.enableBlend();
 		RenderSystem.enableAlphaTest();
@@ -121,11 +121,11 @@ public final class DrawUtils {
 					vMax = vMax - (maskTop / 16.0f * (vMax - vMin));
 
 					buf.begin(7, DefaultVertexFormats.POSITION_TEX);
-					buf.pos(matrix, tx, ty + 16, z).tex(uMin, vMax).endVertex();
-					buf.pos(matrix, tx + 16 - maskRight, ty + 16, z).tex(uMax, vMax).endVertex();
-					buf.pos(matrix, tx + 16 - maskRight, ty + maskTop, z).tex(uMax, vMin).endVertex();
-					buf.pos(matrix, tx, ty + maskTop, z).tex(uMin, vMin).endVertex();
-					tes.draw();
+					buf.vertex(matrix, tx, ty + 16, z).uv(uMin, vMax).endVertex();
+					buf.vertex(matrix, tx + 16 - maskRight, ty + 16, z).uv(uMax, vMax).endVertex();
+					buf.vertex(matrix, tx + 16 - maskRight, ty + maskTop, z).uv(uMax, vMin).endVertex();
+					buf.vertex(matrix, tx, ty + maskTop, z).uv(uMin, vMin).endVertex();
+					tes.end();
 				}
 			}
 		}
@@ -144,8 +144,8 @@ public final class DrawUtils {
 
 		ResourceLocation still = fl.getAttributes().getStillTexture();
 		Minecraft minecraft = Minecraft.getInstance();
-		TextureAtlasSprite tas = minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(still);
-		minecraft.textureManager.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+		TextureAtlasSprite tas = minecraft.getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(still);
+		minecraft.textureManager.bind(PlayerContainer.BLOCK_ATLAS);
 		glColorInt(fl.getAttributes().getColor(fs));
 		return tas;
 	}
