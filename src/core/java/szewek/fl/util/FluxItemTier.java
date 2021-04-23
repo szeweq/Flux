@@ -11,8 +11,8 @@ import net.minecraft.tags.ItemTags;
  * This uses tags to determine repair materials.
  */
 public class FluxItemTier implements IItemTier {
-	private final int harvestLevel;
-	private final int maxUses;
+	private final int level;
+	private final int uses;
 	private final float efficiency;
 	private final float attackDamage;
 	private final int enchantability;
@@ -20,8 +20,8 @@ public class FluxItemTier implements IItemTier {
 	public final Item material;
 
 	public FluxItemTier(Builder b) {
-		harvestLevel = b.harvestLevel;
-		maxUses = b.maxUses;
+		level = b.harvestLevel;
+		uses = b.maxUses;
 		efficiency = b.efficiency;
 		attackDamage = b.attackDamage;
 		enchantability = b.enchantability;
@@ -31,33 +31,33 @@ public class FluxItemTier implements IItemTier {
 
 
 	@Override
-	public int getMaxUses() {
-		return maxUses;
+	public int getUses() {
+		return uses;
 	}
 
 	@Override
-	public float getEfficiency() {
+	public float getSpeed() {
 		return efficiency;
 	}
 
 	@Override
-	public float getAttackDamage() {
+	public float getAttackDamageBonus() {
 		return attackDamage;
 	}
 
 	@Override
-	public int getHarvestLevel() {
-		return harvestLevel;
+	public int getLevel() {
+		return level;
 	}
 
 	@Override
-	public int getEnchantability() {
+	public int getEnchantmentValue() {
 		return enchantability;
 	}
 
 	@Override
-	public Ingredient getRepairMaterial() {
-		return Ingredient.fromTag(repairMaterialTag);
+	public Ingredient getRepairIngredient() {
+		return Ingredient.of(repairMaterialTag);
 	}
 
 	public static class Builder {
@@ -95,7 +95,7 @@ public class FluxItemTier implements IItemTier {
 		}
 
 		public Builder setTag(String tagName) {
-			repairMaterialTag = ItemTags.makeWrapperTag("forge:" + tagName);
+			repairMaterialTag = ItemTags.bind("forge:" + tagName);
 			return this;
 		}
 

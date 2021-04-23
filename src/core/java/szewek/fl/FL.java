@@ -44,7 +44,7 @@ public final class FL {
 	final static class ClientEvents {
 		@SubscribeEvent
 		public static void setupClient(final FMLClientSetupEvent e) {
-			String playerID = e.getMinecraftSupplier().get().getSession().getPlayerID();
+			String playerID = e.getMinecraftSupplier().get().getUser().getUuid();
 			FluxAnalytics.get().updatePlayerID(playerID);
 		}
 	}

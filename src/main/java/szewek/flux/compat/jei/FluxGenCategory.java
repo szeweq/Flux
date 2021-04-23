@@ -28,15 +28,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import static szewek.flux.Flux.MODID;
-
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product> {
 	private static final ResourceLocation BG_TEX = F.loc("textures/gui/fluxgen.png");
 	private final IDrawable background;
 	private final IDrawable icon;
-	private final String localizedName = I18n.format("block.flux.fluxgen");
+	private final String localizedName = I18n.get("block.flux.fluxgen");
 
 	public FluxGenCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createDrawable(BG_TEX, 46, 14, 84, 58);
@@ -101,13 +99,13 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 	@Override
 	public void draw(Product product, MatrixStack matrixStack, double mouseX, double mouseY) {
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.fontRenderer;
+		FontRenderer fontRenderer = minecraft.font;
 
-		int strW = fontRenderer.getStringWidth(product.typeStr);
-		fontRenderer.drawString(matrixStack, product.typeStr, (float)(background.getWidth() - strW) / 2, 1, 0xff404040);
+		int strW = fontRenderer.width(product.typeStr);
+		fontRenderer.draw(matrixStack, product.typeStr, (float)(background.getWidth() - strW) / 2, 1, 0xff404040);
 
-		strW = fontRenderer.getStringWidth(product.factorStr);
-		fontRenderer.drawString(matrixStack, product.factorStr, (float)(background.getWidth() - strW) / 2, 51, 0xff404040);
+		strW = fontRenderer.width(product.factorStr);
+		fontRenderer.draw(matrixStack, product.factorStr, (float)(background.getWidth() - strW) / 2, 51, 0xff404040);
 	}
 
 	static class Product {
@@ -118,7 +116,7 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 		public Product(Item item, IntPair val) {
 			type = 2;
-			typeStr = I18n.format("flux.fluxgen.factor");
+			typeStr = I18n.get("flux.fluxgen.factor");
 			this.item = new ItemStack(item, val.r);
 			fluid = FluidStack.EMPTY;
 			factorStr = "x" + val.l;
@@ -126,7 +124,7 @@ public class FluxGenCategory implements IRecipeCategory<FluxGenCategory.Product>
 
 		public Product(Fluid fluid, boolean hot, IntPair val) {
 			type = hot ? 1 : 0;
-			typeStr = I18n.format("flux.fluxgen." + (hot ? "time" : "speed"));
+			typeStr = I18n.get("flux.fluxgen." + (hot ? "time" : "speed"));
 			this.fluid = new FluidStack(fluid, val.r);
 			item = ItemStack.EMPTY;
 			factorStr = "x" + val.l;

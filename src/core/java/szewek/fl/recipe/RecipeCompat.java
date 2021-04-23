@@ -30,7 +30,7 @@ public final class RecipeCompat {
 		RecipeManager rm = w.getRecipeManager();
 		for (IRecipeType<?> rt : compatMap.getOrDefault(rtype, Collections.singleton(rtype))) {
 			IRecipeType<? extends T> recipeType = (IRecipeType<? extends T>) rt;
-			for (IRecipe<C> r : rm.getRecipes(recipeType).values()) {
+			for (IRecipe<C> r : rm.byType(recipeType).values()) {
 				try {
 					if (((IRecipe<IInventory>) r).matches(inv, w)) {
 						return Optional.of(r);
@@ -59,7 +59,7 @@ public final class RecipeCompat {
 	}
 
 	public static ItemStack getCompatOutput(final IRecipe<?> recipe, IInventory inv) {
-		ItemStack stack = recipe.getRecipeOutput();
+		ItemStack stack = recipe.getResultItem();
 		if (stack.isEmpty()) {
 			LOGGER.warn("Returned ItemStack from [{}] is EMPTY", recipe.getType().toString());
 		}

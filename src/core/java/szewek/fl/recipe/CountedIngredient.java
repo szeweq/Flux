@@ -31,8 +31,8 @@ public class CountedIngredient extends Ingredient {
 	}
 
 	@Override
-	public ItemStack[] getMatchingStacks() {
-		ItemStack[] stacks = super.getMatchingStacks();
+	public ItemStack[] getItems() {
+		ItemStack[] stacks = super.getItems();
 		if (!counted) {
 			for(ItemStack stack : stacks) {
 				stack.setCount(count);
@@ -59,23 +59,23 @@ public class CountedIngredient extends Ingredient {
 		@Override
 		public CountedIngredient parse(PacketBuffer buffer) {
 			int count = buffer.readVarInt();
-			return new CountedIngredient(Stream.generate(() -> new Ingredient.SingleItemList(buffer.readItemStack())).limit(buffer.readVarInt()), count);
+			return new CountedIngredient(Stream.generate(() -> new Ingredient.SingleItemList(buffer.readItem())).limit(buffer.readVarInt()), count);
 		}
 
 		@Override
 		public CountedIngredient parse(JsonObject json) {
-			int count = JSONUtils.getInt(json, "count", 1);
-			return new CountedIngredient(Stream.of(Ingredient.deserializeItemList(json)), count);
+			int count = JSONUtils.getAsInt(json, "count", 1);
+			return new CountedIngredient(Stream.of(Ingredient.valueFromJson(json)), count);
 		}
 
 		@Override
 		public void write(PacketBuffer buffer, CountedIngredient ingredient) {
 			buffer.writeVarInt(ingredient.count);
-			ItemStack[] items = ingredient.getMatchingStacks();
+			ItemStack[] items = ingredient.getItems();
 			buffer.writeVarInt(items.length);
 
 			for (ItemStack stack : items) {
-				buffer.writeItemStack(stack);
+				buffer.writeItem(stack);
 			}
 		}
 	}

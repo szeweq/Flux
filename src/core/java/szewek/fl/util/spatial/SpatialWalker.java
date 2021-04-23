@@ -110,7 +110,7 @@ public abstract class SpatialWalker {
 	}
 
 	public BlockPos getPosOffset(BlockPos pos) {
-		return pos.add(x, y, z);
+		return pos.offset(x, y, z);
 	}
 
 }

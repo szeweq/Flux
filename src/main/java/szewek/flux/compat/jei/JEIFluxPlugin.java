@@ -109,9 +109,9 @@ public class JEIFluxPlugin implements IModPlugin {
 
 	@SuppressWarnings({"ConstantConditions", "unchecked"})
 	private static <C extends IInventory, T extends IRecipe<C>> Collection<T> getRecipes(IRecipeType<T> rtype) {
-		ClientWorld world = Minecraft.getInstance().world;
+		ClientWorld world = Minecraft.getInstance().level;
 		RecipeManager rm = world.getRecipeManager();
-		Map<ResourceLocation, IRecipe<C>> rmap = rm.getRecipes(rtype);
+		Map<ResourceLocation, IRecipe<C>> rmap = rm.byType(rtype);
 		return (Collection<T>) rmap.values();
 	}
 
@@ -119,7 +119,7 @@ public class JEIFluxPlugin implements IModPlugin {
 		final Toolset[] toolsets = {F.I.BRONZE_TOOLS, F.I.STEEL_TOOLS};
 		final List<Object> recipes = new ArrayList<>();
 		for (Toolset tools : toolsets) {
-			List<ItemStack> repairItems = tools.tier.repairMaterialTag.getAllElements().stream().map(ItemStack::new).collect(Collectors.toList());
+			List<ItemStack> repairItems = tools.tier.repairMaterialTag.getValues().stream().map(ItemStack::new).collect(Collectors.toList());
 			if (repairItems.isEmpty()) {
 				repairItems = Collections.singletonList(new ItemStack(tools.tier.material));
 			}
@@ -127,11 +127,11 @@ public class JEIFluxPlugin implements IModPlugin {
 			while (toolItems.hasNext()) {
 				ItemStack stack = toolItems.next();
 				ItemStack damaged1 = stack.copy();
-				damaged1.setDamage(damaged1.getMaxDamage());
+				damaged1.setDamageValue(damaged1.getMaxDamage());
 				ItemStack damaged2 = stack.copy();
-				damaged2.setDamage(damaged2.getMaxDamage() * 3 / 4);
+				damaged2.setDamageValue(damaged2.getMaxDamage() * 3 / 4);
 				ItemStack damaged3 = stack.copy();
-				damaged3.setDamage(damaged3.getMaxDamage() * 2 / 4);
+				damaged3.setDamageValue(damaged3.getMaxDamage() * 2 / 4);
 				Object repairWithMaterial = vanillaRecipeFactory.createAnvilRecipe(damaged1, repairItems, Collections.singletonList(damaged2));
 				Object repairWithSame = vanillaRecipeFactory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3));
 				recipes.add(repairWithMaterial);
@@ -151,7 +151,7 @@ public class JEIFluxPlugin implements IModPlugin {
 	private static class MachineScreenHandler implements IGuiContainerHandler<MachineScreen> {
 		@Override
 		public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen containerScreen, double mouseX, double mouseY) {
-			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, F.loc(containerScreen.getContainer().recipeType.toString()));
+			IGuiClickableArea area = IGuiClickableArea.createBasic(78, 32, 28, 23, F.loc(containerScreen.getMenu().recipeType.toString()));
 			return Collections.singleton(area);
 		}
 	}

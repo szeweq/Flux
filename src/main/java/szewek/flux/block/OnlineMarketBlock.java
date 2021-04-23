@@ -43,7 +43,7 @@ public final class OnlineMarketBlock extends Block {
 				final OptionalInt oint = player.openMenu((INamedContainerProvider) tile);
 				if (oint.isPresent()) {
 					final OnlineMarketTile omt = (OnlineMarketTile) tile;
-					player.sendMerchantOffers(oint.getAsInt(), omt.getOffers(), 1, omt.getVillagerXp(), omt.hasXPBar(), omt.canRestock());
+					player.sendMerchantOffers(oint.getAsInt(), omt.getOffers(), 1, omt.getVillagerXp(), omt.showProgressBar(), omt.canRestock());
 				}
 			}
 		}

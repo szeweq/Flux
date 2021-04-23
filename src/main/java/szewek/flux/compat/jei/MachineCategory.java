@@ -36,7 +36,7 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 
 	public MachineCategory(String resUid, Class<T> tClass, IDrawable bg, IDrawable icon, IDrawableAnimated arrow) {
 		uid = F.loc(resUid);
-		localizedName = I18n.format("gui.flux.jei.category." + resUid);
+		localizedName = I18n.get("gui.flux.jei.category." + resUid);
 		cl = tClass;
 		background = bg;
 		this.icon = icon;
@@ -61,7 +61,7 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 	@Override
 	public void setIngredients(T recipe, IIngredients ingredients) {
 		ingredients.setInputIngredients(recipe.getIngredients());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+		ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
 	}
 
 	@Override
@@ -74,11 +74,11 @@ public class MachineCategory<T extends AbstractMachineRecipe> implements IRecipe
 		arrow.draw(matrixStack, 24, 9);
 		float experience = recipe.experience;
 		if (experience > 0.0F) {
-			String experienceString = I18n.format("gui.jei.category.smelting.experience", experience);
+			String experienceString = I18n.get("gui.jei.category.smelting.experience", experience);
 			Minecraft minecraft = Minecraft.getInstance();
-			FontRenderer fontRenderer = minecraft.fontRenderer;
-			int stringWidth = fontRenderer.getStringWidth(experienceString);
-			fontRenderer.drawString(matrixStack, experienceString, (float)(background.getWidth() - stringWidth), 0.0F, 0xff808080);
+			FontRenderer fontRenderer = minecraft.font;
+			int stringWidth = fontRenderer.width(experienceString);
+			fontRenderer.draw(matrixStack, experienceString, (float)(background.getWidth() - stringWidth), 0.0F, 0xff808080);
 		}
 	}
 

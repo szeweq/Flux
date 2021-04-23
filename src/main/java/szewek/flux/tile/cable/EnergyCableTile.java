@@ -69,8 +69,8 @@ public final class EnergyCableTile extends AbstractCableTile<IEnergyStorage> {
 	}
 
 	@Override
-	public void remove() {
-		super.remove();
+	public void setRemoved() {
+		super.setRemoved();
 		energyCache.clear();
 	}
 
