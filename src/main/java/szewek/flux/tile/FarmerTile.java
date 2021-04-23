@@ -81,27 +81,25 @@ public class FarmerTile extends BlockInteractingTile {
 	}
 
 	private void tryHarvest(BlockState bs, BlockPos bp, @Nullable BlockState nbs) {
-		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld) level)
-				.withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(bp))
-				.withParameter(LootParameters.TOOL, ItemStack.EMPTY)
-		);
-		if (!drops.isEmpty()) {
-			if (nbs == null) {
-				level.removeBlock(bp, false);
-			} else {
-				level.setBlockAndUpdate(bp, nbs);
-			}
-			for (int i = 0; i < drops.size(); i++) {
-				ItemStack stack = drops.get(i);
-				if (Tags.Items.SEEDS.contains(stack.getItem())) {
-					stack.grow(-1);
-					if (stack.isEmpty()) {
-						drops.remove(i);
-					}
-					break;
-				}
-			}
-			ItemsUtil.trySendingItems(drops, level, worldPosition);
+		List<ItemStack> drops = getDropsFrom(bs, bp);
+		if (drops.isEmpty()) {
+			return;
 		}
+		if (nbs == null) {
+			level.removeBlock(bp, false);
+		} else {
+			level.setBlockAndUpdate(bp, nbs);
+		}
+		for (int i = 0; i < drops.size(); i++) {
+			ItemStack stack = drops.get(i);
+			if (Tags.Items.SEEDS.contains(stack.getItem())) {
+				stack.grow(-1);
+				if (stack.isEmpty()) {
+					drops.remove(i);
+				}
+				break;
+			}
+		}
+		ItemsUtil.trySendingItems(drops, level, worldPosition);
 	}
 }

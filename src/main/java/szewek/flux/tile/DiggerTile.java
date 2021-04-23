@@ -61,7 +61,7 @@ public final class DiggerTile extends BlockInteractingTile {
 		if (F.Tags.DIGGER_SKIP.contains(b) || b.hasTileEntity(bs)) {
 			return;
 		}
-		List<ItemStack> drops = bs.getDrops(new LootContext.Builder((ServerWorld)level).withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(worldPosition)).withParameter(LootParameters.TOOL, ItemStack.EMPTY));
+		List<ItemStack> drops = getDropsFrom(bs, bp);
 		if (!drops.isEmpty()) {
 			level.removeBlock(bp, false);
 			ItemsUtil.trySendingItems(drops, level, worldPosition);
