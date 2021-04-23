@@ -115,45 +115,33 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 
 	public void updateState() {
 		cooldown = 10;
-		BlockState state = getBlockState();
-		Direction dir = state.getValue(SignalControllerBlock.FACING);
+		Direction dir = getBlockState().getValue(SignalControllerBlock.FACING);
 		TileEntity tile = level.getBlockEntity(worldPosition.relative(dir));
-		boolean sb = state.getValue(POWERED);
 		if (tile != null) {
 			LazyOptional<ISignalHandler> lazyOpt = tile.getCapability(SignalCapability.SIGNAL_CAP, dir.getOpposite());
-			if (lazyOpt.isPresent()) {
-				ISignalHandler sh = lazyOpt.orElse(null);
-				boolean b;
-				switch (mode) {
-					case 0:
-						if (sh.allowsSignalOutput(currentChannel)) {
-							b = sh.getSignal(currentChannel);
-							if (b) {
-								keepPower = 15;
-								if (!sb) {
-									level.setBlockAndUpdate(worldPosition, state.setValue(POWERED, true));
-								}
-							}
-						}
-						break;
-					case 1:
-						if (sh.allowsSignalInput(currentChannel)) {
-							sh.setSignal(currentChannel);
-						}
-						break;
-					case 2:
-						if (sh.allowsSignalInput(currentChannel)) {
-							sh.clearSignal(currentChannel);
-						}
-						break;
-					case 3:
-						if (sh.allowsSignalInput(currentChannel)) {
-							b = level.hasNeighborSignal(worldPosition);
-							sh.putSignal(currentChannel, b);
-						}
+			lazyOpt.ifPresent(this::useSignalHandler);
+		}
+	}
+
+	private void useSignalHandler(ISignalHandler sh) {
+		BlockState state = getBlockState();
+		if (mode == 0 && sh.allowsSignalOutput(currentChannel)) {
+			if (sh.getSignal(currentChannel)) {
+				keepPower = 15;
+				if (!state.getValue(POWERED)) {
+					level.setBlockAndUpdate(worldPosition, state.setValue(POWERED, true));
 				}
-				cooldown = 4;
+			}
+		} else if (sh.allowsSignalInput(currentChannel)) {
+			switch (mode) {
+				case 1: sh.setSignal(currentChannel); break;
+				case 2: sh.clearSignal(currentChannel); break;
+				case 3:
+					boolean b = level.hasNeighborSignal(worldPosition);
+					sh.putSignal(currentChannel, b);
+					break;
 			}
 		}
+		cooldown = 4;
 	}
 }
