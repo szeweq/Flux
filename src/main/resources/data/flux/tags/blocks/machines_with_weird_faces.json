@@ -9,7 +9,6 @@
     "flux:farmer",
     "flux:butcher",
     "flux:mob_pounder",
-    "flux:rrtable",
     "flux:online_market"
   ]
 }
