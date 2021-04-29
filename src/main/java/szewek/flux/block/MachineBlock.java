@@ -22,9 +22,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import szewek.fl.network.FluxAnalytics;
+import szewek.fl.network.NetCommon;
 import szewek.flux.tile.AbstractMachineTile;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public final class MachineBlock extends Block {
 	public static final DirectionProperty FACING = HorizontalBlock.FACING;
@@ -61,9 +63,8 @@ public final class MachineBlock extends Block {
 					player.openMenu((INamedContainerProvider) te);
 				}
 			}
-		} else {
-			FluxAnalytics.putView("flux/open/" + getRegistryName());
 		}
+		NetCommon.putAction(player, "open", Objects.toString(getRegistryName(), "unknown"));
 		return ActionResultType.SUCCESS;
 	}
 
@@ -74,16 +75,15 @@ public final class MachineBlock extends Block {
 
 	@Override
 	public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-		if (worldIn.isClientSide) {
-			FluxAnalytics.putView("flux/place/" + getRegistryName());
-		}
 		if (stack.hasCustomHoverName()) {
 			TileEntity tileentity = worldIn.getBlockEntity(pos);
 			if (tileentity instanceof AbstractMachineTile) {
 				((AbstractMachineTile)tileentity).setCustomName(stack.getDisplayName());
 			}
 		}
-
+		if (placer instanceof PlayerEntity) {
+			NetCommon.putAction((PlayerEntity) placer, "place", Objects.toString(getRegistryName(), "unknown"));
+		}
 	}
 
 	@Override

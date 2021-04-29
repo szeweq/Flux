@@ -6,6 +6,7 @@ import net.minecraft.block.RedstoneTorchBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -15,7 +16,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
-import szewek.fl.network.FluxAnalytics;
+import szewek.fl.network.NetCommon;
+
+import java.util.Objects;
 
 public class ActiveTileBlock extends Block {
 	public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
@@ -43,8 +46,8 @@ public class ActiveTileBlock extends Block {
 
 	@Override
 	public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (worldIn.isClientSide) {
-			FluxAnalytics.putView("flux/place/" + getRegistryName());
+		if (placer instanceof PlayerEntity) {
+			NetCommon.putAction((PlayerEntity) placer, "place", Objects.toString(getRegistryName(), "unknown"));
 		}
 	}
 }

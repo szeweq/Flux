@@ -16,6 +16,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 import szewek.fl.network.FluxAnalytics;
+import szewek.fl.network.NetCommon;
 
 import java.util.function.Supplier;
 
@@ -118,7 +119,7 @@ public class FluxPackets {
 			if (ctx.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
 				ctx.enqueueWork(() -> Minecraft.getInstance().player.playSound(new SoundEvent(DING), 0.5F, 1));
 			}
-			FluxAnalytics.putView("flux/gift");
+			NetCommon.putEvent("flux/gift", "flux:gift");
 			ctx.setPacketHandled(true);
 		}
 	}

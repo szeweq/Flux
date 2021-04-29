@@ -104,7 +104,6 @@ public abstract class AbstractMachineRecipe implements IRecipe<IInventoryIO>, Co
 
 		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
 		if (match != null) {
-			FluxAnalytics.putView("flux/recipe/use/" + type.toString() + "/" + id.toString());
 			for(int i = 0; i < match.length; ++i) {
 				Ingredient ingredient = ingredients.get(match[i]);
 				int count = ingredient instanceof CountedIngredient ? ((CountedIngredient) ingredient).getCount() : 1;

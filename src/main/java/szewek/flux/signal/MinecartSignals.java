@@ -22,7 +22,6 @@ public class MinecartSignals extends SignalHandler implements ICapabilityProvide
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (valid && cap == SignalCapability.SIGNAL_CAP) {
-			FluxAnalytics.putView("flux/use/minecart_signals");
 			return handler.cast();
 		}
 		return LazyOptional.empty();

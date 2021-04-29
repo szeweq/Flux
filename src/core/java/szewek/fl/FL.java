@@ -13,6 +13,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 import szewek.fl.finance.FinanceCapabilities;
 import szewek.fl.network.FluxAnalytics;
+import szewek.fl.network.FluxAnalytics2;
+import szewek.fl.network.NetCommon;
 import szewek.fl.recipe.CountedIngredient;
 import szewek.fl.signal.SignalCapability;
 
@@ -25,6 +27,8 @@ public final class FL {
 
 	public FL() {
 		MinecraftForge.EVENT_BUS.register(Events.class);
+		NetCommon.init();
+		FluxAnalytics2.init();
 	}
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -32,8 +36,9 @@ public final class FL {
 		@SubscribeEvent
 		public static void setup(final FMLCommonSetupEvent e) {
 			IModInfo modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
-			FluxAnalytics.get().updateVersion(modInfo.getVersion().toString());
-			FluxAnalytics.putView("fl/setup");
+			String modVersion = modInfo.getVersion().toString();
+			NetCommon.updateVersion(modVersion);
+			NetCommon.putEvent("fl/setup", "fl:setup");
 			SignalCapability.register();
 			FinanceCapabilities.register();
 			CraftingHelper.register(new ResourceLocation(ID, "counted"), CountedIngredient.Serializer.INSTANCE);
@@ -44,15 +49,18 @@ public final class FL {
 	final static class ClientEvents {
 		@SubscribeEvent
 		public static void setupClient(final FMLClientSetupEvent e) {
-			String playerID = e.getMinecraftSupplier().get().getUser().getUuid();
-			FluxAnalytics.get().updatePlayerID(playerID);
+			FluxAnalytics2.userEvent();
 		}
 	}
 
 	static class Events {
 		@SubscribeEvent
 		public static void playerLogin(final PlayerEvent.PlayerLoggedInEvent e) {
-			FluxAnalytics.putView(e.getPlayer().getServer(), "fl/login");
+			NetCommon.putEvent(e.getPlayer(), "fl/login", "fl:login");
+		}
+		@SubscribeEvent
+		public static void playerLogout(final PlayerEvent.PlayerLoggedOutEvent e) {
+			NetCommon.putEvent(e.getPlayer(), "fl/logout", "fl:logout");
 		}
 	}
 }

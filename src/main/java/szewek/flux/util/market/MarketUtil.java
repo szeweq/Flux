@@ -21,7 +21,6 @@ public final class MarketUtil {
 			if (!offer.getCostB().isEmpty()) {
 				stack2.shrink(offer.getCostB().getCount());
 			}
-			FluxAnalytics.putView("flux/online_market/transaction");
 		}
 		return accept;
 	}
