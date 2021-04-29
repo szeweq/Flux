@@ -11,6 +11,7 @@ buildscript {
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'idea'
@@ -20,8 +21,6 @@ apply plugin: szewek.mcgen.MCGenPlugin
 
 group = 'szewek.flux'
 archivesBaseName = 'flux'
-
-project.version = project.version + ((project.versionSub as int) > 0 ? "-${project.versionType}${project.versionSub}" : "")
 
 String core_version = project.core_version
 
@@ -175,6 +174,7 @@ dependencies {
 }
 
 jar {
+    archiveAppendix.set("machinery")
     manifest {
         attributes([
             "Specification-Title": "flux",
@@ -189,11 +189,14 @@ jar {
 }
 
 task coreJar(type: Jar) {
-    archiveName = "fl-${core_version}.jar"
+    archiveAppendix.set("lib")
+    archiveVersion.set(core_version)
     from sourceSets.core.output
 }
 task coreSourcesJar(type: Jar) {
-    archiveName = "fl-${core_version}-sources.jar"
+    archiveAppendix.set("lib")
+    archiveVersion.set(core_version)
+    archiveClassifier.set("sources")
     from sourceSets.core.java.srcDirs
 }
 
@@ -233,7 +236,6 @@ curseforge {
         changelogType = "markdown"
         changelog = file("latest.md")
         addGameVersion mc_version
-        addGameVersion "1.16.5"
         relations {
             requiredDependency "fl"
             optionalDependency "jei"
@@ -246,10 +248,7 @@ curseforge {
         changelogType = "markdown"
         changelog = file("latest-fl.md")
         addGameVersion mc_version
-        addGameVersion "1.16.5"
-        mainArtifact(coreJar) {
-
-        }
+        mainArtifact(coreJar) {}
         addArtifact coreSourcesJar
     }
 }
