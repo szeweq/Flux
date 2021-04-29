@@ -3,13 +3,13 @@
  energystat = "Energy: %s / %s F"
  gen = "Generating %s F/t"
  usage = "Using %s F/t"
- update = "Flux has a newer version: %s"
+ update = "Flux Machinery has a newer version: %s"
  works_underwater = "It even works underwater!"
  recipe_compat = "Using compatible recipe! It may be unstable!"
 
 [flux.book]
  name = "Flux Book"
- landing_text = "A manual for Flux."
+ landing_text = "A manual for Flux Machinery."
 
 [flux.gift]
  invalid = "Invalid Gift!"

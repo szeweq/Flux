@@ -2,13 +2,13 @@
  energystat = "Энергия: %s / %s F"
  gen = "Производит %s F/t"
  usage = "Использует %s F/t"
- update = "Вышло обновление Flux: %s"
+ update = "Вышло обновление Flux Machinery: %s"
  works_underwater = "Работает даже под водой!"
  recipe_compat = "Использование совмещенных рецептов. Может работать с ошибками!"
 
 [flux.book]
  name = "Книга Flux"
- landing_text = "Руководитель по Flux."
+ landing_text = "Руководитель по Flux Machinery."
 
 [flux.gift]
  invalid = "Фальшивый подарок!"
