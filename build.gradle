@@ -154,7 +154,7 @@ dependencies {
     //compileOnly fg.deobf("com.feed_the_beast.mods:ftb-gui-library:1.0.0.18") // FOR JEI
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:${jei_version}")
 
-    compile fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
+    implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
     //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
