@@ -52,7 +52,7 @@ public final class RecipeCompat {
 		Set<IRecipeType<?>> result = new LinkedHashSet<>();
 		result.add(rtype);
 		for (String compat : compats) {
-			Optional<IRecipeType<?>> value = Registry.RECIPE_TYPE.getOptional(new ResourceLocation(compat));  //.getValue(new ResourceLocation(compat));
+			Optional<IRecipeType<?>> value = Registry.RECIPE_TYPE.getOptional(new ResourceLocation(compat));
 			value.ifPresent(result::add);
 		}
 		compatMap.put(rtype, result);
@@ -73,35 +73,34 @@ public final class RecipeCompat {
 			consumer = (Consumer<Iterable<ItemStack>>) recipe;
 		} else {
 			final NonNullList<Ingredient> ingredients = recipe.getIngredients();
-			if (ingredients.isEmpty()) {
-				consumer = stacks -> {
-					for (ItemStack stack : stacks) {
-						if (!stack.isEmpty()) {
-							stack.grow(-1);
-						}
-					}
-				};
-			} else {
-				consumer = stacks -> {
-					ArrayList<ItemStack> filledInputs = new ArrayList<>();
-
-					for (ItemStack stack : stacks) {
-						if (!stack.isEmpty()) {
-							filledInputs.add(stack);
-						}
-					}
-
-					int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
-					if (match != null) {
-						for(int i = 0; i < match.length; ++i) {
-							filledInputs.get(i).grow(-1);
-						}
-					}
-				};
-			}
-
+			consumer = ingredients.isEmpty() ? RecipeCompat::consumeStacks : stacks -> consumeStacksBasedOnIngredients(ingredients, stacks);
 		}
 		return consumer;
+	}
+
+	public static void consumeStacks(Iterable<ItemStack> stacks) {
+		for (ItemStack stack : stacks) {
+			if (!stack.isEmpty()) {
+				stack.grow(-1);
+			}
+		}
+	}
+
+	public static void consumeStacksBasedOnIngredients(NonNullList<Ingredient> ingredients, Iterable<ItemStack> stacks) {
+		ArrayList<ItemStack> filledInputs = new ArrayList<>();
+
+		for (ItemStack stack : stacks) {
+			if (!stack.isEmpty()) {
+				filledInputs.add(stack);
+			}
+		}
+
+		int[] match = RecipeMatcher.findMatches(filledInputs, ingredients);
+		if (match != null) {
+			for(int i = 0; i < match.length; ++i) {
+				filledInputs.get(i).grow(-1);
+			}
+		}
 	}
 
 	private RecipeCompat() {}
