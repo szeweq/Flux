@@ -24,7 +24,6 @@ public final class FluxAnalytics {
 	private static FluxAnalytics instance;
 
 	private final URL url;
-	private String playerID = null;
 
 	private FluxAnalytics(URL url) {
 		this.url = url;
@@ -43,10 +42,6 @@ public final class FluxAnalytics {
 		return instance;
 	}
 
-	public void updatePlayerID(String newPlayerID) {
-		playerID = newPlayerID;
-	}
-
 	private void process(final String form) {
 		try {
 
@@ -60,10 +55,6 @@ public final class FluxAnalytics {
 			final Writer w = new OutputStreamWriter(new BufferedOutputStream(out), UTF_8);
 			w.write("v=1&tid=UA-177867488-1&cid=");
 			w.write(NetCommon.SESSION_ID);
-			if (playerID != null) {
-				w.write("&uid=");
-				w.write(playerID);
-			}
 			w.write("&ul=");
 			w.write(System.getProperty("user.language", "en"));
 			w.write(form);
@@ -101,7 +92,7 @@ public final class FluxAnalytics {
 	}
 
 	static void putView(String playerId, String view) {
-		String form = "&cid=" + playerId + "&t=pageview&dp=%2F";
+		String form = "&uid=" + playerId + "&t=pageview&dp=%2F";
 		if (view != null && !view.isEmpty()) {
 			form += safeParam(view);
 		}
