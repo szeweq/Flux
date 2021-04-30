@@ -17,7 +17,6 @@ public class ItemAbsorberTile extends EntityInteractingTile {
 
 	@Override
 	protected void interact(int usage) {
-		assert level != null;
 		List<ItemEntity> itemDrops = level.getEntitiesOfClass(ItemEntity.class, aabb);
 		List<ItemStack> list = new ArrayList<>();
 		for (ItemEntity itemDrop : itemDrops) {

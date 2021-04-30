@@ -230,7 +230,6 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 			stack.setCount(64);
 		}
 		if (index < ioSize.in && !same) {
-			assert level != null;
 			setCachedRecipe(RecipeCompat.getCompatRecipe(recipeType, level, this).orElse(null));
 			//processTotal = getProcessTime() * 100;
 			process.current = 0;

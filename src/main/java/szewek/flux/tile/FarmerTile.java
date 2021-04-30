@@ -31,7 +31,6 @@ public class FarmerTile extends BlockInteractingTile {
 
 	@Override
 	public void tick() {
-		assert level != null;
 		final int usage = energyUse.get();
 		if (!level.isClientSide && energy.getEnergyStored() >= usage) {
 			walker.walk();

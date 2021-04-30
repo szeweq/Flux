@@ -139,7 +139,6 @@ public final class F {
 		@SuppressWarnings("unchecked")
 		final List<String> blacklist = (List<String>) FluxCfg.COMMON.blacklistCompatRecipes.get();
 		final Predicate<String> filterBlacklist = s -> !blacklist.contains(s);
-
 		recipeCompat(R.GRINDING, filterBlacklist,
 				"pattysmorestuff:crushing",
 				"silents_mechanisms:crushing",

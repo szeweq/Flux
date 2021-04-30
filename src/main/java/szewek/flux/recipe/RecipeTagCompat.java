@@ -33,8 +33,7 @@ public final class RecipeTagCompat {
 		if (items.isEmpty()) {
 			return null;
 		}
-		//noinspection unchecked
-		final List<String> modCompat = (List<String>) FluxCfg.COMMON.preferModCompat.get();
+		final List<? extends String> modCompat = FluxCfg.COMMON.preferModCompat.get();
 		if (modCompat.contains("jaopca")) {
 			// JAOPCA creates recipes so duplicates cannot be allowed
 			return null;

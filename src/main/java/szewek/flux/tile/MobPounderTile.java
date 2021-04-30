@@ -16,7 +16,6 @@ public class MobPounderTile extends EntityInteractingTile {
 
 	@Override
 	protected void interact(int usage) {
-		assert level != null;
 		List<LivingEntity> mobs = level.getEntitiesOfClass(LivingEntity.class, aabb, m -> m instanceof IMob);
 		for (LivingEntity mob : mobs) {
 			if (!energy.use(usage)) break;

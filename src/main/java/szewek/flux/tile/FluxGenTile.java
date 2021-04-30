@@ -101,7 +101,6 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 
 	@Override
 	public void tick() {
-		assert level != null;
 		if (level.isClientSide) return;
 		if (redstoneState == -1) {
 			redstoneState = level.getBestNeighborSignal(worldPosition) > 0 ? 1 : 0;

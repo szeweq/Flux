@@ -28,7 +28,6 @@ public final class DiggerTile extends BlockInteractingTile {
 
 	@Override
 	public void tick() {
-		assert level != null;
 		if (!level.isClientSide) {
 			boolean flag = !disabled;
 			final int usage = energyUse.get();

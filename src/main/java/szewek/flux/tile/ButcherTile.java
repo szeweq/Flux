@@ -15,7 +15,6 @@ public class ButcherTile extends EntityInteractingTile {
 
 	@Override
 	protected void interact(int usage) {
-		assert level != null;
 		List<AnimalEntity> animals = level.getEntitiesOfClass(AnimalEntity.class, aabb, e -> !e.isBaby());
 		for (AnimalEntity animal : animals) {
 			if (!energy.use(usage)) break;
