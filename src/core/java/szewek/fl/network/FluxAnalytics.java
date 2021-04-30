@@ -44,7 +44,6 @@ public final class FluxAnalytics {
 
 	private void process(final String form) {
 		try {
-
 			final HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 			huc.setRequestMethod("POST");
 			huc.setRequestProperty("User-Agent", USER_AGENT + NetCommon.flVersion);
@@ -72,9 +71,7 @@ public final class FluxAnalytics {
 	}
 
 	private static String makeUserAgent() {
-		String vendor = System.getProperty("java.vm.vendor");
-		String rtVersion = System.getProperty("java.vm.version");
-		return vendor + "/" + rtVersion + " FL/";
+		return NetCommon.VM_VENDOR + "/" + NetCommon.VM_VERSION + " FL/";
 	}
 
 	private static String safeParam(String param) {

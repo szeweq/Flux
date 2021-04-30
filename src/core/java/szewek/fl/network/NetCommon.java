@@ -17,6 +17,8 @@ import java.util.concurrent.ScheduledExecutorService;
 public final class NetCommon {
     static final ScheduledExecutorService DEFAULT_EXEC = Executors.newSingleThreadScheduledExecutor();
     static final String SESSION_ID = UUID.randomUUID().toString();
+    static final String VM_VENDOR = System.getProperty("java.vm.vendor");
+    static final String VM_VERSION = System.getProperty("java.vm.version");
     static String flVersion = "";
     static String playerId = "";
 

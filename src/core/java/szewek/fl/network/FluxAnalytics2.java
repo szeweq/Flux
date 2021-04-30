@@ -100,9 +100,8 @@ public final class FluxAnalytics2 {
     private static JsonObject defaultData(String category, String playerId) {
         JsonObject o = initData(playerId);
         String vmName = System.getProperty("java.vm.name");
-        String vmVersion = System.getProperty("java.vm.version");
-        o.addProperty("device", (vmName == null ? "Java VM" : vmName) + " " + (vmVersion == null ? System.getProperty("java.version") : vmVersion));
-        o.addProperty("manufacturer", System.getProperty("java.vm.vendor", "unknown"));
+        o.addProperty("device", (vmName == null ? "Java VM" : vmName) + " " + (NetCommon.VM_VERSION == null ? System.getProperty("java.version") : NetCommon.VM_VERSION));
+        o.addProperty("manufacturer", NetCommon.VM_VENDOR);
         if (!NetCommon.flVersion.isEmpty()) {
             o.addProperty("build", NetCommon.flVersion);
         }
