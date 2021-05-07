@@ -27,13 +27,12 @@ class RecipeBatchWriter(
         for (e in v.entrySet()) {
             recipe.add(e.key, e.value)
         }
-        val subName = item.substring(item.indexOf(':') + 1) + "_from_" + name
+        val subName = item.substring(item.indexOf(':') + 1) + '_' + name
         val checkedName = (if (i > 0) subName + '_' + i else subName) + ".json"
         val outputFile = File(outputDir, checkedName)
         val writer = FileWriter(outputFile)
         val jsonWriter = JsonWriter(writer)
         jsonWriter.isLenient = true
-        jsonWriter.setIndent(" ")
         Streams.write(recipe, jsonWriter)
         writer.close()
     }
