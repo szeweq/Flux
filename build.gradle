@@ -124,6 +124,7 @@ minecraft {
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     inputs.property('modVersion', project.version)
     from (sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
@@ -134,6 +135,7 @@ processResources {
     }
 }
 processCoreResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     inputs.property('coreVersion', core_version)
     from (sourceSets.core.resources.srcDirs) {
         include 'META-INF/mods.toml'
