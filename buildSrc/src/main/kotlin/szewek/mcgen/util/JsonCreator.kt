@@ -5,11 +5,9 @@ import com.google.gson.internal.Streams
 import com.google.gson.stream.JsonWriter
 
 class JsonCreator(@JvmField val jw: JsonWriter) {
-    fun named(name: String, fn: JsonFunc?) {
-        if (fn != null) {
-            jw.name(name)
-            fn()
-        }
+    inline fun named(name: String, fn: JsonFunc) {
+        jw.name(name)
+        fn()
     }
 
     inline fun obj(fn: JsonFunc) {
@@ -23,13 +21,19 @@ class JsonCreator(@JvmField val jw: JsonWriter) {
         jw.endArray()
     }
 
-    inline infix fun String.obj(crossinline fn: JsonFunc) = named(this) { obj(fn) }
-    inline infix fun String.arr(crossinline fn: JsonFunc) = named(this) { arr(fn) }
+    inline infix fun String.obj(fn: JsonFunc) {
+        jw.name(this)
+        this@JsonCreator.obj(fn)
+    }
+    inline infix fun String.arr(fn: JsonFunc) {
+        jw.name(this)
+        this@JsonCreator.arr(fn)
+    }
 
-    infix fun String.set(v: String) = named(this) { jw.value(v) }
-    infix fun String.set(v: Number) = named(this) { jw.value(v) }
-    infix fun String.set(v: Boolean) = named(this) { jw.value(v) }
-    infix fun String.set(v: JsonElement) = named(this) { Streams.write(v, jw) }
+    infix fun String.set(v: String) { jw.name(this).value(v) }
+    infix fun String.set(v: Number) { jw.name(this).value(v) }
+    infix fun String.set(v: Boolean) { jw.name(this).value(v) }
+    infix fun String.set(v: JsonElement) { Streams.write(v, jw.name(this)) }
     infix fun String.set(v: Array<out String>) = named(this) { arr { for (s in v) jw.value(s) } }
 }
 

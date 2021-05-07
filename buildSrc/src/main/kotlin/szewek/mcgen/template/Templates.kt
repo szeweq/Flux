@@ -41,49 +41,35 @@ private fun defaultBlockStates(v: JsonElement, out: JsonFileWriter) {
 private fun metalRecipes(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
     val ns = out.namespace
-    val blockShape = arrayOf("###", "###", "###")
+    val itemIngot = "$ns:${item}_ingot"
+    val itemNugget = "$ns:${item}_nugget"
+    val itemBlock = "$ns:${item}_block"
     if (!isVanilla(item)) {
-        out("${item}_block", craftingShaped(
-                blockShape,
-                mapOf("#" to "$ns:${item}_ingot"),
-                1 of "$ns:${item}_block"
-        ))
-        out("${item}_ingot", craftingShaped(
-                blockShape,
-                mapOf("#" to "$ns:${item}_nugget"),
-                1 of "$ns:${item}_ingot"
-        ))
-        out("${item}_nugget", craftingShapeless(
-                "${item}_nugget",
-                9 of "$ns:${item}_nugget",
-                lazyItem("$ns:${item}_ingot")
-        ))
-        out("${item}_ingot_from_${item}_block", craftingShapeless(
-                "${item}_ingot",
-                9 of "$ns:${item}_ingot",
-                lazyItem("$ns:${item}_block")
-        ))
+        out("${item}_block", craftingCompress(itemIngot, itemBlock))
+        out("${item}_ingot", craftingCompress(itemNugget, itemIngot))
+        out("${item}_nugget", craftingUncompress("${item}_nugget", itemIngot, itemNugget))
+        out("${item}_ingot_from_block", craftingUncompress("${item}_ingot", itemBlock, itemIngot))
         if (!isAlloy(item)) out("${item}_ingot_smelting_ore", smelting(
                 "${item}_ingot",
                 "#forge:ores/${item}",
-                1 of "$ns:${item}_ingot"
+                1 of itemIngot
         ))
     }
     if (!isAlloy(item)) {
+        val oreLazyTag = lazyTag("forge:ores/${item}")
         out("${item}_dust_grinding_ore",
-                fluxMachine("grinding", 2 of "$ns:${item}_dust", lazyTag("forge:ores/${item}"))
+                fluxMachine("grinding", 2 of "$ns:${item}_dust", oreLazyTag)
         )
         out("${item}_grit_washing_ore",
-                fluxMachine("washing", 3 of "$ns:${item}_grit", lazyTag("forge:ores/${item}"))
+                fluxMachine("washing", 3 of "$ns:${item}_grit", oreLazyTag)
         )
         out("${item}_dust_grinding_grit",
                 fluxMachine("grinding", 1 of "$ns:${item}_dust", lazyTag("forge:grits/${item}"))
         )
     }
     out("${item}_dust_grinding_ingot",
-            fluxMachine("grinding", 1 of "$ns:${item}_dust") {
-        tag("forge:ingots/${item}")
-    })
+            fluxMachine("grinding", 1 of "$ns:${item}_dust", lazyTag("forge:ingots/${item}"))
+    )
     out("${item}_ingot_smelting_dust", smelting(
             "${item}_ingot",
             "#forge:dusts/${item}",
@@ -230,11 +216,7 @@ private fun metalLootTables(v: JsonElement, out: JsonFileWriter) {
     val types = if (isAlloy(item)) arrayOf("block") else arrayOf("ore", "block")
     for (typ in types) out("blocks/${item}_$typ", typedLoot("minecraft:block") {
         pool(
-                entries = {
-                    typed("minecraft:item") {
-                        "name" set "${out.namespace}:${item}_$typ"
-                    }
-                },
+                entries = singleEntryItem("${out.namespace}:${item}_$typ"),
                 conditions = condition_survivesExplosion
         )
     })
@@ -244,11 +226,7 @@ private fun blockLootTables(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
     out("blocks/$item", typedLoot("minecraft:block") {
         pool(
-                entries = {
-                    typed("minecraft:item") {
-                        "name" set "${out.namespace}:$item"
-                    }
-                },
+                entries = singleEntryItem("${out.namespace}:$item"),
                 conditions = condition_survivesExplosion
         )
     })

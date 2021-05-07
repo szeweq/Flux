@@ -3,11 +3,16 @@ package szewek.mcgen.template
 
 import szewek.mcgen.util.JsonFunc
 
+val blockShape = arrayOf("###", "###", "###")
+
 internal fun fluxMachine(type: String, result: Pair<String, Int>, ingredients: JsonFunc): JsonFunc = {
     "type" set "flux:$type"
     keyResult(result)
     "ingredients" arr ingredients
 }
+
+internal fun craftingCompress(from: String, into: String) = craftingShaped(blockShape, mapOf("#" to from), 1 of into)
+internal fun craftingUncompress(group: String, from: String, into: String) = craftingShapeless(group, 9 of into, lazyItem(from))
 
 internal fun craftingShaped(pattern: Array<String>, keys: Map<String, String>, result: Pair<String, Int>): JsonFunc = {
     "type" set "minecraft:crafting_shaped"
@@ -44,8 +49,18 @@ internal fun variants(fn: JsonFunc): JsonFunc = { "variants" obj fn }
 internal fun lazyTag(name: String): JsonFunc = { tag(name) }
 internal fun lazyItem(name: String): JsonFunc = { item(name) }
 
-internal fun typedRecipe(type: String, fn: JsonFunc): JsonFunc = fn after { "type" set type }
-internal fun typedLoot(type: String, fn: JsonFunc): JsonFunc = {
-    "type" set type
+internal fun singleEntryItem(name: String): JsonFunc = {
+    obj {
+        "type" set "minecraft:item"
+        "name" set name
+    }
+}
+
+internal inline fun typedRecipe(type: String, crossinline fn: JsonFunc): JsonFunc = {
+    typed(type)
+    fn()
+}
+internal inline fun typedLoot(type: String, crossinline fn: JsonFunc): JsonFunc = {
+    typed(type)
     "pools" arr fn
 }

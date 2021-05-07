@@ -8,7 +8,10 @@ internal infix fun Int.of(that: String) = Pair(that, this)
 internal fun JsonCreator.item(name: String) = obj { "item" set name }
 internal fun JsonCreator.tag(name: String) = obj { "tag" set name }
 internal inline fun JsonCreator.ingredients(crossinline fn: JsonFunc) = "ingredients" arr fn
-internal inline fun JsonCreator.typed(type: String, fn: JsonFunc) = obj(fn after { "type" set type })
+internal inline fun JsonCreator.typed(type: String, crossinline fn: JsonFunc) = obj {
+    typed(type)
+    fn()
+}
 internal fun JsonCreator.keyResult(pair: Pair<String, Int>) = "result" obj { result(pair) }
 internal fun JsonCreator.result(pair: Pair<String, Int>) {
     itemOrTag(pair.first)
@@ -29,10 +32,8 @@ internal fun JsonCreator.pool(rolls: Int = 1, entries: JsonFunc, conditions: Jso
     if (conditions != null) "conditions" arr conditions
 }
 
-inline infix fun JsonFunc.then(crossinline fn: JsonFunc): JsonFunc = {
-    this@then()
-    fn()
+internal fun JsonCreator.typed(name: String) {
+    "type" set name
 }
-inline infix fun JsonFunc.after(fn: JsonFunc): JsonFunc = fn then this
 
 val condition_survivesExplosion: JsonFunc = { obj { "condition" set "minecraft:survives_explosion" } }

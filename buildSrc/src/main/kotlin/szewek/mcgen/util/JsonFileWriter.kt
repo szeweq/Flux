@@ -17,10 +17,10 @@ class JsonFileWriter(private val dir: File, val namespace: String) {
         return jw
     }
 
-    operator fun invoke(name: String, rf: ResourceFactory) {
+    operator fun invoke(name: String, jf: JsonFunc) {
         val jw = create(name)
         jw.beginObject()
-        rf.create(JsonCreator(jw))
+        jf(JsonCreator(jw))
         jw.endObject()
         jw.close()
     }
