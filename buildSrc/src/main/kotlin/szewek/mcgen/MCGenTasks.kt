@@ -12,7 +12,7 @@ internal fun configureSourceSet(srcSet: SourceSet, buildDir: File, tasks: TaskCo
     val subName = if (srcSet.name == "main") "" else srcSet.name.capitalize()
     val confSources = Action<AbstractProcessTask> { it.configureSources(srcSet.resources, srcSet.name) }
 
-    val recipeTask = tasks.make<GenTypeRecipes>("genRecipesFromBatch", subName, confSources)
+    val recipeTask = tasks.make<GenTypeRecipes>("genRecipesBatch", subName, confSources)
     val langTask = tasks.make<ProcessLangFiles>("processLangFiles", subName, confSources)
     val itemModelTask = tasks.make<GenDefaultModels>("genItemDefaultModels", subName, confSources)
     val itemBlockModelTask = tasks.make<GenItemBlockModels>("genItemBlockModels", subName, confSources)
@@ -25,8 +25,7 @@ internal fun configureSourceSet(srcSet: SourceSet, buildDir: File, tasks: TaskCo
     srcSet.resources.srcDir(genResourcesDir)
     val processResources = tasks.getByName("process${subName}Resources") as AbstractCopyTask
     processResources.doFirst {
-        processResources.exclude("generators")
-        processResources.exclude("templates")
+        processResources.exclude("generators", "templates", "defs")
     }
     processResources.dependsOn(
         itemModelTask, itemBlockModelTask, langTask, recipeTask,
