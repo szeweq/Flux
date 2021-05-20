@@ -4,17 +4,25 @@ package szewek.mcgen.template
 
 import com.google.gson.JsonElement
 import szewek.mcgen.util.JsonFileWriter
+import szewek.mcgen.util.JsonFunc
 
 private val colors = arrayOf(
         "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
         "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
 )
+private val dirs = arrayOf("north", "east", "south", "west")
+private val lit = arrayOf("false", "true")
+private val mapShapes = mapOf(
+    "sword" to arrayOf("X", "X", "#"),
+    "shovel" to arrayOf("X", "#", "#"),
+    "pickaxe" to arrayOf("XXX", " # ", " # "),
+    "axe" to arrayOf("XX", "X#", " #"),
+    "hoe" to arrayOf("XX", " #", " #")
+)
 
 private fun machineBlockStates(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
     val ns = out.namespace
-    val dirs = arrayOf("north", "east", "south", "west")
-    val lit = arrayOf("false", "true")
     out(item, variants {
         for (i in lit.indices) for (j in dirs.indices) {
             "facing=${dirs[j]},lit=${lit[i]}" obj {
@@ -28,14 +36,14 @@ private fun activeBlockStates(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
     val ns = out.namespace
     out(item, variants {
-        "lit=false" obj { "model" set "$ns:block/$item" }
-        "lit=true" obj { "model" set "$ns:block/${item}_on" }
+        "lit=false".singleObj("model", "$ns:block/$item")
+        "lit=true".singleObj("model", "$ns:block/${item}_on")
     })
 }
 private fun defaultBlockStates(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
     val ns = out.namespace
-    out(item, variants { "" obj { "model" set "$ns:block/$item" } })
+    out(item, variants { "".singleObj("model", "$ns:block/$item") })
 }
 
 private fun metalRecipes(v: JsonElement, out: JsonFileWriter) {
@@ -138,36 +146,26 @@ private fun toolRecipes(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
     val ns = out.namespace
     val mapKeys = mapOf("X" to "$ns:${item}_ingot", "#" to "minecraft:stick")
-    val mapShapes = mapOf(
-            "sword" to arrayOf("X", "X", "#"),
-            "shovel" to arrayOf("X", "#", "#"),
-            "pickaxe" to arrayOf("XXX", " # ", " # "),
-            "axe" to arrayOf("XX", "X#", " #"),
-            "hoe" to arrayOf("XX", " #", " #")
-    )
     for((name, pat) in mapShapes) out("${item}_$name", craftingShaped(pat, mapKeys,1 of "$ns:${item}_$name"))
 }
 
 private fun metalTags(v: JsonElement, out: JsonFileWriter) {
     val item = v.asString
-    val ns = out.namespace
     val nsItem = "${out.namespace}:$item"
     if (!isVanilla(item)) {
         if (!isAlloy(item)) {
             val ore = "${nsItem}_ore"
-            out("items/ores/${item}", singleTag(ore))
-            out("blocks/ores/${item}", singleTag(ore))
+            out.itemBlockTags("ores/$item", singleTag(ore))
         }
         val block = "${nsItem}_block"
-        out("items/ingots/$item", singleTag("$ns:${item}_ingot"))
-        out("items/nuggets/$item", singleTag("$ns:${item}_nugget"))
-        out("items/storage_blocks/$item", singleTag(block))
-        out("blocks/storage_blocks/$item", singleTag(block))
+        out("items/ingots/$item", singleTag("${nsItem}_ingot"))
+        out("items/nuggets/$item", singleTag("${nsItem}_nugget"))
+        out.itemBlockTags("storage_blocks/$item", singleTag(block))
     }
-    out("items/dusts/$item", singleTag("$ns:${item}_dust"))
-    if (!isAlloy(item)) out("items/grits/$item", singleTag("$ns:${item}_grit"))
-    out("items/gears/$item", singleTag("$ns:${item}_gear"))
-    out("items/plates/$item", singleTag("$ns:${item}_plate"))
+    out("items/dusts/$item", singleTag("${nsItem}_dust"))
+    if (!isAlloy(item)) out("items/grits/$item", singleTag("${nsItem}_grit"))
+    out("items/gears/$item", singleTag("${nsItem}_gear"))
+    out("items/plates/$item", singleTag("${nsItem}_plate"))
 }
 
 private fun typeTags(v: JsonElement, out: JsonFileWriter) {
@@ -253,6 +251,11 @@ private fun fluxGifts(v: JsonElement, out: JsonFileWriter) {
                 }
         )
     })
+}
+
+private fun JsonFileWriter.itemBlockTags(name: String, fn: JsonFunc) {
+    invoke("items/$name", fn)
+    invoke("blocks/$name", fn)
 }
 
 private fun isVanilla(name: String) = name == "iron" || name == "gold" || name == "netherite" // name == "copper"

@@ -15,7 +15,7 @@ internal fun craftingCompress(from: String, into: String) = craftingShaped(block
 internal fun craftingUncompress(group: String, from: String, into: String) = craftingShapeless(group, 9 of into, lazyItem(from))
 
 internal fun craftingShaped(pattern: Array<String>, keys: Map<String, String>, result: Pair<String, Int>): JsonFunc = {
-    "type" set "minecraft:crafting_shaped"
+    typed("minecraft:crafting_shaped")
     "pattern" set pattern
     "key" obj {
         for ((t, u) in keys) {
@@ -26,14 +26,14 @@ internal fun craftingShaped(pattern: Array<String>, keys: Map<String, String>, r
 }
 
 internal fun craftingShapeless(group: String, result: Pair<String, Int>, ingredients: JsonFunc): JsonFunc = {
-    "type" set "minecraft:crafting_shapeless"
+    typed("minecraft:crafting_shapeless")
     if (group != "") "group" set group
     "ingredients" arr ingredients
     keyResult(result)
 }
 
 internal fun smelting(group: String, ingredient: String, result: Pair<String, Int>): JsonFunc = {
-    "type" set "minecraft:smelting"
+    typed("minecraft:smelting")
     if (group != "") "group" set group
     keyItemOrTag("ingredient", ingredient)
     keyResult(result)
@@ -46,8 +46,8 @@ internal fun tagList(names: Array<out String>): JsonFunc = {
 }
 
 internal fun variants(fn: JsonFunc): JsonFunc = { "variants" obj fn }
-internal fun lazyTag(name: String): JsonFunc = { tag(name) }
-internal fun lazyItem(name: String): JsonFunc = { item(name) }
+internal fun lazyTag(name: String): JsonFunc = { singleObj("tag", name) }
+internal fun lazyItem(name: String): JsonFunc = { singleObj("item", name) }
 
 internal fun singleEntryItem(name: String): JsonFunc = {
     obj {

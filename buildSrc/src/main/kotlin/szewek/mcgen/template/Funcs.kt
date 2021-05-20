@@ -5,8 +5,6 @@ import szewek.mcgen.util.JsonFunc
 
 internal infix fun Int.of(that: String) = Pair(that, this)
 
-internal fun JsonCreator.item(name: String) = obj { "item" set name }
-internal fun JsonCreator.tag(name: String) = obj { "tag" set name }
 internal inline fun JsonCreator.ingredients(crossinline fn: JsonFunc) = "ingredients" arr fn
 internal inline fun JsonCreator.typed(type: String, crossinline fn: JsonFunc) = obj {
     typed(type)
@@ -36,4 +34,4 @@ internal fun JsonCreator.typed(name: String) {
     "type" set name
 }
 
-val condition_survivesExplosion: JsonFunc = { obj { "condition" set "minecraft:survives_explosion" } }
+val condition_survivesExplosion: JsonFunc = { singleObj("condition", "minecraft:survives_explosion") }
