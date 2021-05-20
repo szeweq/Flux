@@ -30,6 +30,12 @@ class JsonCreator(@JvmField val jw: JsonWriter) {
         this@JsonCreator.arr(fn)
     }
 
+    fun singleObj(name: String, value: String) = obj { jw.name(name).value(value) }
+    fun String.singleObj(name: String, value: String) {
+        jw.name(this)
+        this@JsonCreator.singleObj(name, value)
+    }
+
     infix fun String.set(v: String) { jw.name(this).value(v) }
     infix fun String.set(v: Number) { jw.name(this).value(v) }
     infix fun String.set(v: Boolean) { jw.name(this).value(v) }
