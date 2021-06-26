@@ -1,17 +1,17 @@
 package szewek.flux.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import szewek.flux.tile.part.MachineEnergy;
-
-import javax.annotation.Nullable;
 
 public abstract class PoweredDeviceTile extends LockableTileEntity implements ITickableTileEntity {
 	protected MachineEnergy energy = new MachineEnergy(1_000_000);
@@ -24,19 +24,24 @@ public abstract class PoweredDeviceTile extends LockableTileEntity implements IT
 
 	protected abstract void serverTick(World w);
 
-	@Override
-	public void tick() {
-		if (level != null && !level.isClientSide) {
-			serverTick(level);
-			if (isDirty) {
-				setChanged();
-				isDirty = false;
+	public static void tick(World w, BlockPos bp, BlockState state, PoweredDeviceTile it) {
+		if (!w.isClientSide) {
+			it.serverTick(w);
+			if (it.isDirty) {
+				it.setChanged();
+				it.isDirty = false;
 			}
 		}
 	}
 
+	// Provide compatibility with MC 1.17
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+	public void tick() {
+		tick(level, worldPosition, getBlockState(), this);
+	}
+
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		if (!remove && cap == CapabilityEnergy.ENERGY) {
 			return energy.lazyCast();
 		}

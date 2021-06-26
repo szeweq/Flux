@@ -18,7 +18,6 @@ import szewek.flux.container.Machine2For1Container;
 import szewek.flux.recipe.AbstractMachineRecipe;
 import szewek.flux.util.inventory.IOSize;
 
-import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public final class Machine2For1Tile extends AbstractMachineTile {
@@ -57,7 +56,7 @@ public final class Machine2For1Tile extends AbstractMachineTile {
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		if (!remove && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			if (side == Direction.UP) {
 				return sideHandlers[0].cast();

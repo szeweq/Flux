@@ -12,8 +12,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import szewek.flux.tile.part.MachineEnergy;
 
-import javax.annotation.Nullable;
-
 public abstract class PoweredTile extends TileEntity implements ITickableTileEntity {
 	protected final MachineEnergy energy = new MachineEnergy(500_000);
 	protected final ForgeConfigSpec.IntValue energyUse;
@@ -37,7 +35,7 @@ public abstract class PoweredTile extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		if (!remove && CapabilityEnergy.ENERGY == cap) {
 			return energy.lazyCast();
 		} else {

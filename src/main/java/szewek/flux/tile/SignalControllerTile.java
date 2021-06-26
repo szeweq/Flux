@@ -10,9 +10,11 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import szewek.fl.signal.ISignalHandler;
 import szewek.fl.signal.SignalCapability;
@@ -97,26 +99,30 @@ public class SignalControllerTile extends TileEntity implements ITickableTileEnt
 		}
 	}
 
-	@Override
-	public void tick() {
-		if (!level.isClientSide) {
-			if (cooldown > 0) {
-				--cooldown;
+	public static void tick(World w, BlockPos bp, BlockState state, SignalControllerTile it) {
+		if (!w.isClientSide) {
+			if (it.cooldown > 0) {
+				--it.cooldown;
 			} else {
-				updateState();
+				it.updateState(w, bp);
 			}
-			if (keepPower > 0) {
-				--keepPower;
+			if (it.keepPower > 0) {
+				--it.keepPower;
 			} else {
-				level.setBlockAndUpdate(worldPosition, getBlockState().setValue(POWERED, false));
+				w.setBlockAndUpdate(bp, state.setValue(POWERED, false));
 			}
 		}
 	}
 
-	public void updateState() {
+	@Override
+	public void tick() {
+		tick(level, worldPosition, getBlockState(), this);
+	}
+
+	public void updateState(World w, BlockPos bp) {
 		cooldown = 10;
 		Direction dir = getBlockState().getValue(SignalControllerBlock.FACING);
-		TileEntity tile = level.getBlockEntity(worldPosition.relative(dir));
+		TileEntity tile = w.getBlockEntity(bp.relative(dir));
 		if (tile != null) {
 			LazyOptional<ISignalHandler> lazyOpt = tile.getCapability(SignalCapability.SIGNAL_CAP, dir.getOpposite());
 			lazyOpt.ifPresent(this::useSignalHandler);

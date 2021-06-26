@@ -13,9 +13,11 @@ import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -35,8 +37,6 @@ import szewek.flux.data.FluxGenValues;
 import szewek.flux.energy.EnergyCache;
 import szewek.flux.tile.part.GeneratorEnergy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -99,25 +99,31 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 		return compound;
 	}
 
-	@Override
-	public void tick() {
-		if (level.isClientSide) return;
-		if (redstoneState == -1) {
-			redstoneState = level.getBestNeighborSignal(worldPosition) > 0 ? 1 : 0;
+	public static void tick(World w, BlockPos bp, BlockState state, FluxGenTile it) {
+		if (w.isClientSide) return;
+		if (it.redstoneState == -1) {
+			it.redstoneState = w.getBestNeighborSignal(bp) > 0 ? 1 : 0;
 		}
-		if (redstoneState == 0) {
-			if (work.canBegin(ForgeHooks.getBurnTime(items.get(0)))) {
-				work.update(items, tank.fluids);
-			} else if (energy.generate(work.gen)) {
-				work.tick();
-				setChanged();
-			} else if (work.gen > energy.getMaxEnergyStored()) {
+		final GeneratorEnergy en = it.energy;
+		if (it.redstoneState == 0) {
+			final WorkValues wv = it.work;
+			if (wv.canBegin(ForgeHooks.getBurnTime(it.items.get(0)))) {
+				wv.update(it.items, it.tank.fluids);
+			} else if (en.generate(it.work.gen)) {
+				wv.tick();
+				it.setChanged();
+			} else if (wv.gen > en.getMaxEnergyStored()) {
 				// BLOW UP
-				level.explode(null, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, 9.0F, Explosion.Mode.DESTROY);
+				w.explode(null, bp.getX() + 0.5, bp.getY() + 0.5, bp.getZ() + 0.5, 9.0F, Explosion.Mode.DESTROY);
 			}
 		}
-		energy.share(energyCache);
-		if (isDirty.getAndSet(false)) setChanged();
+		en.share(it.energyCache);
+		if (it.isDirty.getAndSet(false)) it.setChanged();
+	}
+
+	@Override
+	public void tick() {
+		tick(level, worldPosition, /* unused */ null, this);
 	}
 
 	public void setRedstoneState(boolean state) {
@@ -129,7 +135,7 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction dir) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction dir) {
 		if (!remove) {
 			if (cap == CapabilityEnergy.ENERGY) {
 				return energy.lazyCast();
@@ -299,7 +305,6 @@ public class FluxGenTile extends LockableTileEntity implements ITickableTileEnti
 			return FluidStack.EMPTY;
 		}
 
-		@Nonnull
 		@Override
 		public IFluidHandler get() {
 			return this;

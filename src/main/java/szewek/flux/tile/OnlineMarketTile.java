@@ -18,15 +18,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import szewek.flux.F;
 import szewek.flux.FluxCfg;
 import szewek.flux.container.OnlineMarketContainer;
 import szewek.flux.util.market.MarketUtil;
 import szewek.flux.util.market.OnlineMarketMerchantOffers;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 
 public final class OnlineMarketTile extends PoweredTile implements IMerchant, INamedContainerProvider {
@@ -70,11 +67,10 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 	}
 
 	@Override
-	public void setTradingPlayer(@Nullable PlayerEntity customer) {
+	public void setTradingPlayer(PlayerEntity customer) {
 		this.customer = customer;
 	}
 
-	@Nullable
 	@Override
 	public PlayerEntity getTradingPlayer() {
 		return customer;
@@ -102,7 +98,7 @@ public final class OnlineMarketTile extends PoweredTile implements IMerchant, IN
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void overrideOffers(@Nullable MerchantOffers offers) {
+	public void overrideOffers(MerchantOffers offers) {
 
 	}
 

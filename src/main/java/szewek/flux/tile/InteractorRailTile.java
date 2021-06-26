@@ -7,8 +7,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import szewek.flux.F;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,9 +23,8 @@ public class InteractorRailTile extends TileEntity {
 		minecarts.addAll(col);
 	}
 
-	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		minecarts.removeIf(cart -> !cart.isAlive());
 		for (AbstractMinecartEntity minecart : minecarts) {
 			LazyOptional<T> lazyOpt = minecart.getCapability(cap);

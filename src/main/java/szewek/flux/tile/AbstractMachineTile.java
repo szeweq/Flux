@@ -30,7 +30,6 @@ import szewek.flux.util.inventory.IInventoryIO;
 import szewek.flux.util.inventory.IOSize;
 import szewek.flux.util.inventory.MachineInventory;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -175,7 +174,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 		}
 	}
 
-	protected void setCachedRecipe(@Nullable final IRecipe<?> recipe) {
+	protected void setCachedRecipe(final IRecipe<?> recipe) {
 		cachedRecipe = recipe;
 		compatState = recipe != null && recipe.getType() != recipeType ? 1 : 0;
 		process.total = recipe instanceof AbstractMachineRecipe ? ((AbstractMachineRecipe) cachedRecipe).processTime * 100 : 20000;
@@ -192,7 +191,7 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, @Nullable Direction direction) {
+	public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, Direction direction) {
 		return canPlaceItem(index, itemStackIn);
 	}
 
@@ -254,13 +253,12 @@ public abstract class AbstractMachineTile extends PoweredDeviceTile implements I
 	}
 
 	@Override
-	public void setRecipeUsed(@Nullable IRecipe<?> recipe) {
+	public void setRecipeUsed(IRecipe<?> recipe) {
 		if (recipe != null) {
 			recipesCount.compute(recipe.getId(), (key, integer) -> 1 + (integer == null ? 0 : integer));
 		}
 	}
 
-	@Nullable
 	@Override
 	public final IRecipe<?> getRecipeUsed() {
 		return null;
