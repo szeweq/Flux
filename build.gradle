@@ -29,7 +29,9 @@ String jei_version = "7.6.1.65"
 String top_version = "1.16-3.0.6-8"
 String patchouli_version = "1.16.2-44"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+//sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 idea {
     module {
@@ -214,7 +216,7 @@ artifacts {
 }
 
 reobf {
-    coreJar { classpath = sourceSets.core.compileClasspath }
+    coreJar {} // classpath = sourceSets.core.compileClasspath }
 }
 
 publishing {
