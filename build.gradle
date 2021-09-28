@@ -46,10 +46,10 @@ sourceSets {
     main { compileClasspath += sourceSets.core.output }
 }
 configurations {
-    def extendCompile = [coreCompile]
+    def extendImplementation = [coreImplementation]
     def extendCompileOnly = [coreCompileOnly]
     def extendRuntimeOnly = [coreRuntimeOnly]
-    for (def c : extendCompile) c.extendsFrom(compile)
+    for (def c : extendImplementation) c.extendsFrom(implementation)
     for (def co : extendCompileOnly) co.extendsFrom(compileOnly)
     for (def ro : extendRuntimeOnly) ro.extendsFrom(runtimeOnly)
 }
@@ -101,20 +101,6 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-
-            mods {
-                flux { source sourceSets.main }
-                fl { source sourceSets.core }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'SCAN,REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'flux', '--all', '--output', file('src/generated/resources/')
 
             mods {
                 flux { source sourceSets.main }
