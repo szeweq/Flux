@@ -12,7 +12,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 import szewek.fl.finance.FinanceCapabilities;
-import szewek.fl.network.FluxAnalytics;
 import szewek.fl.network.FluxAnalytics2;
 import szewek.fl.network.NetCommon;
 import szewek.fl.recipe.CountedIngredient;
