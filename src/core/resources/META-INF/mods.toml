@@ -1,16 +1,16 @@
 modLoader="javafml"
 loaderVersion="[30,)"
-issueTrackerURL="https://github.com/Szewek/Flux/issues"
+issueTrackerURL="https://github.com/Szeweq/Flux/issues"
 license="MIT"
 
 [[mods]]
  modId="fl"
  version="${coreVersion}"
  displayName="Flux Library"
- updateJSONURL="https://raw.githubusercontent.com/Szewek/Flux/master/update-fl.json"
+ updateJSONURL="https://raw.githubusercontent.com/Szeweq/Flux/master/update-fl.json"
  displayURL="https://www.curseforge.com/minecraft/mc-mods/fl"
- credits="Szewek"
- authors="Szewek"
+ credits="Szeweq"
+ authors="Szeweq"
  description="Flux Library"
 
 [[dependencies.fl]]

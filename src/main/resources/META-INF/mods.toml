@@ -1,17 +1,17 @@
 modLoader="javafml"
 loaderVersion="[30,)"
-issueTrackerURL="https://github.com/Szewek/Flux/issues"
+issueTrackerURL="https://github.com/Szeweq/Flux/issues"
 license="MIT"
 
 [[mods]]
  modId="flux"
  version="${modVersion}"
  displayName="Flux Machinery"
- updateJSONURL="https://raw.githubusercontent.com/Szewek/Flux/master/update.json"
+ updateJSONURL="https://raw.githubusercontent.com/Szeweq/Flux/master/update.json"
  displayURL="https://www.curseforge.com/minecraft/mc-mods/flux"
  logoFile="flux_logo.png"
- credits="Szewek"
- authors="Szewek"
+ credits="Szeweq"
+ authors="Szeweq"
  description='''
 Flux Machinery is a mod which provides energy to Vanilla blocks (like Furnace) without additional items.
 It comes with useful machines that make item processing even more interesting.
