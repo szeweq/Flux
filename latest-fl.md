@@ -1,7 +1,8 @@
-# Flux Library (Version 4.4.0)
+# Flux Library (Version 4.4.1)
 
 ### Changes
-- Fixed malformed mcpack.data
-- Started using different analytics provider (GameAnalytics), might remove old Google Analytics in later versions
-- Rewritten code using official Minecraft mappings
-- 1.16.5 only
+- Fixed GitHub links (including update checks)
+
+This update does not bring new features,
+yet you should update this mod, so you can receive
+fixed update notifications in the future.

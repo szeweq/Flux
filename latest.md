@@ -1,12 +1,13 @@
-# Flux Machinery (Version 5.5.0)
-Requires Flux Library 4.4.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux Machinery (Version 5.5.1)
+Requires Flux Library >= 4.4.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
 ### Changes
-- Renamed mod to "Flux Machinery"
-- Fixed broken block tag
-- Rewritten code using official Minecraft mappings
-- 1.16.5 only
+- Fixed GitHub links (including update checks)
+
+This update does not bring new features,
+yet you should update this mod, so you can receive
+fixed update notifications in the future.
 
 ----
-You can localize Flux to your native language.
+You can localize Flux Machinery to your native language.
 Read [contribution guidelines](https://github.com/Szewek/Flux/blob/master/.github/CONTRIBUTING.md) and [start translating from English](https://github.com/Szewek/Flux/tree/master/src/main/resources/generators/flux/lang).
