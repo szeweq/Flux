@@ -85,7 +85,7 @@ public class SignalControllerBlock extends DirectionalBlock {
 	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
 		TileEntity tile = worldIn.getBlockEntity(pos);
 		if (tile instanceof SignalControllerTile) {
-			((SignalControllerTile) tile).updateState();
+			((SignalControllerTile) tile).updateState(worldIn, pos);
 		}
 	}
 
