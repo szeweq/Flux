@@ -1,18 +1,20 @@
 plugins {
-    id("java-gradle-plugin")
-    kotlin("jvm") version "1.5.0"
+    `java-gradle-plugin`
+    kotlin("jvm") version "1.5.31"
 }
 repositories {
-    jcenter()
     mavenCentral()
 }
 
 dependencies {
+    implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.electronwill.night-config:toml:3.6.3")
 }
+
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 
 sourceSets {
     main.get().java.srcDirs("src/main/kotlin")
