@@ -6,10 +6,14 @@ repositories {
     mavenCentral()
 }
 
+val jrVersion = "2.12.0"
+
 dependencies {
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("com.fasterxml.jackson.jr:jackson-jr-objects:$jrVersion")
+    implementation("com.fasterxml.jackson.jr:jackson-jr-stree:$jrVersion")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.electronwill.night-config:toml:3.6.3")
 }

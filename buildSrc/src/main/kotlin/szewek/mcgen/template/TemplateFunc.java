@@ -1,17 +1,16 @@
 package szewek.mcgen.template;
 
-import com.google.gson.JsonElement;
-import szewek.mcgen.util.JsonCreator;
 import szewek.mcgen.util.JsonFileWriter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 public interface TemplateFunc {
-    void process(JsonElement o, JsonFileWriter out);
+    void process(Object o, JsonFileWriter out);
 
     static TemplateFunc byName(String name) throws NoSuchMethodException {
-        Method method = Templates.class.getDeclaredMethod(name, JsonElement.class, JsonFileWriter.class);
+        Method method = Templates.class.getDeclaredMethod(name, Object.class, JsonFileWriter.class);
         method.setAccessible(true);
         return (o, out) -> {
             try {

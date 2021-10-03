@@ -1,37 +1,35 @@
 package szewek.mcgen.template
 
-import szewek.mcgen.util.JsonCreator
-import szewek.mcgen.util.JsonFunc
+import com.fasterxml.jackson.jr.ob.comp.ArrayComposer
+import com.fasterxml.jackson.jr.ob.comp.ObjectComposer
+import szewek.mcgen.util.*
 
 internal infix fun Int.of(that: String) = Pair(that, this)
 
-internal inline fun JsonCreator.ingredients(crossinline fn: JsonFunc) = "ingredients" arr fn
-internal inline fun JsonCreator.typed(type: String, crossinline fn: JsonFunc) = obj {
-    typed(type)
-    fn()
-}
-internal fun JsonCreator.keyResult(pair: Pair<String, Int>) = "result" obj { result(pair) }
-internal fun JsonCreator.result(pair: Pair<String, Int>) {
+internal fun ObjectComposer<*>.keyResult(pair: Pair<String, Int>) = obj("result") { result(pair) }
+internal fun ObjectComposer<*>.result(pair: Pair<String, Int>) {
     itemOrTag(pair.first)
-    if (pair.second > 1) "count" set pair.second
+    if (pair.second > 1) put("count", pair.second)
 }
-internal fun JsonCreator.keyItemOrTag(key: String, name: String) = key obj { itemOrTag(name) }
-internal fun JsonCreator.itemOrTag(name: String) {
-    if (name[0] == '#') {
-        "tag" set name.substring(1)
+internal fun ObjectComposer<*>.keyItemOrTag(key: String, name: String) = obj(key) { itemOrTag(name) }
+internal fun ObjectComposer<*>.itemOrTag(n: String) {
+    if (n[0] == '#') {
+        put("tag", n.substring(1))
     } else {
-        "item" set name
+        put("item", n)
     }
 }
 
-internal fun JsonCreator.pool(rolls: Int = 1, entries: JsonFunc, conditions: JsonFunc? = null) = obj {
-    "rolls" set rolls
-    "entries" arr entries
-    if (conditions != null) "conditions" arr conditions
+internal inline fun ArrayComposer<*>.typed(t: String, crossinline fn: WriteFunc) = obj {
+    put("type", t)
+    fn()
 }
 
-internal fun JsonCreator.typed(name: String) {
-    "type" set name
+internal fun ArrayComposer<*>.pool(rolls: Int = 1, entries: ArrComposable<*>, conditions: ArrComposable<*>? = null) = obj {
+    put("rolls", rolls)
+    arr("entries", entries)
+    if (conditions != null) arr("conditions", conditions)
 }
 
-val condition_survivesExplosion: JsonFunc = { singleObj("condition", "minecraft:survives_explosion") }
+
+val condition_survivesExplosion: ArrComposable<*> = { singleObj("condition", "minecraft:survives_explosion") }

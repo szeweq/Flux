@@ -1,7 +1,10 @@
 package szewek.mcgen.task
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonParser
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.TreeNode
+import com.fasterxml.jackson.jr.ob.JSON
+import com.fasterxml.jackson.jr.ob.impl.JSONWriter
+import com.fasterxml.jackson.jr.stree.JacksonJrsTreeCodec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -15,7 +18,6 @@ import org.gradle.api.tasks.util.PatternFilterable
 import szewek.mcgen.util.logNanoTime
 import java.io.File
 import java.io.IOException
-import java.io.Reader
 
 abstract class AbstractProcessTask : DefaultTask(), FileVisitor {
     @Internal
@@ -54,5 +56,9 @@ abstract class AbstractProcessTask : DefaultTask(), FileVisitor {
     abstract fun outputDirName(namespace: String): String
     abstract suspend fun doProcessFile(namespace: String, file: File, outputDir: File)
 
-    protected fun File.readJson(): JsonElement = reader().use { JsonParser.parseReader(it) }
+    protected fun File.readJson(): TreeNode = reader().use { json.treeFrom(it) }
+
+    companion object {
+        val json: JSON = JSON.builder().treeCodec(JacksonJrsTreeCodec.SINGLETON).build()
+    }
 }

@@ -2,9 +2,7 @@
 @file:Suppress("unused")
 package szewek.mcgen.template
 
-import com.google.gson.JsonElement
-import szewek.mcgen.util.JsonFileWriter
-import szewek.mcgen.util.JsonFunc
+import szewek.mcgen.util.*
 
 private val colors = arrayOf(
         "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
@@ -20,34 +18,34 @@ private val mapShapes = mapOf(
     "hoe" to arrayOf("XX", " #", " #")
 )
 
-private fun machineBlockStates(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun machineBlockStates(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val ns = out.namespace
     out(item, variants {
         for (i in lit.indices) for (j in dirs.indices) {
-            "facing=${dirs[j]},lit=${lit[i]}" obj {
-                "model" set (if (i == 0) "$ns:block/$item" else "$ns:block/${item}_on")
-                if (j > 0) "y" set (90*j)
+            obj("facing=${dirs[j]},lit=${lit[i]}") {
+                put("model", if (i == 0) "$ns:block/$item" else "$ns:block/${item}_on")
+                if (j > 0) put("y", 90*j)
             }
         }
     })
 }
-private fun activeBlockStates(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun activeBlockStates(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val ns = out.namespace
     out(item, variants {
-        "lit=false".singleObj("model", "$ns:block/$item")
-        "lit=true".singleObj("model", "$ns:block/${item}_on")
+        singleObj("lit=false", "model", "$ns:block/$item")
+        singleObj("lit=true", "model", "$ns:block/${item}_on")
     })
 }
-private fun defaultBlockStates(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun defaultBlockStates(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val ns = out.namespace
-    out(item, variants { "".singleObj("model", "$ns:block/$item") })
+    out(item, variants { singleObj("", "model", "$ns:block/$item") })
 }
 
-private fun metalRecipes(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun metalRecipes(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val ns = out.namespace
     val itemIngot = "$ns:${item}_ingot"
     val itemNugget = "$ns:${item}_nugget"
@@ -64,19 +62,19 @@ private fun metalRecipes(v: JsonElement, out: JsonFileWriter) {
         ))
     }
     if (!isAlloy(item)) {
-        val oreLazyTag = lazyTag("forge:ores/${item}")
+        val oreLazyTag = "forge:ores/${item}"
         out("${item}_dust_grinding_ore",
-                fluxMachine("grinding", 2 of "$ns:${item}_dust", oreLazyTag)
+                fluxMachineTag("grinding", 2 of "$ns:${item}_dust", oreLazyTag)
         )
         out("${item}_grit_washing_ore",
-                fluxMachine("washing", 3 of "$ns:${item}_grit", oreLazyTag)
+                fluxMachineTag("washing", 3 of "$ns:${item}_grit", oreLazyTag)
         )
         out("${item}_dust_grinding_grit",
-                fluxMachine("grinding", 1 of "$ns:${item}_dust", lazyTag("forge:grits/${item}"))
+                fluxMachineTag("grinding", 1 of "$ns:${item}_dust", "forge:grits/${item}")
         )
     }
     out("${item}_dust_grinding_ingot",
-            fluxMachine("grinding", 1 of "$ns:${item}_dust", lazyTag("forge:ingots/${item}"))
+            fluxMachineTag("grinding", 1 of "$ns:${item}_dust", "forge:ingots/${item}")
     )
     out("${item}_ingot_smelting_dust", smelting(
             "${item}_ingot",
@@ -94,63 +92,66 @@ private fun metalRecipes(v: JsonElement, out: JsonFileWriter) {
             1 of "$ns:${item}_plate"
     ))
     out("${item}_plate_compacting_ingot",
-            fluxMachine("compacting", 1 of "$ns:${item}_plate", lazyTag("forge:ingots/${item}"))
+            fluxMachineTag("compacting", 1 of "$ns:${item}_plate", "forge:ingots/${item}")
     )
 }
 
-private fun metalRecipesTagged(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun metalRecipesTagged(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val dustsTag = "#forge:dusts/$item"
     out("${item}_dust_grinding_ore",
-            fluxMachine("grinding", 2 of dustsTag, lazyTag("forge:ores/$item"))
+            fluxMachineTag("grinding", 2 of dustsTag, "forge:ores/$item")
     )
     out("${item}_dust_grinding_grit",
-            fluxMachine("grinding", 1 of dustsTag, lazyTag("forge:grits/$item"))
+            fluxMachineTag("grinding", 1 of dustsTag, "forge:grits/$item")
     )
     out("${item}_dust_grinding_ingot",
-            fluxMachine("grinding", 1 of dustsTag, lazyTag("forge:ingots/$item"))
+            fluxMachineTag("grinding", 1 of dustsTag, "forge:ingots/$item")
     )
     out("${item}_grit_washing_ore",
-            fluxMachine("washing", 3 of "#forge:grits/$item", lazyTag("forge:ores/$item"))
+            fluxMachineTag("washing", 3 of "#forge:grits/$item", "forge:ores/$item")
     )
 }
 
-private fun colorRecipes(v: JsonElement, out: JsonFileWriter) {
-    val o = v.asJsonObject
-    val from = o["from"].asString
+private fun colorRecipes(v: Any, out: JsonFileWriter) {
+    val o = v as MutableMap<*, *>
+    val from = o["from"] as String
+    val into = o["into"] as String
+    val typ = o["type"] as String
     o.remove("from")
-    val into = o["into"].asString
     o.remove("into")
-    val type = o["type"].asString
     o.remove("type")
-    for(col in colors) out("${col}_${into}_$type", typedRecipe("${out.namespace}:$type") {
-        ingredients(lazyItem("${col}_$from"))
+    for(col in colors) out("${col}_${into}_$typ") {
+        put("type", "${out.namespace}:$typ")
+        arr("ingredients", lazyItem("${col}_$from"))
         keyResult(1 of "${col}_$into")
-        for ((k, je) in o.entrySet()) k set je
-    })
+        for ((k, jv) in o) putObject(k as String, jv) //setElement(k, je)
+    }
 }
-private fun colorCopyingRecipes(v: JsonElement, out: JsonFileWriter) {
-    val o = v.asJsonObject
-    val from = o["from"].asString
+private fun colorCopyingRecipes(v: Any, out: JsonFileWriter) {
+    val o = v as MutableMap<*, *>
+    val from = o["from"] as String
+    val into = o["into"] as String
     o.remove("from")
-    val into = o["into"].asString
     o.remove("into")
-    for(col in colors) out("copying_${col}_$into", typedRecipe("flux:copying") {
+    for(col in colors) out("copying_${col}_$into") {
+        put("type", "flux:copying")
         keyItemOrTag("source", "${col}_$into")
         keyItemOrTag("material", "${col}_$from")
-        for ((k, je) in o.entrySet()) k set je
-    })
+        
+        for ((k, jv) in o) putObject(k as String, jv) //setElement(k, je)
+    }
 }
 
-private fun toolRecipes(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun toolRecipes(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val ns = out.namespace
     val mapKeys = mapOf("X" to "$ns:${item}_ingot", "#" to "minecraft:stick")
     for((name, pat) in mapShapes) out("${item}_$name", craftingShaped(pat, mapKeys,1 of "$ns:${item}_$name"))
 }
 
-private fun metalTags(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun metalTags(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val nsItem = "${out.namespace}:$item"
     if (!isVanilla(item)) {
         if (!isAlloy(item)) {
@@ -168,11 +169,12 @@ private fun metalTags(v: JsonElement, out: JsonFileWriter) {
     out("items/plates/$item", singleTag("${nsItem}_plate"))
 }
 
-private fun typeTags(v: JsonElement, out: JsonFileWriter) {
-    val o = v.asJsonObject
-    val tag = o["tag"].asString
-    val blocks = o["blocks"].asBoolean
-    val items = o["items"].asJsonArray.map{ "#forge:$tag/${it.asString}" }.toTypedArray()
+private fun typeTags(v: Any, out: JsonFileWriter) {
+    val o = v as Map<*, *>
+    val tag = o["tag"] as String
+    val blocks = o["blocks"] as Boolean
+    val items = (o["items"] as List<*>).map{ "#forge:$tag/${it as String}" }
+        .toTypedArray()
     val tagListFunc = tagList(items)
 
     out("items/$tag", tagListFunc)
@@ -189,19 +191,19 @@ private fun typeTags(v: JsonElement, out: JsonFileWriter) {
     }
 }
 
-private fun containerLootTables(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun containerLootTables(v: Any, out: JsonFileWriter) {
+    val item = v as String
     out("blocks/$item", typedLoot("minecraft:block") {
         pool(
                 entries = {
                     typed("minecraft:item") {
-                        "functions" arr {
+                        arr("functions") {
                             obj {
-                                "function" set "minecraft:copy_name"
-                                "source" set "block_entity"
+                                put("function", "minecraft:copy_name")
+                                put("source", "block_entity")
                             }
                         }
-                        "name" set "${out.namespace}:${item}"
+                        put("name", "${out.namespace}:${item}")
                     }
                 },
                 conditions = condition_survivesExplosion
@@ -209,8 +211,8 @@ private fun containerLootTables(v: JsonElement, out: JsonFileWriter) {
     })
 }
 
-private fun metalLootTables(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun metalLootTables(v: Any, out: JsonFileWriter) {
+    val item = v as String
     val types = if (isAlloy(item)) arrayOf("block") else arrayOf("ore", "block")
     for (typ in types) out("blocks/${item}_$typ", typedLoot("minecraft:block") {
         pool(
@@ -220,8 +222,8 @@ private fun metalLootTables(v: JsonElement, out: JsonFileWriter) {
     })
 }
 
-private fun blockLootTables(v: JsonElement, out: JsonFileWriter) {
-    val item = v.asString
+private fun blockLootTables(v: Any, out: JsonFileWriter) {
+    val item = v as String
     out("blocks/$item", typedLoot("minecraft:block") {
         pool(
                 entries = singleEntryItem("${out.namespace}:$item"),
@@ -230,32 +232,33 @@ private fun blockLootTables(v: JsonElement, out: JsonFileWriter) {
     })
 }
 
-private fun fluxGifts(v: JsonElement, out: JsonFileWriter) {
-    val o = v.asJsonObject
-    val name = o["name"].asString
-    val table = o["table"].asString
-    val box = o["box"].asString.toInt(16)
-    val ribbon = o["ribbon"].asString.toInt(16)
-    out("gifts/$name", typedLoot("minecraft:gift") {
+private fun fluxGifts(v: Any, out: JsonFileWriter) {
+    val o = (v as Map<*, *>)
+    val n = o["name"] as String
+    val table = o["table"] as String
+    val box = (o["box"] as String).toInt(16)
+    val ribbon = (o["ribbon"] as String).toInt(16)
+    out("gifts/$n", typedLoot("minecraft:gift") {
         pool(
-                entries = {
-                    typed("minecraft:item") {
-                        "name" set "flux:gift"
-                        "functions" arr {
-                            obj {
-                                "function" set "minecraft:set_nbt"
-                                "tag" set "{\"Box\":${box},\"Ribbon\":${ribbon},\"LootTable\":\"${table}\"}"
-                            }
+            entries = {
+                typed("minecraft:item") {
+                    put("name", "flux:gift")
+                    arr("functions") {
+                        obj {
+                            put("function", "minecraft:set_nbt")
+                            put("tag", "{\"Box\":${box},\"Ribbon\":${ribbon},\"LootTable\":\"${table}\"}")
                         }
                     }
                 }
+            }
         )
     })
 }
 
-private fun JsonFileWriter.itemBlockTags(name: String, fn: JsonFunc) {
+private fun JsonFileWriter.itemBlockTags(name: String, fn: WriteFunc) {
     invoke("items/$name", fn)
     invoke("blocks/$name", fn)
+    
 }
 
 private fun isVanilla(name: String) = name == "iron" || name == "gold" || name == "netherite" // name == "copper"

@@ -1,28 +1,30 @@
 package szewek.mcgen.util
 
-import com.google.gson.stream.JsonWriter
+import com.fasterxml.jackson.jr.ob.JSON
+import com.fasterxml.jackson.jr.ob.JSONComposer
+import com.fasterxml.jackson.jr.ob.comp.ObjectComposer
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
+import java.io.OutputStream
 
 class JsonFileWriter(private val dir: File, val namespace: String) {
-
-    @Throws(IOException::class)
-    fun create(name: String): JsonWriter {
-        val file = File(dir, "$name.json")
-        file.parentFile.mkdirs()
-        val fw = FileWriter(file)
-        val jw = JsonWriter(fw)
-        jw.isLenient = true
-        return jw
+    companion object {
+        val json: JSON = JSON.builder().build()
     }
 
-    operator fun invoke(name: String, jf: JsonFunc) {
-        val jw = create(name)
-        jw.beginObject()
-        jf(JsonCreator(jw))
-        jw.endObject()
-        jw.close()
+    @Throws(IOException::class)
+    fun create(name: String): JSONComposer<OutputStream> {
+        val file = File(dir, "$name.json")
+        file.parentFile.mkdirs()
+        return json.composeTo(file)
+    }
+
+    operator fun invoke(name: String, jf: WriteFunc) {
+        val jc = create(name)
+        val oc: ObjectComposer<*> = jc.startObject()
+        jf(oc)
+        oc.end()
+        jc.finish().close()
     }
 
 }

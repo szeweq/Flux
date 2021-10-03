@@ -1,6 +1,7 @@
 package szewek.mcgen.task
 
-import com.google.gson.stream.JsonWriter
+import com.fasterxml.jackson.jr.stree.JrsArray
+import com.fasterxml.jackson.jr.stree.JrsString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -15,17 +16,15 @@ open class GenItemBlockModels : AbstractProcessTask() {
     override fun outputDirName(namespace: String) = "assets/$namespace/models/item"
 
     override suspend fun doProcessFile(namespace: String, file: File, outputDir: File) {
-        val modelJson = file.readJson().asJsonArray
-        modelJson.map { e -> scope.launch(Dispatchers.IO) {
-            val v = e.asString
+        val modelJson = file.readJson() as JrsArray
+        modelJson.elements().asSequence().map { e -> scope.launch(Dispatchers.IO) {
+            val v = (e as JrsString).value
             val f = File(outputDir, "$v.json")
             f.writer().use {
-                val jw = JsonWriter(it)
-                jw.isLenient = true
-                jw.beginObject()
-                jw.name("parent").value("$namespace:block/$v")
-                jw.endObject()
+                json.composeTo(it).startObject()
+                    .put("parent", "$namespace:block/$v")
+                    .end().finish()
             }
-        } }.joinAll()
+        } }.toList().joinAll()
     }
 }
