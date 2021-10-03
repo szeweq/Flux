@@ -6,15 +6,18 @@ repositories {
     mavenCentral()
 }
 
-val jrVersion = "2.12.0"
+val jacksonVersion = "2.12.0"
 
 dependencies {
     implementation(gradleApi())
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-    implementation("com.fasterxml.jackson.jr:jackson-jr-objects:$jrVersion")
-    implementation("com.fasterxml.jackson.jr:jackson-jr-stree:$jrVersion")
-    implementation("com.google.code.gson:gson:2.8.6")
+    //implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+    //implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    //implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.jr:jackson-jr-objects:$jacksonVersion")
+    implementation("com.fasterxml.jackson.jr:jackson-jr-stree:$jacksonVersion")
     implementation("com.electronwill.night-config:toml:3.6.3")
 }
 
@@ -27,7 +30,6 @@ sourceSets {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + "-XXLanguage:+InlineClasses"
     }
 }
 

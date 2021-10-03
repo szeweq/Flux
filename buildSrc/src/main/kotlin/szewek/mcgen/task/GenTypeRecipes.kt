@@ -1,10 +1,9 @@
 package szewek.mcgen.task
 
-import com.google.gson.JsonParser
+import com.fasterxml.jackson.jr.ob.JSON
 import org.gradle.api.tasks.util.PatternFilterable
 import szewek.mcgen.util.RecipeBatchWriter
 import java.io.File
-import java.io.FileReader
 import java.io.IOException
 
 open class GenTypeRecipes : AbstractProcessTask() {
@@ -20,21 +19,19 @@ open class GenTypeRecipes : AbstractProcessTask() {
         pf.include("generators/*/recipetypes/**.json")
     }
 
+    @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
     private fun recipesFromBatch(batch: File, rbw: RecipeBatchWriter) {
         val filename = batch.name
         val name = filename.substring(0, filename.length - 5)
-        val batchJson = JsonParser.parseReader(FileReader(batch)).asJsonObject
-        for (e in batchJson.entrySet()) {
-            val k = e.key
-            val v = e.value
-            if (v.isJsonArray) {
-                val a = v.asJsonArray
-                for (i in 0 until a.size()) {
-                    rbw.save(name, k, a[i].asJsonObject, i)
+        val batchJson = JSON.std.mapFrom(batch)
+        for ((k, v) in batchJson.entries) {
+            if (v is List<*>) {
+                for (i in v.indices) {
+                    rbw.save(name, k, v[i] as MutableMap<String, Any>, i)
                 }
             } else {
-                rbw.save(name, k, v.asJsonObject, 0)
+                rbw.save(name, k, v as MutableMap<String, Any>, 0)
             }
         }
     }

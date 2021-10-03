@@ -3,9 +3,6 @@ package szewek.mcgen.util
 import com.fasterxml.jackson.jr.ob.comp.ArrayComposer
 import com.fasterxml.jackson.jr.ob.comp.ComposerBase
 import com.fasterxml.jackson.jr.ob.comp.ObjectComposer
-import com.google.gson.JsonElement
-import com.google.gson.internal.Streams
-import com.google.gson.stream.JsonWriter
 
 inline fun <P : ComposerBase> ObjectComposer<P>.obj(k: String, fn: ObjComposable<ObjectComposer<P>>): ObjectComposer<P> =
     startObjectField(k).also(fn).end()

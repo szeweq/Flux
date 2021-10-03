@@ -1,10 +1,7 @@
 package szewek.mcgen.util
 
-import com.google.gson.JsonObject
-import com.google.gson.internal.Streams
-import com.google.gson.stream.JsonWriter
+import com.fasterxml.jackson.jr.ob.JSON
 import java.io.File
-import java.io.FileWriter
 import java.io.IOException
 
 class RecipeBatchWriter(
@@ -13,27 +10,26 @@ class RecipeBatchWriter(
 ) {
 
     @Throws(IOException::class)
-    fun save(name: String, item: String, v: JsonObject, i: Int) {
-        val recipe = JsonObject()
-        recipe.addProperty("type", "$namespace:$name")
-        val result = JsonObject()
-        result.addProperty("item", item)
-        if (v.has("count")) {
-            val c = v.get("count").asInt
+    fun save(name: String, item: String, v: MutableMap<String, Any>, i: Int) {
+        val recipe = mutableMapOf<String, Any>()
+        recipe["type"] = "$namespace:$name"
+        val result = mutableMapOf<String, Any>("item" to item)
+        if (v.containsKey("count")) {
+            result["count"] = v["count"] as Any
             v.remove("count")
-            result.addProperty("count", c)
         }
-        recipe.add("result", result)
-        for (e in v.entrySet()) {
-            recipe.add(e.key, e.value)
+        recipe["result"] = result
+        for (e in v.entries) {
+            recipe[e.key] = e.value
         }
         val subName = item.substring(item.indexOf(':') + 1) + '_' + name
         val checkedName = (if (i > 0) subName + '_' + i else subName) + ".json"
         val outputFile = File(outputDir, checkedName)
-        val writer = FileWriter(outputFile)
-        val jsonWriter = JsonWriter(writer)
-        jsonWriter.isLenient = true
-        Streams.write(recipe, jsonWriter)
-        writer.close()
+        JSON.std.composeTo(outputFile).addObject(recipe).finish().close()
+//        val writer = FileWriter(outputFile)
+//        val jsonWriter = JsonWriter(writer)
+//        jsonWriter.isLenient = true
+//        Streams.write(recipe, jsonWriter)
+//        writer.close()
     }
 }
