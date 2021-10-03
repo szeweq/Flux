@@ -3,27 +3,29 @@ package szewek.mcgen.task
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.electronwill.nightconfig.toml.TomlFormat
-import com.google.gson.stream.JsonWriter
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
+import com.fasterxml.jackson.jr.ob.JSON
+import com.fasterxml.jackson.jr.ob.comp.ObjectComposer
 import org.gradle.api.tasks.util.PatternFilterable
 import java.io.File
-import java.io.FileWriter
 
 open class ProcessLangFiles : AbstractProcessTask() {
+    companion object {
+        val json: JSON = JSON.builder().prettyPrinter(DefaultPrettyPrinter()).build()
+    }
 
     override suspend fun doProcessFile(namespace: String, file: File, outputDir: File) {
         val out = File(outputDir, file.nameWithoutExtension + ".json")
         val cfg = FileConfig.of(file, TomlFormat.instance())
         cfg.load()
         out.writer().use {
-            val jsonWriter = JsonWriter(it)
-            jsonWriter.isLenient = true
-            jsonWriter.setIndent(" ")
             runCatching {
-                jsonWriter.beginObject()
+                val jp = json.composeTo(it)
+                val oc = jp.startObject()
                 for ((k, v) in cfg.valueMap()) {
-                    flatMap(k, v, jsonWriter)
+                    flatMap(k, v, oc)
                 }
-                jsonWriter.endObject()
+                oc.end().finish()
             }
         }
     }
@@ -34,11 +36,11 @@ open class ProcessLangFiles : AbstractProcessTask() {
         pf.include("generators/*/lang/**.toml")
     }
 
-    private fun flatMap(name: String, c: Any, out: JsonWriter) {
+    private fun flatMap(name: String, c: Any, out: ObjectComposer<*>) {
         if (c is Config) {
             for ((k, v) in c.valueMap()) {
                 flatMap("$name.$k", v, out)
             }
-        } else out.name(name).value(c.toString())
+        } else out.put(name, c.toString())
     }
 }
