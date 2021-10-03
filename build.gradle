@@ -11,12 +11,16 @@ buildscript {
     }
 }
 
+plugins {
+    id('java')
+    id('idea')
+    id('maven-publish')
+    id('szewek.mcgen.mcgen-plugin')
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'idea'
-apply plugin: 'maven-publish'
 apply plugin: 'com.matthewprenger.cursegradle'
-apply plugin: szewek.mcgen.MCGenPlugin
 
 group = 'szewek.flux'
 archivesBaseName = 'flux'
@@ -29,8 +33,6 @@ String top_version = "1.16-3.0.6-8"
 String patchouli_version = "1.16.2-44"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-
-//sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 idea {
     module {
