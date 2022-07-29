@@ -6,12 +6,10 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -20,12 +18,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import szewek.fl.network.FluxAnalytics;
-import szewek.fl.network.NetCommon;
 import szewek.flux.F;
 import szewek.flux.tile.FluxGenTile;
-
-import java.util.Objects;
 
 public final class FluxGenBlock extends Block {
 	public FluxGenBlock() {
@@ -55,7 +49,6 @@ public final class FluxGenBlock extends Block {
 				}
 			}
 		}
-		NetCommon.putAction(player, "open", Objects.toString(getRegistryName(), "unknown"));
 		return ActionResultType.SUCCESS;
 	}
 
@@ -64,10 +57,6 @@ public final class FluxGenBlock extends Block {
 		if (!w.isClientSide) {
 			updateRedstoneState(w, pos);
 		}
-		if (ent instanceof PlayerEntity) {
-			NetCommon.putAction((PlayerEntity) ent, "place", Objects.toString(getRegistryName(), "unknown"));
-		}
-
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import szewek.fl.network.FluxAnalytics;
 import szewek.fl.signal.ISignalHandler;
 import szewek.fl.signal.SignalCapability;
 import szewek.fl.signal.SignalHandler;

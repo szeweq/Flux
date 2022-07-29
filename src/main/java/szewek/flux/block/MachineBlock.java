@@ -21,12 +21,9 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
-import szewek.fl.network.FluxAnalytics;
-import szewek.fl.network.NetCommon;
 import szewek.flux.tile.AbstractMachineTile;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public final class MachineBlock extends Block {
 	public static final DirectionProperty FACING = HorizontalBlock.FACING;
@@ -64,7 +61,6 @@ public final class MachineBlock extends Block {
 				}
 			}
 		}
-		NetCommon.putAction(player, "open", Objects.toString(getRegistryName(), "unknown"));
 		return ActionResultType.SUCCESS;
 	}
 
@@ -80,9 +76,6 @@ public final class MachineBlock extends Block {
 			if (tileentity instanceof AbstractMachineTile) {
 				((AbstractMachineTile)tileentity).setCustomName(stack.getDisplayName());
 			}
-		}
-		if (placer instanceof PlayerEntity) {
-			NetCommon.putAction((PlayerEntity) placer, "place", Objects.toString(getRegistryName(), "unknown"));
 		}
 	}
 

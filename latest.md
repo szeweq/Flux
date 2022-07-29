@@ -1,8 +1,8 @@
-# Flux Machinery (Version 5.5.1)
-Requires Flux Library >= 4.4.0 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
+# Flux Machinery (Version 5.5.2)
+Requires Flux Library >= 4.4.2 - [Download here](https://www.curseforge.com/minecraft/mc-mods/fl/files)
 
 ### Changes
-- Fixed GitHub links (including update checks)
+- Removed all things related to analytics
 
 This update does not bring new features,
 yet you should update this mod, so you can receive

@@ -1,7 +1,7 @@
-# Flux Library (Version 4.4.1)
+# Flux Library (Version 4.4.2)
 
 ### Changes
-- Fixed GitHub links (including update checks)
+- Removed all things related to analytics
 
 This update does not bring new features,
 yet you should update this mod, so you can receive

@@ -5,7 +5,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
-import szewek.fl.network.FluxAnalytics;
 import szewek.flux.F;
 
 import java.util.Set;
