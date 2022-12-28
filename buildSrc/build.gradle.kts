@@ -1,6 +1,6 @@
 plugins {
     `java-gradle-plugin`
-    kotlin("jvm") version "1.5.31"
+    kotlin("jvm") version "1.8.0"
 }
 repositories {
     mavenCentral()
